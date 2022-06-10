@@ -1,0 +1,1 @@
+web: java -jar target/goods-partner-1.0-SNAPSHOT.jar

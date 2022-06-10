@@ -18,6 +18,9 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <frontend.maven.plugin.version>1.10.3</frontend.maven.plugin.version>
+        <node.version>v12.16.1</node.version>
+        <npm.version>6.13.4</npm.version>
     </properties>
 
     <dependencies>
@@ -26,5 +29,63 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>${frontend.maven.plugin.version}</version>
+                <configuration>
+                    <workingDirectory>src/main/webapp</workingDirectory>
+                    <installDirectory>target</installDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>${node.version}</nodeVersion>
+                            <npmVersion>${npm.version}</npmVersion>
+                            <installDirectory>target</installDirectory>
+                        </configuration>
+                    </execution>
+                    <!--					<execution>-->
+                    <!--						<id>npm install</id>-->
+                    <!--						<goals>-->
+                    <!--							<goal>npm</goal>-->
+                    <!--						</goals>-->
+                    <!--						<configuration>-->
+                    <!--							<arguments>install</arguments>-->
+                    <!--						</configuration>-->
+                    <!--					</execution>-->
+                    <!--					<execution>-->
+                    <!--						<id>npm run build</id>-->
+                    <!--						<goals>-->
+                    <!--							<goal>npm</goal>-->
+                    <!--						</goals>-->
+                    <!--						<configuration>-->
+                    <!--							<arguments>run build</arguments>-->
+                    <!--						</configuration>-->
+                    <!--					</execution>-->
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.heroku.sdk</groupId>
+                <artifactId>heroku-maven-plugin</artifactId>
+                <version>3.0.4</version>
+                <configuration>
+                    <appName>goods-partner</appName>
+                    <includes>
+                        <include>target/goods-partner-1.0-SNAPSHOT.jar</include>
+                        <include>src/main/webapp/build</include>
+                    </includes>
+                    <jdkVersion>17</jdkVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

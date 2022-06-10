@@ -1,11 +1,5 @@
 HELP.md
 target/
-
-src/main/webapp/build/
-src/main/webapp/node_modules/
-
-
-
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
