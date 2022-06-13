@@ -19,8 +19,8 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <frontend.maven.plugin.version>1.12.1</frontend.maven.plugin.version>
-        <node.version>v12.16.1</node.version>
-        <npm.version>6.13.4</npm.version>
+        <node.version>v16.15.1</node.version>
+        <npm.version>8.11.0</npm.version>
     </properties>
 
     <dependencies>

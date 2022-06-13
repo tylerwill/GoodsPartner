@@ -61,5 +61,3 @@ yarn-error.log*
 
 database.env
 .eslintcache
-package-lock.json
-yarn.lock
