@@ -1,4 +1,4 @@
 package com.goods.partner.dto;
 
-public class OrdersToClientsDto {
+public class StoreDto {
 }
