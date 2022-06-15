@@ -33,7 +33,7 @@ public class Order {
     private Address address;
 
     @ManyToOne
-    @JoinColumn(name = "managerId", referencedColumnName = "id")
+    @JoinColumn(name = "manager_id", referencedColumnName = "id")
     private Manager manager;
 
     @OneToMany(

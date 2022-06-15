@@ -4,11 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @NoArgsConstructor
 @Getter
@@ -16,6 +12,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "orders_products")
 public class OrderedProduct {
+
+    @Id
+    private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order; // TODO check if bi-directional mapping required here
