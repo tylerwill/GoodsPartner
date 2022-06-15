@@ -37,7 +37,7 @@ let calculateData = {
       orderNumber: 36755,
       createdDate: "2022-04-10",
       orderData: {
-        clientName: "Novus",
+        clientName: "FOP Pupkin",
         address: "м. Київ, вул. Хрещатик, 12",
         managerFullName: "Vasya Manager",
         products: [
@@ -62,7 +62,7 @@ let calculateData = {
       addresses: [
         {
           address: "м. Київ, вул. Межигірська, 5Б",
-          orderWeight: 244,
+          addressTotalWeight: 244,
           orders: [
             {
               orderId: 103,
@@ -76,7 +76,7 @@ let calculateData = {
         },
         {
           address: "м. Київ, вул. Хрещатик, 10",
-          orderWeight: 589,
+          addressTotalWeight: 589,
           orders: [
             {
               orderId: 255,

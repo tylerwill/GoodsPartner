@@ -6,6 +6,7 @@ let initialCalculate = {
     {
       orderId: null,
       orderNumber: null,
+      createdDate: "",
       orderData: {
         clientName: "",
         address: "",
@@ -27,7 +28,7 @@ let initialCalculate = {
       addresses: [
         {
           address: "",
-          orderWeight: null,
+          addressTotalWeight: null,
           orders: [
             {
               orderId: null,
