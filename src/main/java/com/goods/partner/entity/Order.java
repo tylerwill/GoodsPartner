@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -28,11 +29,10 @@ public class Order {
 
     private LocalDate date;
 
-    @ManyToOne
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Address address;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id", referencedColumnName = "id")
     private Manager manager;
 

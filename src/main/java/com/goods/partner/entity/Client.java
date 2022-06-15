@@ -26,5 +26,5 @@ public class Client {
     @OneToMany(
             mappedBy = "client"
     )
-    private List<Address> address;
+    private List<Address> addresses;
 }

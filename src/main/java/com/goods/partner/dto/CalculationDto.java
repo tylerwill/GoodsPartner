@@ -13,7 +13,7 @@ public class CalculationDto {
 
     private LocalDate date;
     private List<OrderDto> orders;
-    private List<AddressDto> addresses;
+    private List<ClientDto> clients;
     private List<StoreDto> stores;
 
 }

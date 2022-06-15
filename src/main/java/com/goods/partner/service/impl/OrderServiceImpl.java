@@ -1,6 +1,9 @@
 package com.goods.partner.service.impl;
 
+import com.goods.partner.dto.AddressDto;
+import com.goods.partner.dto.AddressOrderDto;
 import com.goods.partner.dto.CalculationDto;
+import com.goods.partner.dto.ClientDto;
 import com.goods.partner.dto.OrderData;
 import com.goods.partner.dto.OrderDto;
 import com.goods.partner.dto.ProductDto;
@@ -11,34 +14,113 @@ import com.goods.partner.entity.Order;
 import com.goods.partner.entity.OrderedProduct;
 import com.goods.partner.entity.Product;
 import com.goods.partner.entity.Store;
+import com.goods.partner.repository.ClientRepository;
 import com.goods.partner.repository.OrderRepository;
 import com.goods.partner.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final ClientRepository clientRepository;
 
     @Transactional
     public CalculationDto calculate(LocalDate date) {
 
-        List<Order> ordersByDate = orderRepository.findAllByDate(date);
+        List<Order> ordersByDate = orderRepository.findAllByDateBefore(date);
+        List<OrderDto> orderDtos = mapOrders(ordersByDate);
 
-        List<OrderDto> orderDto = mapOrders(ordersByDate);
+        Set<Client> clients = clientRepository.findClientsByOrderDate(date);
+        log.info("clients Size: {}", clients.size());
+        List<ClientDto> clientDtos = mapClients(clients);
 
         CalculationDto calculationDto = new CalculationDto();
-        calculationDto.setOrders(orderDto);
+        calculationDto.setDate(date);
+        calculationDto.setOrders(orderDtos);
+        calculationDto.setClients(clientDtos);
 
         return calculationDto;
     }
+
+
+    /**
+     *   MAPPING CLIENTS
+     */
+
+    private List<ClientDto> mapClients(Set<Client> clients) {
+        return clients.stream()
+                .map(this::mapClient)
+                .collect(Collectors.toList());
+    }
+
+    private ClientDto mapClient(Client client) {
+        ClientDto clientDto = new ClientDto();
+        clientDto.setClientId(client.getId());
+        clientDto.setClientName(client.getName());
+        clientDto.setAddresses(mapAddresses(client.getAddresses()));
+        return clientDto;
+    }
+
+    private List<AddressDto> mapAddresses(List<Address> addresses) {
+        return addresses.stream()
+                .map(this::mapAddress)
+                .collect(Collectors.toList());
+    }
+
+    private AddressDto mapAddress(Address address) {
+
+        List<Order> orders = address.getOrders();
+        List<AddressOrderDto> addressOrders = mapOrdersToAddress(orders);
+
+        double addressTotalWeight = addressOrders.stream()
+                .map(AddressOrderDto::getOrderTotalWeight)
+                .collect(Collectors.summarizingDouble(weight -> weight))
+                .getSum();
+
+        AddressDto addressDto = new AddressDto();
+        addressDto.setAddress(address.getAddress());
+        addressDto.setOrders(addressOrders);
+        addressDto.setAddressTotalWeight(addressTotalWeight);
+
+        return addressDto;
+
+    }
+
+    private List<AddressOrderDto> mapOrdersToAddress(List<Order> orders) {
+        return orders.stream()
+                .map(this::mapAddressOrder)
+                .collect(Collectors.toList());
+    }
+
+    private AddressOrderDto mapAddressOrder(Order order) {
+        double sum = order.getProducts()
+                .stream()
+                .map(orderedProduct -> orderedProduct.getCount() * orderedProduct.getProduct().getKg()) // TODO NPE not safe
+                .collect(Collectors.summarizingDouble(kg -> kg))
+                .getSum();
+
+        AddressOrderDto addressOrderDto = new AddressOrderDto();
+        addressOrderDto.setOrderId(order.getId());
+        addressOrderDto.setOrderNumber(order.getNumber());
+        addressOrderDto.setOrderTotalWeight(sum);
+        return addressOrderDto;
+    }
+
+
+    /**
+     *   MAPPING ORDERS
+     */
 
     private List<OrderDto> mapOrders(List<Order> orders) {
         return orders.stream()

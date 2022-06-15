@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, LocalDate> {
 
-    // TODO require join query to evoid data enrichment
+    // TODO require join query to avoid data enrichment
 //    @Query("SELECT o FROM Order WHERE o.date = ?1")
-    List<Order> findAllByDate(LocalDate date);
+    List<Order> findAllByDateBefore(LocalDate date);
 
 }
