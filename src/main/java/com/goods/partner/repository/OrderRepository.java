@@ -12,6 +12,5 @@ public interface OrderRepository extends JpaRepository<Order, LocalDate> {
 
     // TODO require join query to avoid data enrichment
 //    @Query("SELECT o FROM Order WHERE o.date = ?1")
-    List<Order> findAllByDateBefore(LocalDate date);
-
+    List<Order> findAllByShippingDateBefore(LocalDate date);
 }
