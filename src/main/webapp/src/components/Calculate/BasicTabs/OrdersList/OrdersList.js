@@ -12,37 +12,45 @@ function OrdersList({date, orders}) {
   return (<Card sx={{minWidth: 275}}>
         <CardContent>
           <Stack spacing={2}>
-            <Typography variant="h5" gutterBottom component="div">
-              Список замовлень на {date}
-            </Typography>
-            <Box sx={{flexGrow: 1}}>
-              <Grid container spacing={2}>
-                <Grid item xs={3}>
-                  <Stack spacing={0.5}>
-                    {
-                      orders.map(order =>
-                          <Button size="small"
-                                  variant={order.orderNumber === activeOrder ? "contained" : "outlined"}
-                                  onClick={() => setActiveOrder(order.orderNumber)}
-                          >
-                            ЗАМОВЛЕННЯ №{order.orderNumber}
-                          </Button>)
-                    }
-                  </Stack>
-                </Grid>
-                <Grid item xs={9}>
-                  <Stack spacing={2}>
-                    <Typography variant="h6" component="h1">
-
-                      <Stack>
-                        {orders.map(order => order.orderNumber === activeOrder ? <OrdersTable order={order}/> : '')}
-                      </Stack>
-
+            {
+              date
+                  ? <>
+                    <Typography variant="h5" gutterBottom component="div">
+                      Список замовлень на {date}
                     </Typography>
-                  </Stack>
-                </Grid>
-              </Grid>
-            </Box>
+                    <Box sx={{flexGrow: 1}}>
+                      <Grid container spacing={2}>
+                        <Grid item xs={3}>
+                          <Stack spacing={0.5}>
+                            {
+                              orders.map(order =>
+                                  <Button size="small"
+                                          variant={order.orderNumber === activeOrder ? "contained" : "outlined"}
+                                          onClick={() => setActiveOrder(order.orderNumber)}
+                                  >
+                                    ЗАМОВЛЕННЯ №{order.orderNumber}
+                                  </Button>)
+                            }
+                          </Stack>
+                        </Grid>
+                        <Grid item xs={9}>
+                          <Stack spacing={2}>
+                            <Typography variant="h6" component="h1">
+
+                              <Stack>
+                                {orders.map(order => order.orderNumber === activeOrder ? <OrdersTable order={order}/> : '')}
+                              </Stack>
+
+                            </Typography>
+                          </Stack>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  </>
+                  : <Typography variant="h5" gutterBottom component="div">
+                    Оберіть дату та натисніть "РОЗРАХУВАТИ"
+                  </Typography>
+            }
           </Stack>
         </CardContent>
       </Card>
