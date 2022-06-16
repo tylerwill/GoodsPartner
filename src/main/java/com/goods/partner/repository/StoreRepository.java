@@ -14,7 +14,7 @@ public interface StoreRepository extends JpaRepository<Store, LocalDate> {
 
     @Query("SELECT new com.goods.partner.entity.projection.StoreProjection(s.id, s.name, o.id, o.number, SUM(op.count * p.kg)) " +
             " FROM Order o JOIN o.orderedProducts op JOIN op.product p JOIN p.store s " +
-            " WHERE o.shippingDate < :date " +
+            " WHERE o.shippingDate = :date " +
             " GROUP BY s.id, s.name, o.id, o.number")
     List<StoreProjection> groupStoresByOrders(LocalDate date);
 }
