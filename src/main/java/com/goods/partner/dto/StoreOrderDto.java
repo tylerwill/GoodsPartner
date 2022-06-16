@@ -4,11 +4,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-public class AddressOrderDto {
+public class StoreOrderDto {
+
     private int orderId;
     private int orderNumber;
-    private double orderTotalWeight;
+    private double totalOrderWeight;
+
 }

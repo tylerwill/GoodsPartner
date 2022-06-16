@@ -20,7 +20,7 @@ public class OrderedProduct {
     private Order order; // TODO check if bi-directional mapping required here
 
     @ManyToOne
-    @JoinColumn(name = "products_id", referencedColumnName = "id")
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 
     private int count; // rename to amount
