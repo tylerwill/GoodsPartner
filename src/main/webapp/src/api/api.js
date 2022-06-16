@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const defaultOptions = {
-  // baseURL: 'http://localhost:8080/',
-  baseURL: 'https://goods-partner.herokuapp.com/',
+   baseURL: 'http://localhost:8080/',
+//  baseURL: 'https://goods-partner.herokuapp.com/',
 };
 
 let axiosWithSetting = axios.create(defaultOptions);
@@ -123,12 +123,12 @@ let calculateData = {
         {
           orderId: 103,
           orderNumber: 12335,
-          kg: 107
+          totalOrderWeight: 107
         },
         {
           orderId: 205,
           orderNumber: 15654,
-          kg: 205
+          totalOrderWeight: 205
         }
       ]
     },
@@ -139,12 +139,12 @@ let calculateData = {
         {
           orderId: 173,
           orderNumber: 574345,
-          kg: 405
+          totalOrderWeight: 405
         },
         {
           orderId: 245,
           orderNumber: 365675,
-          kg: 120
+          totalOrderWeight: 120
         }
       ]
     }
@@ -153,8 +153,8 @@ let calculateData = {
 
 export const calculateApi = {
   calculateByDateRequest(ordersDate) {
-    // return axiosWithSetting.get(`calculate?date=` + ordersDate);
-    calculateData.date = ordersDate;
-    return calculateData;
+     return axiosWithSetting.get(`calculate?date=` + ordersDate);
+//    calculateData.date = ordersDate;
+//    return calculateData;
   }
 }

@@ -42,7 +42,7 @@ function StoreTable({date, stores}) {
                                     {order.orderNumber}
                                   </TableCell>
                                   <TableCell sx={{padding: '7px'}} component="th" scope="row" align="right">
-                                    {order.kg}
+                                    {order.totalOrderWeight}
                                   </TableCell>
                                 </TableRow>
                               </>
