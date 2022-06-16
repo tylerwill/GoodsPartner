@@ -11,6 +11,6 @@ import java.util.Set;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, LocalDate> {
 
-    @Query("SELECT a FROM Client a JOIN a.addresses ad JOIN ad.orders o WHERE o.date < :date")
+    @Query("SELECT a FROM Client a JOIN a.addresses ad JOIN ad.orders o WHERE o.shippingDate = :date")
     Set<Client> findClientsByOrderDate(LocalDate date);
 }

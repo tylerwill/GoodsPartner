@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public CalculationDto calculate(LocalDate date) {
 
-        List<Order> ordersByDate = orderRepository.findAllByDateBefore(date);
+        List<Order> ordersByDate = orderRepository.findAllByShippingDateBefore(date);
         List<OrderDto> orderDtos = orderMapper.mapOrders(ordersByDate);
 
         Set<Client> clients = clientRepository.findClientsByOrderDate(date);
