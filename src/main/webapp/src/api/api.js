@@ -59,6 +59,7 @@ let calculateData = {
     {
       clientId: 234,
       clientName: "Novus",
+      // totalOrdersAmount: "",
       addresses: [
         {
           address: "м. Київ, вул. Межигірська, 5Б",
@@ -100,7 +101,7 @@ let calculateData = {
       addresses: [
         {
           address: "м. Київ, вул. Межигірська, 5Б",
-          orderWeight: 244,
+          addressTotalWeight: 244,
           orders: [
             {
               orderId: 103,

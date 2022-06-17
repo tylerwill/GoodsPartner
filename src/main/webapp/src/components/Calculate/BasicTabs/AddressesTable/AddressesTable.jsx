@@ -10,89 +10,84 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-function createData(client, address, order, weight) {
-    return {client, address, order, weight};
-}
-
-const rows = [
-    createData('Клиент 1', 'Адресс', 4342212, 6.0),
-    createData('Клиент 1', 'Адресс', 4342212, 6.0),
-    createData('Клиент 1', 'Адресс', 4342212, 6.0),
-    createData('Клиент 1', 'Адресс', 4342212, 6.0),
-    createData('Клиент 1', 'Адресс', 4342212, 6.0),
-    createData('Клиент 1', 'Адресс', 4342212, 6.0),
-    createData('Клиент 1', 'Адресс', 4342212, 6.0),
-];
-
-
-function AddressesTable() {
-    return (<Card sx={{minWidth: 275}}>
-            <CardContent>
-                <Stack spacing={2}>
+function AddressesTable({date, clients}) {
+  let isClientPrinted = false;
+  let isAddressPrinted = false;
+  let isWeightPrinted = false;
+  return (<Card sx={{minWidth: 275}}>
+        <CardContent>
+          <Stack spacing={2}>
+            {
+              date
+                  ? <>
                     <Typography variant="h5" gutterBottom component="div">
-                        Список замовлень на 14.06.2022
+                      Список замовлень на {date}
                     </Typography>
                     <Box sx={{flexGrow: 1}}>
-                        <TableContainer component={Paper}>
-                            <Table aria-label="simple table">
-                                <TableHead sx={{backgroundColor: 'rgba(0, 0, 0, 0.12);'}}>
-                                    <TableRow>
-                                        <TableCell sx={{padding: '7px'}}>Клієнт</TableCell>
-                                        <TableCell sx={{padding: '7px'}} align="center">Адреса</TableCell>
-                                        <TableCell sx={{padding: '7px'}} align="center">Замовлення</TableCell>
-                                        <TableCell sx={{padding: '7px'}} align="center">Маса, кг</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow
-                                    >
-                                        <TableCell rowSpan={3} sx={{padding: '7px'}} component="th" scope="row">
-                                            Клиент 1
-                                        </TableCell>
-                                        <TableCell rowSpan={2} sx={{padding: '7px'}} align="center">Адресс 1</TableCell>
-                                        <TableCell sx={{padding: '7px'}} align="center">4342212</TableCell>
-                                        <TableCell rowSpan={2} sx={{padding: '7px'}} align="center">6.0</TableCell>
-                                    </TableRow>
-                                    <TableRow
+                      <TableContainer component={Paper}>
+                        <Table aria-label="simple table">
+                          <TableHead sx={{backgroundColor: 'rgba(0, 0, 0, 0.12);'}}>
+                            <TableRow>
+                              <TableCell sx={{padding: '7px'}}>Клієнт</TableCell>
+                              <TableCell sx={{padding: '7px'}} align="center">Адреса</TableCell>
+                              <TableCell sx={{padding: '7px'}} align="center">Замовлення</TableCell>
+                              <TableCell sx={{padding: '7px'}} align="center">Маса, кг</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
 
-                                    >
-                                        <TableCell sx={{padding: '7px'}} align="center">4342212</TableCell>
-                                    </TableRow>
-                                    <TableRow
-                                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                                    >
-                                        <TableCell sx={{padding: '7px'}} align="center">Адресс 3</TableCell>
-                                        <TableCell sx={{padding: '7px'}} align="center">4342212</TableCell>
-                                        <TableCell sx={{padding: '7px'}} align="center">6.0</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell sx={{padding: '7px'}} component="th" scope="row">
-                                            Клиент 2
-                                        </TableCell>
-                                        <TableCell sx={{padding: '7px'}} align="center">Адресс 4</TableCell>
-                                        <TableCell sx={{padding: '7px'}} align="center">4342212</TableCell>
-                                        <TableCell sx={{padding: '7px'}} align="center">6.0</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell rowSpan={2} sx={{padding: '7px'}} component="th" scope="row">
-                                            Клиент 2
-                                        </TableCell>
-                                        <TableCell rowSpan={2} sx={{padding: '7px'}} align="center">Адресс 4</TableCell>
-                                        <TableCell sx={{padding: '7px'}} align="center">4342212</TableCell>
-                                        <TableCell rowSpan={2} sx={{padding: '7px'}} align="center">6.0</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell sx={{padding: '7px'}} align="center">4342212</TableCell>
-                                    </TableRow>
+                            {
+                              clients.map(client => (<>
+                                {
+                                  client.addresses.map(address => (<>
+                                    {isWeightPrinted = false}
+                                    {isClientPrinted = false}
+                                    {isAddressPrinted = false}
+                                    {
+                                      address.orders.map(order => (<>
+                                        <TableRow>
+                                          {
+                                            isClientPrinted === false &&
+                                            <TableCell rowSpan={address.orders.length} sx={{padding: '7px'}} component="th"
+                                                       scope="row">
+                                              {client.clientName}
+                                            </TableCell>
+                                          }
+                                          {
+                                            isWeightPrinted === false &&
+                                            <TableCell rowSpan={address.orders.length} sx={{padding: '7px'}}
+                                                       align="center">{address.address}</TableCell>
+                                          }
+                                          <TableCell sx={{padding: '7px'}} align="center">{order.orderNumber}</TableCell>
 
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                                          {
+                                            isWeightPrinted === false &&
+                                            <TableCell rowSpan={address.orders.length} sx={{padding: '7px'}}
+                                                       align="center">{address.addressTotalWeight}</TableCell>
+                                          }
+                                          {isWeightPrinted = true}
+                                          {isClientPrinted = true}
+                                          {isAddressPrinted = true}
+                                        </TableRow>
+                                      </>))
+                                    }
+                                  </>))
+                                }
+                              </>))
+                            }
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
                     </Box>
-                </Stack>
-            </CardContent>
-        </Card>
-    );
+                  </>
+                  : <Typography variant="h5" gutterBottom component="div">
+                    Оберіть дату та натисніть "РОЗРАХУВАТИ"
+                  </Typography>
+            }
+          </Stack>
+        </CardContent>
+      </Card>
+  );
 }
 
 export default AddressesTable;

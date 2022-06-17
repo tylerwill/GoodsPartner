@@ -64,7 +64,10 @@ export default function BasicTabs({date, orders, clients, stores}) {
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
-         <AddressesTable/>
+         <AddressesTable
+             date={date}
+             clients={clients}
+         />
         </TabPanel>
         <TabPanel value={value} index={2}>
           <StoreTable
