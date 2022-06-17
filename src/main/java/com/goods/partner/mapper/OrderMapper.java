@@ -34,6 +34,7 @@ public class OrderMapper {
 
         OrderDto orderDto = new OrderDto();
         orderDto.setOrderId(order.getId());
+        orderDto.setCreatedDate(order.getCreatedDate());
         orderDto.setOrderNumber(order.getNumber());
         orderDto.setOrderData(orderData);
         return orderDto;
