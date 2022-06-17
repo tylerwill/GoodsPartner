@@ -11,6 +11,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 function StoreTable({date, stores}) {
+  let isStorePrinted = false;
   return (<Card sx={{minWidth: 275}}>
         <CardContent>
           <Stack spacing={2}>
@@ -32,21 +33,26 @@ function StoreTable({date, stores}) {
                           </TableHead>
                           <TableBody>
                             {stores.map((store) => (<>
+                                  {isStorePrinted=false}
                                   {store.orders.map(order =>
                                       <>
                                         <TableRow
                                             key={store.storeName}
                                             sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                         >
-                                          <TableCell sx={{padding: '7px'}} component="th" scope="row">
+                                        {
+                                          isStorePrinted===false &&
+                                          <TableCell rowSpan={store.orders.length} sx={{padding: '7px'}} component="th" scope="row">
                                             {store.storeName}
                                           </TableCell>
+                                        }
                                           <TableCell sx={{padding: '7px'}} component="th" scope="row" align="right">
                                             {order.orderNumber}
                                           </TableCell>
                                           <TableCell sx={{padding: '7px'}} component="th" scope="row" align="right">
                                             {order.totalOrderWeight}
                                           </TableCell>
+                                          {isStorePrinted=true}
                                         </TableRow>
                                       </>
                                   )}

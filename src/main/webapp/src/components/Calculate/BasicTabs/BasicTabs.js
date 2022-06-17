@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import OrdersList from "./OrdersList/OrdersList";
 import StoreTable from "./StoreTable/StoreTable";
+import AddressesTable from "./AddressesTable/AddressesTable";
 
 function TabPanel(props) {
   const {children, value, index, ...other} = props;
@@ -63,7 +64,10 @@ export default function BasicTabs({date, orders, clients, stores}) {
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          Item Two
+         <AddressesTable
+             date={date}
+             clients={clients}
+         />
         </TabPanel>
         <TabPanel value={value} index={2}>
           <StoreTable

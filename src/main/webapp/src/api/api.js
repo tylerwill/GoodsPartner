@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const defaultOptions = {
-   // baseURL: 'http://localhost:8080/',
- baseURL: 'https://goods-partner.herokuapp.com/',
+   baseURL: 'http://localhost:8080/',
+ // baseURL: 'https://goods-partner.herokuapp.com/',
 };
 
 let axiosWithSetting = axios.create(defaultOptions);
@@ -59,6 +59,7 @@ let calculateData = {
     {
       clientId: 234,
       clientName: "Novus",
+      // totalOrdersAmount: "",
       addresses: [
         {
           address: "м. Київ, вул. Межигірська, 5Б",
@@ -100,7 +101,7 @@ let calculateData = {
       addresses: [
         {
           address: "м. Київ, вул. Межигірська, 5Б",
-          orderWeight: 244,
+          addressTotalWeight: 244,
           orders: [
             {
               orderId: 103,
@@ -153,8 +154,8 @@ let calculateData = {
 
 export const calculateApi = {
   calculateByDateRequest(ordersDate) {
-     // return axiosWithSetting.get(`calculate?date=` + ordersDate);
-   calculateData.date = ordersDate;
-   return calculateData;
+     return axiosWithSetting.get(`calculate?date=` + ordersDate);
+   // calculateData.date = ordersDate;
+   // return calculateData;
   }
 }
