@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDto> orderDtos = orderMapper.mapOrders(ordersByDate);
 
         Set<Client> clients = clientRepository.findClientsByOrderDate(date);
-        List<ClientDto> clientDtos = clientMapper.mapClients(clients);
+        List<ClientDto> clientDtos = clientMapper.mapClients(clients, date);
 
         List<StoreProjection> storeProjections = storeRepository.groupStoresByOrders(date);
         List<StoreDto> storeDtos = storeMapper.mapStoreGroup(storeProjections);
