@@ -4,6 +4,7 @@ import com.goods.partner.dto.CalculationDto;
 import com.goods.partner.dto.ClientDto;
 import com.goods.partner.dto.OrderDto;
 import com.goods.partner.dto.StoreDto;
+import com.goods.partner.entity.Address;
 import com.goods.partner.entity.Client;
 import com.goods.partner.entity.Order;
 import com.goods.partner.entity.projection.StoreProjection;
@@ -41,8 +42,8 @@ public class OrderServiceImpl implements OrderService {
         List<Order> ordersByDate = orderRepository.findAllByShippingDateEquals(date);
         List<OrderDto> orderDtos = orderMapper.mapOrders(ordersByDate);
 
-        Set<Client> clients = clientRepository.findClientsByOrderDate(date);
-        List<ClientDto> clientDtos = clientMapper.mapClients(clients, date);
+        List<Client> clients = clientRepository.findClientsByOrderDate(date);
+        List<ClientDto> clientDtos = clientMapper.mapClients(clients);
 
         List<StoreProjection> storeProjections = storeRepository.groupStoresByOrders(date);
         List<StoreDto> storeDtos = storeMapper.mapStoreGroup(storeProjections);

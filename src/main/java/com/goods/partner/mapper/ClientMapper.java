@@ -9,6 +9,7 @@ import com.goods.partner.entity.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,30 +18,30 @@ import java.util.stream.Collectors;
 public class ClientMapper {
 
 
-    public List<ClientDto> mapClients(Set<Client> clients, LocalDate date) {
+    public List<ClientDto> mapClients(List<Client> clients) {
         return clients.stream()
-                .map(client -> mapClient(client,date))
+                .map(client -> mapClient(client))
                 .collect(Collectors.toList());
     }
 
-    private ClientDto mapClient(Client client, LocalDate date) {
+    private ClientDto mapClient(Client client) {
         ClientDto clientDto = new ClientDto();
         clientDto.setClientId(client.getId());
         clientDto.setClientName(client.getName());
-        clientDto.setAddresses(mapAddresses(client.getAddresses(), date));
+        clientDto.setAddresses(mapAddresses(client.getAddresses()));
         return clientDto;
     }
 
-    private List<AddressDto> mapAddresses(List<Address> addresses, LocalDate date) {
+    private List<AddressDto> mapAddresses(List<Address> addresses) {
         return addresses.stream()
-                .map(address -> mapAddress(address, date))
+                .map(address -> mapAddress(address))
                 .collect(Collectors.toList());
     }
 
-    private AddressDto mapAddress(Address address, LocalDate date) {
+    private AddressDto mapAddress(Address address) {
 
         List<Order> orders = address.getOrders();
-        List<AddressOrderDto> addressOrders = mapOrdersToAddress(orders, date);
+        List<AddressOrderDto> addressOrders = mapOrdersToAddress(orders);
 
         double addressTotalWeight = addressOrders.stream()
                 .map(AddressOrderDto::getOrderTotalWeight)
@@ -56,9 +57,8 @@ public class ClientMapper {
 
     }
 
-    private List<AddressOrderDto> mapOrdersToAddress(List<Order> orders, LocalDate localDate) {
+    private List<AddressOrderDto> mapOrdersToAddress(List<Order> orders) {
         return orders.stream()
-                .filter(order -> order.getShippingDate().equals(localDate))
                 .map(this::mapAddressOrder)
                 .collect(Collectors.toList());
     }
