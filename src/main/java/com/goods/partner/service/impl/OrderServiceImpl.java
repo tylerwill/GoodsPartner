@@ -4,7 +4,6 @@ import com.goods.partner.dto.CalculationDto;
 import com.goods.partner.dto.ClientDto;
 import com.goods.partner.dto.OrderDto;
 import com.goods.partner.dto.StoreDto;
-import com.goods.partner.entity.Address;
 import com.goods.partner.entity.Client;
 import com.goods.partner.entity.Order;
 import com.goods.partner.entity.projection.StoreProjection;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor

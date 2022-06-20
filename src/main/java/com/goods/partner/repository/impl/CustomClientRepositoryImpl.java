@@ -18,21 +18,19 @@ public class CustomClientRepositoryImpl implements CustomClientRepository {
 
     @Override
     public List<Client> findClientsByOrderDate(LocalDate date) {
-
         EntityGraph<Client> entityGraph = (EntityGraph<Client>) entityManager.getEntityGraph("client-with-addresses");
+
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Client> criteriaQuery = builder.createQuery(Client.class);
+
         Root<Client> clientRoot = criteriaQuery.from(Client.class);
         Join<Client, Address> addressJoin = clientRoot.join("addresses");
         Join<Address, Order> orderJoin = addressJoin.join("orders");
 
-//        List<Predicate> predicates = new ArrayList<>();
-//        predicates.add(builder.equal(orderFetch.get("shippingDate"), date));
         Predicate shippingDate = builder.equal(orderJoin.get("shippingDate"), date);
 
         return entityManager.createQuery(criteriaQuery
                         .select(clientRoot)
-//                        .where(predicates.toArray(new Predicate[]{})))
                         .where(shippingDate))
                 .setHint("javax.persistence.fetchgraph", entityGraph)
                 .getResultList();
