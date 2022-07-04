@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -41,8 +40,8 @@ public class OrderServiceImpl implements OrderService {
         List<Order> ordersByDate = orderRepository.findAllByShippingDateEquals(date);
         List<OrderDto> orderDtos = orderMapper.mapOrders(ordersByDate);
 
-        Set<Client> clients = clientRepository.findClientsByOrderDate(date);
-        List<ClientDto> clientDtos = clientMapper.mapClients(clients, date);
+        List<Client> clients = clientRepository.findClientsByOrderDate(date);
+        List<ClientDto> clientDtos = clientMapper.mapClients(clients);
 
         List<StoreProjection> storeProjections = storeRepository.groupStoresByOrders(date);
         List<StoreDto> storeDtos = storeMapper.mapStoreGroup(storeProjections);

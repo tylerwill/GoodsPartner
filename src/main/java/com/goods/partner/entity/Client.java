@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @NoArgsConstructor
@@ -16,6 +13,10 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "clients")
+@NamedEntityGraph(name = "client-with-addresses",
+        attributeNodes = {
+                @NamedAttributeNode("addresses")
+        })
 public class Client {
 
     @Id
