@@ -18,7 +18,7 @@ public class OrderMapper {
                 .collect(Collectors.toList());
     }
 
-    private OrderDto mapOrder(Order order) {
+    OrderDto mapOrder(Order order) {
         Address address = order.getAddress();
         Client client = address.getClient();
 
@@ -40,13 +40,13 @@ public class OrderMapper {
         return orderDto;
     }
 
-    private List<ProductDto> mapProducts(List<OrderedProduct> products) {
+    List<ProductDto> mapProducts(List<OrderedProduct> products) {
         return products.stream()
                 .map(this::mapProduct)
                 .collect(Collectors.toList());
     }
 
-    private ProductDto mapProduct(OrderedProduct orderedProduct) {
+    ProductDto mapProduct(OrderedProduct orderedProduct) {
         Product product = orderedProduct.getProduct();
         Store store = product.getStore();
 
