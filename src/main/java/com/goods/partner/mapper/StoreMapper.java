@@ -30,7 +30,7 @@ public class StoreMapper {
         return new ArrayList<>(storeMap.values());
     }
 
-    private StoreDto getStoreDto(StoreProjection storeProjection) {
+    StoreDto getStoreDto(StoreProjection storeProjection) {
         StoreDto storeDto = new StoreDto();
         storeDto.setStoreId(storeProjection.getStoreId());
         storeDto.setStoreName(storeProjection.getStoreName());
