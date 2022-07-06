@@ -7,25 +7,28 @@ import com.goods.partner.entity.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.*;
 
+@TestInstance(PER_CLASS)
 class ClientMapperTest {
 
-    private final ClientMapper clientMapper = new ClientMapper();
-    private static Order mockOrder;
-    private static Address address;
-    private static List<Address> addressList;
-    private static Client client;
+    private ClientMapper clientMapper;
+    private Order mockOrder;
+    private Address mockAddress;
+    private Client client;
 
 
     @BeforeAll
-    static void setup() {
+    void setup() {
+        clientMapper = new ClientMapper();
         Product mockProduct = mock(Product.class);
-        when(mockProduct.getKg()).thenReturn(10D);
+        when(mockProduct.getKg()).thenReturn(10.5);
 
 
         OrderedProduct mockOrderedProduct = mock(OrderedProduct.class);
@@ -39,16 +42,15 @@ class ClientMapperTest {
         when(mockOrder.getOrderedProducts()).thenReturn(List.of(mockOrderedProduct));
 
 
-        address = mock(Address.class);
-        when(address.getOrders()).thenReturn(List.of(mockOrder));
-        when(address.getAddress()).thenReturn("м. Київ, вул. Хрещатик, 1");
+        mockAddress = mock(Address.class);
+        when(mockAddress.getOrders()).thenReturn(List.of(mockOrder));
+        when(mockAddress.getAddress()).thenReturn("м. Київ, вул. Хрещатик, 1");
 
-        addressList = List.of(address);
 
         client = mock(Client.class);
         when(client.getId()).thenReturn(1);
         when(client.getName()).thenReturn("ТОВ \"Хлібзавод\"");
-        when(client.getAddresses()).thenReturn(addressList);
+        when(client.getAddresses()).thenReturn(List.of(mockAddress));
     }
 
 
@@ -56,11 +58,12 @@ class ClientMapperTest {
     @DisplayName("Mapping Order to AddressDto")
     void test_givenOrder_whenMapAddressOrder_thenReturnAddressOrderDto() {
 
+
         AddressOrderDto addressOrderDto = clientMapper.mapAddressOrder(mockOrder);
 
-        assertEquals(mockOrder.getId(), addressOrderDto.getOrderId());
-        assertEquals(mockOrder.getNumber(), addressOrderDto.getOrderNumber());
-        assertEquals(50, addressOrderDto.getOrderTotalWeight(), 0.001);
+        assertEquals(1, addressOrderDto.getOrderId());
+        assertEquals(1, addressOrderDto.getOrderNumber());
+        assertEquals(52.5, addressOrderDto.getOrderTotalWeight(), 0.001);
     }
 
 
@@ -68,18 +71,15 @@ class ClientMapperTest {
     @DisplayName("Mapping Order list to AddressDto list")
     void test_givenListOrder_whenMapAddressOrder_thenReturnListAddressOrderDto() {
 
-        List<Order> orderList = List.of(mockOrder);
+        ClientMapper spyClientMapper = spy(clientMapper);
 
-        List<AddressOrderDto> addressOrderDtoList = clientMapper.mapOrdersToAddress(orderList);
+        List<AddressOrderDto> addressOrderDtoList = spyClientMapper
+                .mapOrdersToAddress(List.of(mockOrder, mockOrder, mockOrder));
 
 
-        assertEquals(1, addressOrderDtoList.size());
-
-        AddressOrderDto addressOrderDto = addressOrderDtoList.get(0);
-
-        assertEquals(mockOrder.getId(), addressOrderDto.getOrderId());
-        assertEquals(mockOrder.getNumber(), addressOrderDto.getOrderNumber());
-        assertEquals(50, addressOrderDto.getOrderTotalWeight());
+        assertEquals(3, addressOrderDtoList.size());
+        verify(spyClientMapper).mapOrdersToAddress(anyList());
+        verify(spyClientMapper, times(3)).mapAddressOrder(any(Order.class));
 
     }
 
@@ -88,11 +88,11 @@ class ClientMapperTest {
     @DisplayName("Mapping Address to AddressDto")
     void test_givenAddress_whenMapAddress_thenReturnAddressDto() {
 
-        AddressDto addressDto = clientMapper.mapAddress(address);
+        AddressDto addressDto = clientMapper.mapAddress(mockAddress);
 
         assertEquals("м. Київ, вул. Хрещатик, 1", addressDto.getAddress());
         assertEquals(1, addressDto.getOrders().size());
-        assertEquals(50, addressDto.getAddressTotalWeight(), 0.001);
+        assertEquals(52.5, addressDto.getAddressTotalWeight(), 0.001);
 
     }
 
@@ -101,16 +101,15 @@ class ClientMapperTest {
     @DisplayName("Mapping List Address list to AddressDto")
     void test_givenAddressList_whenMapAddresses_thenReturnListAddressDto() {
 
-        List<AddressDto> addressDtoList = clientMapper.mapAddresses(addressList);
+        ClientMapper spyClientMapper = spy(clientMapper);
 
-        assertEquals(1, addressDtoList.size());
+        List<AddressDto> addressDtoList = spyClientMapper
+                .mapAddresses(List.of(mockAddress, mockAddress, mockAddress));
 
-        AddressDto addressDto = addressDtoList.get(0);
+        assertEquals(3, addressDtoList.size());
 
-        assertEquals(address.getAddress(), addressDto.getAddress());
-        assertEquals(address.getOrders().size(), addressDto.getOrders().size());
-        assertEquals(50, addressDto.getAddressTotalWeight(), 0.001);
-
+        verify(spyClientMapper).mapAddresses(anyList());
+        verify(spyClientMapper, times(3)).mapAddress(any(Address.class));
     }
 
 
@@ -118,16 +117,23 @@ class ClientMapperTest {
     @DisplayName("Mapping Client to ClientDto")
     void test_givenClient_whenMapClient_thenReturnClientDto() {
 
-        ClientDto clientDto = clientMapper.mapClient(client);
+        ClientMapper spyClientMapper = spy(clientMapper);
+        ClientDto clientDto = spyClientMapper.mapClient(client);
 
-        assertEquals(client.getName(), clientDto.getClientName());
-        assertEquals(client.getId(), clientDto.getClientId());
-        assertEquals(client.getAddresses().size(), clientDto.getAddresses().size());
+
+        assertEquals("ТОВ \"Хлібзавод\"", clientDto.getClientName());
+        assertEquals(1, clientDto.getClientId());
+        assertEquals(1, clientDto.getAddresses().size());
+
+
+        verify(spyClientMapper).mapClient(client);
+        verify(spyClientMapper).mapAddress(mockAddress);
 
 
         List<AddressDto> addresses = clientDto.getAddresses();
-        assertEquals(address.getAddress(), addresses.get(0).getAddress());
-        assertEquals(50, addresses.get(0).getAddressTotalWeight(), 0.001);
+
+        assertEquals("м. Київ, вул. Хрещатик, 1", addresses.get(0).getAddress());
+        assertEquals(52.5, addresses.get(0).getAddressTotalWeight(), 0.001);
 
     }
 
@@ -136,23 +142,16 @@ class ClientMapperTest {
     @DisplayName("Mapping Client list to ClientDto list")
     void test_givenClientList_whenMapClients_thenReturnClientDtoList() {
 
-        List<Client> clientList = List.of(client);
-        List<ClientDto> clientDtoList = clientMapper.mapClients(clientList);
+        ClientMapper spyClientMapper = spy(clientMapper);
+
+        List<ClientDto> clientDtoList = spyClientMapper
+                .mapClients(List.of(client, client, client));
 
 
-        assertEquals(clientList.size(), clientDtoList.size());
+        assertEquals(3, clientDtoList.size());
+        verify(spyClientMapper).mapClients(anyList());
+        verify(spyClientMapper, times(3)).mapClient(any(Client.class));
 
-
-        ClientDto clientDto = clientDtoList.get(0);
-
-        assertEquals(client.getName(), clientDto.getClientName());
-        assertEquals(client.getId(), clientDto.getClientId());
-        assertEquals(client.getAddresses().size(), clientDto.getAddresses().size());
-
-
-        List<AddressDto> addresses = clientDto.getAddresses();
-        assertEquals(address.getAddress(), addresses.get(0).getAddress());
-        assertEquals(50, addresses.get(0).getAddressTotalWeight(), 0.001);
 
     }
 
@@ -164,14 +163,14 @@ class ClientMapperTest {
         ClientMapper spyClientMapper = spy(clientMapper);
 
         List<ClientDto> clientDtoList = spyClientMapper.mapClients(clientList);
-        assertEquals(clientDtoList.size(), 1);
+        assertEquals(1, clientDtoList.size());
 
 
-        verify(spyClientMapper, times(1)).mapAddressOrder(mockOrder);
-        verify(spyClientMapper, times(1)).mapOrdersToAddress(List.of(mockOrder));
-        verify(spyClientMapper, times(1)).mapAddress(address);
-        verify(spyClientMapper, times(1)).mapAddresses(addressList);
-        verify(spyClientMapper, times(1)).mapClient(client);
+        verify(spyClientMapper).mapAddressOrder(mockOrder);
+        verify(spyClientMapper).mapOrdersToAddress(List.of(mockOrder));
+        verify(spyClientMapper).mapAddress(mockAddress);
+        verify(spyClientMapper).mapAddresses(List.of(mockAddress));
+        verify(spyClientMapper).mapClient(client);
 
     }
 
