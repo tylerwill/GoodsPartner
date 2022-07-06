@@ -4,6 +4,7 @@ import com.goods.partner.dto.OrderData;
 import com.goods.partner.dto.OrderDto;
 import com.goods.partner.dto.ProductDto;
 import com.goods.partner.entity.*;
+import com.google.common.annotations.VisibleForTesting;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class OrderMapper {
                 .collect(Collectors.toList());
     }
 
+    @VisibleForTesting
     OrderDto mapOrder(Order order) {
         Address address = order.getAddress();
         Client client = address.getClient();
@@ -40,12 +42,14 @@ public class OrderMapper {
         return orderDto;
     }
 
+    @VisibleForTesting
     List<ProductDto> mapProducts(List<OrderedProduct> products) {
         return products.stream()
                 .map(this::mapProduct)
                 .collect(Collectors.toList());
     }
 
+    @VisibleForTesting
     ProductDto mapProduct(OrderedProduct orderedProduct) {
         Product product = orderedProduct.getProduct();
         Store store = product.getStore();
