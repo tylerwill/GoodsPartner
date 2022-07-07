@@ -26,7 +26,6 @@ class StoreMapperTest {
         storeProjection = new StoreProjection(1, "Склад №1", 1, 5, 50.5);
     }
 
-
     @Test
     @DisplayName("Get StoreDto from StoreProjection")
     void test_givenStoreProjection_whenGetStoreDto_thenReturnStoreDto() {

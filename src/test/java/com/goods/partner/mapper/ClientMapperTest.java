@@ -48,7 +48,6 @@ class ClientMapperTest {
         when(client.getAddresses()).thenReturn(List.of(mockAddress));
     }
 
-
     @Test
     @DisplayName("Mapping Order to AddressDto")
     void test_givenOrder_whenMapAddressOrder_thenReturnAddressOrderDto() {
@@ -58,7 +57,6 @@ class ClientMapperTest {
         assertEquals(1, addressOrderDto.getOrderNumber());
         assertEquals(52.5, addressOrderDto.getOrderTotalWeight(), 0.001);
     }
-
 
     @Test
     @DisplayName("Mapping Order list to AddressDto list")
@@ -72,7 +70,6 @@ class ClientMapperTest {
         verify(spyClientMapper, times(3)).mapAddressOrder(any(Order.class));
     }
 
-
     @Test
     @DisplayName("Mapping Address to AddressDto")
     void test_givenAddress_whenMapAddress_thenReturnAddressDto() {
@@ -82,7 +79,6 @@ class ClientMapperTest {
         assertEquals(1, addressDto.getOrders().size());
         assertEquals(52.5, addressDto.getAddressTotalWeight(), 0.001);
     }
-
 
     @Test
     @DisplayName("Mapping List Address list to AddressDto")
@@ -95,7 +91,6 @@ class ClientMapperTest {
         verify(spyClientMapper).mapAddresses(anyList());
         verify(spyClientMapper, times(3)).mapAddress(any(Address.class));
     }
-
 
     @Test
     @DisplayName("Mapping Client to ClientDto")
@@ -112,7 +107,6 @@ class ClientMapperTest {
         assertEquals("м. Київ, вул. Хрещатик, 1", addresses.get(0).getAddress());
         assertEquals(52.5, addresses.get(0).getAddressTotalWeight(), 0.001);
     }
-
 
     @Test
     @DisplayName("Mapping Client list to ClientDto list")

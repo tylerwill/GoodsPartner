@@ -59,7 +59,6 @@ class OrderMapperTest {
         when(mockOrder.getAddress()).thenReturn(mockAddress);
     }
 
-
     @Test
     @DisplayName("Mapping OrderedProduct to ProductDto")
     void test_givenOrderedProduct_whenMapProduct_thenReturnProductDto() {
@@ -68,7 +67,6 @@ class OrderMapperTest {
         assertEquals(5, productDto.getAmount());
         assertEquals("Склад №1", productDto.getStoreName());
     }
-
 
     @Test
     @DisplayName("Mapping OrderedProduct list to ProductDto list")
@@ -82,7 +80,6 @@ class OrderMapperTest {
         verify(spyOrderMapper, times(3)).mapProduct(any(OrderedProduct.class));
 
     }
-
 
     @Test
     @DisplayName("Mapping Order to OrderDto")
@@ -103,7 +100,6 @@ class OrderMapperTest {
         verify(spyOrderMapper).mapProduct(mockOrderedProduct);
 
     }
-
 
     @Test
     @DisplayName("Mapping Order list to OrderDto list checking method calls")
