@@ -30,37 +30,28 @@ class StoreMapperTest {
     @Test
     @DisplayName("Get StoreDto from StoreProjection")
     void test_givenStoreProjection_whenGetStoreDto_thenReturnStoreDto() {
-
         StoreDto storeDto = storeMapper.getStoreDto(storeProjection);
-
         assertEquals(1, storeDto.getStoreId());
         assertEquals("Склад №1", storeDto.getStoreName());
-
     }
 
     @Test
     @DisplayName("Get StoreDtoList from StoreProjection List")
     void test_givenStoreProjectionList_whenGetStoreDto_thenReturnStoreDtoList() {
-
         List<StoreDto> storeDtoList = storeMapper.mapStoreGroup(List.of(storeProjection));
-
         assertEquals(1, storeDtoList.size());
 
         StoreDto storeDto = storeDtoList.get(0);
-
         assertEquals(1, storeProjection.getStoreId());
         assertEquals("Склад №1", storeProjection.getStoreName());
-
 
         List<StoreOrderDto> orders = storeDto.getOrders();
         assertEquals(1, orders.size());
 
         StoreOrderDto storeOrderDto = orders.get(0);
-
         assertEquals(1, storeOrderDto.getOrderId());
         assertEquals(5, storeOrderDto.getOrderNumber());
         assertEquals(50.5, storeOrderDto.getTotalOrderWeight(), 0.001);
-
     }
 
     @Test
@@ -75,6 +66,5 @@ class StoreMapperTest {
         verify(spyStoreMapper).mapStoreGroup(anyList());
         verify(spyStoreMapper, times(2)).getStoreDto(any(StoreProjection.class));
     }
-
 
 }

@@ -30,31 +30,25 @@ class OrderMapperTest {
         Store mockStore = mock(Store.class);
         when(mockStore.getName()).thenReturn("Склад №1");
 
-
         Product mockProduct = mock(Product.class);
         when(mockProduct.getName()).thenReturn("3434 Паста шоколадна");
         when(mockProduct.getStore()).thenReturn(mockStore);
-
 
         mockOrderedProduct = mock(OrderedProduct.class);
         when(mockOrderedProduct.getProduct()).thenReturn(mockProduct);
         when(mockOrderedProduct.getCount()).thenReturn(5);
 
-
         Manager mockManager = mock(Manager.class);
         when(mockManager.getFirstName()).thenReturn("Петро");
         when(mockManager.getLastName()).thenReturn("Коваленко");
-
 
         Client mockClient = mock(Client.class);
         when(mockClient.getId()).thenReturn(1);
         when(mockClient.getName()).thenReturn("ТОВ \"Хлібзавод\"");
 
-
         Address mockAddress = mock(Address.class);
         when(mockAddress.getAddress()).thenReturn("м. Київ, вул. Хрещатик, 1");
         when(mockAddress.getClient()).thenReturn(mockClient);
-
 
         mockOrder = mock(Order.class);
         when(mockOrder.getId()).thenReturn(1);
@@ -69,9 +63,7 @@ class OrderMapperTest {
     @Test
     @DisplayName("Mapping OrderedProduct to ProductDto")
     void test_givenOrderedProduct_whenMapProduct_thenReturnProductDto() {
-
         ProductDto productDto = orderMapper.mapProduct(mockOrderedProduct);
-
         assertEquals("3434 Паста шоколадна", productDto.getProductName());
         assertEquals(5, productDto.getAmount());
         assertEquals("Склад №1", productDto.getStoreName());
@@ -82,12 +74,10 @@ class OrderMapperTest {
     @DisplayName("Mapping OrderedProduct list to ProductDto list")
     void test_givenOrderedProductList_whenMapProducts_thenReturnProductDtoList() {
         OrderMapper spyOrderMapper = spy(orderMapper);
-
         List<ProductDto> productDtoList = spyOrderMapper
                 .mapProducts(List.of(mockOrderedProduct, mockOrderedProduct, mockOrderedProduct));
 
         assertEquals(3, productDtoList.size());
-
         verify(spyOrderMapper).mapProducts(anyList());
         verify(spyOrderMapper, times(3)).mapProduct(any(OrderedProduct.class));
 
@@ -98,24 +88,16 @@ class OrderMapperTest {
     @DisplayName("Mapping Order to OrderDto")
     void test_givenOrder_whenMapOrder_thenReturnOrderDto() {
         OrderMapper spyOrderMapper = spy(orderMapper);
-
-
         OrderDto orderDto = spyOrderMapper.mapOrder(mockOrder);
+        OrderData orderData = orderDto.getOrderData();
+        List<ProductDto> products = orderData.getProducts();
 
         assertEquals(1, orderDto.getOrderId());
         assertEquals(1, orderDto.getOrderNumber());
         assertEquals(LocalDate.of(2022, 6, 28), orderDto.getCreatedDate());
-
-
-        OrderData orderData = orderDto.getOrderData();
-
         assertEquals("ТОВ \"Хлібзавод\"", orderData.getClientName());
         assertEquals("м. Київ, вул. Хрещатик, 1", orderData.getAddress());
         assertEquals("Петро Коваленко", orderData.getManagerFullName());
-
-
-        List<ProductDto> products = orderData.getProducts();
-
         assertEquals(1, products.size());
         verify(spyOrderMapper).mapProducts(anyList());
         verify(spyOrderMapper).mapProduct(mockOrderedProduct);
@@ -126,14 +108,11 @@ class OrderMapperTest {
     @Test
     @DisplayName("Mapping Order list to OrderDto list checking method calls")
     void test_givenOrderList_whenMapOrder_thenReturnOrderDtoListVerify() {
-
         OrderMapper spyOrderMapper = spy(orderMapper);
-
         List<OrderDto> orderDtoList = spyOrderMapper
                 .mapOrders(List.of(mockOrder, mockOrder, mockOrder));
 
         assertEquals(3, orderDtoList.size());
-
         verify(spyOrderMapper).mapOrders(anyList());
         verify(spyOrderMapper, times(3)).mapProduct(mockOrderedProduct);
         verify(spyOrderMapper, times(3)).mapProducts(anyList());
