@@ -1,9 +1,6 @@
 package com.goods.partner.service.impl;
 
-import com.goods.partner.dto.CalculationDto;
-import com.goods.partner.dto.ClientDto;
-import com.goods.partner.dto.OrderDto;
-import com.goods.partner.dto.StoreDto;
+import com.goods.partner.dto.*;
 import com.goods.partner.entity.Client;
 import com.goods.partner.entity.Order;
 import com.goods.partner.entity.projection.StoreProjection;
@@ -34,24 +31,44 @@ public class OrderServiceImpl implements OrderService {
     private final ClientMapper clientMapper;
     private final StoreMapper storeMapper;
 
+    @Override
     @Transactional
-    public CalculationDto calculate(LocalDate date) {
+    public CalculationOrdersDto calculateOrders(LocalDate date) {
 
         List<Order> ordersByDate = orderRepository.findAllByShippingDateEquals(date);
         List<OrderDto> orderDtos = orderMapper.mapOrders(ordersByDate);
 
+        CalculationOrdersDto calculationOrdersDto = new CalculationOrdersDto();
+        calculationOrdersDto.setDate(date);
+        calculationOrdersDto.setOrders(orderDtos);
+        return calculationOrdersDto;
+    }
+
+    @Override
+    @Transactional
+    public CalculationAddressesDto calculateAddresses(LocalDate date) {
+
         List<Client> clients = clientRepository.findClientsByOrderDate(date);
         List<ClientDto> clientDtos = clientMapper.mapClients(clients);
+
+        CalculationAddressesDto calculationAddressesDto = new CalculationAddressesDto();
+        calculationAddressesDto.setDate(date);
+        calculationAddressesDto.setClients(clientDtos);
+
+        return calculationAddressesDto;
+    }
+
+    @Override
+    @Transactional
+    public CalculationStoresDto calculateStores(LocalDate date) {
 
         List<StoreProjection> storeProjections = storeRepository.groupStoresByOrders(date);
         List<StoreDto> storeDtos = storeMapper.mapStoreGroup(storeProjections);
 
-        CalculationDto calculationDto = new CalculationDto();
-        calculationDto.setDate(date);
-        calculationDto.setOrders(orderDtos);
-        calculationDto.setClients(clientDtos);
-        calculationDto.setStores(storeDtos);
-        return calculationDto;
-    }
+        CalculationStoresDto calculationStoresDto = new CalculationStoresDto();
+        calculationStoresDto.setDate(date);
+        calculationStoresDto.setStores(storeDtos);
 
+        return calculationStoresDto;
+    }
 }
