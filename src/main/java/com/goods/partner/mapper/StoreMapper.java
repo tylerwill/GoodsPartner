@@ -3,6 +3,7 @@ package com.goods.partner.mapper;
 import com.goods.partner.dto.StoreDto;
 import com.goods.partner.dto.StoreOrderDto;
 import com.goods.partner.entity.projection.StoreProjection;
+import com.google.common.annotations.VisibleForTesting;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -30,7 +31,8 @@ public class StoreMapper {
         return new ArrayList<>(storeMap.values());
     }
 
-    private StoreDto getStoreDto(StoreProjection storeProjection) {
+    @VisibleForTesting
+    StoreDto getStoreDto(StoreProjection storeProjection) {
         StoreDto storeDto = new StoreDto();
         storeDto.setStoreId(storeProjection.getStoreId());
         storeDto.setStoreName(storeProjection.getStoreName());
