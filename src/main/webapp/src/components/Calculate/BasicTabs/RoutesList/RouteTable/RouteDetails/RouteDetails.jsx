@@ -5,7 +5,6 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableRow from '@mui/material/TableRow';
 import {TableCell} from "@mui/material";
-import {NavLink} from "react-router-dom";
 
 const RouteDetails = (
     {

@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import {Button, Card, CardContent, Stack, Typography} from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import OrdersTable from "../OrdersList/OrdersTable/OrdersTable";
 import RouteTable from "./RouteTable/RouteTable";
 
 const RoutesList = ({date, routes}) => {
@@ -39,7 +38,8 @@ const RoutesList = ({date, routes}) => {
                             <Typography variant="h6" component="h1">
 
                               <Stack>
-                                {routes.map(route => route.routeId === activeRoute ? <RouteTable date={date} route={route}/> : '')}
+                                {routes.map(route => route.routeId === activeRoute ?
+                                    <RouteTable date={date} route={route}/> : '')}
                               </Stack>
 
                             </Typography>

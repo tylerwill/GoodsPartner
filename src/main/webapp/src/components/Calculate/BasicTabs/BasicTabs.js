@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import OrdersList from "./OrdersList/OrdersList";
 import StoreTable from "./StoreTable/StoreTable";
-import RouteTable from "./RoutesList/RouteTable/RouteTable";
 import RoutesList from "./RoutesList/RoutesList";
 
 function TabPanel(props) {
@@ -65,10 +64,10 @@ export default function BasicTabs({orders, routes, stores}) {
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
-         <RoutesList
-             date={routes.date}
-             routes={routes.routes}
-         />
+          <RoutesList
+              date={routes.date}
+              routes={routes.routes}
+          />
         </TabPanel>
         <TabPanel value={value} index={2}>
           <StoreTable

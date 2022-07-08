@@ -18,7 +18,6 @@ const Calculate = ({orders, routes, stores, getCalculatedDataByDate}) => {
               </Grid>
               <Grid item xs={10}>
                 <BasicTabs
-                    // date={date}
                     orders={orders}
                     routes={routes}
                     stores={stores}
