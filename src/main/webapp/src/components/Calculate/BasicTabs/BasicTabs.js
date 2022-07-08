@@ -42,7 +42,7 @@ function a11yProps(index) {
   };
 }
 
-export default function BasicTabs({date, orders, routes, stores}) {
+export default function BasicTabs({orders, routes, stores}) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -60,20 +60,20 @@ export default function BasicTabs({date, orders, routes, stores}) {
         </Box>
         <TabPanel value={value} index={0}>
           <OrdersList
-              date={date}
-              orders={orders}
+              date={orders.date}
+              orders={orders.orders}
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
          <RoutesList
-             date={date}
-             routes={routes}
+             date={routes.date}
+             routes={routes.routes}
          />
         </TabPanel>
         <TabPanel value={value} index={2}>
           <StoreTable
-              date={date}
-              stores={stores}
+              date={stores.date}
+              stores={stores.stores}
           />
         </TabPanel>
       </Box>

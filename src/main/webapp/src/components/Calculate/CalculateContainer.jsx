@@ -12,10 +12,10 @@ class CalculateContainer extends React.Component {
 
   render() {
     return <Calculate
-        date={this.props.calculatedData.date}
-        orders={this.props.calculatedData.orders}
-        routes={this.props.calculatedData.routes}
-        stores={this.props.calculatedData.stores}
+        // date={this.props.calculatedData.date}
+        orders={this.props.orderData}
+        routes={this.props.routeData}
+        stores={this.props.storeData}
         getCalculatedDataByDate={this.getCalculatedDataByDate}
     />
   }
@@ -23,7 +23,10 @@ class CalculateContainer extends React.Component {
 
 let mapStateToProps = (state) => {
   return {
-    calculatedData: state.calculation
+    // calculatedData: state.calculation
+    orderData: state.orders,
+    routeData: state.routes,
+    storeData: state.stores
   }
 }
 
