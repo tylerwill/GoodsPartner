@@ -6,7 +6,8 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import OrdersList from "./OrdersList/OrdersList";
 import StoreTable from "./StoreTable/StoreTable";
-import AddressesTable from "./AddressesTable/AddressesTable";
+import RouteTable from "./RoutesList/RouteTable/RouteTable";
+import RoutesList from "./RoutesList/RoutesList";
 
 function TabPanel(props) {
   const {children, value, index, ...other} = props;
@@ -41,7 +42,7 @@ function a11yProps(index) {
   };
 }
 
-export default function BasicTabs({date, orders, clients, stores}) {
+export default function BasicTabs({date, orders, routes, stores}) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -64,9 +65,9 @@ export default function BasicTabs({date, orders, clients, stores}) {
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
-         <AddressesTable
+         <RoutesList
              date={date}
-             clients={clients}
+             routes={routes}
          />
         </TabPanel>
         <TabPanel value={value} index={2}>

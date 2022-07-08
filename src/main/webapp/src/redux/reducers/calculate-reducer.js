@@ -21,18 +21,35 @@ let initialCalculate = {
       }
     }
   ],
-  clients: [
+  routes: [
     {
-      clientId: null,
-      clientName: "",
-      addresses: [
+      routeId: null,
+      status: "",
+      totalWeight: null,
+      totalPoints: null,
+      totalOrders: null,
+      distance: null,
+      estimatedTime: "",
+      startTime: "",
+      finishTime: "",
+      spentTime: "",
+      routeLink: "",
+      storeName: "",
+      storeAddress: "",
+      clients: [
         {
-          address: "",
-          addressTotalWeight: null,
-          orders: [
+          clientId: null,
+          clientName: "",
+          addresses: [
             {
-              orderId: null,
-              orderNumber: null
+              address: "",
+              addressTotalWeight: null,
+              orders: [
+                {
+                  orderId: null,
+                  orderNumber: null
+                }
+              ]
             }
           ]
         }
@@ -60,7 +77,7 @@ const calculateReducer = (state = initialCalculate, action) => {
       return {
         date: action.calculatedDataByDate.date,
         orders: action.calculatedDataByDate.orders,
-        clients: action.calculatedDataByDate.clients,
+        routes: action.calculatedDataByDate.routes,
         stores: action.calculatedDataByDate.stores
       }
     default:

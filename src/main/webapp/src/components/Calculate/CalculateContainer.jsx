@@ -14,7 +14,7 @@ class CalculateContainer extends React.Component {
     return <Calculate
         date={this.props.calculatedData.date}
         orders={this.props.calculatedData.orders}
-        clients={this.props.calculatedData.clients}
+        routes={this.props.calculatedData.routes}
         stores={this.props.calculatedData.stores}
         getCalculatedDataByDate={this.getCalculatedDataByDate}
     />
