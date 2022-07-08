@@ -2,6 +2,7 @@ package com.goods.partner.web.controller;
 
 import com.goods.partner.dto.CalculationAddressesDto;
 import com.goods.partner.dto.CalculationOrdersDto;
+import com.goods.partner.dto.CalculationRoutesDto;
 import com.goods.partner.dto.CalculationStoresDto;
 import com.goods.partner.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,9 @@ public class OrderController {
         return orderService.calculateOrders(LocalDate.parse(date));
     }
 
-    @GetMapping("/addresses")
-    public CalculationAddressesDto calculateAddresses(@RequestParam String date) {
-        return orderService.calculateAddresses(LocalDate.parse(date));
+    @GetMapping("/routes")
+    public CalculationRoutesDto calculateRoutes(@RequestParam String date) {
+        return orderService.calculateRoutes(LocalDate.parse(date));
     }
 
     @GetMapping("/stores")
