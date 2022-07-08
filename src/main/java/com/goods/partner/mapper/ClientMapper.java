@@ -6,12 +6,10 @@ import com.goods.partner.dto.ClientDto;
 import com.goods.partner.entity.Address;
 import com.goods.partner.entity.Client;
 import com.goods.partner.entity.Order;
+import com.google.common.annotations.VisibleForTesting;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,7 +22,8 @@ public class ClientMapper {
                 .collect(Collectors.toList());
     }
 
-    private ClientDto mapClient(Client client) {
+    @VisibleForTesting
+    ClientDto mapClient(Client client) {
         ClientDto clientDto = new ClientDto();
         clientDto.setClientId(client.getId());
         clientDto.setClientName(client.getName());
@@ -32,13 +31,15 @@ public class ClientMapper {
         return clientDto;
     }
 
-    private List<AddressDto> mapAddresses(List<Address> addresses) {
+    @VisibleForTesting
+    List<AddressDto> mapAddresses(List<Address> addresses) {
         return addresses.stream()
                 .map(address -> mapAddress(address))
                 .collect(Collectors.toList());
     }
 
-    private AddressDto mapAddress(Address address) {
+    @VisibleForTesting
+    AddressDto mapAddress(Address address) {
 
         List<Order> orders = address.getOrders();
         List<AddressOrderDto> addressOrders = mapOrdersToAddress(orders);
@@ -57,13 +58,15 @@ public class ClientMapper {
 
     }
 
-    private List<AddressOrderDto> mapOrdersToAddress(List<Order> orders) {
+    @VisibleForTesting
+    List<AddressOrderDto> mapOrdersToAddress(List<Order> orders) {
         return orders.stream()
                 .map(this::mapAddressOrder)
                 .collect(Collectors.toList());
     }
 
-    private AddressOrderDto mapAddressOrder(Order order) {
+    @VisibleForTesting
+    AddressOrderDto mapAddressOrder(Order order) {
         double sum = order.getOrderedProducts()
                 .stream()
                 .map(orderedProduct -> orderedProduct.getCount() * orderedProduct.getProduct().getKg()) // TODO NPE not safe
