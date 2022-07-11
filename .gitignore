@@ -47,6 +47,7 @@ data
 
 # production
 **/build
+application-dev.properties
 
 # misc
 .DS_Store
