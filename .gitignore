@@ -47,7 +47,7 @@ data
 
 # production
 **/build
-
+flyway.conf
 # misc
 .DS_Store
 .env.local
