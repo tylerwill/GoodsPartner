@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+
 class OrderControllerTest {
 
     @Container
@@ -46,13 +47,8 @@ class OrderControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void contextLoads() {
-    }
-
-    @Test
-    //@DataSet({"clients.yml","addresses.yml"})
-    @DataSet("addresses.yml")
-    //@DataSet("clients.yml")
+    @DataSet(value = "addresses.yml",
+    disableConstraints = true)
     void calculateOrders() throws Exception {
         mockMvc.perform(get("/calculate/orders?date=2022-07-10")
                         .contentType(MediaType.APPLICATION_JSON)
