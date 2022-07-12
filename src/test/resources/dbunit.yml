@@ -1,0 +1,8 @@
+cacheConnection: false
+leakHunter: true
+properties:
+  caseSensitiveTableNames: false
+  caseInsensitiveStrategy: UPPERCASE
+  batchSize: 10000
+  fetchSize: 10000
+  schema: public
