@@ -3,7 +3,7 @@ CREATE TABLE "clients"(
     "name" VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE addresses(
+CREATE TABLE "addresses"(
     "id" INTEGER PRIMARY KEY,
     "address" VARCHAR(255) NOT NULL,
     "client_id" INTEGER NOT NULL
