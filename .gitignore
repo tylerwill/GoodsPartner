@@ -47,6 +47,9 @@ data
 
 # production
 **/build
+
+flyway.conf
+
 application-dev.properties
 
 # misc
