@@ -47,7 +47,10 @@ data
 
 # production
 **/build
-**/application-dev.properties
+
+flyway.conf
+
+application-dev.properties
 
 # misc
 .DS_Store

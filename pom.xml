@@ -21,6 +21,7 @@
         <frontend.maven.plugin.version>1.12.1</frontend.maven.plugin.version>
         <node.version>v16.15.1</node.version>
         <npm.version>8.11.0</npm.version>
+        <testcontainers.version>1.17.3</testcontainers.version>
     </properties>
 
     <dependencies>
@@ -54,8 +55,41 @@
         </dependency>
 
         <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.database-rider</groupId>
+            <artifactId>rider-spring</artifactId>
+            <version>1.32.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -118,6 +152,18 @@
                         <include>src/main/webapp/build</include>
                     </includes>
                     <jdkVersion>17</jdkVersion>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <configuration>
+                    <configFiles>
+                        <configFile>flyway.conf</configFile>
+                    </configFiles>
+                    <locations>
+                        <location>classpath:db/migration</location>
+                    </locations>
                 </configuration>
             </plugin>
         </plugins>
