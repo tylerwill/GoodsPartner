@@ -1,9 +1,6 @@
 package com.goods.partner.service.impl;
 
-import com.goods.partner.dto.CalculationDto;
-import com.goods.partner.dto.ClientDto;
-import com.goods.partner.dto.OrderDto;
-import com.goods.partner.dto.StoreDto;
+import com.goods.partner.dto.*;
 import com.goods.partner.entity.Client;
 import com.goods.partner.entity.Order;
 import com.goods.partner.entity.projection.StoreProjection;
@@ -20,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -34,24 +32,97 @@ public class OrderServiceImpl implements OrderService {
     private final ClientMapper clientMapper;
     private final StoreMapper storeMapper;
 
+    @Override
     @Transactional
-    public CalculationDto calculate(LocalDate date) {
+    public CalculationOrdersDto calculateOrders(LocalDate date) {
 
         List<Order> ordersByDate = orderRepository.findAllByShippingDateEquals(date);
         List<OrderDto> orderDtos = orderMapper.mapOrders(ordersByDate);
 
+        CalculationOrdersDto calculationOrdersDto = new CalculationOrdersDto();
+        calculationOrdersDto.setDate(date);
+        calculationOrdersDto.setOrders(orderDtos);
+        return calculationOrdersDto;
+    }
+
+    @Override
+    @Transactional
+    public CalculationRoutesDto calculateRoutes(LocalDate date) {
+
         List<Client> clients = clientRepository.findClientsByOrderDate(date);
         List<ClientDto> clientDtos = clientMapper.mapClients(clients);
+
+        //TODO replace this mock DTOs after changes 'routes' table added into DB
+        RouteDto routeDtoFirst = RouteDto.builder()
+                .routeId(1)
+                .status("new")
+                .totalWeight(100)
+                .totalPoints(5)
+                .totalOrders(10)
+                .distance(50)
+                .estimatedTime(LocalDateTime.MAX)
+                .startTime(LocalDateTime.MAX)
+                .finishTime(LocalDateTime.MIN)
+                .spentTime(LocalDateTime.MIN)
+                .routeLink("http//")
+                .storeName("storeName1")
+                .storeAddress("Київ")
+                .clients(clientDtos)
+                .build();
+
+        RouteDto routeDtoSecond = RouteDto.builder()
+                .routeId(2)
+                .status("in progress")
+                .totalWeight(200)
+                .totalPoints(5)
+                .totalOrders(10)
+                .distance(50)
+                .estimatedTime(LocalDateTime.MAX)
+                .startTime(LocalDateTime.MAX)
+                .finishTime(LocalDateTime.MIN)
+                .spentTime(LocalDateTime.MIN)
+                .routeLink("http//")
+                .storeName("storeName2")
+                .storeAddress("Фастів")
+                .clients(clientDtos)
+                .build();
+
+        RouteDto routeDtoThird = RouteDto.builder()
+                .routeId(3)
+                .status("finished")
+                .totalWeight(300)
+                .totalPoints(5)
+                .totalOrders(10)
+                .distance(50)
+                .estimatedTime(LocalDateTime.MAX)
+                .startTime(LocalDateTime.MAX)
+                .finishTime(LocalDateTime.MIN)
+                .spentTime(LocalDateTime.MIN)
+                .routeLink("http//")
+                .storeName("storeName3")
+                .storeAddress("Одеса")
+                .clients(clientDtos)
+                .build();
+
+        List<RouteDto> routeDtos = List.of(routeDtoFirst, routeDtoSecond, routeDtoThird);
+        CalculationRoutesDto calculationRoutesDto = new CalculationRoutesDto();
+        calculationRoutesDto.setDate(date);
+        calculationRoutesDto.setRoutes(routeDtos);
+
+        return calculationRoutesDto;
+    }
+
+    @Override
+    @Transactional
+    public CalculationStoresDto calculateStores(LocalDate date) {
 
         List<StoreProjection> storeProjections = storeRepository.groupStoresByOrders(date);
         List<StoreDto> storeDtos = storeMapper.mapStoreGroup(storeProjections);
 
-        CalculationDto calculationDto = new CalculationDto();
-        calculationDto.setDate(date);
-        calculationDto.setOrders(orderDtos);
-        calculationDto.setClients(clientDtos);
-        calculationDto.setStores(storeDtos);
-        return calculationDto;
-    }
+        CalculationStoresDto calculationStoresDto = new CalculationStoresDto();
+        calculationStoresDto.setDate(date);
+        calculationStoresDto.setStores(storeDtos);
 
+        return calculationStoresDto;
+    }
 }
