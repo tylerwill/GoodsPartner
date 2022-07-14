@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-class OrderControllerTest {
+class OrdersEndpointIntegrationTest {
 
     @Container
     private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:alpine")
