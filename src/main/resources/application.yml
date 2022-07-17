@@ -1,12 +1,12 @@
-spring:
-    profiles:
-        active: dev
-    mvc:
-        view:
-            prefix: /build/
-    datasource:
-        driver-class-name: org.postgresql.Driver
-    jpa:
-        database-platform: org.hibernate.dialect.PostgreSQLDialect
 server:
-    port: ${PORT:8080}
+  port: ${PORT:8080}
+spring:
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mvc:
+    view:
+      prefix: /build/
