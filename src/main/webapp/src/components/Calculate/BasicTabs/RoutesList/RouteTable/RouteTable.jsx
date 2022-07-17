@@ -2,7 +2,12 @@ import * as React from 'react';
 import RouteDetails from "./RouteDetails/RouteDetails";
 import RouteBody from "./RouteBody/RouteBody";
 
-const RouteTable = ({date, route}) => {
+const RouteTable = (
+  {
+    date,
+    route,
+    routeAddresses
+  }) => {
   return (<>
         <RouteDetails
             routeId={route.routeId}
@@ -19,9 +24,10 @@ const RouteTable = ({date, route}) => {
             date={date}
             storeName={route.storeName}
             storeAddress={route.storeAddress}
+            routeAddresses={routeAddresses}
         />
         <RouteBody
-            clients={route.clients}
+            routePoints={route.routePoints}
             storeName={route.storeName}
             storeAddress={route.storeAddress}
         />

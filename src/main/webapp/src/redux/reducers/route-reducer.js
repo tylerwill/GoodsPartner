@@ -14,23 +14,19 @@ let initialRoutes = {
       startTime: "",
       finishTime: "",
       spentTime: "",
-      routeLink: "",
+      routeLink: "", //maybe unnecessary
       storeName: "",
       storeAddress: "",
-      clients: [
+      routePoints: [
         {
           clientId: null,
           clientName: "",
-          addresses: [
+          address: "",
+          addressTotalWeight: null,
+          orders: [
             {
-              address: "",
-              addressTotalWeight: null,
-              orders: [
-                {
-                  orderId: null,
-                  orderNumber: null
-                }
-              ]
+              orderId: null,
+              orderNumber: null
             }
           ]
         }

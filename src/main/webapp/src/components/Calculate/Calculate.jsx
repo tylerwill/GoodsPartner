@@ -5,7 +5,7 @@ import DateChooserCard from "./DateChooserCard/DateChooserCard";
 import BasicTabs from "./BasicTabs/BasicTabs";
 import React from "react";
 
-const Calculate = ({orders, routes, stores, getCalculatedDataByDate}) => {
+const Calculate = ({orders, routes, stores, getCalculatedDataByDate, routeAddresses}) => {
   return (
       <div className="App">
         <Container>
@@ -21,6 +21,7 @@ const Calculate = ({orders, routes, stores, getCalculatedDataByDate}) => {
                     orders={orders}
                     routes={routes}
                     stores={stores}
+                    routeAddresses={routeAddresses}
                 />
               </Grid>
             </Grid>

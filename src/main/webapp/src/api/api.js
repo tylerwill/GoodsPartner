@@ -61,85 +61,48 @@ let mockedOrders = {
 }
 let mockedRoutes = {
   data: {
-    date: "2022-05-24",
+    date: "2022-05-25",
     routes: [
       {
         routeId: 12,
-        status: "done",
-        totalWeight: 444,
-        totalPoints: 10,
-        totalOrders: 15,
-        distance: 230,
+        status: "in progress",
+        totalWeight: 568,
+        totalPoints: 3,
+        totalOrders: 3,
+        distance: 157,
         estimatedTime: "7:35:40",
         startTime: "9:24:15",
-        finishTime: "16:24:15",
-        spentTime: "7:00:00",
+        finishTime: "",
+        spentTime: "",
         routeLink: "https://osm.ua/build-route-12",
         storeName: "main store",
-        storeAddress: "м. Фастів, вул. Закопай орка, 1",
-        clients: [
+        storeAddress: "м. Фастів, вул. Кільцева, 40",
+        routePoints: [
           {
             clientId: 234,
             clientName: "Novus",
-            addresses: [
+            address: "м. Київ, пр. Правди, 47",
+            addressTotalWeight: 44,
+            orders: [
               {
-                address: "м. Київ, вул. Межигірська, 5Б",
-                addressTotalWeight: 244,
-                orders: [
-                  {
-                    orderId: 103,
-                    orderNumber: 12335,
-                    orderTotalWeight: 44
-                  },
-                  {
-                    orderId: 205,
-                    orderNumber: 15654,
-                    orderTotalWeight: 200
-                  }
-                ]
-              },
-              {
-                address: "м. Київ, вул. Хрещатик, 10",
-                addressTotalWeight: 589,
-                orders: [
-                  {
-                    orderId: 255,
-                    orderNumber: 153325,
-                    orderTotalWeight: 44
-                  },
-                  {
-                    orderId: 289,
-                    orderNumber: 2053455,
-                    orderTotalWeight: 44
-                  },
-                  {
-                    orderId: 278,
-                    orderNumber: 17688,
-                    orderTotalWeight: 424
-                  }
-                ]
+                orderId: 103,
+                orderNumber: 12335
               }
             ]
           },
           {
-            clientId: 432,
-            clientName: "FOP Pupkin",
-            addresses: [
+            clientId: 567,
+            clientName: "Silpo",
+            address: "вул. Йорданська, 17А, Київ",
+            addressTotalWeight: 1097,
+            orders: [
               {
-                address: "м. Київ, вул. Межигірська, 5Б",
-                addressTotalWeight: 244,
-                orders: [
-                  {
-                    orderId: 103,
-                    orderNumber: 12335,
-                    orderTotalWeight: 554
-                  },
-                  {
-                    orderId: 205,
-                    orderNumber: 15654,
-                    orderTotalWeight: 5768
-                  }
-                ]
+                orderId: 105,
+                orderNumber: 35545
+              },
+              {
+                orderId: 106,
+                orderNumber: 35555
               }
             ]
           }
@@ -149,8 +112,8 @@ let mockedRoutes = {
         routeId: 13,
         status: "in progress",
         totalWeight: 568,
-        totalPoints: 15,
-        totalOrders: 20,
+        totalPoints: 3,
+        totalOrders: 3,
         distance: 157,
         estimatedTime: "7:35:40",
         startTime: "9:24:15",
@@ -158,70 +121,33 @@ let mockedRoutes = {
         spentTime: "",
         routeLink: "https://osm.ua/build-route-12",
         storeName: "main store",
-        storeAddress: "м. Фастів, вул. Закопай орка, 1",
-        clients: [
+        storeAddress: "м. Фастів, вул. Київська, 2",
+        routePoints: [
           {
             clientId: 234,
             clientName: "Novus",
-            addresses: [
+            address: "вул. Колекторна, 3а, Київ",
+            addressTotalWeight: 44,
+            orders: [
               {
-                address: "м. Київ, вул. Межигірська, 5Б",
-                addressTotalWeight: 244,
-                orders: [
-                  {
-                    orderId: 103,
-                    orderNumber: 12335,
-                    orderTotalWeight: 44
-                  },
-                  {
-                    orderId: 205,
-                    orderNumber: 15654,
-                    orderTotalWeight: 200
-                  }
-                ]
-              },
-              {
-                address: "м. Київ, вул. Хрещатик, 10",
-                addressTotalWeight: 589,
-                orders: [
-                  {
-                    orderId: 255,
-                    orderNumber: 153325,
-                    orderTotalWeight: 44
-                  },
-                  {
-                    orderId: 289,
-                    orderNumber: 2053455,
-                    orderTotalWeight: 44
-                  },
-                  {
-                    orderId: 278,
-                    orderNumber: 17688,
-                    orderTotalWeight: 424
-                  }
-                ]
+                orderId: 103,
+                orderNumber: 12335
               }
             ]
           },
           {
-            clientId: 432,
-            clientName: "FOP Pupkin",
-            addresses: [
+            clientId: 567,
+            clientName: "Silpo",
+            address: "вул. Автопаркова, 7, Київ",
+            addressTotalWeight: 1097,
+            orders: [
               {
-                address: "м. Київ, вул. Межигірська, 5Б",
-                addressTotalWeight: 244,
-                orders: [
-                  {
-                    orderId: 103,
-                    orderNumber: 12335,
-                    orderTotalWeight: 554
-                  },
-                  {
-                    orderId: 205,
-                    orderNumber: 15654,
-                    orderTotalWeight: 5768
-                  }
-                ]
+                orderId: 105,
+                orderNumber: 35545
+              },
+              {
+                orderId: 106,
+                orderNumber: 35555
               }
             ]
           }
@@ -230,6 +156,177 @@ let mockedRoutes = {
     ]
   }
 }
+// let mockedRoutes = {
+//   data: {
+//     date: "2022-05-24",
+//     routes: [
+//       {
+//         routeId: 12,
+//         status: "done",
+//         totalWeight: 444,
+//         totalPoints: 10,
+//         totalOrders: 15,
+//         distance: 230,
+//         estimatedTime: "7:35:40",
+//         startTime: "9:24:15",
+//         finishTime: "16:24:15",
+//         spentTime: "7:00:00",
+//         routeLink: "https://osm.ua/build-route-12",
+//         storeName: "main store",
+//         storeAddress: "м. Фастів, вул. Закопай орка, 1",
+//         clients: [
+//           {
+//             clientId: 234,
+//             clientName: "Novus",
+//             addresses: [
+//               {
+//                 address: "м. Київ, вул. Межигірська, 5Б",
+//                 addressTotalWeight: 244,
+//                 orders: [
+//                   {
+//                     orderId: 103,
+//                     orderNumber: 12335,
+//                     orderTotalWeight: 44
+//                   },
+//                   {
+//                     orderId: 205,
+//                     orderNumber: 15654,
+//                     orderTotalWeight: 200
+//                   }
+//                 ]
+//               },
+//               {
+//                 address: "м. Київ, вул. Хрещатик, 10",
+//                 addressTotalWeight: 589,
+//                 orders: [
+//                   {
+//                     orderId: 255,
+//                     orderNumber: 153325,
+//                     orderTotalWeight: 44
+//                   },
+//                   {
+//                     orderId: 289,
+//                     orderNumber: 2053455,
+//                     orderTotalWeight: 44
+//                   },
+//                   {
+//                     orderId: 278,
+//                     orderNumber: 17688,
+//                     orderTotalWeight: 424
+//                   }
+//                 ]
+//               }
+//             ]
+//           },
+//           {
+//             clientId: 432,
+//             clientName: "FOP Pupkin",
+//             addresses: [
+//               {
+//                 address: "м. Київ, вул. Межигірська, 5Б",
+//                 addressTotalWeight: 244,
+//                 orders: [
+//                   {
+//                     orderId: 103,
+//                     orderNumber: 12335,
+//                     orderTotalWeight: 554
+//                   },
+//                   {
+//                     orderId: 205,
+//                     orderNumber: 15654,
+//                     orderTotalWeight: 5768
+//                   }
+//                 ]
+//               }
+//             ]
+//           }
+//         ]
+//       },
+//       {
+//         routeId: 13,
+//         status: "in progress",
+//         totalWeight: 568,
+//         totalPoints: 15,
+//         totalOrders: 20,
+//         distance: 157,
+//         estimatedTime: "7:35:40",
+//         startTime: "9:24:15",
+//         finishTime: "",
+//         spentTime: "",
+//         routeLink: "https://osm.ua/build-route-12",
+//         storeName: "main store",
+//         storeAddress: "м. Фастів, вул. Закопай орка, 1",
+//         clients: [
+//           {
+//             clientId: 234,
+//             clientName: "Novus",
+//             addresses: [
+//               {
+//                 address: "м. Київ, вул. Межигірська, 5Б",
+//                 addressTotalWeight: 244,
+//                 orders: [
+//                   {
+//                     orderId: 103,
+//                     orderNumber: 12335,
+//                     orderTotalWeight: 44
+//                   },
+//                   {
+//                     orderId: 205,
+//                     orderNumber: 15654,
+//                     orderTotalWeight: 200
+//                   }
+//                 ]
+//               },
+//               {
+//                 address: "м. Київ, вул. Хрещатик, 10",
+//                 addressTotalWeight: 589,
+//                 orders: [
+//                   {
+//                     orderId: 255,
+//                     orderNumber: 153325,
+//                     orderTotalWeight: 44
+//                   },
+//                   {
+//                     orderId: 289,
+//                     orderNumber: 2053455,
+//                     orderTotalWeight: 44
+//                   },
+//                   {
+//                     orderId: 278,
+//                     orderNumber: 17688,
+//                     orderTotalWeight: 424
+//                   }
+//                 ]
+//               }
+//             ]
+//           },
+//           {
+//             clientId: 432,
+//             clientName: "FOP Pupkin",
+//             addresses: [
+//               {
+//                 address: "м. Київ, вул. Межигірська, 5Б",
+//                 addressTotalWeight: 244,
+//                 orders: [
+//                   {
+//                     orderId: 103,
+//                     orderNumber: 12335,
+//                     orderTotalWeight: 554
+//                   },
+//                   {
+//                     orderId: 205,
+//                     orderNumber: 15654,
+//                     orderTotalWeight: 5768
+//                   }
+//                 ]
+//               }
+//             ]
+//           }
+//         ]
+//       }
+//     ]
+//   }
+// }
 let mockedStores = {
   data: {
     date: "2022-05-24",

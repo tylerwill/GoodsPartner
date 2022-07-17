@@ -41,7 +41,7 @@ function a11yProps(index) {
   };
 }
 
-export default function BasicTabs({orders, routes, stores}) {
+export default function BasicTabs({orders, routes, stores, routeAddresses}) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -67,6 +67,7 @@ export default function BasicTabs({orders, routes, stores}) {
           <RoutesList
               date={routes.date}
               routes={routes.routes}
+              routeAddresses={routeAddresses}
           />
         </TabPanel>
         <TabPanel value={value} index={2}>
