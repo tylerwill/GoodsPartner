@@ -23,7 +23,7 @@ class StoreMapperTest {
     @BeforeAll
     void setup() {
         storeMapper = new StoreMapper();
-        storeProjection = new StoreProjection(1, "Склад №1", 1, 5, 50.5);
+        storeProjection = new StoreProjection(1, "Склад №1", "Фастів, вул. Широка, 15",1, 5, 50.5);
     }
 
     @Test
@@ -56,7 +56,7 @@ class StoreMapperTest {
     @Test
     @DisplayName("Get StoreDtoList from StoreProjection List checking method calls")
     void test_givenStoreProjectionList_whenGetStoreDto_thenReturnStoreDtoListVerify() {
-        StoreProjection anotherStoreProjection = new StoreProjection(2, "Склад №2", 1, 5, 50.5);
+        StoreProjection anotherStoreProjection = new StoreProjection(2, "Склад №2", "Фастів, вул. Широка, 15",1, 5, 50.5);
         StoreMapper spyStoreMapper = spy(storeMapper);
         List<StoreDto> storeDtoList = spyStoreMapper
                 .mapStoreGroup(List.of(storeProjection, anotherStoreProjection));

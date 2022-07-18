@@ -7,6 +7,7 @@ public class StoreDto {
 
     private int storeId;
     private String storeName;
+    private String storeAddress;
     private final List<StoreOrderDto> orders = new ArrayList<>();
 
     public void setStoreId(int storeId) {
@@ -31,5 +32,13 @@ public class StoreDto {
 
     public void addStoreOrderDto(StoreOrderDto storeOrderDto){
         orders.add(storeOrderDto);
+    }
+
+    public String getStoreAddress() {
+        return storeAddress;
+    }
+
+    public void setStoreAddress(String storeAddress) {
+        this.storeAddress = storeAddress;
     }
 }

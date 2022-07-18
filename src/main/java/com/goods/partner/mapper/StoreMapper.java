@@ -36,6 +36,8 @@ public class StoreMapper {
         StoreDto storeDto = new StoreDto();
         storeDto.setStoreId(storeProjection.getStoreId());
         storeDto.setStoreName(storeProjection.getStoreName());
+        storeDto.setStoreAddress(storeProjection.getStoreAddress());
+
         return storeDto;
     }
 

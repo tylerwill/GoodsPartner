@@ -11,6 +11,7 @@ import com.goods.partner.repository.ClientRepository;
 import com.goods.partner.repository.OrderRepository;
 import com.goods.partner.repository.StoreRepository;
 import com.goods.partner.service.OrderService;
+import com.goods.partner.service.RouteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,10 +27,9 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final ClientRepository clientRepository;
     private final StoreRepository storeRepository;
+    private final RouteService routeService;
     private final OrderMapper orderMapper;
-    private final ClientMapper clientMapper;
     private final StoreMapper storeMapper;
 
     @Override
@@ -49,65 +49,15 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public CalculationRoutesDto calculateRoutes(LocalDate date) {
 
-        List<Client> clients = clientRepository.findClientsByOrderDate(date);
-        List<ClientDto> clientDtos = clientMapper.mapClients(clients);
+        List<Order> orders = orderRepository.findAllByShippingDateEquals(date);
+        List<StoreProjection> storeProjections = storeRepository.groupStoresByOrders(date);
+        List<StoreDto> stores = storeMapper.mapStoreGroup(storeProjections);
 
-        //TODO replace this mock DTOs after changes 'routes' table added into DB
-        RouteDto routeDtoFirst = RouteDto.builder()
-                .routeId(1)
-                .status("new")
-                .totalWeight(100)
-                .totalPoints(5)
-                .totalOrders(10)
-                .distance(50)
-                .estimatedTime(LocalDateTime.MAX)
-                .startTime(LocalDateTime.MAX)
-                .finishTime(LocalDateTime.MIN)
-                .spentTime(LocalDateTime.MIN)
-                .routeLink("http//")
-                .storeName("storeName1")
-                .storeAddress("Київ")
-                .clients(clientDtos)
-                .build();
+        List<RouteDto> routes = routeService.calculateRoutes(orders, stores);
 
-        RouteDto routeDtoSecond = RouteDto.builder()
-                .routeId(2)
-                .status("in progress")
-                .totalWeight(200)
-                .totalPoints(5)
-                .totalOrders(10)
-                .distance(50)
-                .estimatedTime(LocalDateTime.MAX)
-                .startTime(LocalDateTime.MAX)
-                .finishTime(LocalDateTime.MIN)
-                .spentTime(LocalDateTime.MIN)
-                .routeLink("http//")
-                .storeName("storeName2")
-                .storeAddress("Фастів")
-                .clients(clientDtos)
-                .build();
-
-        RouteDto routeDtoThird = RouteDto.builder()
-                .routeId(3)
-                .status("finished")
-                .totalWeight(300)
-                .totalPoints(5)
-                .totalOrders(10)
-                .distance(50)
-                .estimatedTime(LocalDateTime.MAX)
-                .startTime(LocalDateTime.MAX)
-                .finishTime(LocalDateTime.MIN)
-                .spentTime(LocalDateTime.MIN)
-                .routeLink("http//")
-                .storeName("storeName3")
-                .storeAddress("Одеса")
-                .clients(clientDtos)
-                .build();
-
-        List<RouteDto> routeDtos = List.of(routeDtoFirst, routeDtoSecond, routeDtoThird);
         CalculationRoutesDto calculationRoutesDto = new CalculationRoutesDto();
         calculationRoutesDto.setDate(date);
-        calculationRoutesDto.setRoutes(routeDtos);
+        calculationRoutesDto.setRoutes(routes);
 
         return calculationRoutesDto;
     }
