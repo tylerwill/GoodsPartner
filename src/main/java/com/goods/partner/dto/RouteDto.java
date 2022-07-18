@@ -25,6 +25,5 @@ public class RouteDto {
     private String routeLink;
     private String storeName;
     private String storeAddress;
-
-    private List<ClientDto> clients;
+    private List<RoutePointDto> routePoints;
 }
