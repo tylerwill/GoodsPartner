@@ -1,5 +1,6 @@
 package com.goods.partner.dto;
 
+import com.google.maps.model.DirectionsRoute;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -26,4 +27,5 @@ public class RouteDto {
     private String storeName;
     private String storeAddress;
     private List<RoutePointDto> routePoints;
+    private DirectionsRoute googleRoute;
 }

@@ -57,6 +57,7 @@ public class RouteServiceImpl implements RouteService {
                 .storeName(store.getStoreName())
                 .storeAddress(store.getStoreAddress())
                 .routePoints(routePoints)
+                .googleRoute(route)
                 .build();
     }
 
