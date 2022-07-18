@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,22 +44,20 @@ public class RouteServiceImpl implements RouteService {
         List<RoutePointDto> routePoints = routePointMapper.mapOrders(orders);
         DirectionsRoute route = getDirectionRoute(store.getStoreAddress(), routePoints);
         routePoints = getSortedRoutePoints(route.waypointOrder, routePoints);
-
-        long totalDistance = Arrays.stream(route.legs).toList().stream()
-                .collect(Collectors.summarizingLong(leg -> leg.distance.inMeters)).getSum();
-        long totalTime = Arrays.stream(route.legs).toList().stream()
-                .collect(Collectors.summarizingLong(leg -> leg.duration.inSeconds)).getSum();
+        double totalDistance = getRouteTotalDistance(route);
+        long totalTime = getRouteTotalTime(route);
 
         return RouteDto.builder()
-                .status("new")
+                .routeId(store.getStoreId())
+                .status("NEW")
                 .totalWeight(getRouteOrdersTotalWeight(routePoints))
                 .totalPoints(route.waypointOrder.length)
                 .totalOrders(orders.size())
-                .distance(totalDistance / 1000d)
+                .distance(totalDistance)
+                .estimatedTime(LocalTime.ofSecondOfDay(totalTime))
                 .storeName(store.getStoreName())
                 .storeAddress(store.getStoreAddress())
                 .routePoints(routePoints)
-                .googleRoute(route)
                 .build();
     }
 
@@ -94,5 +94,15 @@ public class RouteServiceImpl implements RouteService {
         return routePoints.stream()
                 .map(RoutePointDto::getAddressTotalWeight)
                 .collect(Collectors.summarizingDouble(amount -> amount)).getSum();
+    }
+
+    private double getRouteTotalDistance(DirectionsRoute route) {
+        return Arrays.stream(route.legs).toList().stream()
+                .collect(Collectors.summarizingLong(leg -> leg.distance.inMeters)).getSum() / 1000d;
+    }
+
+    private long getRouteTotalTime(DirectionsRoute route) {
+        return Arrays.stream(route.legs).toList().stream()
+                .collect(Collectors.summarizingLong(leg -> leg.duration.inSeconds)).getSum();
     }
 }

@@ -1,9 +1,10 @@
 package com.goods.partner.dto;
 
-import com.google.maps.model.DirectionsRoute;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -19,13 +20,13 @@ public class RouteDto {
     private int totalPoints;
     private int totalOrders;
     private double distance;
-    private LocalDateTime estimatedTime;
+    private LocalTime estimatedTime;
+    @JsonFormat(pattern = "HH:mm:ss")
     private LocalDateTime startTime;
+    @JsonFormat(pattern = "HH:mm:ss")
     private LocalDateTime finishTime;
-    private LocalDateTime spentTime;
-    private String routeLink;
+    private LocalTime spentTime;
     private String storeName;
     private String storeAddress;
     private List<RoutePointDto> routePoints;
-    private DirectionsRoute googleRoute;
 }
