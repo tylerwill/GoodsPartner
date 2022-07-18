@@ -76,7 +76,13 @@ const RouteDetails = (
                         Route #{routeId}
                       </Typography>
                       <Typography id="modal-modal-description">
-                        <RouteMap route={routeAddresses.filter(routeAdd => routeAdd.routeId === routeId)}/>
+                        <RouteMap
+                          addresses={
+                            routeAddresses
+                              .filter(routeAdd => routeAdd.routeId === routeId)
+                              .map(route => route.addresses)
+                          }
+                        />
                       </Typography>
                     </Box>
                   </Modal>
