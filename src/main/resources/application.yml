@@ -10,3 +10,6 @@ spring:
   mvc:
     view:
       prefix: /build/
+google:
+  api:
+    key: ${GOOGLE_API_KEY}

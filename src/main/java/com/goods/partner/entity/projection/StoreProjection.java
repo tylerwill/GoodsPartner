@@ -4,13 +4,15 @@ public class StoreProjection {
 
     private int storeId;
     private String storeName;
+    private String storeAddress;
     private int orderId;
     private int orderNumber;
     private double totalOrderWeight;
 
-    public StoreProjection(int storeId, String storeName, int orderId, int orderNumber, double totalOrderWeight) {
+    public StoreProjection(int storeId, String storeName, String storeAddress, int orderId, int orderNumber, double totalOrderWeight) {
         this.storeId = storeId;
         this.storeName = storeName;
+        this.storeAddress = storeAddress;
         this.orderId = orderId;
         this.orderNumber = orderNumber;
         this.totalOrderWeight = totalOrderWeight;
@@ -34,5 +36,9 @@ public class StoreProjection {
 
     public double getTotalOrderWeight() {
         return totalOrderWeight;
+    }
+
+    public String getStoreAddress() {
+        return storeAddress;
     }
 }
