@@ -58,7 +58,7 @@ public class RoutesEndpointTest {
                 .estimatedTime(LocalTime.of(1, 00))
                 .startTime(LocalDateTime.of(2022, 07, 12, 11, 00))
                 .finishTime(LocalDateTime.of(2022, 07, 12, 12, 00))
-                .spentTime(null)
+                .spentTime(LocalTime.of(1, 00))
                 .storeName("Склад №1")
                 .storeAddress("Фастів, вул. Широка, 15")
                 .routePoints(List.of(routePointDto))
@@ -92,7 +92,7 @@ public class RoutesEndpointTest {
                                       "estimatedTime": "01:00:00",
                                       "startTime": "11:00:00",
                                       "finishTime": "12:00:00",
-                                      "spentTime": null,
+                                      "spentTime": "01:00:00",
                                       "storeName": "Склад №1",
                                       "storeAddress": "Фастів, вул. Широка, 15",
                                       "routePoints": [
