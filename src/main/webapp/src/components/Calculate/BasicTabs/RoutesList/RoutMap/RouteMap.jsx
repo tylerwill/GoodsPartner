@@ -33,15 +33,14 @@ async function getLatLng(address) {
 
 const RouteMap = ({addresses}) => {
 
-  const center = {
-    lat: 50.449217392381776,
-    lng: 30.450244577069448
-  }
   const [map, setMap] = useState(/** @type google.maps.Map*/null);
   const [directionsResponse, setDirectionsResponse] = useState(null)
   const [distance, setDistance] = useState(null)
   const [duration, setDuration] = useState("")
-  const [marker, setMarker] = useState(center)
+  const [marker, setMarker] = useState({
+    lat: 50.449217392381776,
+    lng: 30.450244577069448
+  })
 
   async function calculateRoute(inputAddresses) {
     let addresses = structuredClone(inputAddresses);
@@ -99,7 +98,7 @@ const RouteMap = ({addresses}) => {
       }
       onLoad={(map) => setMap(map)}
     >
-      <Marker position={center}/>
+      <Marker position={marker}/>
       {
         directionsResponse && <DirectionsRenderer directions={directionsResponse}/>
       }
