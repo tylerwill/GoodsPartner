@@ -271,24 +271,24 @@ let mockedStores = {
 
 export const orderApi = {
   getOrdersByDateRequest(ordersDate) {
-    // return axiosWithSetting.get(`calculate/orders?date=` + ordersDate);
-    mockedOrders.data.date = ordersDate;
-    return mockedOrders;
+    return axiosWithSetting.get(`calculate/orders?date=` + ordersDate);
+    // mockedOrders.data.date = ordersDate;
+    // return mockedOrders;
   }
 }
 
 export const routeApi = {
   getRoutesByDateRequest(routesDate) {
-    // return axiosWithSetting.get(`calculate/routes?date=` + routesDate);
-    mockedRoutes.data.date = routesDate;
-    return mockedRoutes;
+    return axiosWithSetting.get(`calculate/routes?date=` + routesDate);
+    // mockedRoutes.data.date = routesDate;
+    // return mockedRoutes;
   }
 }
 
 export const storeApi = {
   getStoresByDateRequest(storesDate) {
-    // return axiosWithSetting.get(`calculate/stores?date=` + storesDate);
-    mockedStores.data.date = storesDate;
-    return mockedStores;
+    return axiosWithSetting.get(`calculate/stores?date=` + storesDate);
+    // mockedStores.data.date = storesDate;
+    // return mockedStores;
   }
 }
