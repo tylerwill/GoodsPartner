@@ -14,10 +14,8 @@ import com.goods.partner.service.OrderService;
 import com.goods.partner.service.RouteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,8 +26,6 @@ import java.util.List;
 @Slf4j
 public class OrderServiceImpl implements OrderService {
 
-    @Autowired
-    DataSource dataSource;
     private final OrderRepository orderRepository;
     private final StoreRepository storeRepository;
     private final RouteService routeService;
