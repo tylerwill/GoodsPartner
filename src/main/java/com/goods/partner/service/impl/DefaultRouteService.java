@@ -19,16 +19,16 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class RouteServiceImpl implements RouteService {
+public class DefaultRouteService implements RouteService {
 
     @Value("${google.api.key}")
     private String GOOGLE_API_KEY;
@@ -48,6 +48,7 @@ public class RouteServiceImpl implements RouteService {
         routePoints = getSortedRoutePoints(route.waypointOrder, routePoints);
         double totalDistance = getRouteTotalDistance(route);
         long totalTime = getRouteTotalTime(route);
+        addRoutPointDistantTime(routePoints, route);
 
         return RouteDto.builder()
                 .routeId(store.getStoreId())
@@ -108,5 +109,15 @@ public class RouteServiceImpl implements RouteService {
     private long getRouteTotalTime(DirectionsRoute route) {
         return Arrays.stream(route.legs).toList().stream()
                 .collect(Collectors.summarizingLong(leg -> leg.duration.inSeconds)).getSum();
+    }
+
+    private void addRoutPointDistantTime(List<RoutePointDto> routePoints, DirectionsRoute route) {
+        AtomicInteger index = new AtomicInteger();
+        Arrays.stream(route.waypointOrder)
+                .mapToObj(i -> routePoints.get(i))
+                .forEach(p -> {
+                    long inSeconds = route.legs[index.getAndIncrement()].duration.inSeconds;
+                    p.setRoutPointDistantTime(LocalTime.ofSecondOfDay(inSeconds));
+                });
     }
 }
