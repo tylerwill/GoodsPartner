@@ -23,7 +23,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -95,14 +94,14 @@ public class DefaultRouteService implements RouteService {
 
     private double getRouteOrdersTotalWeight(List<RoutePointDto> routePoints) {
         return BigDecimal.valueOf(routePoints.stream()
-                .map(RoutePointDto::getAddressTotalWeight)
-                .collect(Collectors.summarizingDouble(amount -> amount)).getSum())
+                        .map(RoutePointDto::getAddressTotalWeight)
+                        .collect(Collectors.summarizingDouble(amount -> amount)).getSum())
                 .setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     private double getRouteTotalDistance(DirectionsRoute route) {
         return BigDecimal.valueOf(Arrays.stream(route.legs).toList().stream()
-                .collect(Collectors.summarizingLong(leg -> leg.distance.inMeters)).getSum() / 1000d)
+                        .collect(Collectors.summarizingLong(leg -> leg.distance.inMeters)).getSum() / 1000d)
                 .setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
@@ -111,13 +110,11 @@ public class DefaultRouteService implements RouteService {
                 .collect(Collectors.summarizingLong(leg -> leg.duration.inSeconds)).getSum();
     }
 
-    private void addRoutPointDistantTime(List<RoutePointDto> routePoints, DirectionsRoute route) {
-        AtomicInteger index = new AtomicInteger();
-        Arrays.stream(route.waypointOrder)
-                .mapToObj(i -> routePoints.get(i))
-                .forEach(p -> {
-                    long inSeconds = route.legs[index.getAndIncrement()].duration.inSeconds;
-                    p.setRoutPointDistantTime(LocalTime.ofSecondOfDay(inSeconds));
-                });
+    void addRoutPointDistantTime(List<RoutePointDto> routePoints, DirectionsRoute route) {
+        //TODO: Rework on stream
+        for (int i = 0; i < routePoints.size(); i++) {
+            long duration = route.legs[i].duration.inSeconds;
+            routePoints.get(i).setRoutPointDistantTime(LocalTime.ofSecondOfDay(duration));
+        }
     }
 }

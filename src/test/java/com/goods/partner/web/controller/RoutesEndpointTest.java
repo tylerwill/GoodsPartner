@@ -45,6 +45,7 @@ public class RoutesEndpointTest {
                 .clientName("ТОВ Кондитерська")
                 .address("м. Київ, вул. Хрещатик, 1")
                 .addressTotalWeight(59.32)
+                .routPointDistantTime(LocalTime.of(1,0,0))
                 .orders(List.of(addressOrderDto))
                 .build();
 
@@ -101,6 +102,7 @@ public class RoutesEndpointTest {
                                           "clientName": "ТОВ Кондитерська",
                                           "address": "м. Київ, вул. Хрещатик, 1",
                                           "addressTotalWeight": 59.32,
+                                          "routPointDistantTime": "01:00:00",
                                           "orders": [
                                             {
                                               "orderId": 6,
