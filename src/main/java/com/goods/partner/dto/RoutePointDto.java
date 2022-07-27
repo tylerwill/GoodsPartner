@@ -3,7 +3,7 @@ package com.goods.partner.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
-import java.time.LocalTime;
+import java.time.Duration;
 import java.util.List;
 
 @Getter
@@ -16,7 +16,7 @@ public class RoutePointDto {
     private String clientName;
     private String address;
     private double addressTotalWeight;
-    private LocalTime routPointDistantTime;
+    private Duration routePointDistantTime;
 
     @JsonIgnoreProperties(value = {"orderTotalWeight"})
     private List<AddressOrderDto> orders;

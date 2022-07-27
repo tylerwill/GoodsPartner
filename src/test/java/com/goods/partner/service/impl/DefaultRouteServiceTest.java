@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +40,7 @@ class DefaultRouteServiceTest {
     public void testAddDurationTORoutingPointDto() {
         routeService.addRoutPointDistantTime(routePoints, route);
         for (int i = 0; i < routePoints.size(); i++) {
-            assertEquals(LocalTime.ofSecondOfDay(600 + i * 300L), routePoints.get(i).getRoutPointDistantTime());
+            assertEquals(java.time.Duration.ofSeconds(600 + i * 300L), routePoints.get(i).getRoutePointDistantTime());
         }
     }
 }
