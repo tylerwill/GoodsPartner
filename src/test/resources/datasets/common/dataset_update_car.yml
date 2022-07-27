@@ -5,7 +5,7 @@ CARS:
     DRIVER: "Oleg Dudka"
     WEIGHT_CAPACITY: 3000
     COOLER: "false"
-    STATUS: "enable"
+    STATUS: "disable"
 
   - ID: 2
     NAME: "MAN"

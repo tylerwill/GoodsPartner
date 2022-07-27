@@ -18,7 +18,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Transactional
-    public void createCar(Car car) {
+    public void addCar(Car car) {
         carRepository.save(car);
     }
 
@@ -32,7 +32,7 @@ public class CarServiceImpl implements CarService {
     @Transactional
     public Car updateCarStatus(int id, String status) {
         Car car = carRepository.findById(id).get();
-        car.setStatus(car.getStatus());
+        car.setStatus(status);
         return carRepository.save(car);
     }
 }

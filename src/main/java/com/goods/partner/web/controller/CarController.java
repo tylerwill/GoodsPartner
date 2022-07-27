@@ -13,7 +13,7 @@ public class CarController {
 
     @PostMapping("/add")
     public void createCar(@RequestBody Car car) {
-        carService.createCar(car);
+        carService.addCar(car);
     }
 
     @DeleteMapping("/delete/{id}")

@@ -1,21 +1,18 @@
 package com.goods.partner.web.controller;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goods.partner.AbstractBaseITest;
-import com.goods.partner.entity.Car;
-import com.goods.partner.service.CarService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,73 +22,78 @@ public class CarEndpointITest extends AbstractBaseITest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private CarService carService;
-
     @Test
-    @DataSet(value = "common/dataset_cars.yml",
-            disableConstraints = true)
-    @DisplayName("when Add Car then Correct Json Returned")
-    void whenAddCar_thenCorrectJsonReturned() throws Exception {
+    @DataSet(value = "common/dataset_cars.yml")
+    @ExpectedDataSet(value = "common/dataset_add_car.yml")
+    @DisplayName("when Add Car then Ok Status Returned")
+    void whenAddCar_thenOkStatusReturned() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/cars/add")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"name":"Mercedes Sprinter",
-                                "licence_plate":"AA 1111 CT",
-                                "driver":"Oleg Dudka",
-                                "weight_capacity":"3000",
-                                "cooler":"false",
-                                "status":"enable"
+                                {"id":"3",
+                                "name":"DAF",
+                                "licence_plate":"AA 4567 CT",
+                                "driver":"Roman Levchenko",
+                                "weight_capacity":"5000",
+                                "cooler":"true",
+                                "status":"disable"
                                 }"""))
                 .andExpect(status().isOk());
-
-        verify(carService).createCar(any(Car.class));
     }
 
     @Test
-    @DataSet(value = "common/dataset_cars.yml",
-            disableConstraints = true)
-    @DisplayName("when Delete Car then Empty Json Returned")
-    void whenDeleteCar_thenEmptyJsonReturned() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/cars/delete/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-        verify(carService).removeCar(1);
-    }
-
-    @Test
-    @DataSet(value = "common/dataset_cars.yml",
-            disableConstraints = true)
-    @DisplayName("when Update Car Status then Correct Json Returned")
-    void whenUpdateCarStatus_thenCorrectJsonReturned() throws Exception {
-
+    @DataSet(value = "common/dataset_cars.yml", transactional = true)
+    @ExpectedDataSet(value = "common/dataset_update_car.yml")
+    @DisplayName("when Update Car Status then Ok Status Returned")
+    void whenUpdateCarStatus_thenOkStatusReturned() throws Exception {
         mockMvc.perform(put("/cars/update/1")
-                        .param("status", "enable")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"id":"1",
-                                "name":"Mercedes Sprinter",
-                                "licence_plate":"AA 1111 CT",
-                                "driver":"Oleg Dudka",
-                                "weight_capacity":"2000",
-                                "cooler":"false",
-                                "status":"enable"
-                                }"""))
+                        .param("status", "disable")
+                        .contentType(MediaType.APPLICATION_JSON))
 
                 .andExpect(status().isOk());
-        verify(carService).updateCarStatus((1), "enable");
     }
 
     @Test
-    @DataSet(value = "common/dataset_cars.yml",
-            disableConstraints = true)
+    @DataSet(value = "common/dataset_cars.yml")
     @DisplayName("when Delete Car With Incorrect Id then Bad Request Return")
     void whenDeleteCar_withIncorrectId_thenBadRequestReturn() throws Exception {
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/cars/delete/incorrectId")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DataSet(value = "common/dataset_cars.yml")
+    @ExpectedDataSet(value = "common/dataset_delete_cars.yml")
+    @DisplayName("when Delete Car then Ok Status Returned")
+    void whenDeleteCar_thenOkStatusReturned() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/cars/delete/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DataSet("common/dataset_cars.yml")
+    @ExpectedDataSet("common/dataset_cars.yml")
+    @DisplayName("given Not Existing Id when Delete By Id then Exception Thrown")
+    void givenNotExistingId_whenDeleteById_thenExceptionThrown() {
+        assertThrows(Exception.class, () ->
+                mockMvc.perform(MockMvcRequestBuilders.delete("/cars/delete/5")
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk()));
+    }
+
+    @Test
+    @DataSet(value = "common/dataset_cars.yml", transactional = true)
+    @ExpectedDataSet(value = "common/dataset_cars.yml")
+    @DisplayName("given Not Existing Id when Update Car Status By Id then Exception Thrown")
+    void givenNotExistingId_whenUpdateCarStatusById_thenExceptionThrown() {
+        assertThrows(Exception.class, () ->
+                mockMvc.perform(put("/cars/update/5")
+                                .param("status", "disable")
+                                .contentType(MediaType.APPLICATION_JSON))
+
+                        .andExpect(status().isOk()));
     }
 }
