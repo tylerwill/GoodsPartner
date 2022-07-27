@@ -22,37 +22,34 @@ public class DefaultOrderServiceITest extends AbstractBaseITest {
     private DefaultOrderService orderService;
 
     @Test
-    @DataSet(value = "common/dataset.yml",
-            disableConstraints = true)
+    @DataSet("common/dataset.yml")
     @DisplayName("Check queries quantity correct after calculate orders")
     void validateQueriesAfterCalculateOrders() {
         SQLStatementCountValidator.reset();
 
-        orderService.calculateOrders(LocalDate.of(2022, 07, 12));
+        orderService.calculateOrders(LocalDate.of(2022, 7, 12));
 
         assertSelectCount(5);
     }
 
     @Test
-    @DataSet(value = "common/dataset.yml",
-            disableConstraints = true)
+    @DataSet("common/dataset.yml")
     @DisplayName("Check queries quantity correct after calculate stores")
     void validateQueriesAfterCalculateStores() {
         SQLStatementCountValidator.reset();
 
-        orderService.calculateStores(LocalDate.of(2022, 07, 12));
+        orderService.calculateStores(LocalDate.of(2022, 7, 12));
 
         assertSelectCount(1);
     }
 
     @Test
-    @DataSet(value = "common/dataset.yml",
-            disableConstraints = true)
+    @DataSet(value = "common/dataset.yml")
     @DisplayName("Check queries quantity correct after calculate routes")
     void validateQueriesAfterCalculateRoutes() {
         SQLStatementCountValidator.reset();
 
-        orderService.calculateRoutes(LocalDate.of(2022, 07, 12));
+        orderService.calculateRoutes(LocalDate.of(2022, 7, 12));
 
         assertSelectCount(5);
     }
