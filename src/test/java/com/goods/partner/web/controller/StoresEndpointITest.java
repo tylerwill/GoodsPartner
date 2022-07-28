@@ -22,8 +22,7 @@ public class StoresEndpointITest extends AbstractBaseITest {
     private MockMvc mockMvc;
 
     @Test
-    @DataSet(value = "common/dataset.yml",
-            disableConstraints = true)
+    @DataSet("common/dataset.yml")
     @DisplayName("Check Json returned after calculate stores")
     void givenStores_whenCalculateStores_thenJsonReturned() throws Exception {
 
@@ -36,15 +35,27 @@ public class StoresEndpointITest extends AbstractBaseITest {
                 .andExpect(content()
                         .json(
                                 """
-                                        {\"date\":\"2022-07-12\",\"stores\":
-                                        [{\"storeId\":1,\"storeName\":\"Склад №1\",\"orders\":
-                                        [{\"orderId\":6,\"orderNumber\":356325,\"totalOrderWeight\":59.32}]}]}
+                                        {
+                                          "date": "2022-07-12",
+                                          "stores": [
+                                            {
+                                              "storeId": 1,
+                                              "storeName": "Склад №1",
+                                              "orders": [
+                                                {
+                                                  "orderId": 6,
+                                                  "orderNumber": 356325,
+                                                  "totalOrderWeight": 59.32
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
                                         """));
     }
 
     @Test
-    @DataSet(value = "common/dataset.yml",
-            disableConstraints = true)
+    @DataSet("common/dataset.yml")
     @DisplayName("Check empty Json returned after calculate stores")
     void givenNoStoresForSpecifiedDate_whenCalculateStores_thenJsonWithEmptyStoresFieldReturned() throws Exception {
 
@@ -55,6 +66,11 @@ public class StoresEndpointITest extends AbstractBaseITest {
 
                 .andExpect(status().isOk())
                 .andExpect(content()
-                        .json("{\"date\":\"2002-07-12\",\"stores\":[]}"));
+                        .json("""
+                                {
+                                  "date": "2002-07-12",
+                                  "stores": []
+                                }
+                                """));
     }
 }
