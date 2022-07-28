@@ -23,7 +23,7 @@ public class CarController {
     }
 
     @PutMapping("/update/{id}")
-    public Car update(@PathVariable int id, @RequestParam String status) {
+    public Car updateCarStatus(@PathVariable int id, @RequestParam String status) {
         return carService.updateCarStatus(id, CarStatus.getCarStatus(status));
     }
 }

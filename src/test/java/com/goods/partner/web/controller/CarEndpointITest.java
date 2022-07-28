@@ -37,7 +37,7 @@ public class CarEndpointITest extends AbstractBaseITest {
                                 "driver":"Roman Levchenko",
                                 "weight_capacity":"5000",
                                 "cooler":"true",
-                                "car_status":"disable"
+                                "status":"DISABLE"
                                 }"""))
                 .andExpect(status().isOk());
     }
@@ -48,7 +48,7 @@ public class CarEndpointITest extends AbstractBaseITest {
     @DisplayName("when Update Car Status then Ok Status Returned")
     void whenUpdateCarStatus_thenOkStatusReturned() throws Exception {
         mockMvc.perform(put("/cars/update/1")
-                        .param("status", "disable")
+                        .param("status", "DISABLE")
                         .contentType(MediaType.APPLICATION_JSON))
 
                 .andExpect(status().isOk());

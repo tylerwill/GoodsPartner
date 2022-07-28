@@ -8,21 +8,12 @@ import java.util.Arrays;
 public enum CarStatus {
     ENABLE,
     DISABLE;
-    private String carStatusName;
 
-    CarStatus(String carStatusName) {
-        this.carStatusName = carStatusName;
-    }
-
-    public String getCarStatusName() {
-        return carStatusName;
-    }
-
-    public static CarStatus getCarStatus(String carStatusName) {
+    public static CarStatus getCarStatus(String name) {
 
         return Arrays.stream(CarStatus.values())
-                .filter(carStatus -> carStatus.carStatusName.equalsIgnoreCase(carStatusName))
+                .filter(carStatus -> carStatus.name().equalsIgnoreCase(name))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("CarStatus name " + carStatusName + " is not correct!"));
+                .orElseThrow(() -> new IllegalArgumentException("CarStatus name " + name + " is not correct!"));
     }
 }

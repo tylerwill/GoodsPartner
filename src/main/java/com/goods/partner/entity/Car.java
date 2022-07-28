@@ -20,7 +20,6 @@ public class Car {
     private int weight_capacity;
     private boolean cooler;
 
-    @Column(name = "car_status")
     @Enumerated(EnumType.STRING)
     private CarStatus status;
 }

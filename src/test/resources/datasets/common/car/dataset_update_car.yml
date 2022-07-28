@@ -5,7 +5,7 @@ CARS:
     DRIVER: "Oleg Dudka"
     WEIGHT_CAPACITY: 3000
     COOLER: "false"
-    CAR_STATUS: "disable"
+    STATUS: "DISABLE"
 
   - ID: 2
     NAME: "MAN"
@@ -13,4 +13,4 @@ CARS:
     DRIVER: "Ivan Kornienko"
     WEIGHT_CAPACITY: 4000
     COOLER: "true"
-    CAR_STATUS: "disable"
+    STATUS: "DISABLE"
