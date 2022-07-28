@@ -5,7 +5,7 @@ CARS:
     DRIVER: "Oleg Dudka"
     WEIGHT_CAPACITY: 3000
     COOLER: "false"
-    STATUS: "disable"
+    CAR_STATUS: "enable"
 
   - ID: 2
     NAME: "MAN"
@@ -13,4 +13,12 @@ CARS:
     DRIVER: "Ivan Kornienko"
     WEIGHT_CAPACITY: 4000
     COOLER: "true"
-    STATUS: "disable"
+    CAR_STATUS: "disable"
+
+  - ID: 3
+    NAME: "DAF"
+    LICENCE_PLATE: "AA 4567 CT"
+    DRIVER: "Roman Levchenko"
+    WEIGHT_CAPACITY: 5000
+    COOLER: "true"
+    CAR_STATUS: "disable"

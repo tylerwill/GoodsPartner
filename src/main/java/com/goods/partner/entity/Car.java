@@ -2,9 +2,7 @@ package com.goods.partner.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @NoArgsConstructor
 @Getter
@@ -21,5 +19,8 @@ public class Car {
     private String driver;
     private int weight_capacity;
     private boolean cooler;
-    private String status;
+
+    @Column(name = "car_status")
+    @Enumerated(EnumType.STRING)
+    private CarStatus status;
 }

@@ -5,4 +5,4 @@ CARS:
     DRIVER: "Ivan Kornienko"
     WEIGHT_CAPACITY: 4000
     COOLER: "true"
-    STATUS: "disable"
+    CAR_STATUS: "disable"

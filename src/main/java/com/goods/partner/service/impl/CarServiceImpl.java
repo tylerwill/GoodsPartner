@@ -1,6 +1,7 @@
 package com.goods.partner.service.impl;
 
 import com.goods.partner.entity.Car;
+import com.goods.partner.entity.CarStatus;
 import com.goods.partner.repository.CarRepository;
 import com.goods.partner.service.CarService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Transactional
-    public Car updateCarStatus(int id, String status) {
+    public Car updateCarStatus(int id, CarStatus status) {
         Car car = carRepository.findById(id).get();
         car.setStatus(status);
         return carRepository.save(car);

@@ -23,8 +23,8 @@ public class CarEndpointITest extends AbstractBaseITest {
     private MockMvc mockMvc;
 
     @Test
-    @DataSet(value = "common/dataset_cars.yml")
-    @ExpectedDataSet(value = "common/dataset_add_car.yml")
+    @DataSet("common/car/dataset_cars.yml")
+    @ExpectedDataSet("common/car/dataset_add_car.yml")
     @DisplayName("when Add Car then Ok Status Returned")
     void whenAddCar_thenOkStatusReturned() throws Exception {
 
@@ -37,14 +37,14 @@ public class CarEndpointITest extends AbstractBaseITest {
                                 "driver":"Roman Levchenko",
                                 "weight_capacity":"5000",
                                 "cooler":"true",
-                                "status":"disable"
+                                "car_status":"disable"
                                 }"""))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @DataSet(value = "common/dataset_cars.yml", transactional = true)
-    @ExpectedDataSet(value = "common/dataset_update_car.yml")
+    @DataSet("common/car/dataset_cars.yml")
+    @ExpectedDataSet("common/car/dataset_update_car.yml")
     @DisplayName("when Update Car Status then Ok Status Returned")
     void whenUpdateCarStatus_thenOkStatusReturned() throws Exception {
         mockMvc.perform(put("/cars/update/1")
@@ -55,7 +55,7 @@ public class CarEndpointITest extends AbstractBaseITest {
     }
 
     @Test
-    @DataSet(value = "common/dataset_cars.yml")
+    @DataSet("common/car/dataset_cars.yml")
     @DisplayName("when Delete Car With Incorrect Id then Bad Request Return")
     void whenDeleteCar_withIncorrectId_thenBadRequestReturn() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/cars/delete/incorrectId")
@@ -64,8 +64,8 @@ public class CarEndpointITest extends AbstractBaseITest {
     }
 
     @Test
-    @DataSet(value = "common/dataset_cars.yml")
-    @ExpectedDataSet(value = "common/dataset_delete_cars.yml")
+    @DataSet("common/car/dataset_cars.yml")
+    @ExpectedDataSet("common/car/dataset_delete_cars.yml")
     @DisplayName("when Delete Car then Ok Status Returned")
     void whenDeleteCar_thenOkStatusReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/cars/delete/1")
@@ -74,8 +74,8 @@ public class CarEndpointITest extends AbstractBaseITest {
     }
 
     @Test
-    @DataSet("common/dataset_cars.yml")
-    @ExpectedDataSet("common/dataset_cars.yml")
+    @DataSet("common/car/dataset_cars.yml")
+    @ExpectedDataSet("common/car/dataset_cars.yml")
     @DisplayName("given Not Existing Id when Delete By Id then Exception Thrown")
     void givenNotExistingId_whenDeleteById_thenExceptionThrown() {
         assertThrows(Exception.class, () ->
@@ -85,8 +85,8 @@ public class CarEndpointITest extends AbstractBaseITest {
     }
 
     @Test
-    @DataSet(value = "common/dataset_cars.yml", transactional = true)
-    @ExpectedDataSet(value = "common/dataset_cars.yml")
+    @DataSet("common/car/dataset_cars.yml")
+    @ExpectedDataSet("common/car/dataset_cars.yml")
     @DisplayName("given Not Existing Id when Update Car Status By Id then Exception Thrown")
     void givenNotExistingId_whenUpdateCarStatusById_thenExceptionThrown() {
         assertThrows(Exception.class, () ->

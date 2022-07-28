@@ -1,6 +1,7 @@
 package com.goods.partner.web.controller;
 
 import com.goods.partner.entity.Car;
+import com.goods.partner.entity.CarStatus;
 import com.goods.partner.service.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,6 @@ public class CarController {
 
     @PutMapping("/update/{id}")
     public Car update(@PathVariable int id, @RequestParam String status) {
-        return carService.updateCarStatus(id, status);
+        return carService.updateCarStatus(id, CarStatus.getCarStatus(status));
     }
 }
