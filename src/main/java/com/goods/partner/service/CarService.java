@@ -1,7 +1,10 @@
 package com.goods.partner.service;
 
+import com.goods.partner.dto.CarDto;
 import com.goods.partner.entity.Car;
 import com.goods.partner.entity.CarStatus;
+
+import java.util.List;
 
 public interface CarService {
 
@@ -9,5 +12,9 @@ public interface CarService {
 
     void removeCar(int id);
 
-    Car updateCarStatus(int id, CarStatus status);
+    CarDto updateCarStatus(int id, CarStatus status);
+
+    CarDto getCarById(int id);
+
+    List<CarDto> getAllCars();
 }

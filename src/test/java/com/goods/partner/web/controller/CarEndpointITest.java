@@ -96,4 +96,25 @@ public class CarEndpointITest extends AbstractBaseITest {
 
                         .andExpect(status().isOk()));
     }
+
+    @Test
+    @DataSet("common/car/dataset_add_car.yml")
+    @ExpectedDataSet("common/car/dataset_add_car.yml")
+    @DisplayName("when Get All Cars then Ok Status Returned")
+    void whenGetAllCars_thenOkStatusReturned() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/cars/all")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DataSet("common/car/dataset_add_car.yml")
+    @DisplayName("when Get Car By Id then Ok Status Returned")
+    void whenGetCarById_thenOkStatusReturned() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/cars/get/2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }

@@ -1,18 +1,22 @@
 package com.goods.partner.entity;
 
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.Arrays;
 
-@NoArgsConstructor
+@AllArgsConstructor
 public enum CarStatus {
-    ENABLE,
-    DISABLE;
+    ENABLE("ENABLE"),
+    DISABLE("DISABLE");
+
+    @Getter
+    private final String status;
 
     public static CarStatus getCarStatus(String name) {
 
         return Arrays.stream(CarStatus.values())
-                .filter(carStatus -> carStatus.name().equalsIgnoreCase(name))
+                .filter(carStatus -> carStatus.status.equalsIgnoreCase(name))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("CarStatus name " + name + " is not correct!"));
     }
