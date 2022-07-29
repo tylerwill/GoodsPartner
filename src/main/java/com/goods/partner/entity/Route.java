@@ -4,9 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -19,7 +17,8 @@ public class Route {
     @Id
     private int id;
 
-    private String status;
+    @Enumerated(value = EnumType.STRING)
+    private RouteStatus status;
     private double totalWeight;
     private int totalPoints;
     private int totalOrders;
