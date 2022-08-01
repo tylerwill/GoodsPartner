@@ -1,8 +1,6 @@
 package com.goods.partner.web.controller;
 
 import com.goods.partner.dto.CarDto;
-import com.goods.partner.entity.Car;
-import com.goods.partner.entity.CarStatus;
 import com.goods.partner.service.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,26 +15,26 @@ public class CarController {
 
     @GetMapping("/all")
     public List<CarDto> getAllCars() {
-        return carService.getAllCars();
+        return carService.findAll();
     }
 
     @PutMapping("/update/{id}")
-    public CarDto updateCarStatus(@PathVariable int id, @RequestParam String status) {
-        return carService.updateCarStatus(id, CarStatus.getCarStatus(status));
+    public void updateCarStatus(@PathVariable int id, @RequestParam boolean status) {
+        carService.updateStatus(id, status);
     }
 
     @PostMapping("/add")
-    public void addCar(@RequestBody Car car) {
-        carService.addCar(car);
+    public void addCar(@RequestBody CarDto car) {
+        carService.add(car);
     }
 
     @DeleteMapping("/delete/{id}")
     public void deleteCar(@PathVariable("id") int id) {
-        carService.removeCar(id);
+        carService.delete(id);
     }
 
     @GetMapping("/get/{id}")
     public CarDto getCarById(@PathVariable("id") int id) {
-        return carService.getCarById(id);
+        return carService.getById(id);
     }
 }

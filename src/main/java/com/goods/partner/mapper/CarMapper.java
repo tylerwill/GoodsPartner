@@ -20,10 +20,22 @@ public class CarMapper {
         carDto.setId(car.getId());
         carDto.setName(car.getName());
         carDto.setDriver(car.getDriver());
-        carDto.setLicence_plate(car.getLicence_plate());
-        carDto.setWeight_capacity(car.getWeight_capacity());
-        carDto.setStatus(car.getStatus());
-
+        carDto.setLicencePlate(car.getLicencePlate());
+        carDto.setWeightCapacity(car.getWeightCapacity());
+        carDto.setCooler(car.isCooler());
+        carDto.setStatus(car.isStatus());
         return carDto;
+    }
+
+    public Car mapCar(CarDto carDto) {
+        Car car = new Car();
+        car.setId(carDto.getId());
+        car.setName(carDto.getName());
+        car.setDriver(carDto.getDriver());
+        car.setLicencePlate(carDto.getLicencePlate());
+        car.setWeightCapacity(carDto.getWeightCapacity());
+        car.setCooler(carDto.isCooler());
+        car.setStatus(carDto.isStatus());
+        return car;
     }
 }

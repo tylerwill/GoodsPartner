@@ -5,12 +5,4 @@ CARS:
     DRIVER: "Oleg Dudka"
     WEIGHT_CAPACITY: 3000
     COOLER: "false"
-    STATUS: "ENABLE"
-
-  - ID: 2
-    NAME: "MAN"
-    LICENCE_PLATE: "AA 2455 CT"
-    DRIVER: "Ivan Kornienko"
-    WEIGHT_CAPACITY: 4000
-    COOLER: "true"
-    STATUS: "DISABLE"
+    STATUS: "true"

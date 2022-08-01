@@ -1,25 +1,25 @@
 package com.goods.partner.entity;
 
-import lombok.*;
+import lombok.Data;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Entity
-@AllArgsConstructor
-@Builder
 @Table(name = "cars")
 public class Car {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cars_id_sequence")
+    @SequenceGenerator(name = "cars_id_sequence", sequenceName = "cars_id_sequence", allocationSize = 1)
     private int id;
     private String name;
-    private String licence_plate;
     private String driver;
-    private int weight_capacity;
+    private boolean status;
     private boolean cooler;
 
-    @Enumerated(EnumType.STRING)
-    private CarStatus status;
+    @Column(name = "licence_plate")
+    private String licencePlate;
+
+    @Column(name = "weight_capacity")
+    private int weightCapacity;
 }

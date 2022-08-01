@@ -1,20 +1,18 @@
 package com.goods.partner.service;
 
 import com.goods.partner.dto.CarDto;
-import com.goods.partner.entity.Car;
-import com.goods.partner.entity.CarStatus;
 
 import java.util.List;
 
 public interface CarService {
 
-    void addCar(Car car);
+    void add(CarDto carDto);
 
-    void removeCar(int id);
+    void delete(int id);
 
-    CarDto updateCarStatus(int id, CarStatus status);
+    void updateStatus(int id, boolean status);
 
-    CarDto getCarById(int id);
+    CarDto getById(int id);
 
-    List<CarDto> getAllCars();
+    List<CarDto> findAll();
 }

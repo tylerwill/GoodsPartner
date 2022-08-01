@@ -1,19 +1,14 @@
 package com.goods.partner.dto;
 
-import com.goods.partner.entity.CarStatus;
-import lombok.*;
+import lombok.Data;
 
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class CarDto {
     private int id;
     private String name;
-    private String licence_plate;
+    private String licencePlate;
     private String driver;
-    private int weight_capacity;
+    private int weightCapacity;
     private boolean cooler;
-    private CarStatus status;
+    private boolean status;
 }
