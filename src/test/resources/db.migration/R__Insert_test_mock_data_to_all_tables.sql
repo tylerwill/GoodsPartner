@@ -133,11 +133,11 @@ values (19, 10, 7, 7);
 insert into orders_products (id, order_id, product_id, count)
 values (20, 10, 8, 8);
 
-insert into cars (name, licence_plate, driver, weight_capacity, cooler, travel_cost, status)
+insert into cars (name, licence_plate, driver, weight_capacity, cooler, travel_cost, available)
 values ('Mercedes Sprinter', 'AA 1111 CT', 'Oleg Dudka', 2000, FALSE, 12, TRUE);
-insert into cars (name, licence_plate, driver, weight_capacity, cooler, travel_cost, status)
+insert into cars (name, licence_plate, driver, weight_capacity, cooler, travel_cost, available)
 values ('Mercedes Vito', 'AA 2222 CT', 'Ivan Piddubny', 1000, FALSE, 10, TRUE);
-insert into cars (name, licence_plate, driver, weight_capacity, cooler, travel_cost, status)
+insert into cars (name, licence_plate, driver, weight_capacity, cooler, travel_cost, available)
 values ('Mercedes Sprinter', 'AA 3333 CT', 'Anton Geraschenko', 2500, TRUE, 15, TRUE);
-insert into cars (name, licence_plate, driver, weight_capacity, cooler, travel_cost, status)
+insert into cars (name, licence_plate, driver, weight_capacity, cooler, travel_cost, available)
 values ('Mercedes 818', 'AA 4444 CT', 'Serhiy Kotovich', 4000, FALSE, 20, TRUE);
