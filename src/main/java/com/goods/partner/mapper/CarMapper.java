@@ -24,6 +24,7 @@ public class CarMapper {
         carDto.setWeightCapacity(car.getWeightCapacity());
         carDto.setCooler(car.isCooler());
         carDto.setAvailable(car.isAvailable());
+        carDto.setTravelCost(car.getTravelCost());
         return carDto;
     }
 
@@ -36,6 +37,7 @@ public class CarMapper {
         car.setWeightCapacity(carDto.getWeightCapacity());
         car.setCooler(carDto.isCooler());
         car.setAvailable(carDto.isAvailable());
+        car.setTravelCost(carDto.getTravelCost());
         return car;
     }
 }

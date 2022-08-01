@@ -30,9 +30,20 @@ public class DefaultCarService implements CarService {
     }
 
     @Override
+    public List<CarDto> findByAvailableTrue() {
+        return carMapper.mapCars(carRepository.findByAvailableTrue());
+    }
+
+    @Override
     @Transactional
     public void update(int id, boolean available) {
         carRepository.updateStatus(id, available);
+    }
+
+    @Override
+    @Transactional
+    public void setCarTravelCost(int id, int travelCost) {
+        carRepository.setTravelCost(id, travelCost);
     }
 
     @Override

@@ -23,6 +23,11 @@ public class CarController {
         carService.update(id, available);
     }
 
+    @PutMapping("/update/expense/{id}")
+    public void setTravelCost(@PathVariable int id, @RequestParam int travelCost) {
+        carService.setCarTravelCost(id, travelCost);
+    }
+
     @PostMapping("/add")
     public void add(@RequestBody CarDto car) {
         carService.add(car);

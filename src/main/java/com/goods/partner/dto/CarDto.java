@@ -1,8 +1,12 @@
 package com.goods.partner.dto;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CarDto {
     private int id;
     private String name;
@@ -11,4 +15,6 @@ public class CarDto {
     private int weightCapacity;
     private boolean cooler;
     private boolean available;
+    private double loadSize;
+    private int travelCost;
 }

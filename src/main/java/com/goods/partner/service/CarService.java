@@ -12,7 +12,11 @@ public interface CarService {
 
     void update(int id, boolean available);
 
+    void setCarTravelCost(int id, int travelCost);
+
     CarDto getById(int id);
 
     List<CarDto> findAll();
+
+    List<CarDto> findByAvailableTrue();
 }
