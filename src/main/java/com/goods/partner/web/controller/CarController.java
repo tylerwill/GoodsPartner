@@ -14,27 +14,27 @@ public class CarController {
     private final CarService carService;
 
     @GetMapping("/all")
-    public List<CarDto> getAllCars() {
+    public List<CarDto> getAll() {
         return carService.findAll();
     }
 
     @PutMapping("/update/{id}")
-    public void updateCarStatus(@PathVariable int id, @RequestParam boolean status) {
-        carService.updateStatus(id, status);
+    public void update(@PathVariable int id, @RequestParam boolean available) {
+        carService.update(id, available);
     }
 
     @PostMapping("/add")
-    public void addCar(@RequestBody CarDto car) {
+    public void add(@RequestBody CarDto car) {
         carService.add(car);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteCar(@PathVariable("id") int id) {
+    public void delete(@PathVariable("id") int id) {
         carService.delete(id);
     }
 
     @GetMapping("/get/{id}")
-    public CarDto getCarById(@PathVariable("id") int id) {
+    public CarDto getById(@PathVariable("id") int id) {
         return carService.getById(id);
     }
 }

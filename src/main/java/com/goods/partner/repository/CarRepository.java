@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CarRepository extends JpaRepository<Car, Integer> {
     @Modifying
-    @Query("update Car u set u.status = :status where u.id = :id")
-    void updateStatus(@Param(value = "id") int id, @Param(value = "status") boolean status);
+    @Query("update Car u set u.available = :available where u.id = :id")
+    void updateStatus(@Param(value = "id") int id, @Param(value = "available") boolean available);
 }

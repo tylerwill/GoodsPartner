@@ -10,7 +10,7 @@ public interface CarService {
 
     void delete(int id);
 
-    void updateStatus(int id, boolean status);
+    void update(int id, boolean available);
 
     CarDto getById(int id);
 

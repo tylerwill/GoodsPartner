@@ -36,7 +36,7 @@ public class CarEndpointITest extends AbstractBaseITest {
                                 "driver":"Ivan Kornienko",
                                 "weightCapacity":"4000",
                                 "cooler":"true",
-                                "status":"false"}
+                                "available":"false"}
                                 """))
                 .andExpect(status().isOk());
     }
@@ -44,10 +44,10 @@ public class CarEndpointITest extends AbstractBaseITest {
     @Test
     @DataSet("common/car/dataset_cars.yml")
     @ExpectedDataSet("common/car/dataset_update_car.yml")
-    @DisplayName("when Update Car Status then Ok Status Returned")
-    void whenUpdateCarStatus_thenOkStatusReturned() throws Exception {
+    @DisplayName("when Update Car then Ok Status Returned")
+    void whenUpdateCar_thenOkStatusReturned() throws Exception {
         mockMvc.perform(put("/cars/update/1")
-                        .param("status", "false")
+                        .param("available", "false")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -88,7 +88,7 @@ public class CarEndpointITest extends AbstractBaseITest {
     @DisplayName("given Not Existing Id when Update Car Status By Id then Exception Thrown")
     void givenNotExistingId_whenUpdateCarStatusById_thenExceptionThrown() throws Exception {
         mockMvc.perform(put("/cars/update/5")
-                        .param("status", "false")
+                        .param("available", "false")
                         .contentType(MediaType.APPLICATION_JSON))
 
                 .andExpect(status().isOk());
@@ -109,14 +109,14 @@ public class CarEndpointITest extends AbstractBaseITest {
                                  "driver":"Oleg Dudka",
                                  "weight_capacity":"3000",
                                  "cooler":"false",
-                                 "status":"ENABLE"},
+                                 "available":"ENABLE"},
                                  {"id":"2",
                                  "name":"MAN",
                                  "licence_plate":"AA 2455 CT",
                                  "driver":"Ivan Kornienko",
                                  "weight_capacity":"4000",
                                  "cooler":"true",
-                                 "status":"false"},
+                                 "available":"false"},
                                   {
                                  "id": "3",
                                 "name":"DAF",
@@ -124,7 +124,7 @@ public class CarEndpointITest extends AbstractBaseITest {
                                 "driver":"Roman Levchenko",
                                 "weightCapacity":"5000",
                                 "cooler":"true",
-                                "status":"false"
+                                "available":"false"
                                 }]
                                 """))
                 .andExpect(status().isOk());
@@ -143,7 +143,7 @@ public class CarEndpointITest extends AbstractBaseITest {
                                  "driver":"Ivan Kornienko",
                                  "weight_capacity":"4000",
                                  "cooler":"true",
-                                 "status":"false"}
+                                 "available":"false"}
                                 """))
                 .andExpect(status().isOk());
     }

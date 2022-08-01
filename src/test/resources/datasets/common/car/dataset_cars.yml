@@ -5,4 +5,4 @@ CARS:
     DRIVER: "Oleg Dudka"
     WEIGHT_CAPACITY: 3000
     COOLER: "false"
-    STATUS: "true"
+    AVAILABLE: "true"

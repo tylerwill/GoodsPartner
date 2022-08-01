@@ -10,5 +10,5 @@ public class CarDto {
     private String driver;
     private int weightCapacity;
     private boolean cooler;
-    private boolean status;
+    private boolean available;
 }

@@ -32,7 +32,7 @@ public class DefaultCarServiceITest extends AbstractBaseITest {
         carDto.setCooler(true);
         carDto.setLicencePlate("AA 4567 CT");
         carDto.setWeightCapacity(5000);
-        carDto.setStatus(false);
+        carDto.setAvailable(false);
 
         carService.add(carDto);
 
@@ -67,7 +67,7 @@ public class DefaultCarServiceITest extends AbstractBaseITest {
     void validateQueries_afterUpdateCarStatus() {
         SQLStatementCountValidator.reset();
 
-        carService.updateStatus(2, true);
+        carService.update(2, true);
 
         assertSelectCount(0);
     }

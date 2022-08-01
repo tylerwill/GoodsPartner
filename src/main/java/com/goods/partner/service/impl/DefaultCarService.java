@@ -31,8 +31,8 @@ public class DefaultCarService implements CarService {
 
     @Override
     @Transactional
-    public void updateStatus(int id, boolean status) {
-        carRepository.updateStatus(id, status);
+    public void update(int id, boolean available) {
+        carRepository.updateStatus(id, available);
     }
 
     @Override
