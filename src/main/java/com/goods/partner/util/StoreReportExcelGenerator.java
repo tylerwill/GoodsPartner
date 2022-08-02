@@ -4,9 +4,7 @@ import com.goods.partner.entity.projection.StoreProjection;
 import com.goods.partner.repository.StoreRepository;
 import lombok.Builder;
 import lombok.Getter;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -30,26 +28,42 @@ public class StoreReportExcelGenerator {
     public void generateExcelFile(HttpServletResponse response, LocalDate date) throws IOException {
 
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet orders = workbook.createSheet("orders_at_stores");
+        XSSFSheet orders = workbook.createSheet("orders_at_store");
 
-        CellStyle style = workbook.createCellStyle();
+        CellStyle headerStyle = workbook.createCellStyle();
+        XSSFFont headerFont = workbook.createFont();
+        headerFont.setFontHeight(14);
+        headerFont.setBold(true);
+        headerStyle.setFont(headerFont);
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
 
-        XSSFFont font = workbook.createFont();
-        font.setFontHeight(14);
-        style.setFont(font);
+        CellStyle tableStyle = workbook.createCellStyle();
+        XSSFFont tableFont = workbook.createFont();
+        tableFont.setFontHeight(12);
+        tableStyle.setFont(tableFont);
+        tableStyle.setAlignment(HorizontalAlignment.CENTER);
+        tableStyle.setBorderBottom(BorderStyle.THIN);
+        tableStyle.setBorderLeft(BorderStyle.THIN);
+        tableStyle.setBorderRight(BorderStyle.THIN);
+        tableStyle.setBorderTop(BorderStyle.THIN);
+        tableStyle.setWrapText(true);
 
         XSSFRow header = orders.createRow(0);
-        createCell(header, 1, "Список замовлень на " + date, style);
+        createCell(header, 1, "Список замовлень на " + date, headerStyle);
+        orders.createRow(1);
+
         List<ExcelFormatDto> storesByDate = getStoresByDate(date);
 
-        XSSFRow storeNumber = orders.createRow(1);
-        createCell(storeNumber, 1, storesByDate.get(0).storeName, style);
+        XSSFRow storeNumber = orders.createRow(2);
+        createCell(storeNumber, 1, storesByDate.get(0).storeName, headerStyle);
+        orders.createRow(3);
 
-        XSSFRow tableHeader = orders.createRow(2);
-        createCell(tableHeader, 1, "Замовлення", style);
-        createCell(tableHeader, 2, "Вага, кг", style);
+        XSSFRow tableHeader = orders.createRow(4);
+        createCell(tableHeader, 0, "№", tableStyle);
+        createCell(tableHeader, 1, "Замовлення", tableStyle);
+        createCell(tableHeader, 2, "Вага, кг", tableStyle);
 
-        int rowCount = 3;
+        int rowCount = 5;
         int itemNumber = 1;
         double totalWeight = 0;
 
@@ -57,15 +71,19 @@ public class StoreReportExcelGenerator {
             int columnCount = 0;
 
             Row row = orders.createRow(rowCount++);
-            createCell(row, columnCount++, itemNumber++, style);
-            createCell(row, columnCount++, excelFormatDto.getOrderNumber(), style);
+            createCell(row, columnCount++, itemNumber++, tableStyle);
+            createCell(row, columnCount++, excelFormatDto.getOrderNumber(), tableStyle);
             totalWeight += excelFormatDto.getTotalOrderWeight();
-            createCell(row, columnCount++, excelFormatDto.getTotalOrderWeight(), style);
+            createCell(row, columnCount++, excelFormatDto.getTotalOrderWeight(), tableStyle);
         }
 
         XSSFRow total = orders.createRow(rowCount);
-        createCell(total, 1, "Разом:", style);
-        createCell(total, 2, totalWeight, style);
+        createCell(total, 1, "Разом:", tableStyle);
+        createCell(total, 2, totalWeight, tableStyle);
+
+        orders.autoSizeColumn(0);
+        orders.autoSizeColumn(1);
+        orders.autoSizeColumn(2);
 
         ServletOutputStream outputStream = response.getOutputStream();
         workbook.write(outputStream);

@@ -26,7 +26,7 @@ public class StoreReportController {
         String currentDateTime = dateFormatter.format(new Date());
 
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=orders_at_store" + currentDateTime + ".xlsx";
+        String headerValue = "attachment; filename=orders_at_store " + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
 
         reportExcelGenerator.generateExcelFile(response, LocalDate.parse(date));
