@@ -57,7 +57,7 @@ public class DefaultRouteService implements RouteService {
         addRoutPointDistantTime(routePoints, route);
 
         return RouteDto.builder()
-                .routeId(store.getStoreId())
+                .routeId(carLoad.getCar().getId())
                 .status(RouteStatus.DRAFT)
                 .totalWeight(getRouteOrdersTotalWeight(routePoints))
                 .totalPoints(routePoints.size())

@@ -19,13 +19,8 @@ public class CarController {
     }
 
     @PutMapping("/update/{id}")
-    public void update(@PathVariable int id, @RequestParam boolean available) {
-        carService.update(id, available);
-    }
-
-    @PutMapping("/update/expense/{id}")
-    public void setTravelCost(@PathVariable int id, @RequestParam int travelCost) {
-        carService.setCarTravelCost(id, travelCost);
+    public void update(@PathVariable int id, @RequestBody CarDto car) {
+        carService.update(id, car);
     }
 
     @PostMapping("/add")

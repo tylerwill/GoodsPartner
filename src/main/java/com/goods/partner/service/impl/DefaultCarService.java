@@ -2,6 +2,7 @@ package com.goods.partner.service.impl;
 
 import com.goods.partner.dto.CarDto;
 import com.goods.partner.entity.Car;
+import com.goods.partner.exceptions.CarNotFoundException;
 import com.goods.partner.mapper.CarMapper;
 import com.goods.partner.repository.CarRepository;
 import com.goods.partner.service.CarService;
@@ -13,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,20 +33,45 @@ public class DefaultCarService implements CarService {
     }
 
     @Override
-    public List<CarDto> findByAvailableTrue() {
+    public List<CarDto> findByAvailableCars() {
         return carMapper.mapCars(carRepository.findByAvailableTrue());
     }
 
     @Override
     @Transactional
-    public void update(int id, boolean available) {
-        carRepository.updateStatus(id, available);
-    }
+    public void update(int id, CarDto car) {
+        Optional<Car> optionalCar = carRepository.findById(id);
+        if (optionalCar.isEmpty()) {
+            throw new CarNotFoundException("Car not found");
+        }
+        Car dbCar = optionalCar.get();
+        Car updatedCar = carMapper.mapCar(car);
 
-    @Override
-    @Transactional
-    public void setCarTravelCost(int id, int travelCost) {
-        carRepository.setTravelCost(id, travelCost);
+        if (Objects.nonNull(updatedCar.getName()) &&
+                !"".equalsIgnoreCase(updatedCar.getName())) {
+            dbCar.setName(updatedCar.getName());
+        }
+        if (Objects.nonNull(updatedCar.getDriver()) &&
+                !"".equalsIgnoreCase(updatedCar.getDriver())) {
+            dbCar.setDriver(updatedCar.getDriver());
+        }
+        if (Objects.nonNull(updatedCar.getLicencePlate()) &&
+                !"".equalsIgnoreCase(updatedCar.getLicencePlate())) {
+            dbCar.setLicencePlate(updatedCar.getLicencePlate());
+        }
+        if (Objects.nonNull(updatedCar.getAvailable())){
+            dbCar.setAvailable(updatedCar.getAvailable());
+        }
+        if (Objects.nonNull(updatedCar.getCooler())){
+            dbCar.setCooler(updatedCar.getCooler());
+        }
+        if (updatedCar.getTravelCost() > 0) {
+            dbCar.setTravelCost(updatedCar.getTravelCost());
+        }
+        if (updatedCar.getWeightCapacity() > 0) {
+            dbCar.setWeightCapacity(updatedCar.getWeightCapacity());
+        }
+        carRepository.save(dbCar);
     }
 
     @Override

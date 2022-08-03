@@ -20,8 +20,8 @@ public class Car {
     private int id;
     private String name;
     private String driver;
-    private boolean available;
-    private boolean cooler;
+    private Boolean available;
+    private Boolean cooler;
 
     @Column(name = "licence_plate")
     private String licencePlate;

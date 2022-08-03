@@ -17,7 +17,6 @@ import com.google.maps.model.TravelMode;
 import com.google.ortools.Loader;
 import com.google.ortools.constraintsolver.*;
 import com.google.protobuf.Duration;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -29,16 +28,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class DefaultCarLoadingService implements CarLoadingService {
     private static final int ROUTE_START_INDEX = 0;
+    private static final int SOLUTION_PROCESSING_TIME_SEC = 3;
+    private static final int SLACK_UPPER_BOUND = 0;
+    private static final String VEHICLE_CAPACITY_DIMENSION_NAME = "Capacity";
+    private static final boolean START_CUMUL_TO_ZERO = true;
     @Value("${google.api.key}")
     private String GOOGLE_API_KEY;
     private final CarService carService;
 
+    public DefaultCarLoadingService(CarService carService) {
+        this.carService = carService;
+        Loader.loadNativeLibraries();
+    }
 
     public List<CarLoadDto> loadCars(StoreDto store, List<RoutePointDto> routePoints) {
-        List<CarDto> cars = carService.findByAvailableTrue();
+        List<CarDto> cars = carService.findByAvailableCars();
         DistanceMatrix routePointsMatrix = getDistanceMatrix(store, routePoints);
         return load(cars, routePoints, routePointsMatrix);
     }
@@ -54,7 +60,6 @@ public class DefaultCarLoadingService implements CarLoadingService {
                 .mapToLong(CarDto::getTravelCost).toArray();
         int carsAmount = cars.size();
 
-        Loader.loadNativeLibraries();
         RoutingIndexManager manager =
                 new RoutingIndexManager(distanceMatrix.length, carsAmount, ROUTE_START_INDEX);
         RoutingModel routing =
@@ -109,13 +114,12 @@ public class DefaultCarLoadingService implements CarLoadingService {
                         .toBuilder()
                         .setFirstSolutionStrategy(FirstSolutionStrategy.Value.PATH_CHEAPEST_ARC)
                         .setLocalSearchMetaheuristic(LocalSearchMetaheuristic.Value.GUIDED_LOCAL_SEARCH)
-                        .setTimeLimit(Duration.newBuilder().setSeconds(1).build())
+                        .setTimeLimit(Duration.newBuilder().setSeconds(SOLUTION_PROCESSING_TIME_SEC).build())
                         .build();
         return routing.solveWithParameters(searchParameters);
     }
 
     private RoutingModel configureRoutingModel(RoutingIndexManager manager, long[][] distanceMatrix, long[] demands, long[] vehicleCapacities, long[] vehicleCosts, int carsAmount) {
-        Loader.loadNativeLibraries();
         RoutingModel routing = new RoutingModel(manager);
         int transitCallbackIndex =
                 routing.registerTransitCallback((long fromIndex, long toIndex) -> {
@@ -128,10 +132,10 @@ public class DefaultCarLoadingService implements CarLoadingService {
             int fromNode = manager.indexToNode(fromIndex);
             return demands[fromNode];
         });
-        routing.addDimensionWithVehicleCapacity(demandCallbackIndex, 0,
+        routing.addDimensionWithVehicleCapacity(demandCallbackIndex, SLACK_UPPER_BOUND,
                 vehicleCapacities,
-                true,
-                "Capacity");
+                START_CUMUL_TO_ZERO,
+                VEHICLE_CAPACITY_DIMENSION_NAME);
         for (int i = 0; i < carsAmount; i++) {
             routing.setFixedCostOfVehicle(vehicleCosts[i], i);
         }

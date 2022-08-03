@@ -13,8 +13,8 @@ public class CarDto {
     private String licencePlate;
     private String driver;
     private int weightCapacity;
-    private boolean cooler;
-    private boolean available;
+    private Boolean cooler;
+    private Boolean available;
     private double loadSize;
     private int travelCost;
 }

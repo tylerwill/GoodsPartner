@@ -67,8 +67,10 @@ public class DefaultCarServiceITest extends AbstractBaseITest {
     void validateQueries_afterUpdateCarStatus() {
         SQLStatementCountValidator.reset();
 
-        carService.update(2, true);
+        CarDto carDto = new CarDto();
+        carDto.setAvailable(true);
+        carService.update(1, carDto);
 
-        assertSelectCount(0);
+        assertSelectCount(1);
     }
 }

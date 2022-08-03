@@ -10,13 +10,11 @@ public interface CarService {
 
     void delete(int id);
 
-    void update(int id, boolean available);
-
-    void setCarTravelCost(int id, int travelCost);
+    void update(int id, CarDto car);
 
     CarDto getById(int id);
 
     List<CarDto> findAll();
 
-    List<CarDto> findByAvailableTrue();
+    List<CarDto> findByAvailableCars();
 }
