@@ -12,8 +12,15 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ResponseStatus
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(CreateRouteException.class)
-    public ResponseEntity<ErrorMessage> productNotFoundException(CreateRouteException exception) {
+    @ExceptionHandler(GoogleApiException.class)
+    public ResponseEntity<ErrorMessage> googleApiException(GoogleApiException exception) {
+
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+
+    @ExceptionHandler(CarNotFoundException.class)
+    public ResponseEntity<ErrorMessage> carNotFoundException(CarNotFoundException exception) {
 
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);

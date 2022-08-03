@@ -6,6 +6,7 @@ CARS:
     WEIGHT_CAPACITY: 3000
     COOLER: "false"
     AVAILABLE: "true"
+    TRAVEL_COST: 10
 
   - ID: 2
     NAME: "MAN"
@@ -14,3 +15,4 @@ CARS:
     WEIGHT_CAPACITY: 4000
     COOLER: "true"
     AVAILABLE: "false"
+    TRAVEL_COST: 10

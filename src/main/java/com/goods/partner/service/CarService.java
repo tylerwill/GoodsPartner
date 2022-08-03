@@ -10,9 +10,11 @@ public interface CarService {
 
     void delete(int id);
 
-    void update(int id, boolean available);
+    void update(int id, CarDto car);
 
     CarDto getById(int id);
 
     List<CarDto> findAll();
+
+    List<CarDto> findByAvailableCars();
 }

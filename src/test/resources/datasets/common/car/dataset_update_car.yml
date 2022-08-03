@@ -6,3 +6,4 @@ CARS:
     WEIGHT_CAPACITY: 3000
     COOLER: "false"
     AVAILABLE: "false"
+    TRAVEL_COST: 10
