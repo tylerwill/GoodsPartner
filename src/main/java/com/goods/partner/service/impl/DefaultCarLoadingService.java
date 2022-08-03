@@ -33,6 +33,7 @@ public class DefaultCarLoadingService implements CarLoadingService {
     private static final int SOLUTION_PROCESSING_TIME_SEC = 3;
     private static final int SLACK_UPPER_BOUND = 0;
     private static final String VEHICLE_CAPACITY_DIMENSION_NAME = "Capacity";
+    private static final String DEFAULT_LANGUAGE = "uk-UK";
     private static final boolean START_CUMUL_TO_ZERO = true;
     @Value("${google.api.key}")
     private String GOOGLE_API_KEY;
@@ -101,7 +102,7 @@ public class DefaultCarLoadingService implements CarLoadingService {
             return matrixApiRequest.origins(pointsAddresses.toArray(String[]::new))
                     .destinations(pointsAddresses.toArray(String[]::new))
                     .mode(TravelMode.DRIVING)
-                    .language("uk-UK")
+                    .language(DEFAULT_LANGUAGE)
                     .await();
         } catch (IOException | ApiException | InterruptedException e) {
             throw new GoogleApiException(e);
