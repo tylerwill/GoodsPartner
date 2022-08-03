@@ -1,6 +1,6 @@
 package com.goods.partner.web.controller;
 
-import com.goods.partner.util.StoreReportExcelGenerator;
+import com.goods.partner.util.StoreGenerateReport;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ import java.util.Date;
 public class StoreReportController {
 
     @Autowired
-    private StoreReportExcelGenerator reportExcelGenerator;
+    private StoreGenerateReport reportExcelGenerator;
 
     @GetMapping("/generate")
     public void generate(HttpServletResponse response, @RequestParam String date) throws IOException, InvalidFormatException {

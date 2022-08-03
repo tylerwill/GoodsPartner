@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class StoreReportExcelGenerator {
+public class StoreGenerateReport {
 
     @Autowired
     private StoreRepository storeRepository;
@@ -89,6 +89,11 @@ public class StoreReportExcelGenerator {
         workbook.write(outputStream);
         workbook.close();
         outputStream.close();
+
+//        FileOutputStream fileOut = null;
+//        fileOut = new FileOutputStream("data/myReport.xlsx");
+//        workbook.write(fileOut);
+//        fileOut.close();
     }
 
     private void createCell(Row row, int columnCount, Object cellValue, CellStyle style) {

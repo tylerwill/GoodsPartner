@@ -24,4 +24,6 @@ public class OrderedProduct {
     private Product product;
 
     private int count; // rename to amount
+
+
 }

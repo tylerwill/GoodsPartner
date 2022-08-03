@@ -32,6 +32,8 @@ class OrderMapperTest {
 
         Product mockProduct = mock(Product.class);
         when(mockProduct.getName()).thenReturn("3434 Паста шоколадна");
+        when(mockProduct.getKg()).thenReturn(1.2);
+
         when(mockProduct.getStore()).thenReturn(mockStore);
 
         mockOrderedProduct = mock(OrderedProduct.class);
@@ -66,6 +68,8 @@ class OrderMapperTest {
         assertEquals("3434 Паста шоколадна", productDto.getProductName());
         assertEquals(5, productDto.getAmount());
         assertEquals("Склад №1", productDto.getStoreName());
+        assertEquals(1.2, productDto.getUnitWeight());
+        assertEquals(6, productDto.getTotalProductWeight());
     }
 
     @Test
@@ -96,6 +100,7 @@ class OrderMapperTest {
         assertEquals("м. Київ, вул. Хрещатик, 1", orderData.getAddress());
         assertEquals("Петро Коваленко", orderData.getManagerFullName());
         assertEquals(1, products.size());
+        assertEquals(6, orderData.getOrderWeight());
         verify(spyOrderMapper).mapProducts(anyList());
         verify(spyOrderMapper).mapProduct(mockOrderedProduct);
 
@@ -109,6 +114,10 @@ class OrderMapperTest {
                 .mapOrders(List.of(mockOrder, mockOrder, mockOrder));
 
         assertEquals(3, orderDtoList.size());
+        assertEquals(18, orderDtoList.stream()
+                .map(OrderDto -> OrderDto.getOrderData())
+                .mapToDouble(OrderData::getOrderWeight)
+                .sum());
         verify(spyOrderMapper).mapOrders(anyList());
         verify(spyOrderMapper, times(3)).mapProduct(mockOrderedProduct);
         verify(spyOrderMapper, times(3)).mapProducts(anyList());

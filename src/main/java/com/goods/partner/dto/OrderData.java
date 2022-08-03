@@ -13,6 +13,6 @@ public class OrderData {
     private String address;
     private String managerFullName;
     private List<ProductDto> products;
-
+    private double orderWeight;
 
 }
