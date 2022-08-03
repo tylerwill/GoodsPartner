@@ -128,6 +128,6 @@ public class StoreGenerateReport {
     private static class ExcelFormatDto {
         private String storeName;
         private int orderNumber;
-        private Double totalOrderWeight;
+        private double totalOrderWeight;
     }
 }
