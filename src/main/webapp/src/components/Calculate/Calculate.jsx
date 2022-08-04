@@ -6,29 +6,29 @@ import BasicTabs from "./BasicTabs/BasicTabs";
 import React from "react";
 
 const Calculate = ({orders, routes, stores, getCalculatedDataByDate, routeAddresses}) => {
-  return (
-      <div className="App">
-        <Container>
-          <Box sx={{flexGrow: 1}}>
-            <Grid container spacing={15}>
-              <Grid item xs={2}>
-                <DateChooserCard
-                    getCalculatedDataByDate={getCalculatedDataByDate}
-                />
-              </Grid>
-              <Grid item xs={10}>
-                <BasicTabs
-                    orders={orders}
-                    routes={routes}
-                    stores={stores}
-                    routeAddresses={routeAddresses}
-                />
-              </Grid>
-            </Grid>
-          </Box>
-        </Container>
-      </div>
-  );
+    return (
+        <div className="App">
+            <Container>
+                <Box sx={{flexGrow: 1}}>
+                    <Grid container spacing={3} direction="column">
+                        <Grid item xs={2}>
+                            <DateChooserCard
+                                getCalculatedDataByDate={getCalculatedDataByDate}
+                            />
+                        </Grid>
+                        <Grid item xs={10}>
+                            <BasicTabs
+                                orders={orders}
+                                routes={routes}
+                                stores={stores}
+                                routeAddresses={routeAddresses}
+                            />
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Container>
+        </div>
+    );
 }
 
 export default Calculate;

@@ -4,6 +4,7 @@ import com.goods.partner.dto.AddressOrderDto;
 import com.goods.partner.dto.CalculationRoutesDto;
 import com.goods.partner.dto.RouteDto;
 import com.goods.partner.dto.RoutePointDto;
+import com.goods.partner.entity.RouteStatus;
 import com.goods.partner.service.OrderService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,9 +15,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,20 +46,21 @@ public class RoutesEndpointTest {
                 .clientName("ТОВ Кондитерська")
                 .address("м. Київ, вул. Хрещатик, 1")
                 .addressTotalWeight(59.32)
+                .routePointDistantTime(Duration.ofSeconds(3600))
                 .orders(List.of(addressOrderDto))
                 .build();
 
         RouteDto routeDto = RouteDto.builder()
                 .routeId(1)
-                .status("new")
+                .status(RouteStatus.DRAFT)
                 .totalWeight(59.32)
                 .totalPoints(1)
                 .totalOrders(1)
                 .distance(153.8)
-                .estimatedTime(LocalTime.of(1, 00))
+                .estimatedTime(Duration.ofSeconds(3600))
                 .startTime(LocalDateTime.of(2022, 07, 12, 11, 00))
                 .finishTime(LocalDateTime.of(2022, 07, 12, 12, 00))
-                .spentTime(LocalTime.of(1, 00))
+                .spentTime(Duration.ofSeconds(3600))
                 .storeName("Склад №1")
                 .storeAddress("Фастів, вул. Широка, 15")
                 .routePoints(List.of(routePointDto))
@@ -84,15 +86,15 @@ public class RoutesEndpointTest {
                                   "routes": [
                                     {
                                       "routeId": 1,
-                                      "status": "new",
+                                      "status": "DRAFT",
                                       "totalWeight": 59.32,
                                       "totalPoints": 1,
                                       "totalOrders": 1,
                                       "distance": 153.8,
-                                      "estimatedTime": "01:00:00",
+                                      "estimatedTime": "PT1H",
                                       "startTime": "11:00:00",
                                       "finishTime": "12:00:00",
-                                      "spentTime": "01:00:00",
+                                      "spentTime": "PT1H",
                                       "storeName": "Склад №1",
                                       "storeAddress": "Фастів, вул. Широка, 15",
                                       "routePoints": [
@@ -101,6 +103,7 @@ public class RoutesEndpointTest {
                                           "clientName": "ТОВ Кондитерська",
                                           "address": "м. Київ, вул. Хрещатик, 1",
                                           "addressTotalWeight": 59.32,
+                                          "routePointDistantTime": "PT1H",
                                           "orders": [
                                             {
                                               "orderId": 6,
