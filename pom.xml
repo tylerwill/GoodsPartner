@@ -212,6 +212,7 @@
                     <jdkVersion>17</jdkVersion>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
@@ -220,18 +221,11 @@
                         <configFile>flyway.conf</configFile>
                     </configFiles>
                     <locations>
-                        <location>classpath:db/migration</location>
+                        <location>filesystem:src/main/resources/db/migration</location>
                     </locations>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>16</source>
-                    <target>16</target>
-                </configuration>
-            </plugin>
+
         </plugins>
     </build>
 
