@@ -2,7 +2,6 @@ package com.goods.partner.web.controller;
 
 import com.goods.partner.util.OrderGenerateReport;
 import com.goods.partner.util.StoreGenerateReport;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,12 +32,12 @@ public class ReportController {
         String headerValue = "attachment; filename=orders_at_store " + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
 
-        storeGenerateReport.generateExcelFile(response, LocalDate.parse(date));
+        storeGenerateReport.generateReport(response, LocalDate.parse(date));
     }
 
     @GetMapping("/orders/generate")
     public void generateOrders(@RequestParam String date) throws IOException {
 
-        orderGenerateReport.generateExcelFile(LocalDate.parse(date));
+        orderGenerateReport.generateReport(LocalDate.parse(date));
     }
 }

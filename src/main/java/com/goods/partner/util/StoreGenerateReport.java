@@ -27,7 +27,7 @@ public class StoreGenerateReport {
     @Autowired
     private StoreRepository storeRepository;
 
-    public void generateExcelFile(HttpServletResponse response, LocalDate date) throws IOException {
+    public void generateReport(HttpServletResponse response, LocalDate date) throws IOException {
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet orders = workbook.createSheet("orders_at_store");
@@ -65,6 +65,23 @@ public class StoreGenerateReport {
         createCell(tableHeader, 1, "Замовлення", tableStyle);
         createCell(tableHeader, 2, "Вага, кг", tableStyle);
 
+        fillDataToTable(storesByDate, tableStyle, orders);
+
+        autoSizeColumns(orders, 0, 1, 2);
+
+        ServletOutputStream outputStream = response.getOutputStream();
+        workbook.write(outputStream);
+        workbook.close();
+        outputStream.close();
+    }
+
+    private void autoSizeColumns(XSSFSheet orders, int a, int b, int c) {
+        orders.autoSizeColumn(a);
+        orders.autoSizeColumn(b);
+        orders.autoSizeColumn(c);
+    }
+
+    private void fillDataToTable(List<ExcelFormatDto> storesByDate, CellStyle tableStyle, XSSFSheet orders) {
         int rowCount = 5;
         int itemNumber = 1;
         double totalWeight = 0;
@@ -82,20 +99,11 @@ public class StoreGenerateReport {
         XSSFRow total = orders.createRow(rowCount);
         createCell(total, 1, "Разом:", tableStyle);
         createCell(total, 2, totalWeight, tableStyle);
-
-        orders.autoSizeColumn(0);
-        orders.autoSizeColumn(1);
-        orders.autoSizeColumn(2);
-
-        ServletOutputStream outputStream = response.getOutputStream();
-        workbook.write(outputStream);
-        workbook.close();
-        outputStream.close();
-
     }
 
     private void createCell(Row row, int columnCount, Object cellValue, CellStyle style) {
         Cell cell = row.createCell(columnCount);
+
         if (cellValue instanceof Integer) {
             cell.setCellValue((Integer) cellValue);
         } else if (cellValue instanceof Double) {
@@ -109,6 +117,7 @@ public class StoreGenerateReport {
     private List<ExcelFormatDto> getStoresByDate(LocalDate date) {
         List<StoreProjection> storeProjections = storeRepository.groupStoresByOrders(date);
         List<ExcelFormatDto> excelFormatDtos = new ArrayList<>();
+
         for (StoreProjection storeProjection : storeProjections) {
             excelFormatDtos.add(ExcelFormatDto.builder()
                     .storeName(storeProjection.getStoreName())
