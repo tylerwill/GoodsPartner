@@ -51,6 +51,6 @@ public class DefaultOrderServiceITest extends AbstractBaseITest {
 
         orderService.calculateRoutes(LocalDate.of(2022, 7, 12));
 
-        assertSelectCount(5);
+        assertSelectCount(6);
     }
 }

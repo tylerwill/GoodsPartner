@@ -61,6 +61,18 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.ortools</groupId>
+            <artifactId>ortools-java</artifactId>
+            <version>9.3.10497</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.ortools</groupId>
+            <artifactId>ortools-linux-x86-64</artifactId>
+            <version>9.3.10497</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
             <scope>test</scope>
@@ -130,7 +142,22 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.7.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <requiresUnpack>
+                        <dependency>
+                            <groupId>com.google.ortools</groupId>
+                            <artifactId>ortools-linux-x86-64</artifactId>
+                        </dependency>
+                    </requiresUnpack>
+                </configuration>
+
             </plugin>
             <plugin>
                 <groupId>com.github.eirslett</groupId>
@@ -195,6 +222,14 @@
                     <locations>
                         <location>classpath:db/migration</location>
                     </locations>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
             </plugin>
         </plugins>

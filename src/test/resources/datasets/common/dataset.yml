@@ -274,3 +274,13 @@ STORES:
   - ID: 2
     NAME: "Склад №2"
     ADDRESS: "Фастів, вул. Зелена, 5"
+
+CARS:
+  - ID: 1
+    NAME: "Mercedes Sprinter"
+    LICENCE_PLATE: "AA 1111 CT"
+    DRIVER: "Oleg Dudka"
+    WEIGHT_CAPACITY: 3000
+    COOLER: "false"
+    AVAILABLE: "true"
+    TRAVEL_COST: 1

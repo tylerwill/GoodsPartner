@@ -1,0 +1,1 @@
+ALTER TABLE cars ADD "travel_cost" INTEGER NOT NULL;
