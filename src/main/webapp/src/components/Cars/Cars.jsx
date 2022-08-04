@@ -1,35 +1,46 @@
+import React from "react";
+import {connect} from "react-redux";
+import {compose} from "redux";
+import {getCars} from "../../redux/thunks/calculate-thunk";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-// import DateChooserCard from "./DateChooserCard/DateChooserCard";
-// import BasicTabs from "./BasicTabs/BasicTabs";
-import React from "react";
 import CarTable from "./CarTable/CarTable";
-import DateChooserCard from "../Calculate/DateChooserCard/DateChooserCard";
+
+class Cars extends React.Component {
 
 
-const Calculate = ({orders, routes, stores, getCalculatedDataByDate, routeAddresses}) => {
+  getCars = () => {
+    this.props.getCars();
+  }
 
-    return (
-        <div className="App">
-            <Container>
-                <Box sx={{flexGrow: 1}}>
-                    <Grid container spacing={3} direction="column">
-                        <Grid item xs={2}>
-                            <DateChooserCard
-                                getCalculatedDataByDate={getCalculatedDataByDate}
-                            />
+    componentDidMount() {
+        this.getCars();
+    }
+
+  render() {
+    return (<div className="App">
+                <Container>
+                    <Box sx={{flexGrow: 1}}>
+                        <Grid container spacing={3} direction="column">
+                            <Grid item xs={2}>
+
+                            </Grid>
+                            <Grid item xs={12}>
+                                <CarTable cars={this.props.cars}/>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={12}>
-                            <CarTable/>
-                        </Grid>
-                    </Grid>
-                </Box>
-            </Container>
-        </div>
-    );
+                    </Box>
+                </Container>
+            </div>)
+
+  }
 }
 
-export default Calculate;
+let mapStateToProps = (state) => {
+  return {
+    cars: state.cars
+  }
+}
 
-
+export default compose(connect(mapStateToProps, {getCars}))(Cars);

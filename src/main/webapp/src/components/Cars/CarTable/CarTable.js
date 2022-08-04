@@ -10,7 +10,11 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 
-function CarTable({}) {
+function CarTable({cars}) {
+    if(cars) {
+        console.log("car table, ", cars);
+    }
+
     return (<Card sx={{minWidth: 275}}>
             <CardContent>
                 <Stack spacing={2}>
