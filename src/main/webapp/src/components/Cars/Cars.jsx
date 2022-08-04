@@ -1,11 +1,15 @@
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import DateChooserCard from "./DateChooserCard/DateChooserCard";
-import BasicTabs from "./BasicTabs/BasicTabs";
+// import DateChooserCard from "./DateChooserCard/DateChooserCard";
+// import BasicTabs from "./BasicTabs/BasicTabs";
 import React from "react";
+import CarTable from "./CarTable/CarTable";
+import DateChooserCard from "../Calculate/DateChooserCard/DateChooserCard";
+
 
 const Calculate = ({orders, routes, stores, getCalculatedDataByDate, routeAddresses}) => {
+
     return (
         <div className="App">
             <Container>
@@ -16,13 +20,8 @@ const Calculate = ({orders, routes, stores, getCalculatedDataByDate, routeAddres
                                 getCalculatedDataByDate={getCalculatedDataByDate}
                             />
                         </Grid>
-                        <Grid item xs={10}>
-                            <BasicTabs
-                                orders={orders}
-                                routes={routes}
-                                stores={stores}
-                                routeAddresses={routeAddresses}
-                            />
+                        <Grid item xs={12}>
+                            <CarTable/>
                         </Grid>
                     </Grid>
                 </Box>
@@ -32,3 +31,5 @@ const Calculate = ({orders, routes, stores, getCalculatedDataByDate, routeAddres
 }
 
 export default Calculate;
+
+
