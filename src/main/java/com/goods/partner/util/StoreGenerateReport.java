@@ -4,6 +4,7 @@ import com.goods.partner.entity.projection.StoreProjection;
 import com.goods.partner.repository.StoreRepository;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class StoreGenerateReport {
 
     @Autowired
@@ -90,10 +92,6 @@ public class StoreGenerateReport {
         workbook.close();
         outputStream.close();
 
-//        FileOutputStream fileOut = null;
-//        fileOut = new FileOutputStream("data/myReport.xlsx");
-//        workbook.write(fileOut);
-//        fileOut.close();
     }
 
     private void createCell(Row row, int columnCount, Object cellValue, CellStyle style) {

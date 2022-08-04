@@ -24,7 +24,7 @@ public class ReportController {
     private OrderGenerateReport orderGenerateReport;
 
     @GetMapping("/stores/generate")
-    public void generateStores(HttpServletResponse response, @RequestParam String date) throws IOException, InvalidFormatException {
+    public void generateStores(HttpServletResponse response, @RequestParam String date) throws IOException {
         response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
@@ -37,8 +37,7 @@ public class ReportController {
     }
 
     @GetMapping("/orders/generate")
-    public void generateOrders(@RequestParam String date) {
-
+    public void generateOrders(@RequestParam String date) throws IOException {
 
         orderGenerateReport.generateExcelFile(LocalDate.parse(date));
     }
