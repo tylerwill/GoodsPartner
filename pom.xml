@@ -130,7 +130,22 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.7.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <requiresUnpack>
+                        <dependency>
+                            <groupId>com.google.ortools</groupId>
+                            <artifactId>ortools-linux-x86-64</artifactId>
+                        </dependency>
+                    </requiresUnpack>
+                </configuration>
+
             </plugin>
             <plugin>
                 <groupId>com.github.eirslett</groupId>
