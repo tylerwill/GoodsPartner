@@ -4,14 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.goods.partner.AbstractBaseITest;
+import com.goods.partner.AbstractWebITest;
 import com.goods.partner.dto.CarDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.NestedServletException;
 
@@ -20,14 +17,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DBRider
-@AutoConfigureMockMvc
-public class CarEndpointITest extends AbstractBaseITest {
-    @Autowired
-    private MockMvc mockMvc;
+public class CarEndpointITest extends AbstractWebITest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-
 
     @Test
     @DataSet("common/car/dataset_cars.yml")
