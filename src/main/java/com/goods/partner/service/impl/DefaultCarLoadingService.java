@@ -4,23 +4,16 @@ import com.goods.partner.dto.CarDto;
 import com.goods.partner.dto.CarLoadDto;
 import com.goods.partner.dto.RoutePointDto;
 import com.goods.partner.dto.StoreDto;
-import com.goods.partner.exceptions.GoogleApiException;
 import com.goods.partner.service.CarLoadingService;
 import com.goods.partner.service.CarService;
-import com.google.maps.DistanceMatrixApi;
-import com.google.maps.DistanceMatrixApiRequest;
-import com.google.maps.GeoApiContext;
-import com.google.maps.errors.ApiException;
+import com.goods.partner.service.GoogleApiService;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixRow;
-import com.google.maps.model.TravelMode;
 import com.google.ortools.Loader;
 import com.google.ortools.constraintsolver.*;
 import com.google.protobuf.Duration;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -33,20 +26,24 @@ public class DefaultCarLoadingService implements CarLoadingService {
     private static final int SOLUTION_PROCESSING_TIME_SEC = 3;
     private static final int SLACK_UPPER_BOUND = 0;
     private static final String VEHICLE_CAPACITY_DIMENSION_NAME = "Capacity";
-    private static final String DEFAULT_LANGUAGE = "uk-UK";
     private static final boolean START_CUMUL_TO_ZERO = true;
-    @Value("${google.api.key}")
-    private String GOOGLE_API_KEY;
     private final CarService carService;
+    private final GoogleApiService googleApiService;
 
-    public DefaultCarLoadingService(CarService carService) {
+    public DefaultCarLoadingService(CarService carService, GoogleApiService googleApiService) {
         this.carService = carService;
+        this.googleApiService = googleApiService;
         Loader.loadNativeLibraries();
     }
 
     public List<CarLoadDto> loadCars(StoreDto store, List<RoutePointDto> routePoints) {
         List<CarDto> cars = carService.findByAvailableCars();
-        DistanceMatrix routePointsMatrix = getDistanceMatrix(store, routePoints);
+        List<String> pointsAddresses = new ArrayList<>();
+        pointsAddresses.add(store.getStoreAddress());
+        pointsAddresses.addAll(routePoints.stream()
+                .map(RoutePointDto::getAddress).toList());
+
+        DistanceMatrix routePointsMatrix = googleApiService.getDistanceMatrix(pointsAddresses);
         return load(cars, routePoints, routePointsMatrix);
     }
 
@@ -87,26 +84,6 @@ public class DefaultCarLoadingService implements CarLoadingService {
             }
         }
         return loadCars;
-    }
-
-    private DistanceMatrix getDistanceMatrix(StoreDto store, List<RoutePointDto> routePoints) {
-        List<String> pointsAddresses = new ArrayList<>();
-        pointsAddresses.add(store.getStoreAddress());
-        pointsAddresses.addAll(routePoints.stream()
-                .map(RoutePointDto::getAddress).toList());
-
-        try (GeoApiContext context = new GeoApiContext.Builder()
-                .apiKey(GOOGLE_API_KEY)
-                .build()) {
-            DistanceMatrixApiRequest matrixApiRequest = DistanceMatrixApi.newRequest(context);
-            return matrixApiRequest.origins(pointsAddresses.toArray(String[]::new))
-                    .destinations(pointsAddresses.toArray(String[]::new))
-                    .mode(TravelMode.DRIVING)
-                    .language(DEFAULT_LANGUAGE)
-                    .await();
-        } catch (IOException | ApiException | InterruptedException e) {
-            throw new GoogleApiException(e);
-        }
     }
 
     private Assignment getSolution(RoutingModel routing) {

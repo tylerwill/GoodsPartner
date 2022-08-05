@@ -18,7 +18,7 @@ class DefaultRouteServiceTest {
     private final DirectionsRoute route = new DirectionsRoute();
     private final DirectionsLeg[] legs = new DirectionsLeg[4];
     private final List<RoutePointDto> routePoints = new ArrayList<>(3);
-    private final DefaultRouteService routeService = new DefaultRouteService(null, null);
+    private final DefaultRouteService routeService = new DefaultRouteService(null, null, null);
 
     @BeforeEach
     public void setUp() {
