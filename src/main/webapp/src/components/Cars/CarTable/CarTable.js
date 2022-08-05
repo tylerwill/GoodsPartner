@@ -11,10 +11,56 @@ import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 
 function CarTable({cars}) {
-    if(cars) {
-        console.log("car table, ", cars);
-    }
+    let isCarPrinted = false;
+    console.log("car table, ", cars);
 
+    let body = "";
+    if (cars) {
+        body = cars.map((car) => (<>
+                <>
+                    <TableRow
+                        key={car.id}
+                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                    >
+                        {
+                            isCarPrinted === false &&
+                            <TableCell sx={{padding: '7px'}} component="th"
+                                       scope="row">
+                                {car.id}
+                            </TableCell>
+                        }
+                        <TableCell sx={{padding: '7px'}} component="th" scope="row"
+                                   align="right">
+                            {car.name}
+                        </TableCell>
+                        <TableCell sx={{padding: '7px'}} component="th" scope="row"
+
+                                   align="right">
+                            {car.licence_plate}
+                        </TableCell>
+                        <TableCell sx={{padding: '7px'}} component="th" scope="row"
+                                   align="right">
+                            {car.driver}
+                        </TableCell>
+                        <TableCell sx={{padding: '7px'}} component="th" scope="row"
+                                   align="right">
+                            {car.weight_capacity}
+                        </TableCell>
+                        <TableCell sx={{padding: '7px'}} component="th" scope="row"
+                                   align="right">
+                            {car.cooler}
+                        </TableCell>
+                        <TableCell sx={{padding: '7px'}} component="th" scope="row"
+                                   align="right">
+                            {car.available}
+                        </TableCell>
+                        {isCarPrinted = true}
+                    </TableRow>
+                </>
+                )}
+            </>
+        ));
+    }
     return (<Card sx={{minWidth: 275}}>
             <CardContent>
                 <Stack spacing={2}>
@@ -44,7 +90,7 @@ function CarTable({cars}) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-
+                                    {body}
                                 </TableBody>
                             </Table>
                         </TableContainer>
@@ -56,4 +102,3 @@ function CarTable({cars}) {
 }
 
 export default CarTable;
-
