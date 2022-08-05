@@ -2,7 +2,7 @@ package com.goodspartner.report;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.goods.partner.AbstractBaseITest;
+import com.goodspartner.AbstractBaseITest;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

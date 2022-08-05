@@ -1,6 +1,6 @@
 package com.goodspartner.web.controller;
 
-import com.goods.partner.AbstractWebITest;
+import com.goodspartner.AbstractWebITest;
 import com.goodspartner.dto.*;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.service.OrderService;

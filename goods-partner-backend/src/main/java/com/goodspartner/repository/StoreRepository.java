@@ -12,7 +12,8 @@ import java.util.List;
 @Repository
 public interface StoreRepository extends JpaRepository<Store, LocalDate> {
 
-    @Query("SELECT new com.goods.partner.entity.projection.StoreProjection(s.id, s.name, s.address, o.id, o.number, SUM(op.count * p.kg)) " +
+    @Query("SELECT new com.goodspartner.entity.projection.StoreProjection(s.id, s.name, s.address, o.id, o.number, " +
+            "SUM(op.count * p.kg)) " +
             " FROM Order o JOIN o.orderedProducts op JOIN op.product p JOIN p.store s " +
             " WHERE o.shippingDate = :date " +
             " GROUP BY s.id, s.name, s.address, o.id, o.number")

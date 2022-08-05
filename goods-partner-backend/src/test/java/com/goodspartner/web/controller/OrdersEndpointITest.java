@@ -2,7 +2,7 @@ package com.goodspartner.web.controller;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.goods.partner.AbstractWebITest;
+import com.goodspartner.AbstractWebITest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 

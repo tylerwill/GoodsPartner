@@ -11,3 +11,6 @@ spring:
 google:
   api:
     key: some-test_key
+
+reports:
+  destination: reports

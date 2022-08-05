@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.goods.partner.AbstractWebITest;
+import com.goodspartner.AbstractWebITest;
 import com.goodspartner.dto.CarDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
