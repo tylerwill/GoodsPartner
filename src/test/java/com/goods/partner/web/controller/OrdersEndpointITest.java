@@ -38,7 +38,7 @@ public class OrdersEndpointITest extends AbstractBaseITest {
                                           "orders": [
                                             {
                                               "orderId": 2,
-                                              "orderNumber": 43532,
+                                              "orderNumber": "43532",
                                               "createdDate": "2022-07-09",
                                               "orderData": {
                                                 "clientName": "ТОВ Пекарня",
@@ -60,7 +60,7 @@ public class OrdersEndpointITest extends AbstractBaseITest {
                                             },
                                             {
                                               "orderId": 3,
-                                              "orderNumber": 45463,
+                                              "orderNumber": "45463",
                                               "createdDate": "2022-07-09",
                                               "orderData": {
                                                 "clientName": "ТОВ Кондитерська",

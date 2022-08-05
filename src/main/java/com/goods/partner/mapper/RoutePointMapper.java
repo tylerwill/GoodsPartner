@@ -54,7 +54,7 @@ public class RoutePointMapper {
 
         AddressOrderDto addressOrderDto = new AddressOrderDto();
         addressOrderDto.setOrderId(order.getId());
-        addressOrderDto.setOrderNumber(order.getNumber());
+        addressOrderDto.setOrderNumber(String.valueOf(order.getNumber()));
         addressOrderDto.setOrderTotalWeight(orderTotalWeight);
 
         return addressOrderDto;

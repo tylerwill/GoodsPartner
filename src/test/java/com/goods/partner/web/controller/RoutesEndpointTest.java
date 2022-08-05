@@ -1,9 +1,6 @@
 package com.goods.partner.web.controller;
 
-import com.goods.partner.dto.AddressOrderDto;
-import com.goods.partner.dto.CalculationRoutesDto;
-import com.goods.partner.dto.RouteDto;
-import com.goods.partner.dto.RoutePointDto;
+import com.goods.partner.dto.*;
 import com.goods.partner.entity.RouteStatus;
 import com.goods.partner.service.OrderService;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +35,7 @@ public class RoutesEndpointTest {
     public void givenRoutes_whenCalculateRouters_thenJsonReturned() throws Exception {
         AddressOrderDto addressOrderDto = AddressOrderDto.builder()
                 .orderId(6)
-                .orderNumber(356325)
+                .orderNumber("356325")
                 .orderTotalWeight(59.32)
                 .build();
 
@@ -48,6 +45,41 @@ public class RoutesEndpointTest {
                 .addressTotalWeight(59.32)
                 .routePointDistantTime(Duration.ofSeconds(3600))
                 .orders(List.of(addressOrderDto))
+                .build();
+
+        CarDto carDto = CarDto.builder()
+                .id(1)
+                .name("Mercedes Vito")
+                .driver("Ivan Piddubny")
+                .licencePlate("AA 2222 CT")
+                .travelCost(10)
+                .available(true)
+                .cooler(false)
+                .weightCapacity(1000)
+                .loadSize(59.32)
+                .build();
+
+        ProductInfoDto productInfoDto = ProductInfoDto.builder()
+                .productName("3434 Паста шоколадна")
+                .amount(1)
+                .weight(1.52)
+                .build();
+
+        ProductInfoDto productInfoDto2 = ProductInfoDto.builder()
+                .productName("46643 Фарба харчова синя")
+                .amount(10)
+                .weight(57.8)
+                .build();
+
+        OrderInfoDto orderInfoDto = OrderInfoDto.builder()
+                .products(List.of(productInfoDto, productInfoDto2))
+                .orderNumber(String.valueOf(356325))
+                .orderId(6)
+                .build();
+
+        CarLoadDetailsDto carLoadDetailsDto = CarLoadDetailsDto.builder()
+                .car(carDto)
+                .orders(List.of(orderInfoDto))
                 .build();
 
         RouteDto routeDto = RouteDto.builder()
@@ -64,10 +96,12 @@ public class RoutesEndpointTest {
                 .storeName("Склад №1")
                 .storeAddress("Фастів, вул. Широка, 15")
                 .routePoints(List.of(routePointDto))
+                .car(carDto)
                 .build();
 
         CalculationRoutesDto calculationRoutesDto = CalculationRoutesDto.builder()
                 .routes(List.of(routeDto))
+                .carLoadDetails(List.of(carLoadDetailsDto))
                 .date(LocalDate.of(2022, 7, 12))
                 .build();
 
@@ -107,13 +141,58 @@ public class RoutesEndpointTest {
                                           "orders": [
                                             {
                                               "orderId": 6,
-                                              "orderNumber": 356325
+                                              "orderNumber": "356325"
+                                            }
+                                          ]
+                                        }
+                                      ],
+                                      "car": {
+                                        "id": 1,
+                                        "name": "Mercedes Vito",
+                                        "licencePlate": "AA 2222 CT",
+                                        "driver": "Ivan Piddubny",
+                                        "weightCapacity": 1000,
+                                        "cooler": false,
+                                        "available": true,
+                                        "loadSize": 59.32,
+                                        "travelCost": 10
+                                      }
+                                    }
+                                  ],
+                                  "carLoadDetails": [
+                                    {
+                                      "car": {
+                                        "id": 1,
+                                        "name": "Mercedes Vito",
+                                        "licencePlate": "AA 2222 CT",
+                                        "driver": "Ivan Piddubny",
+                                        "weightCapacity": 1000,
+                                        "cooler": false,
+                                        "available": true,
+                                        "loadSize": 59.32,
+                                        "travelCost": 10
+                                      },
+                                      "orders": [
+                                        {
+                                          "orderId": 6,
+                                          "orderNumber": "356325",
+                                          "products": [
+                                            {
+                                              "productName": "3434 Паста шоколадна",
+                                              "amount": 1,
+                                              "weight": 1.52
+                                            },
+                                            {
+                                              "productName": "46643 Фарба харчова синя",
+                                              "amount": 10,
+                                              "weight": 57.8
                                             }
                                           ]
                                         }
                                       ]
                                     }
-                                  ]                            
-                                }"""));
+                                  ]
+                                }"""
+                        ));
     }
 }
