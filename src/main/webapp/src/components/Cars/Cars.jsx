@@ -7,12 +7,12 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import CarTable from "./CarTable/CarTable";
 import {AppBar, Button, Stack, TextField, Toolbar, Typography} from "@mui/material";
+
 class Cars extends React.Component {
 
-
-  getCars = () => {
-    this.props.getCars();
-  }
+    getCars = () => {
+        this.props.getCars();
+    }
 
     componentDidMount() {
         this.getCars();
@@ -26,9 +26,10 @@ class Cars extends React.Component {
                         <Grid item xs={2}>
                             <AppBar position="static">
                                 <Toolbar>
-                                    <Stack direction="row"
-                                           spacing={2}>
-                                    </Stack>
+                                    <Typography variant="h6" gutterBottom component="div" sx={{flexGrow: 1}}>
+                                        <img
+                                            src="https://images.prom.ua/2143227305_w350_h100_ingrediyenti-dlya-pekariv.jpg"/>
+                                    </Typography>
                                 </Toolbar>
                             </AppBar>
                         </Grid>
@@ -43,9 +44,9 @@ class Cars extends React.Component {
 }
 
 let mapStateToProps = (state) => {
-  return {
-    cars: state.cars
-  }
+    return {
+        cars: state.cars
+    }
 }
 
 export default compose(connect(mapStateToProps, {getCars}))(Cars);
