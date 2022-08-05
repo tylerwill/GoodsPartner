@@ -5,6 +5,8 @@ import com.goods.partner.entity.Order;
 import com.goods.partner.entity.OrderedProduct;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +37,7 @@ public class CarDetailsMapper {
     private OrderInfoDto mapOrder(Order order) {
         return OrderInfoDto.builder()
                 .orderId(order.getId())
-                .orderNumber(order.getNumber())
+                .orderNumber(String.valueOf(order.getNumber()))
                 .products(mapOrderToProductInfo(order))
                 .build();
     }
@@ -49,6 +51,12 @@ public class CarDetailsMapper {
         return ProductInfoDto.builder()
                 .productName(orderedProduct.getProduct().getName())
                 .amount(orderedProduct.getCount())
+                .weight(getProductTotalWeight(orderedProduct))
                 .build();
+    }
+
+    private double getProductTotalWeight(OrderedProduct orderedProduct) {
+        return BigDecimal.valueOf(orderedProduct.getCount() * orderedProduct.getProduct().getKg())
+                .setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 }

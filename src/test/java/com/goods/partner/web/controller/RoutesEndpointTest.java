@@ -62,16 +62,18 @@ public class RoutesEndpointTest {
         ProductInfoDto productInfoDto = ProductInfoDto.builder()
                 .productName("3434 Паста шоколадна")
                 .amount(1)
+                .weight(1.52)
                 .build();
 
         ProductInfoDto productInfoDto2 = ProductInfoDto.builder()
                 .productName("46643 Фарба харчова синя")
                 .amount(10)
+                .weight(57.8)
                 .build();
 
         OrderInfoDto orderInfoDto = OrderInfoDto.builder()
                 .products(List.of(productInfoDto, productInfoDto2))
-                .orderNumber(356325)
+                .orderNumber(String.valueOf(356325))
                 .orderId(6)
                 .build();
 
@@ -173,15 +175,17 @@ public class RoutesEndpointTest {
                                       "orders": [
                                         {
                                           "orderId": 6,
-                                          "orderNumber": 356325,
+                                          "orderNumber": "356325",
                                           "products": [
                                             {
                                               "productName": "3434 Паста шоколадна",
-                                              "amount": 1
+                                              "amount": 1,
+                                              "weight": 1.52
                                             },
                                             {
                                               "productName": "46643 Фарба харчова синя",
-                                              "amount": 10
+                                              "amount": 10,
+                                              "weight": 57.8
                                             }
                                           ]
                                         }

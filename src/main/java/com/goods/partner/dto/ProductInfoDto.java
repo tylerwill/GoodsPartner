@@ -10,4 +10,5 @@ import lombok.*;
 public class ProductInfoDto {
     private String productName;
     private int amount;
+    private double weight;
 }

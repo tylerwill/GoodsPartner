@@ -12,6 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderInfoDto {
     private int orderId;
-    private int orderNumber;
+    private String orderNumber;
     private List<ProductInfoDto> products;
 }
