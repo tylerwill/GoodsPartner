@@ -19,6 +19,10 @@ jobs:
       with:
         java-version: '17'
         distribution: 'adopt'
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
     - name: Build with Maven
       run: mvn --batch-mode clean package
 
