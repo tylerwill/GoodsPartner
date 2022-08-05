@@ -22,6 +22,7 @@
         <node.version>v16.15.1</node.version>
         <npm.version>8.11.0</npm.version>
         <testcontainers.version>1.17.3</testcontainers.version>
+        <poi.version>5.2.2</poi.version>
     </properties>
 
     <dependencies>
@@ -72,6 +73,21 @@
             <version>9.3.10497</version>
         </dependency>
 
+
+        <!--   REPORTS   -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+
+        <!--  TESTS   -->
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
@@ -124,17 +140,7 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>5.2.2</version>
-        </dependency>
 
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>5.2.2</version>
-        </dependency>
     </dependencies>
 
     <build>
