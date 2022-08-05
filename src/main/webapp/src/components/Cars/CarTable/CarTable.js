@@ -16,7 +16,7 @@ function CarTable({cars}) {
 
     let body = "";
     if (cars) {
-        body = cars.map((car) => (<>
+        body = cars.cars.map((car) => (<>
                 <>
                     <TableRow
                         key={car.id}
