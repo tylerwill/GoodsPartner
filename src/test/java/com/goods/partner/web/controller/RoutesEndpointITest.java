@@ -1,16 +1,14 @@
 package com.goods.partner.web.controller;
 
+import com.goods.partner.AbstractWebITest;
 import com.goods.partner.dto.*;
 import com.goods.partner.entity.RouteStatus;
 import com.goods.partner.service.OrderService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -21,11 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(OrderController.class)
-public class RoutesEndpointTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+public class RoutesEndpointITest extends AbstractWebITest {
 
     @MockBean
     OrderService orderService;

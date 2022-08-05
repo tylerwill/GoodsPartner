@@ -2,23 +2,16 @@ package com.goods.partner.web.controller;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.goods.partner.AbstractBaseITest;
+import com.goods.partner.AbstractWebITest;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DBRider
-@AutoConfigureMockMvc
-public class OrdersEndpointITest extends AbstractBaseITest {
-
-    @Autowired
-    private MockMvc mockMvc;
+public class OrdersEndpointITest extends AbstractWebITest {
 
     @Test
     @DataSet("common/dataset.yml")
