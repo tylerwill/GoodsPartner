@@ -6,21 +6,15 @@ import com.goods.partner.dto.RoutePointDto;
 import com.goods.partner.dto.StoreDto;
 import com.goods.partner.entity.Order;
 import com.goods.partner.entity.RouteStatus;
-import com.goods.partner.exceptions.GoogleApiException;
 import com.goods.partner.mapper.RoutePointMapper;
 import com.goods.partner.service.CarLoadingService;
+import com.goods.partner.service.GoogleApiService;
 import com.goods.partner.service.RouteService;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.maps.DirectionsApi;
-import com.google.maps.GeoApiContext;
-import com.google.maps.errors.ApiException;
 import com.google.maps.model.DirectionsRoute;
-import com.google.maps.model.TravelMode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
@@ -32,10 +26,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DefaultRouteService implements RouteService {
     private final CarLoadingService carLoadingService;
-    @Value("${google.api.key}")
-    private String GOOGLE_API_KEY;
     private final RoutePointMapper routePointMapper;
-
+    private final GoogleApiService googleApiService;
 
     @Override
     public List<RouteDto> calculateRoutes(List<Order> orders, List<StoreDto> stores) {
@@ -49,9 +41,10 @@ public class DefaultRouteService implements RouteService {
     }
 
     private RouteDto calculateRoute(CarLoadDto carLoad, StoreDto store) {
-
         List<RoutePointDto> routePoints = carLoad.getRoutePoints();
-        DirectionsRoute route = getDirectionRoute(store.getStoreAddress(), routePoints);
+        List<String> pointsAddresses = routePoints.stream()
+                .map(RoutePointDto::getAddress).toList();
+        DirectionsRoute route = googleApiService.getDirectionRoute(store.getStoreAddress(), pointsAddresses);
         double totalDistance = getRouteTotalDistance(route);
         long totalTime = getRouteTotalTime(route);
         addRoutPointDistantTime(routePoints, route);
@@ -69,26 +62,6 @@ public class DefaultRouteService implements RouteService {
                 .routePoints(routePoints)
                 .car(carLoad.getCar())
                 .build();
-    }
-
-    private DirectionsRoute getDirectionRoute(String startPoint, List<RoutePointDto> routePoints) {
-        List<String> pointsAddresses = routePoints.stream()
-                .map(RoutePointDto::getAddress).toList();
-
-        try (GeoApiContext context = new GeoApiContext.Builder()
-                .apiKey(GOOGLE_API_KEY)
-                .build()) {
-            return DirectionsApi.newRequest(context)
-                    .origin(startPoint)
-                    .destination(startPoint)
-                    .waypoints(pointsAddresses.toArray(String[]::new))
-                    .mode(TravelMode.DRIVING)
-                    .departureTimeNow()
-                    .await()
-                    .routes[0];
-        } catch (IOException | ApiException | InterruptedException e) {
-            throw new GoogleApiException(e);
-        }
     }
 
     private int getTotalOrders(List<RoutePointDto> routePoints) {
