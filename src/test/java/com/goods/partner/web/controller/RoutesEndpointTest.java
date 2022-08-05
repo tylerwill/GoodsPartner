@@ -35,7 +35,7 @@ public class RoutesEndpointTest {
     public void givenRoutes_whenCalculateRouters_thenJsonReturned() throws Exception {
         AddressOrderDto addressOrderDto = AddressOrderDto.builder()
                 .orderId(6)
-                .orderNumber(356325)
+                .orderNumber("356325")
                 .orderTotalWeight(59.32)
                 .build();
 
@@ -141,7 +141,7 @@ public class RoutesEndpointTest {
                                           "orders": [
                                             {
                                               "orderId": 6,
-                                              "orderNumber": 356325
+                                              "orderNumber": "356325"
                                             }
                                           ]
                                         }

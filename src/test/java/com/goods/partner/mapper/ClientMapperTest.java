@@ -54,7 +54,7 @@ class ClientMapperTest {
         AddressOrderDto addressOrderDto = clientMapper.mapAddressOrder(mockOrder);
 
         assertEquals(1, addressOrderDto.getOrderId());
-        assertEquals(1, addressOrderDto.getOrderNumber());
+        assertEquals("1", addressOrderDto.getOrderNumber());
         assertEquals(52.5, addressOrderDto.getOrderTotalWeight(), 0.001);
     }
 

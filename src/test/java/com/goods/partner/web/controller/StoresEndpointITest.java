@@ -44,7 +44,7 @@ public class StoresEndpointITest extends AbstractBaseITest {
                                               "orders": [
                                                 {
                                                   "orderId": 6,
-                                                  "orderNumber": 356325,
+                                                  "orderNumber": "356325",
                                                   "totalOrderWeight": 59.32
                                                 }
                                               ]

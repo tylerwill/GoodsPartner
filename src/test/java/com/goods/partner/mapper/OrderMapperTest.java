@@ -90,7 +90,7 @@ class OrderMapperTest {
         List<ProductDto> products = orderData.getProducts();
 
         assertEquals(1, orderDto.getOrderId());
-        assertEquals(1, orderDto.getOrderNumber());
+        assertEquals("1", orderDto.getOrderNumber());
         assertEquals(LocalDate.of(2022, 6, 28), orderDto.getCreatedDate());
         assertEquals("ТОВ \"Хлібзавод\"", orderData.getClientName());
         assertEquals("м. Київ, вул. Хрещатик, 1", orderData.getAddress());
