@@ -23,7 +23,7 @@ function OrdersList({date, orders}) {
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <a target="_blank" href= {reportLink}>
+                                            <a target="_blank" rel="noreferrer" href= {reportLink}>
                                             <Button size="small" variant="outlined" style={{width: '12em'}}>
                                                 Сформувати звіт
                                             </Button>

@@ -5,6 +5,8 @@ import com.github.database.rider.spring.api.DBRider;
 import com.goods.partner.AbstractBaseITest;
 import com.goods.partner.service.impl.DefaultOrderService;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
+import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,7 @@ public class DefaultOrderServiceITest extends AbstractBaseITest {
         assertSelectCount(1);
     }
 
+    @Disabled // Uses the real Google engine TODO need a fix and redesign
     @Test
     @DataSet(value = "common/dataset.yml")
     @DisplayName("Check queries quantity correct after calculate routes")
