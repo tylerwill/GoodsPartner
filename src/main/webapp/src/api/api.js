@@ -271,6 +271,30 @@ let mockedStores = {
   }
 }
 
+let mockedCars = [{ "id":"1",
+                                                  "name":"Mercedes Sprinter",
+                                                  "licence_plate":"AA 1111 CT",
+                                                  "driver":"Oleg Dudka",
+                                                  "weight_capacity":"3000",
+                                                  "cooler":"false",
+                                                  "available":"ENABLE"},
+                                                  {"id":"2",
+                                                  "name":"MAN",
+                                                  "licence_plate":"AA 2455 CT",
+                                                  "driver":"Ivan Kornienko",
+                                                  "weight_capacity":"4000",
+                                                  "cooler":"true",
+                                                  "available":"false"},
+                                                   {
+                                                  "id": "3",
+                                                 "name":"DAF",
+                                                 "licencePlate":"AA 4567 CT",
+                                                 "driver":"Roman Levchenko",
+                                                 "weightCapacity":"5000",
+                                                 "cooler":"true",
+                                                 "available":"false"
+                                                 }]
+
 export const orderApi = {
   getOrdersByDateRequest(ordersDate) {
     return axiosWithSetting.get(`calculate/orders?date=` + ordersDate);
@@ -282,15 +306,22 @@ export const orderApi = {
 export const routeApi = {
   getRoutesByDateRequest(routesDate) {
     return axiosWithSetting.get(`calculate/routes?date=` + routesDate);
-    // mockedRoutes.data.date = routesDate;
-    // return mockedRoutes;
+     // mockedRoutes.data.date = routesDate;
+     // return mockedRoutes;
   }
 }
 
 export const storeApi = {
   getStoresByDateRequest(storesDate) {
-    return axiosWithSetting.get(`calculate/stores?date=` + storesDate);
-    // mockedStores.data.date = storesDate;
-    // return mockedStores;
+   // return axiosWithSetting.get(`calculate/stores?date=` + storesDate);
+     mockedStores.data.date = storesDate;
+     return mockedStores;
+  }
+}
+
+
+export const carsApi = {
+  getAll() {
+     return mockedCars;
   }
 }

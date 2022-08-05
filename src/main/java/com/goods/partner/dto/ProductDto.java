@@ -10,5 +10,7 @@ public class ProductDto {
     private String productName;
     private int amount;
     private String storeName;
+    private double unitWeight;
+    private double totalProductWeight;
 
 }
