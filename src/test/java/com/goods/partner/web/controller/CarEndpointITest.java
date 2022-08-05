@@ -1,15 +1,14 @@
 package com.goods.partner.web.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.goods.partner.AbstractBaseITest;
+import com.goods.partner.AbstractWebITest;
+import com.goods.partner.dto.CarDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.NestedServletException;
 
@@ -18,26 +17,27 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DBRider
-@AutoConfigureMockMvc
-public class CarEndpointITest extends AbstractBaseITest {
-    @Autowired
-    private MockMvc mockMvc;
+public class CarEndpointITest extends AbstractWebITest {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DataSet("common/car/dataset_cars.yml")
     @ExpectedDataSet("common/car/dataset_add_car.yml")
     @DisplayName("when Add Car then Ok Status Returned")
     void whenAddTheFirstCar_thenOkStatusReturned() throws Exception {
+        CarDto carDto = CarDto.builder()
+                .name("MAN")
+                .licencePlate("AA 2455 CT")
+                .driver("Ivan Kornienko")
+                .weightCapacity(4000)
+                .cooler(true)
+                .available(false)
+                .travelCost(10)
+                .build();
         mockMvc.perform(MockMvcRequestBuilders.post("/cars/add")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"name":"MAN",
-                                "licencePlate":"AA 2455 CT",
-                                "driver":"Ivan Kornienko",
-                                "weightCapacity":"4000",
-                                "cooler":"true",
-                                "available":"false"}
-                                """))
+                        .content(objectMapper.writeValueAsString(carDto)))
                 .andExpect(status().isOk());
     }
 
@@ -46,9 +46,11 @@ public class CarEndpointITest extends AbstractBaseITest {
     @ExpectedDataSet("common/car/dataset_update_car.yml")
     @DisplayName("when Update Car then Ok Status Returned")
     void whenUpdateCar_thenOkStatusReturned() throws Exception {
+        CarDto carDto = new CarDto();
+        carDto.setAvailable(false);
         mockMvc.perform(put("/cars/update/1")
-                        .param("available", "false")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(carDto)))
                 .andExpect(status().isOk());
     }
 
@@ -87,11 +89,12 @@ public class CarEndpointITest extends AbstractBaseITest {
     @ExpectedDataSet("common/car/dataset_cars.yml")
     @DisplayName("given Not Existing Id when Update Car Status By Id then Exception Thrown")
     void givenNotExistingId_whenUpdateCarStatusById_thenExceptionThrown() throws Exception {
+        CarDto carDto = new CarDto();
+        carDto.setAvailable(false);
         mockMvc.perform(put("/cars/update/5")
-                        .param("available", "false")
-                        .contentType(MediaType.APPLICATION_JSON))
-
-                .andExpect(status().isOk());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(carDto)))
+                .andExpect(status().isNotFound());
     }
 
     @Test

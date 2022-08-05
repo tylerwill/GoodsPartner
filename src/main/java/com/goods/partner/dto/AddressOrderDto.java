@@ -9,6 +9,6 @@ import lombok.*;
 @Builder
 public class AddressOrderDto {
     private int orderId;
-    private int orderNumber;
+    private String orderNumber;
     private double orderTotalWeight;
 }

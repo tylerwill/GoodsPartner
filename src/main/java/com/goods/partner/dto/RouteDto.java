@@ -30,4 +30,5 @@ public class RouteDto {
     private String storeName;
     private String storeAddress;
     private List<RoutePointDto> routePoints;
+    private CarDto car;
 }

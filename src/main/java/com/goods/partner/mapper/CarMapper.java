@@ -22,8 +22,9 @@ public class CarMapper {
         carDto.setDriver(car.getDriver());
         carDto.setLicencePlate(car.getLicencePlate());
         carDto.setWeightCapacity(car.getWeightCapacity());
-        carDto.setCooler(car.isCooler());
-        carDto.setAvailable(car.isAvailable());
+        carDto.setCooler(car.getCooler());
+        carDto.setAvailable(car.getAvailable());
+        carDto.setTravelCost(car.getTravelCost());
         return carDto;
     }
 
@@ -34,8 +35,9 @@ public class CarMapper {
         car.setDriver(carDto.getDriver());
         car.setLicencePlate(carDto.getLicencePlate());
         car.setWeightCapacity(carDto.getWeightCapacity());
-        car.setCooler(carDto.isCooler());
-        car.setAvailable(carDto.isAvailable());
+        car.setCooler(carDto.getCooler());
+        car.setAvailable(carDto.getAvailable());
+        car.setTravelCost(carDto.getTravelCost());
         return car;
     }
 }

@@ -10,7 +10,7 @@ import lombok.Setter;
 public class StoreOrderDto {
 
     private int orderId;
-    private int orderNumber;
+    private String orderNumber;
     private double totalOrderWeight;
 
 }

@@ -23,7 +23,7 @@ public class StoreMapper {
 
             StoreOrderDto storeOrderDto = new StoreOrderDto();
             storeOrderDto.setOrderId(storeProjection.getOrderId());
-            storeOrderDto.setOrderNumber(storeProjection.getOrderNumber());
+            storeOrderDto.setOrderNumber(String.valueOf(storeProjection.getOrderNumber()));
             storeOrderDto.setTotalOrderWeight(storeProjection.getTotalOrderWeight());
             storeDto.addStoreOrderDto(storeOrderDto);
         });

@@ -49,7 +49,7 @@ class StoreMapperTest {
 
         StoreOrderDto storeOrderDto = orders.get(0);
         assertEquals(1, storeOrderDto.getOrderId());
-        assertEquals(5, storeOrderDto.getOrderNumber());
+        assertEquals("5", storeOrderDto.getOrderNumber());
         assertEquals(50.5, storeOrderDto.getTotalOrderWeight(), 0.001);
     }
 

@@ -1,13 +1,11 @@
 package com.goods.partner.service.impl;
 
 import com.goods.partner.dto.*;
-import com.goods.partner.entity.Client;
 import com.goods.partner.entity.Order;
 import com.goods.partner.entity.projection.StoreProjection;
-import com.goods.partner.mapper.ClientMapper;
+import com.goods.partner.mapper.CarDetailsMapper;
 import com.goods.partner.mapper.OrderMapper;
 import com.goods.partner.mapper.StoreMapper;
-import com.goods.partner.repository.ClientRepository;
 import com.goods.partner.repository.OrderRepository;
 import com.goods.partner.repository.StoreRepository;
 import com.goods.partner.service.OrderService;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -31,6 +28,7 @@ public class DefaultOrderService implements OrderService {
     private final RouteService routeService;
     private final OrderMapper orderMapper;
     private final StoreMapper storeMapper;
+    private final CarDetailsMapper carDetailsMapper;
 
     @Override
     @Transactional
@@ -55,9 +53,12 @@ public class DefaultOrderService implements OrderService {
 
         List<RouteDto> routes = routeService.calculateRoutes(orders, stores);
 
+        List<CarLoadDetailsDto> carsDetailsList = carDetailsMapper.map(routes, orders);
+
         CalculationRoutesDto calculationRoutesDto = new CalculationRoutesDto();
         calculationRoutesDto.setDate(date);
         calculationRoutesDto.setRoutes(routes);
+        calculationRoutesDto.setCarLoadDetails(carsDetailsList);
 
         return calculationRoutesDto;
     }

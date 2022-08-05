@@ -8,7 +8,7 @@ function OrdersList({date, orders}) {
     const initialOrder = orders === null ? '' : orders[0].orderNumber;
 
     const [activeOrder, setActiveOrder] = useState(initialOrder);
-
+    const reportLink = "http://localhost:8081/reports/orders/generate?date=" + date;
     return (<Card sx={{minWidth: 275}}>
             <CardContent>
                 <Stack spacing={2}>
@@ -23,9 +23,11 @@ function OrdersList({date, orders}) {
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={2}>
+                                            <a target="_blank" rel="noreferrer" href= {reportLink}>
                                             <Button size="small" variant="outlined" style={{width: '12em'}}>
                                                 Сформувати звіт
                                             </Button>
+                                            </a>
 
                                         </Grid>
                                     </Grid>

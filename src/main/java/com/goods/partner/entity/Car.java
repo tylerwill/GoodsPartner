@@ -1,10 +1,16 @@
 package com.goods.partner.entity;
 
-import lombok.Data;
-
 import javax.persistence.*;
+import lombok.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Getter
+@Setter
 @Entity
 @Table(name = "cars")
 public class Car {
@@ -14,12 +20,13 @@ public class Car {
     private int id;
     private String name;
     private String driver;
-    private boolean available;
-    private boolean cooler;
+    private Boolean available;
+    private Boolean cooler;
 
     @Column(name = "licence_plate")
     private String licencePlate;
 
     @Column(name = "weight_capacity")
     private int weightCapacity;
+    private int travelCost;
 }

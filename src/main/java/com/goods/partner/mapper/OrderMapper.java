@@ -27,17 +27,21 @@ public class OrderMapper {
         Manager manager = order.getManager();
 
         List<ProductDto> products = mapProducts(order.getOrderedProducts());
+        double orderWeight = products.stream()
+                .mapToDouble(ProductDto::getTotalProductWeight)
+                .sum();
 
         OrderData orderData = new OrderData();
         orderData.setClientName(client.getName());
         orderData.setAddress(address.getAddress());
         orderData.setManagerFullName(manager.getFirstName() + " " + manager.getLastName()); // TODO check with Taras to have single field for this
         orderData.setProducts(products);
+        orderData.setOrderWeight(orderWeight);
 
         OrderDto orderDto = new OrderDto();
         orderDto.setOrderId(order.getId());
         orderDto.setCreatedDate(order.getCreatedDate());
-        orderDto.setOrderNumber(order.getNumber());
+        orderDto.setOrderNumber(String.valueOf(order.getNumber()));
         orderDto.setOrderData(orderData);
         return orderDto;
     }
@@ -58,6 +62,8 @@ public class OrderMapper {
         productDto.setProductName(product.getName());
         productDto.setAmount(orderedProduct.getCount());
         productDto.setStoreName(store.getName());
+        productDto.setUnitWeight(product.getKg());
+        productDto.setTotalProductWeight((double) orderedProduct.getCount() * product.getKg());
         return productDto;
     }
 
