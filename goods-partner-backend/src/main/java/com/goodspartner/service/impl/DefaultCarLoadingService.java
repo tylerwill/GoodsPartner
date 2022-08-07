@@ -1,7 +1,6 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.CarDto;
-import com.goodspartner.dto.CarRoutesDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.dto.StoreDto;
 import com.goodspartner.service.CarLoadingService;
@@ -12,6 +11,7 @@ import com.google.maps.model.DistanceMatrixRow;
 import com.google.ortools.Loader;
 import com.google.ortools.constraintsolver.*;
 import com.google.protobuf.Duration;
+import lombok.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -156,4 +156,7 @@ public class DefaultCarLoadingService implements CarLoadingService {
                 .routePoints(routePoints)
                 .build();
     }
+
+
+
 }

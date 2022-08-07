@@ -1,6 +1,5 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.CarRoutesDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.Order;
@@ -33,14 +32,14 @@ public class DefaultRouteService implements RouteService {
     @Override
     public List<RoutesCalculation.RouteDto> calculateRoutes(List<Order> orders, StoreDto storeDto) {
         List<RoutePointDto> routePoints = routePointMapper.mapOrders(orders);
-        List<CarRoutesDto> carRoutesDtos = carLoadingService.loadCars(storeDto, routePoints);
+        List<CarLoadingService.CarRoutesDto> carRoutesDtos = carLoadingService.loadCars(storeDto, routePoints);
 
         return carRoutesDtos.stream()
                 .map(car -> calculateRoute(car, storeDto))
                 .collect(Collectors.toList());
     }
 
-    private RoutesCalculation.RouteDto calculateRoute(CarRoutesDto carLoad, StoreDto storeDto) {
+    private RoutesCalculation.RouteDto calculateRoute(CarLoadingService.CarRoutesDto carLoad, StoreDto storeDto) {
         List<RoutePointDto> routePoints = carLoad.getRoutePoints();
         List<String> pointsAddresses = routePoints.stream()
                 .map(RoutePointDto::getAddress).toList();
