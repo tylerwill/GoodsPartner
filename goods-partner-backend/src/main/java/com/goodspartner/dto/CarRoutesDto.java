@@ -6,14 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@Builder
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductInfoDto {
-    private String productName;
-    private int amount;
-    private double weight;
-
+@Builder
+@Getter
+@Setter
+public class CarRoutesDto {
+    private CarDto car;
+    private List<RoutePointDto> routePoints;
 }

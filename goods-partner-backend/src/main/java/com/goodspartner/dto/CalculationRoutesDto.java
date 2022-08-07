@@ -1,6 +1,10 @@
 package com.goodspartner.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,5 +17,5 @@ import java.util.List;
 public class CalculationRoutesDto {
     private LocalDate date;
     private List<RouteDto> routes;
-    private List<CarLoadDetailsDto> carLoadDetails;
+    private List<CarLoadDto> carLoadDetails;
 }

@@ -2,10 +2,12 @@ package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.CalculationOrdersDto;
 import com.goodspartner.dto.CalculationRoutesDto;
-import com.goodspartner.dto.CalculationStoresDto;
 import com.goodspartner.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 
@@ -24,10 +26,5 @@ public class OrderController {
     @GetMapping("/routes")
     public CalculationRoutesDto calculateRoutes(@RequestParam String date) {
         return orderService.calculateRoutes(LocalDate.parse(date));
-    }
-
-    @GetMapping("/stores")
-    public CalculationStoresDto calculateStores(@RequestParam String date) {
-        return orderService.calculateStores(LocalDate.parse(date));
     }
 }

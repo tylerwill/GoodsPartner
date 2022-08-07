@@ -3,6 +3,8 @@ package com.goodspartner.mapper;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.entity.*;
+import com.goodspartner.factory.Store;
+import com.goodspartner.factory.StoreFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @TestInstance(PER_CLASS)
 class OrderMapperTest {
@@ -21,10 +29,11 @@ class OrderMapperTest {
     private OrderMapper orderMapper;
     private OrderedProduct mockOrderedProduct;
     private Order mockOrder;
+    private StoreFactory storeFactory = new StoreFactory();
 
     @BeforeAll
     void setup() {
-        orderMapper = new OrderMapper();
+        orderMapper = new OrderMapper(storeFactory);
 
         Store mockStore = mock(Store.class);
         when(mockStore.getName()).thenReturn("Склад №1");
@@ -32,8 +41,6 @@ class OrderMapperTest {
         Product mockProduct = mock(Product.class);
         when(mockProduct.getName()).thenReturn("3434 Паста шоколадна");
         when(mockProduct.getKg()).thenReturn(1.2);
-
-        when(mockProduct.getStore()).thenReturn(mockStore);
 
         mockOrderedProduct = mock(OrderedProduct.class);
         when(mockOrderedProduct.getProduct()).thenReturn(mockProduct);

@@ -1,13 +1,16 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.*;
+import com.goodspartner.dto.CalculationOrdersDto;
+import com.goodspartner.dto.CalculationRoutesDto;
+import com.goodspartner.dto.CarLoadDto;
+import com.goodspartner.dto.OrderDto;
+import com.goodspartner.dto.RouteDto;
 import com.goodspartner.entity.Order;
-import com.goodspartner.entity.projection.StoreProjection;
+import com.goodspartner.factory.Store;
+import com.goodspartner.factory.StoreFactory;
 import com.goodspartner.mapper.CarDetailsMapper;
 import com.goodspartner.mapper.OrderMapper;
-import com.goodspartner.mapper.StoreMapper;
 import com.goodspartner.repository.OrderRepository;
-import com.goodspartner.repository.StoreRepository;
 import com.goodspartner.service.OrderService;
 import com.goodspartner.service.RouteService;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +27,9 @@ import java.util.List;
 public class DefaultOrderService implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final StoreRepository storeRepository;
     private final RouteService routeService;
     private final OrderMapper orderMapper;
-    private final StoreMapper storeMapper;
+    private final StoreFactory storeFactory;
     private final CarDetailsMapper carDetailsMapper;
 
     @Override
@@ -48,12 +50,11 @@ public class DefaultOrderService implements OrderService {
     public CalculationRoutesDto calculateRoutes(LocalDate date) {
 
         List<Order> orders = orderRepository.findAllByShippingDateEquals(date);
-        List<StoreProjection> storeProjections = storeRepository.groupStoresByOrders(date);
-        List<StoreDto> stores = storeMapper.mapStoreGroup(storeProjections);
 
-        List<RouteDto> routes = routeService.calculateRoutes(orders, stores);
+        Store store = storeFactory.getStore();
+        List<RouteDto> routes = routeService.calculateRoutes(orders, store);
 
-        List<CarLoadDetailsDto> carsDetailsList = carDetailsMapper.map(routes, orders);
+        List<CarLoadDto> carsDetailsList = carDetailsMapper.map(routes, orders);
 
         CalculationRoutesDto calculationRoutesDto = new CalculationRoutesDto();
         calculationRoutesDto.setDate(date);
@@ -61,19 +62,5 @@ public class DefaultOrderService implements OrderService {
         calculationRoutesDto.setCarLoadDetails(carsDetailsList);
 
         return calculationRoutesDto;
-    }
-
-    @Override
-    @Transactional
-    public CalculationStoresDto calculateStores(LocalDate date) {
-
-        List<StoreProjection> storeProjections = storeRepository.groupStoresByOrders(date);
-        List<StoreDto> storeDtos = storeMapper.mapStoreGroup(storeProjections);
-
-        CalculationStoresDto calculationStoresDto = new CalculationStoresDto();
-        calculationStoresDto.setDate(date);
-        calculationStoresDto.setStores(storeDtos);
-
-        return calculationStoresDto;
     }
 }

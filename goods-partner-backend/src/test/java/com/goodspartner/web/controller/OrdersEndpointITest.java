@@ -65,7 +65,7 @@ public class OrdersEndpointITest extends AbstractWebITest {
                                                 {
                                                   "productName": "8795 Мука екстра",
                                                   "amount": 5,
-                                                  "storeName": "Склад №2"
+                                                  "storeName": "Склад №1"
                                                 }
                                               ]
                                             }

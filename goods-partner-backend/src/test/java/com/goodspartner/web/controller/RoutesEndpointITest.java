@@ -1,7 +1,14 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.dto.*;
+import com.goodspartner.dto.AddressOrderDto;
+import com.goodspartner.dto.CalculationRoutesDto;
+import com.goodspartner.dto.CarDto;
+import com.goodspartner.dto.CarLoadDto;
+import com.goodspartner.dto.OrderInfoDto;
+import com.goodspartner.dto.ProductInfoDto;
+import com.goodspartner.dto.RouteDto;
+import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.service.OrderService;
 import org.junit.jupiter.api.DisplayName;
@@ -71,7 +78,7 @@ public class RoutesEndpointITest extends AbstractWebITest {
                 .orderId(6)
                 .build();
 
-        CarLoadDetailsDto carLoadDetailsDto = CarLoadDetailsDto.builder()
+        CarLoadDto carLoadDto = CarLoadDto.builder()
                 .car(carDto)
                 .orders(List.of(orderInfoDto))
                 .build();
@@ -95,7 +102,7 @@ public class RoutesEndpointITest extends AbstractWebITest {
 
         CalculationRoutesDto calculationRoutesDto = CalculationRoutesDto.builder()
                 .routes(List.of(routeDto))
-                .carLoadDetails(List.of(carLoadDetailsDto))
+                .carLoadDetails(List.of(carLoadDto))
                 .date(LocalDate.of(2022, 7, 12))
                 .build();
 

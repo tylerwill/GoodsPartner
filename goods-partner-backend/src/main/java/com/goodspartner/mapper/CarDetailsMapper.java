@@ -1,6 +1,11 @@
 package com.goodspartner.mapper;
 
-import com.goodspartner.dto.*;
+import com.goodspartner.dto.AddressOrderDto;
+import com.goodspartner.dto.CarLoadDto;
+import com.goodspartner.dto.OrderInfoDto;
+import com.goodspartner.dto.ProductInfoDto;
+import com.goodspartner.dto.RouteDto;
+import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Order;
 import com.goodspartner.entity.OrderedProduct;
 import org.springframework.stereotype.Component;
@@ -14,11 +19,11 @@ import java.util.stream.Collectors;
 @Component
 public class CarDetailsMapper {
 
-    public List<CarLoadDetailsDto> map(List<RouteDto> routes, List<Order> orders) {
+    public List<CarLoadDto> map(List<RouteDto> routes, List<Order> orders) {
         return routes.stream().map(route -> routeToCarDetails(route, orders)).toList();
     }
 
-    private CarLoadDetailsDto routeToCarDetails(RouteDto route, List<Order> orders) {
+    private CarLoadDto routeToCarDetails(RouteDto route, List<Order> orders) {
         List<RoutePointDto> routePoints = route.getRoutePoints();
         List<OrderInfoDto> ordersInfo = routePoints.stream().map(routePoint -> {
                     List<AddressOrderDto> addressOrderDtos = routePoint.getOrders();
@@ -28,7 +33,7 @@ public class CarDetailsMapper {
                 .collect(Collectors.toList());
 
         Collections.reverse(ordersInfo);
-        return CarLoadDetailsDto.builder()
+        return CarLoadDto.builder()
                 .car(route.getCar())
                 .orders(ordersInfo)
                 .build();

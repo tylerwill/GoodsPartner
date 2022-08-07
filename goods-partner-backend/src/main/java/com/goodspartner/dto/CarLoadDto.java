@@ -11,5 +11,5 @@ import java.util.List;
 @Setter
 public class CarLoadDto {
     private CarDto car;
-    private List<RoutePointDto> routePoints;
+    private List<OrderInfoDto> orders;
 }
