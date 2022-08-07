@@ -1,5 +1,6 @@
-package com.goodspartner.dto;
+package com.goodspartner.web.controller.response;
 
+import com.goodspartner.dto.OrderDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CalculationOrdersDto {
+public class OrdersCalculation {
     private LocalDate date;
     private List<OrderDto> orders;
 }

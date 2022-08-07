@@ -4,7 +4,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractBaseITest;
 import com.goodspartner.TestConfigurationToCountAllQueries;
-import com.goodspartner.service.impl.DefaultOrderService;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -32,17 +31,6 @@ public class DefaultOrderServiceITest extends AbstractBaseITest {
         orderService.calculateOrders(LocalDate.of(2022, 7, 12));
 
         assertSelectCount(5);
-    }
-
-    @Test
-    @DataSet("common/dataset.yml")
-    @DisplayName("Check queries quantity correct after calculate stores")
-    void validateQueriesAfterCalculateStores() {
-        SQLStatementCountValidator.reset();
-
-        orderService.calculateStores(LocalDate.of(2022, 7, 12));
-
-        assertSelectCount(1);
     }
 
     @Disabled // Uses the real Google engine TODO need a fix and redesign

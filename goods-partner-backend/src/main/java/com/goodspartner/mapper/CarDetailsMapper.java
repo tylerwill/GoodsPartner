@@ -1,8 +1,11 @@
 package com.goodspartner.mapper;
 
-import com.goodspartner.dto.*;
+import com.goodspartner.dto.OrderDto;
+import com.goodspartner.dto.ProductDto;
+import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Order;
 import com.goodspartner.entity.OrderedProduct;
+import com.goodspartner.web.controller.response.RoutesCalculation;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -14,44 +17,44 @@ import java.util.stream.Collectors;
 @Component
 public class CarDetailsMapper {
 
-    public List<CarLoadDetailsDto> map(List<RouteDto> routes, List<Order> orders) {
+    public List<RoutesCalculation.CarLoadDto> map(List<RoutesCalculation.RouteDto> routes, List<Order> orders) {
         return routes.stream().map(route -> routeToCarDetails(route, orders)).toList();
     }
 
-    private CarLoadDetailsDto routeToCarDetails(RouteDto route, List<Order> orders) {
+    private RoutesCalculation.CarLoadDto routeToCarDetails(RoutesCalculation.RouteDto route, List<Order> orders) {
         List<RoutePointDto> routePoints = route.getRoutePoints();
-        List<OrderInfoDto> ordersInfo = routePoints.stream().map(routePoint -> {
-                    List<AddressOrderDto> addressOrderDtos = routePoint.getOrders();
-                    List<Integer> ordersId = addressOrderDtos.stream().map(AddressOrderDto::getOrderId).toList();
+        List<OrderDto> ordersInfo = routePoints.stream().map(routePoint -> {
+                    List<RoutePointDto.AddressOrderDto> addressOrderDtos = routePoint.getOrders();
+                    List<Integer> ordersId = addressOrderDtos.stream().map(RoutePointDto.AddressOrderDto::getId).toList();
                     return orders.stream().filter(order -> ordersId.contains(order.getId())).toList();
                 }).flatMap(List::stream).map(this::mapOrder)
                 .collect(Collectors.toList());
 
         Collections.reverse(ordersInfo);
-        return CarLoadDetailsDto.builder()
+        return RoutesCalculation.CarLoadDto.builder()
                 .car(route.getCar())
                 .orders(ordersInfo)
                 .build();
     }
 
-    private OrderInfoDto mapOrder(Order order) {
-        return OrderInfoDto.builder()
-                .orderId(order.getId())
+    private OrderDto mapOrder(Order order) {
+        return OrderDto.builder()
+                .id(order.getId())
                 .orderNumber(String.valueOf(order.getNumber()))
                 .products(mapOrderToProductInfo(order))
                 .build();
     }
 
-    private List<ProductInfoDto> mapOrderToProductInfo(Order order) {
+    private List<ProductDto> mapOrderToProductInfo(Order order) {
         return order.getOrderedProducts().stream()
                 .map(this::mapOrderedProductToProductInfo).toList();
     }
 
-    private ProductInfoDto mapOrderedProductToProductInfo(OrderedProduct orderedProduct) {
-        return ProductInfoDto.builder()
+    private ProductDto mapOrderedProductToProductInfo(OrderedProduct orderedProduct) {
+        return ProductDto.builder()
                 .productName(orderedProduct.getProduct().getName())
                 .amount(orderedProduct.getCount())
-                .weight(getProductTotalWeight(orderedProduct))
+                .totalProductWeight(getProductTotalWeight(orderedProduct))
                 .build();
     }
 

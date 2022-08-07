@@ -1,6 +1,6 @@
 package com.goodspartner.web.controller;
 
-import com.goodspartner.web.controller.response.OrdersCalculation;
+import com.goodspartner.web.controller.response.RoutesCalculation;
 import com.goodspartner.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,14 +13,11 @@ import java.time.LocalDate;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-public class OrderController {
-
+public class RouteController {
     private final OrderService orderService;
 
-    @GetMapping("/orders")
-    public OrdersCalculation calculateOrders(@RequestParam String date) {
-        return orderService.calculateOrders(LocalDate.parse(date));
+    @GetMapping("/routes")
+    public RoutesCalculation calculateRoutes(@RequestParam String date) {
+        return orderService.calculateRoutes(LocalDate.parse(date));
     }
-
-
 }

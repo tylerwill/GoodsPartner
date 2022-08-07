@@ -1,9 +1,10 @@
 package com.goodspartner.mapper;
 
-import com.goodspartner.dto.OrderData;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.entity.*;
+import com.goodspartner.dto.StoreDto;
+import com.goodspartner.service.impl.MockedStoreService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @TestInstance(PER_CLASS)
 class OrderMapperTest {
@@ -22,19 +29,18 @@ class OrderMapperTest {
     private OrderMapper orderMapper;
     private OrderedProduct mockOrderedProduct;
     private Order mockOrder;
+    private final MockedStoreService storeService = new MockedStoreService();
 
     @BeforeAll
     void setup() {
-        orderMapper = new OrderMapper();
+        orderMapper = new OrderMapper(storeService);
 
-        Store mockStore = mock(Store.class);
-        when(mockStore.getName()).thenReturn("Склад №1");
+        StoreDto mockStoreDto = mock(StoreDto.class);
+        when(mockStoreDto.getName()).thenReturn("Склад №1");
 
         Product mockProduct = mock(Product.class);
         when(mockProduct.getName()).thenReturn("3434 Паста шоколадна");
         when(mockProduct.getKg()).thenReturn(1.2);
-
-        when(mockProduct.getStore()).thenReturn(mockStore);
 
         mockOrderedProduct = mock(OrderedProduct.class);
         when(mockOrderedProduct.getProduct()).thenReturn(mockProduct);
@@ -90,17 +96,16 @@ class OrderMapperTest {
     void test_givenOrder_whenMapOrder_thenReturnOrderDto() {
         OrderMapper spyOrderMapper = spy(orderMapper);
         OrderDto orderDto = spyOrderMapper.mapOrder(mockOrder);
-        OrderData orderData = orderDto.getOrderData();
-        List<ProductDto> products = orderData.getProducts();
+        List<ProductDto> products = orderDto.getProducts();
 
-        assertEquals(1, orderDto.getOrderId());
+        assertEquals(1, orderDto.getId());
         assertEquals("1", orderDto.getOrderNumber());
         assertEquals(LocalDate.of(2022, 6, 28), orderDto.getCreatedDate());
-        assertEquals("ТОВ \"Хлібзавод\"", orderData.getClientName());
-        assertEquals("м. Київ, вул. Хрещатик, 1", orderData.getAddress());
-        assertEquals("Петро Коваленко", orderData.getManagerFullName());
+        assertEquals("ТОВ \"Хлібзавод\"", orderDto.getClientName());
+        assertEquals("м. Київ, вул. Хрещатик, 1", orderDto.getAddress());
+        assertEquals("Петро Коваленко", orderDto.getManagerFullName());
         assertEquals(1, products.size());
-        assertEquals(6, orderData.getOrderWeight());
+        assertEquals(6, orderDto.getOrderWeight());
         verify(spyOrderMapper).mapProducts(anyList());
         verify(spyOrderMapper).mapProduct(mockOrderedProduct);
 
@@ -115,8 +120,7 @@ class OrderMapperTest {
 
         assertEquals(3, orderDtoList.size());
         assertEquals(18, orderDtoList.stream()
-                .map(OrderDto -> OrderDto.getOrderData())
-                .mapToDouble(OrderData::getOrderWeight)
+                .mapToDouble(OrderDto::getOrderWeight)
                 .sum());
         verify(spyOrderMapper).mapOrders(anyList());
         verify(spyOrderMapper, times(3)).mapProduct(mockOrderedProduct);

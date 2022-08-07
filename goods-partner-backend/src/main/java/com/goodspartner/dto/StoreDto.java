@@ -1,44 +1,16 @@
 package com.goodspartner.dto;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
+@Builder
+@Getter
+@Setter
+//common
 public class StoreDto {
 
-    private int storeId;
-    private String storeName;
-    private String storeAddress;
-    private final List<StoreOrderDto> orders = new ArrayList<>();
+    private String name;
+    private String address;
 
-    public void setStoreId(int storeId) {
-        this.storeId = storeId;
-    }
-
-    public int getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
-    }
-
-    public String getStoreName() {
-        return storeName;
-    }
-
-    public List<StoreOrderDto> getOrders() {
-        return orders;
-    }
-
-    public void addStoreOrderDto(StoreOrderDto storeOrderDto){
-        orders.add(storeOrderDto);
-    }
-
-    public String getStoreAddress() {
-        return storeAddress;
-    }
-
-    public void setStoreAddress(String storeAddress) {
-        this.storeAddress = storeAddress;
-    }
 }

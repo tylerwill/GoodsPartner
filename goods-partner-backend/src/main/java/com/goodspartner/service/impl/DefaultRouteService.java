@@ -1,12 +1,11 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.CarLoadDto;
-import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.Order;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.mapper.RoutePointMapper;
+import com.goodspartner.web.controller.response.RoutesCalculation;
 import com.goodspartner.service.CarLoadingService;
 import com.goodspartner.service.GoogleApiService;
 import com.goodspartner.service.RouteService;
@@ -25,40 +24,40 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DefaultRouteService implements RouteService {
+
     private final CarLoadingService carLoadingService;
     private final RoutePointMapper routePointMapper;
     private final GoogleApiService googleApiService;
 
     @Override
-    public List<RouteDto> calculateRoutes(List<Order> orders, List<StoreDto> stores) {
+    public List<RoutesCalculation.RouteDto> calculateRoutes(List<Order> orders, StoreDto storeDto) {
         List<RoutePointDto> routePoints = routePointMapper.mapOrders(orders);
-        StoreDto store = stores.get(0);
-        List<CarLoadDto> carLoadDtos = carLoadingService.loadCars(store, routePoints);
+        List<CarLoadingService.CarRoutesDto> carRoutesDtos = carLoadingService.loadCars(storeDto, routePoints);
 
-        return carLoadDtos.stream()
-                .map(car -> calculateRoute(car, store))
+        return carRoutesDtos.stream()
+                .map(car -> calculateRoute(car, storeDto))
                 .collect(Collectors.toList());
     }
 
-    private RouteDto calculateRoute(CarLoadDto carLoad, StoreDto store) {
+    private RoutesCalculation.RouteDto calculateRoute(CarLoadingService.CarRoutesDto carLoad, StoreDto storeDto) {
         List<RoutePointDto> routePoints = carLoad.getRoutePoints();
         List<String> pointsAddresses = routePoints.stream()
                 .map(RoutePointDto::getAddress).toList();
-        DirectionsRoute route = googleApiService.getDirectionRoute(store.getStoreAddress(), pointsAddresses);
+        DirectionsRoute route = googleApiService.getDirectionRoute(storeDto.getAddress(), pointsAddresses);
         double totalDistance = getRouteTotalDistance(route);
         long totalTime = getRouteTotalTime(route);
         addRoutPointDistantTime(routePoints, route);
 
-        return RouteDto.builder()
-                .routeId(carLoad.getCar().getId())
+        return RoutesCalculation.RouteDto.builder()
+                .id(carLoad.getCar().getId())
                 .status(RouteStatus.DRAFT)
                 .totalWeight(getRouteOrdersTotalWeight(routePoints))
                 .totalPoints(routePoints.size())
                 .totalOrders(getTotalOrders(routePoints))
                 .distance(totalDistance)
                 .estimatedTime(Duration.ofSeconds(totalTime))
-                .storeName(store.getStoreName())
-                .storeAddress(store.getStoreAddress())
+                .storeName(storeDto.getName())
+                .storeAddress(storeDto.getAddress())
                 .routePoints(routePoints)
                 .car(carLoad.getCar())
                 .build();

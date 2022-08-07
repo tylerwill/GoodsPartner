@@ -1,6 +1,5 @@
 package com.goodspartner.mapper;
 
-import com.goodspartner.dto.AddressOrderDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Address;
 import com.goodspartner.entity.Order;
@@ -24,9 +23,9 @@ public class RoutePointMapper {
 
         List<RoutePointDto> routePointDtoList = new ArrayList<>(1);
         addressOrderMap.forEach((address, orderList) -> {
-            List<AddressOrderDto> addressOrderDtos = mapOrdersAddress(orderList);
+            List<RoutePointDto.AddressOrderDto> addressOrderDtos = mapOrdersAddress(orderList);
             double addRessTotalWeight = addressOrderDtos.stream()
-                    .map(AddressOrderDto::getOrderTotalWeight)
+                    .map(RoutePointDto.AddressOrderDto::getOrderTotalWeight)
                     .collect(Collectors.summarizingDouble(amount -> amount)).getSum();
 
             RoutePointDto routePointDto = new RoutePointDto();
@@ -41,19 +40,19 @@ public class RoutePointMapper {
     }
 
     @VisibleForTesting
-    List<AddressOrderDto> mapOrdersAddress(List<Order> orders) {
+    List<RoutePointDto.AddressOrderDto> mapOrdersAddress(List<Order> orders) {
         return orders.stream()
                 .map(this::mapOrderAddress)
                 .collect(Collectors.toList());
     }
 
     @VisibleForTesting
-    AddressOrderDto mapOrderAddress(Order order) {
+    RoutePointDto.AddressOrderDto mapOrderAddress(Order order) {
         List<OrderedProduct> orderedProducts = order.getOrderedProducts();
         double orderTotalWeight = getOrderTotalWeight(orderedProducts);
 
-        AddressOrderDto addressOrderDto = new AddressOrderDto();
-        addressOrderDto.setOrderId(order.getId());
+        RoutePointDto.AddressOrderDto addressOrderDto = new RoutePointDto.AddressOrderDto();
+        addressOrderDto.setId(order.getId());
         addressOrderDto.setOrderNumber(String.valueOf(order.getNumber()));
         addressOrderDto.setOrderTotalWeight(orderTotalWeight);
 
