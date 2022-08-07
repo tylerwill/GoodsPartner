@@ -1,6 +1,5 @@
 package com.goodspartner.mapper;
 
-import com.goodspartner.dto.OrderData;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.entity.*;
@@ -31,18 +30,16 @@ public class OrderMapper {
                 .mapToDouble(ProductDto::getTotalProductWeight)
                 .sum();
 
-        OrderData orderData = new OrderData();
-        orderData.setClientName(client.getName());
-        orderData.setAddress(address.getAddress());
-        orderData.setManagerFullName(manager.getFirstName() + " " + manager.getLastName()); // TODO check with Taras to have single field for this
-        orderData.setProducts(products);
-        orderData.setOrderWeight(orderWeight);
-
         OrderDto orderDto = new OrderDto();
         orderDto.setOrderId(order.getId());
         orderDto.setCreatedDate(order.getCreatedDate());
         orderDto.setOrderNumber(String.valueOf(order.getNumber()));
-        orderDto.setOrderData(orderData);
+        orderDto.setClientName(client.getName());
+        orderDto.setAddress(address.getAddress());
+        orderDto.setManagerFullName(manager.getFirstName() + " " + manager.getLastName()); // TODO check with Taras to have single field for this
+        orderDto.setProducts(products);
+        orderDto.setOrderWeight(orderWeight);
+
         return orderDto;
     }
 

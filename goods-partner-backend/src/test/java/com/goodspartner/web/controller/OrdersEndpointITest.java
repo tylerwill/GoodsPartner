@@ -33,45 +33,41 @@ public class OrdersEndpointITest extends AbstractWebITest {
                                               "orderId": 2,
                                               "orderNumber": "43532",
                                               "createdDate": "2022-07-09",
-                                              "orderData": {
-                                                "clientName": "ТОВ Пекарня",
-                                                "address": "м. Київ, вул. Металістів, 8, оф. 4-24",
-                                                "managerFullName": "Іван Шугай",
-                                                "products": [
-                                                  {
-                                                    "productName": "6798 Фарба харчова червона",
-                                                    "amount": 3,
-                                                    "storeName": "Склад №1"
-                                                  },
-                                                  {
-                                                    "productName": "576853 Масло екстра",
-                                                    "amount": 4,
-                                                    "storeName": "Склад №1"
-                                                  }
-                                                ]
-                                              }
+                                              "clientName": "ТОВ Пекарня",
+                                              "address": "м. Київ, вул. Металістів, 8, оф. 4-24",
+                                              "managerFullName": "Іван Шугай",
+                                              "products": [
+                                                {
+                                                  "productName": "6798 Фарба харчова червона",
+                                                  "amount": 3,
+                                                  "storeName": "Склад №1"
+                                                },
+                                                {
+                                                  "productName": "576853 Масло екстра",
+                                                  "amount": 4,
+                                                  "storeName": "Склад №1"
+                                                }
+                                              ]
                                             },
                                             {
                                               "orderId": 3,
                                               "orderNumber": "45463",
                                               "createdDate": "2022-07-09",
-                                              "orderData": {
-                                                "clientName": "ТОВ Кондитерська",
-                                                "address": "м. Київ, вул. Хрещатик, 1",
-                                                "managerFullName": "Андрій Бублик",
-                                                "products": [
-                                                  {
-                                                    "productName": "66784 Арахісова паста",
-                                                    "amount": 5,
-                                                    "storeName": "Склад №1"
-                                                  },
-                                                  {
-                                                    "productName": "8795 Мука екстра",
-                                                    "amount": 5,
-                                                    "storeName": "Склад №2"
-                                                  }
-                                                ]
-                                              }
+                                              "clientName": "ТОВ Кондитерська",
+                                              "address": "м. Київ, вул. Хрещатик, 1",
+                                              "managerFullName": "Андрій Бублик",
+                                              "products": [
+                                                {
+                                                  "productName": "66784 Арахісова паста",
+                                                  "amount": 5,
+                                                  "storeName": "Склад №1"
+                                                },
+                                                {
+                                                  "productName": "8795 Мука екстра",
+                                                  "amount": 5,
+                                                  "storeName": "Склад №2"
+                                                }
+                                              ]
                                             }
                                           ]
                                         }

@@ -1,6 +1,5 @@
 package com.goodspartner.mapper;
 
-import com.goodspartner.dto.OrderData;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.entity.*;
@@ -90,17 +89,16 @@ class OrderMapperTest {
     void test_givenOrder_whenMapOrder_thenReturnOrderDto() {
         OrderMapper spyOrderMapper = spy(orderMapper);
         OrderDto orderDto = spyOrderMapper.mapOrder(mockOrder);
-        OrderData orderData = orderDto.getOrderData();
-        List<ProductDto> products = orderData.getProducts();
+        List<ProductDto> products = orderDto.getProducts();
 
         assertEquals(1, orderDto.getOrderId());
         assertEquals("1", orderDto.getOrderNumber());
         assertEquals(LocalDate.of(2022, 6, 28), orderDto.getCreatedDate());
-        assertEquals("ТОВ \"Хлібзавод\"", orderData.getClientName());
-        assertEquals("м. Київ, вул. Хрещатик, 1", orderData.getAddress());
-        assertEquals("Петро Коваленко", orderData.getManagerFullName());
+        assertEquals("ТОВ \"Хлібзавод\"", orderDto.getClientName());
+        assertEquals("м. Київ, вул. Хрещатик, 1", orderDto.getAddress());
+        assertEquals("Петро Коваленко", orderDto.getManagerFullName());
         assertEquals(1, products.size());
-        assertEquals(6, orderData.getOrderWeight());
+        assertEquals(6, orderDto.getOrderWeight());
         verify(spyOrderMapper).mapProducts(anyList());
         verify(spyOrderMapper).mapProduct(mockOrderedProduct);
 
@@ -115,8 +113,7 @@ class OrderMapperTest {
 
         assertEquals(3, orderDtoList.size());
         assertEquals(18, orderDtoList.stream()
-                .map(OrderDto -> OrderDto.getOrderData())
-                .mapToDouble(OrderData::getOrderWeight)
+                .mapToDouble(OrderDto::getOrderWeight)
                 .sum());
         verify(spyOrderMapper).mapOrders(anyList());
         verify(spyOrderMapper, times(3)).mapProduct(mockOrderedProduct);

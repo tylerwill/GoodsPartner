@@ -75,7 +75,7 @@ public class OrdersReportGenerator {
         Row currentRow = sheet.getRow(rowNumber);
 
         for (OrderDto orderDto : calculationOrdersDto.getOrders()) {
-            List<ProductDto> productDtos = orderDto.getOrderData().getProducts();
+            List<ProductDto> productDtos = orderDto.getProducts();
             sheet.shiftRows(rowNumber + 1, sheet.getLastRowNum(), productDtos.size() - 1);
 
             int productCount = 1;
@@ -101,14 +101,14 @@ public class OrdersReportGenerator {
 
             currentRow = sheet.getRow(rowNumber);
             currentRow.getCell(3).setCellValue("Загальна вага замовлення:");
-            currentRow.getCell(6).setCellValue(orderDto.getOrderData().getOrderWeight());
+            currentRow.getCell(6).setCellValue(orderDto.getOrderWeight());
             rowNumber++;
             currentRow = sheet.getRow(rowNumber);
         }
 
         double sum = calculationOrdersDto.getOrders()
                 .stream()
-                .mapToDouble(e -> e.getOrderData().getOrderWeight())
+                .mapToDouble(OrderDto::getOrderWeight)
                 .sum();
 
         currentRow.getCell(6).setCellValue(sum);

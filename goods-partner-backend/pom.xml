@@ -174,6 +174,14 @@
                             <groupId>com.google.ortools</groupId>
                             <artifactId>ortools-win32-x86-64</artifactId>
                         </dependency>
+                        <dependency>
+                            <groupId>com.google.ortools</groupId>
+                            <artifactId>ortools-win32-x86-64</artifactId>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.google.ortools</groupId>
+                            <artifactId>ortools-darwin-x86-64</artifactId>
+                        </dependency>
                     </requiresUnpack>
                 </configuration>
 
@@ -206,6 +214,8 @@
                             -Amapstruct.defaultComponentModel=spring
                         </compilerArg>
                     </compilerArgs>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
             </plugin>
 
