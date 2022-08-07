@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/reports")
+@RequestMapping("/api/v1/reports")
 @RequiredArgsConstructor
 public class ReportController {
 

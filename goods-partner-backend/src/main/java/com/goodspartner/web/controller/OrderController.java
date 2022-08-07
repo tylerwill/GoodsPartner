@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/calculate")
+@RequestMapping("/api/v1/calculate")
 public class OrderController {
 
     private final OrderService orderService;
