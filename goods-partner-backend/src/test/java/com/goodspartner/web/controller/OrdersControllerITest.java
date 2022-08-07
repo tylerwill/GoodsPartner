@@ -29,7 +29,7 @@ public class OrdersControllerITest extends AbstractWebITest {
                                           "date": "2022-07-10",
                                           "orders": [
                                             {
-                                              "orderId": 2,
+                                              "id": 2,
                                               "orderNumber": "43532",
                                               "createdDate": "2022-07-09",
                                               "clientName": "ТОВ Пекарня",
@@ -49,7 +49,7 @@ public class OrdersControllerITest extends AbstractWebITest {
                                               ]
                                             },
                                             {
-                                              "orderId": 3,
+                                              "id": 3,
                                               "orderNumber": "45463",
                                               "createdDate": "2022-07-09",
                                               "clientName": "ТОВ Кондитерська",

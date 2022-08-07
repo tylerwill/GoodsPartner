@@ -20,4 +20,15 @@ public class RoutePointDto {
 
     @JsonIgnoreProperties(value = {"orderTotalWeight"})
     private List<AddressOrderDto> orders;
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class AddressOrderDto {
+        private int id;
+        private String orderNumber;
+        private double orderTotalWeight;
+    }
 }

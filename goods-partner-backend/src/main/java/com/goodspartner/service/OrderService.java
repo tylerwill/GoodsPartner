@@ -1,14 +1,14 @@
 package com.goodspartner.service;
 
-import com.goodspartner.dto.CalculationOrdersDto;
-import com.goodspartner.dto.CalculationRoutesDto;
+import com.goodspartner.response.OrdersCalculation;
+import com.goodspartner.response.RoutesCalculation;
 
 import java.time.LocalDate;
 
 public interface OrderService {
 
-    CalculationOrdersDto calculateOrders(LocalDate date);
+    OrdersCalculation calculateOrders(LocalDate date);
 
-    CalculationRoutesDto calculateRoutes(LocalDate date);
+    RoutesCalculation calculateRoutes(LocalDate date);
 
 }

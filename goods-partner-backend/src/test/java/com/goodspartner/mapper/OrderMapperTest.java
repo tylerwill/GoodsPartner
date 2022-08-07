@@ -98,7 +98,7 @@ class OrderMapperTest {
         OrderDto orderDto = spyOrderMapper.mapOrder(mockOrder);
         List<ProductDto> products = orderDto.getProducts();
 
-        assertEquals(1, orderDto.getOrderId());
+        assertEquals(1, orderDto.getId());
         assertEquals("1", orderDto.getOrderNumber());
         assertEquals(LocalDate.of(2022, 6, 28), orderDto.getCreatedDate());
         assertEquals("ТОВ \"Хлібзавод\"", orderDto.getClientName());

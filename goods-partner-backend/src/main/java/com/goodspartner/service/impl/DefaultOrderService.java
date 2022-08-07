@@ -5,6 +5,8 @@ import com.goodspartner.entity.Order;
 import com.goodspartner.mapper.CarDetailsMapper;
 import com.goodspartner.mapper.OrderMapper;
 import com.goodspartner.repository.OrderRepository;
+import com.goodspartner.response.OrdersCalculation;
+import com.goodspartner.response.RoutesCalculation;
 import com.goodspartner.service.OrderService;
 import com.goodspartner.service.RouteService;
 import com.goodspartner.service.StoreService;
@@ -29,33 +31,33 @@ public class DefaultOrderService implements OrderService {
 
     @Override
     @Transactional
-    public CalculationOrdersDto calculateOrders(LocalDate date) {
+    public OrdersCalculation calculateOrders(LocalDate date) {
 
         List<Order> ordersByDate = orderRepository.findAllByShippingDateEquals(date);
         List<OrderDto> orderDtos = orderMapper.mapOrders(ordersByDate);
 
-        CalculationOrdersDto calculationOrdersDto = new CalculationOrdersDto();
-        calculationOrdersDto.setDate(date);
-        calculationOrdersDto.setOrders(orderDtos);
-        return calculationOrdersDto;
+        OrdersCalculation ordersCalculation = new OrdersCalculation();
+        ordersCalculation.setDate(date);
+        ordersCalculation.setOrders(orderDtos);
+        return ordersCalculation;
     }
 
     @Override
     @Transactional
-    public CalculationRoutesDto calculateRoutes(LocalDate date) {
+    public RoutesCalculation calculateRoutes(LocalDate date) {
 
         List<Order> orders = orderRepository.findAllByShippingDateEquals(date);
 
         StoreDto storeDto = storeFactory.getStore();
-        List<RouteDto> routes = routeService.calculateRoutes(orders, storeDto);
+        List<RoutesCalculation.RouteDto> routes = routeService.calculateRoutes(orders, storeDto);
 
-        List<CarLoadDto> carsDetailsList = carDetailsMapper.map(routes, orders);
+        List<RoutesCalculation.CarLoadDto> carsDetailsList = carDetailsMapper.map(routes, orders);
 
-        CalculationRoutesDto calculationRoutesDto = new CalculationRoutesDto();
-        calculationRoutesDto.setDate(date);
-        calculationRoutesDto.setRoutes(routes);
-        calculationRoutesDto.setCarLoadDetails(carsDetailsList);
+        RoutesCalculation routesCalculation = new RoutesCalculation();
+        routesCalculation.setDate(date);
+        routesCalculation.setRoutes(routes);
+        routesCalculation.setCarLoadDetails(carsDetailsList);
 
-        return calculationRoutesDto;
+        return routesCalculation;
     }
 }

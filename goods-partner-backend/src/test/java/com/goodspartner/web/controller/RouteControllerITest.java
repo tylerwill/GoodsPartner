@@ -3,6 +3,7 @@ package com.goodspartner.web.controller;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.dto.*;
 import com.goodspartner.entity.RouteStatus;
+import com.goodspartner.response.RoutesCalculation;
 import com.goodspartner.service.OrderService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,8 +29,8 @@ public class RouteControllerITest extends AbstractWebITest {
     @Test
     @DisplayName("given Routes when Calculate Routers then Json Returned")
     public void givenRoutes_whenCalculateRouters_thenJsonReturned() throws Exception {
-        AddressOrderDto addressOrderDto = AddressOrderDto.builder()
-                .orderId(6)
+        RoutePointDto.AddressOrderDto addressOrderDto = RoutePointDto.AddressOrderDto.builder()
+                .id(6)
                 .orderNumber("356325")
                 .orderTotalWeight(59.32)
                 .build();
@@ -66,19 +67,19 @@ public class RouteControllerITest extends AbstractWebITest {
                 .unitWeight(57.8)
                 .build();
 
-        OrderInfoDto orderInfoDto = OrderInfoDto.builder()
+        OrderDto orderInfoDto = OrderDto.builder()
                 .products(List.of(productInfoDto, productInfoDto2))
                 .orderNumber(String.valueOf(356325))
-                .orderId(6)
+                .id(6)
                 .build();
 
-        CarLoadDto carLoadDto = CarLoadDto.builder()
+        RoutesCalculation.CarLoadDto carLoadDto = RoutesCalculation.CarLoadDto.builder()
                 .car(carDto)
                 .orders(List.of(orderInfoDto))
                 .build();
 
-        RouteDto routeDto = RouteDto.builder()
-                .routeId(1)
+        RoutesCalculation.RouteDto routeDto = RoutesCalculation.RouteDto.builder()
+                .id(1)
                 .status(RouteStatus.DRAFT)
                 .totalWeight(59.32)
                 .totalPoints(1)
@@ -94,14 +95,14 @@ public class RouteControllerITest extends AbstractWebITest {
                 .car(carDto)
                 .build();
 
-        CalculationRoutesDto calculationRoutesDto = CalculationRoutesDto.builder()
+        RoutesCalculation routesCalculation = RoutesCalculation.builder()
                 .routes(List.of(routeDto))
                 .carLoadDetails(List.of(carLoadDto))
                 .date(LocalDate.of(2022, 7, 12))
                 .build();
 
         Mockito.when(orderService.calculateRoutes(LocalDate.of(2022, 7, 12)))
-                .thenReturn(calculationRoutesDto);
+                .thenReturn(routesCalculation);
         mockMvc.perform(get("/api/v1/routes")
                         .param("date", "2022-07-12")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -114,7 +115,7 @@ public class RouteControllerITest extends AbstractWebITest {
                                   "date": "2022-07-12",
                                   "routes": [
                                     {
-                                      "routeId": 1,
+                                      "id": 1,
                                       "status": "DRAFT",
                                       "totalWeight": 59.32,
                                       "totalPoints": 1,
@@ -135,7 +136,7 @@ public class RouteControllerITest extends AbstractWebITest {
                                           "routePointDistantTime": "PT1H",
                                           "orders": [
                                             {
-                                              "orderId": 6,
+                                              "id": 6,
                                               "orderNumber": "356325"
                                             }
                                           ]
@@ -169,7 +170,7 @@ public class RouteControllerITest extends AbstractWebITest {
                                       },
                                       "orders": [
                                         {
-                                          "orderId": 6,
+                                          "id": 6,
                                           "orderNumber": "356325",
                                           "products": [
                                             {

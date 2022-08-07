@@ -7,10 +7,10 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
+//common
 public class StoreDto {
 
     private String name;
-
     private String address;
 
 }

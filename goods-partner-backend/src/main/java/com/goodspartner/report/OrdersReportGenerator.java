@@ -1,6 +1,6 @@
 package com.goodspartner.report;
 
-import com.goodspartner.dto.CalculationOrdersDto;
+import com.goodspartner.response.OrdersCalculation;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.service.OrderService;
@@ -39,7 +39,7 @@ public class OrdersReportGenerator {
 
     @SneakyThrows
     public ReportResult generateReport(LocalDate date) {
-        CalculationOrdersDto calculationOrdersDto = orderService.calculateOrders(date);
+        OrdersCalculation ordersCalculation = orderService.calculateOrders(date);
         String currentTime = DATE_TIME_FORMATTER.format(LocalDateTime.now());
         String reportName = "[" + currentTime + "]Orders_" + date + ".xlsx";
 
@@ -53,29 +53,29 @@ public class OrdersReportGenerator {
             rowHeader.getCell(5).setCellValue(date.toString());
 
 
-            if (calculationOrdersDto.getOrders().isEmpty()) {
+            if (ordersCalculation.getOrders().isEmpty()) {
                 sheet.getRow(1).createCell(3).setCellValue("НА ОБРАНУ ДАТУ ЗАМОВЛЕНЬ НЕ ВИЯВЛЕНО");
                 workbook.write(arrayStream);
                 return new ReportResult(reportName, arrayStream.toByteArray());
             }
 
-            int ordersQuantity = calculationOrdersDto.getOrders().size();
+            int ordersQuantity = ordersCalculation.getOrders().size();
             Row templateProductRow = sheet.getRow(3);
 
             addRowsForOrders(sheet, templateProductRow, ordersQuantity);
-            addRowsForProductsAndFill(sheet, calculationOrdersDto, templateProductRow);
+            addRowsForProductsAndFill(sheet, ordersCalculation, templateProductRow);
 
             workbook.write(arrayStream);
             return new ReportResult(reportName, arrayStream.toByteArray());
         }
     }
 
-    private void addRowsForProductsAndFill(XSSFSheet sheet, CalculationOrdersDto calculationOrdersDto, Row sourceProductRow) {
+    private void addRowsForProductsAndFill(XSSFSheet sheet, OrdersCalculation ordersCalculation, Row sourceProductRow) {
         int rowNumber = 3;
         int orderCount = 1;
         Row currentRow = sheet.getRow(rowNumber);
 
-        for (OrderDto orderDto : calculationOrdersDto.getOrders()) {
+        for (OrderDto orderDto : ordersCalculation.getOrders()) {
             List<ProductDto> productDtos = orderDto.getProducts();
             sheet.shiftRows(rowNumber + 1, sheet.getLastRowNum(), productDtos.size() - 1);
 
@@ -107,7 +107,7 @@ public class OrdersReportGenerator {
             currentRow = sheet.getRow(rowNumber);
         }
 
-        double sum = calculationOrdersDto.getOrders()
+        double sum = ordersCalculation.getOrders()
                 .stream()
                 .mapToDouble(OrderDto::getOrderWeight)
                 .sum();

@@ -1,12 +1,12 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.CarRoutesDto;
-import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.Order;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.mapper.RoutePointMapper;
+import com.goodspartner.response.RoutesCalculation;
 import com.goodspartner.service.CarLoadingService;
 import com.goodspartner.service.GoogleApiService;
 import com.goodspartner.service.RouteService;
@@ -31,7 +31,7 @@ public class DefaultRouteService implements RouteService {
     private final GoogleApiService googleApiService;
 
     @Override
-    public List<RouteDto> calculateRoutes(List<Order> orders, StoreDto storeDto) {
+    public List<RoutesCalculation.RouteDto> calculateRoutes(List<Order> orders, StoreDto storeDto) {
         List<RoutePointDto> routePoints = routePointMapper.mapOrders(orders);
         List<CarRoutesDto> carRoutesDtos = carLoadingService.loadCars(storeDto, routePoints);
 
@@ -40,7 +40,7 @@ public class DefaultRouteService implements RouteService {
                 .collect(Collectors.toList());
     }
 
-    private RouteDto calculateRoute(CarRoutesDto carLoad, StoreDto storeDto) {
+    private RoutesCalculation.RouteDto calculateRoute(CarRoutesDto carLoad, StoreDto storeDto) {
         List<RoutePointDto> routePoints = carLoad.getRoutePoints();
         List<String> pointsAddresses = routePoints.stream()
                 .map(RoutePointDto::getAddress).toList();
@@ -49,8 +49,8 @@ public class DefaultRouteService implements RouteService {
         long totalTime = getRouteTotalTime(route);
         addRoutPointDistantTime(routePoints, route);
 
-        return RouteDto.builder()
-                .routeId(carLoad.getCar().getId())
+        return RoutesCalculation.RouteDto.builder()
+                .id(carLoad.getCar().getId())
                 .status(RouteStatus.DRAFT)
                 .totalWeight(getRouteOrdersTotalWeight(routePoints))
                 .totalPoints(routePoints.size())

@@ -1,6 +1,6 @@
 package com.goodspartner.web.controller;
 
-import com.goodspartner.dto.CalculationOrdersDto;
+import com.goodspartner.response.OrdersCalculation;
 import com.goodspartner.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/orders")
-    public CalculationOrdersDto calculateOrders(@RequestParam String date) {
+    public OrdersCalculation calculateOrders(@RequestParam String date) {
         return orderService.calculateOrders(LocalDate.parse(date));
     }
 

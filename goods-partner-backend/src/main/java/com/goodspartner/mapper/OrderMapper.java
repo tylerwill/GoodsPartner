@@ -37,7 +37,7 @@ public class OrderMapper {
                 .sum();
 
         OrderDto orderDto = new OrderDto();
-        orderDto.setOrderId(order.getId());
+        orderDto.setId(order.getId());
         orderDto.setCreatedDate(order.getCreatedDate());
         orderDto.setOrderNumber(String.valueOf(order.getNumber()));
         orderDto.setClientName(client.getName());

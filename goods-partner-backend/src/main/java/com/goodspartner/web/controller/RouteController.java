@@ -1,6 +1,6 @@
 package com.goodspartner.web.controller;
 
-import com.goodspartner.dto.CalculationRoutesDto;
+import com.goodspartner.response.RoutesCalculation;
 import com.goodspartner.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +17,7 @@ public class RouteController {
     private final OrderService orderService;
 
     @GetMapping("/routes")
-    public CalculationRoutesDto calculateRoutes(@RequestParam String date) {
+    public RoutesCalculation calculateRoutes(@RequestParam String date) {
         return orderService.calculateRoutes(LocalDate.parse(date));
     }
 }
