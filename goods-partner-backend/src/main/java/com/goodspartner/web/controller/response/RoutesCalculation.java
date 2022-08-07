@@ -1,11 +1,15 @@
-package com.goodspartner.response;
+package com.goodspartner.web.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.RouteStatus;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -28,7 +32,6 @@ public class RoutesCalculation {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class RouteDto {
-
         private int id;
         private RouteStatus status;
         private double totalWeight;

@@ -6,13 +6,11 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.dto.CarDto;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.NestedServletException;
-
 import static org.junit.Assert.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,7 +24,6 @@ public class CarControllerITest extends AbstractWebITest {
     @DataSet("common/car/dataset_cars.yml")
     @ExpectedDataSet("common/car/dataset_add_car.yml")
     @DisplayName("when Add Car then Ok Status Returned")
-    @Disabled // FIXME: Test doesn't work
     void whenAddTheFirstCar_thenOkStatusReturned() throws Exception {
         CarDto carDto = CarDto.builder()
                 .name("MAN")
@@ -50,9 +47,18 @@ public class CarControllerITest extends AbstractWebITest {
     void whenUpdateCar_thenOkStatusReturned() throws Exception {
         CarDto carDto = new CarDto();
         carDto.setAvailable(false);
+        carDto.setName("Mazda CX5");
+        carDto.setLicencePlate("AA 2244 CT");
+        carDto.setDriver("Vasya Pupkin");
+        carDto.setWeightCapacity(3500);
+        carDto.setCooler(false);
+        carDto.setAvailable(false);
+        carDto.setLoadSize(20.5);
+        carDto.setTravelCost(10);
+
         mockMvc.perform(put("/api/v1/cars/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(carDto)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(carDto)))
                 .andExpect(status().isOk());
     }
 

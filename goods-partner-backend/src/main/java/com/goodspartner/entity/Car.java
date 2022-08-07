@@ -18,13 +18,9 @@ public class Car {
     private int id;
     private String name;
     private String driver;
-    private Boolean available;
-    private Boolean cooler;
-
-    @Column(name = "licence_plate")
+    private boolean available;
+    private boolean cooler;
     private String licencePlate;
-
-    @Column(name = "weight_capacity")
     private int weightCapacity;
     private int travelCost;
 }

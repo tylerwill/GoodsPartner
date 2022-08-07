@@ -2,7 +2,7 @@ package com.goodspartner.service;
 
 import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.Order;
-import com.goodspartner.response.RoutesCalculation;
+import com.goodspartner.web.controller.response.RoutesCalculation;
 
 import java.util.List;
 

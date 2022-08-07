@@ -5,7 +5,7 @@ import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.Order;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.mapper.RoutePointMapper;
-import com.goodspartner.response.RoutesCalculation;
+import com.goodspartner.web.controller.response.RoutesCalculation;
 import com.goodspartner.service.CarLoadingService;
 import com.goodspartner.service.GoogleApiService;
 import com.goodspartner.service.RouteService;

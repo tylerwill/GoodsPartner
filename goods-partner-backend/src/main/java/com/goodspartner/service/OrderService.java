@@ -1,7 +1,7 @@
 package com.goodspartner.service;
 
-import com.goodspartner.response.OrdersCalculation;
-import com.goodspartner.response.RoutesCalculation;
+import com.goodspartner.web.controller.response.OrdersCalculation;
+import com.goodspartner.web.controller.response.RoutesCalculation;
 
 import java.time.LocalDate;
 

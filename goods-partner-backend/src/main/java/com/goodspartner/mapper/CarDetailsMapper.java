@@ -5,7 +5,7 @@ import com.goodspartner.dto.ProductDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Order;
 import com.goodspartner.entity.OrderedProduct;
-import com.goodspartner.response.RoutesCalculation;
+import com.goodspartner.web.controller.response.RoutesCalculation;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

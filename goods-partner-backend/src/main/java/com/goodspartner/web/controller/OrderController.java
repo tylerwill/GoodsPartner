@@ -1,6 +1,6 @@
 package com.goodspartner.web.controller;
 
-import com.goodspartner.response.OrdersCalculation;
+import com.goodspartner.web.controller.response.OrdersCalculation;
 import com.goodspartner.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

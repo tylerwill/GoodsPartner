@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Component
 public class OrderMapper {
 
-    private final StoreService storeFactory;
+    private final StoreService storeService;
 
     public List<OrderDto> mapOrders(List<Order> orders) {
         return orders.stream()
@@ -59,7 +59,7 @@ public class OrderMapper {
     @VisibleForTesting
     ProductDto mapProduct(OrderedProduct orderedProduct) {
         Product product = orderedProduct.getProduct();
-        StoreDto storeDto = storeFactory.getStore();
+        StoreDto storeDto = storeService.getMainStore();
 
         ProductDto productDto = new ProductDto();
         productDto.setProductName(product.getName());

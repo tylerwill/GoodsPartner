@@ -5,8 +5,8 @@ import com.goodspartner.entity.Order;
 import com.goodspartner.mapper.CarDetailsMapper;
 import com.goodspartner.mapper.OrderMapper;
 import com.goodspartner.repository.OrderRepository;
-import com.goodspartner.response.OrdersCalculation;
-import com.goodspartner.response.RoutesCalculation;
+import com.goodspartner.web.controller.response.OrdersCalculation;
+import com.goodspartner.web.controller.response.RoutesCalculation;
 import com.goodspartner.service.OrderService;
 import com.goodspartner.service.RouteService;
 import com.goodspartner.service.StoreService;
@@ -48,7 +48,7 @@ public class DefaultOrderService implements OrderService {
 
         List<Order> orders = orderRepository.findAllByShippingDateEquals(date);
 
-        StoreDto storeDto = storeFactory.getStore();
+        StoreDto storeDto = storeFactory.getMainStore();
         List<RoutesCalculation.RouteDto> routes = routeService.calculateRoutes(orders, storeDto);
 
         List<RoutesCalculation.CarLoadDto> carsDetailsList = carDetailsMapper.map(routes, orders);

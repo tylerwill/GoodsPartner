@@ -1,6 +1,6 @@
 package com.goodspartner.report;
 
-import com.goodspartner.response.OrdersCalculation;
+import com.goodspartner.web.controller.response.OrdersCalculation;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.service.OrderService;

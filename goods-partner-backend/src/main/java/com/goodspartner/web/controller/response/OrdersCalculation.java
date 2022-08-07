@@ -1,4 +1,4 @@
-package com.goodspartner.response;
+package com.goodspartner.web.controller.response;
 
 import com.goodspartner.dto.OrderDto;
 import lombok.Getter;

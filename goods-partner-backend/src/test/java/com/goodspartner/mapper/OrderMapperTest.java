@@ -29,11 +29,11 @@ class OrderMapperTest {
     private OrderMapper orderMapper;
     private OrderedProduct mockOrderedProduct;
     private Order mockOrder;
-    private MockedStoreService storeFactory = new MockedStoreService();
+    private final MockedStoreService storeService = new MockedStoreService();
 
     @BeforeAll
     void setup() {
-        orderMapper = new OrderMapper(storeFactory);
+        orderMapper = new OrderMapper(storeService);
 
         StoreDto mockStoreDto = mock(StoreDto.class);
         when(mockStoreDto.getName()).thenReturn("Склад №1");

@@ -46,7 +46,7 @@ const RouteDetails = (
   const handleClose = () => setOpen(false);
 
   const {isLoaded} = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_VAR
   })
 
   return (

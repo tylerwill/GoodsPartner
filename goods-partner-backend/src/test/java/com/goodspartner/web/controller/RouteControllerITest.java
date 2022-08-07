@@ -1,9 +1,12 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.dto.*;
+import com.goodspartner.dto.CarDto;
+import com.goodspartner.dto.OrderDto;
+import com.goodspartner.dto.ProductDto;
+import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.RouteStatus;
-import com.goodspartner.response.RoutesCalculation;
+import com.goodspartner.web.controller.response.RoutesCalculation;
 import com.goodspartner.service.OrderService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
