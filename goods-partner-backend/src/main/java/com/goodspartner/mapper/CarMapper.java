@@ -2,42 +2,17 @@ package com.goodspartner.mapper;
 
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.entity.Car;
+import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
-public class CarMapper {
-    public List<CarDto> mapCars(List<Car> cars) {
-        return cars.stream()
-                .map(this::mapCar)
-                .collect(Collectors.toList());
-    }
+@Mapper(componentModel = "spring")
+public interface CarMapper {
+    List<CarDto> carsToCarDtos(List<Car> cars);
 
-    public CarDto mapCar(Car car) {
-        CarDto carDto = new CarDto();
-        carDto.setId(car.getId());
-        carDto.setName(car.getName());
-        carDto.setDriver(car.getDriver());
-        carDto.setLicencePlate(car.getLicencePlate());
-        carDto.setWeightCapacity(car.getWeightCapacity());
-        carDto.setCooler(car.getCooler());
-        carDto.setAvailable(car.getAvailable());
-        carDto.setTravelCost(car.getTravelCost());
-        return carDto;
-    }
+    CarDto carToCarDto(Car car);
 
-    public Car mapCar(CarDto carDto) {
-        Car car = new Car();
-        car.setId(carDto.getId());
-        car.setName(carDto.getName());
-        car.setDriver(carDto.getDriver());
-        car.setLicencePlate(carDto.getLicencePlate());
-        car.setWeightCapacity(carDto.getWeightCapacity());
-        car.setCooler(carDto.getCooler());
-        car.setAvailable(carDto.getAvailable());
-        car.setTravelCost(carDto.getTravelCost());
-        return car;
-    }
+    Car carDtoToCar(CarDto carDto);
 }

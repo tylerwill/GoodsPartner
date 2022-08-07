@@ -38,6 +38,9 @@ class OrdersReportGeneratorITest extends AbstractBaseITest {
         Consumer<ReportResult> reportResultConsumer = r -> {
             File destinationFile = new File(reportsDestination, r.name());
             writeReportToFile(r, destinationFile);
+
+            assertTrue(destinationFile.exists());
+            assertTrue(destinationFile.length() > 0);
         };
 
         ordersReportGenerator.generateReport(date, reportResultConsumer);

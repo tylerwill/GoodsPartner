@@ -11,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,20 +19,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class DefaultCarService implements CarService {
-    @PersistenceContext
-    private EntityManager entityManager;
     private final CarRepository carRepository;
     private final CarMapper carMapper;
 
     @Override
     @Transactional(readOnly = true)
     public List<CarDto> findAll() {
-        return carMapper.mapCars(carRepository.findAll());
+        return carMapper.carsToCarDtos(carRepository.findAll());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CarDto> findByAvailableCars() {
-        return carMapper.mapCars(carRepository.findByAvailableTrue());
+        return carMapper.carsToCarDtos(carRepository.findByAvailableTrue());
     }
 
     @Override
@@ -45,7 +42,7 @@ public class DefaultCarService implements CarService {
             throw new CarNotFoundException("Car not found");
         }
         Car dbCar = optionalCar.get();
-        Car updatedCar = carMapper.mapCar(car);
+        Car updatedCar = carMapper.carDtoToCar(car);
 
         if (Objects.nonNull(updatedCar.getName()) &&
                 !"".equalsIgnoreCase(updatedCar.getName())) {
@@ -76,13 +73,14 @@ public class DefaultCarService implements CarService {
 
     @Override
     public void add(CarDto carDto) {
-        Car car = carMapper.mapCar(carDto);
-        carMapper.mapCar(carRepository.save(car));
+        Car car = carMapper.carDtoToCar(carDto);
+        carRepository.save(car);
     }
 
     @Override
     public CarDto getById(int id) {
-        return carMapper.mapCar(entityManager.getReference(Car.class, id));
+        return carMapper.carToCarDto(carRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("No car for id: " + id)));
     }
 
     @Override

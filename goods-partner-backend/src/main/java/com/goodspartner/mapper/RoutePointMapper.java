@@ -60,6 +60,7 @@ public class RoutePointMapper {
         return addressOrderDto;
     }
 
+    // TODO: I think this is not mapper class, but class for calculations
     @VisibleForTesting
     double getOrderTotalWeight(List<OrderedProduct> orderedProducts) {
         return BigDecimal.valueOf(orderedProducts.stream()

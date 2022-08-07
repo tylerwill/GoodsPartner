@@ -69,7 +69,7 @@ public class ClientMapper {
     AddressOrderDto mapAddressOrder(Order order) {
         double sum = order.getOrderedProducts()
                 .stream()
-                .map(orderedProduct -> orderedProduct.getCount() * orderedProduct.getProduct().getKg()) // TODO NPE not safe
+                .map(orderedProduct -> orderedProduct.getCount() * orderedProduct.getProduct().getKg()) // TODO: NPE not safe
                 .collect(Collectors.summarizingDouble(kg -> kg))
                 .getSum();
 
