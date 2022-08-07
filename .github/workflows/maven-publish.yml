@@ -24,7 +24,7 @@ jobs:
 #      with:
 #        node-version: ${{ matrix.node-version }}
     - name: Build with Maven
-      run: mvn --batch-mode clean package
+      run: mvn -pl -goods-partner-frontend --batch-mode clean package
 
 
     # - name: Publish to GitHub Packages Apache Maven
