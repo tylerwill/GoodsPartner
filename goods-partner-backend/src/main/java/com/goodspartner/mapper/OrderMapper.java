@@ -2,14 +2,9 @@ package com.goodspartner.mapper;
 
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
-import com.goodspartner.entity.Address;
-import com.goodspartner.entity.Client;
-import com.goodspartner.entity.Manager;
-import com.goodspartner.entity.Order;
-import com.goodspartner.entity.OrderedProduct;
-import com.goodspartner.entity.Product;
-import com.goodspartner.factory.Store;
-import com.goodspartner.factory.StoreFactory;
+import com.goodspartner.dto.StoreDto;
+import com.goodspartner.entity.*;
+import com.goodspartner.service.StoreService;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,7 +16,7 @@ import java.util.stream.Collectors;
 @Component
 public class OrderMapper {
 
-    private final StoreFactory storeFactory;
+    private final StoreService storeFactory;
 
     public List<OrderDto> mapOrders(List<Order> orders) {
         return orders.stream()
@@ -64,12 +59,12 @@ public class OrderMapper {
     @VisibleForTesting
     ProductDto mapProduct(OrderedProduct orderedProduct) {
         Product product = orderedProduct.getProduct();
-        Store store = storeFactory.getStore();
+        StoreDto storeDto = storeFactory.getStore();
 
         ProductDto productDto = new ProductDto();
         productDto.setProductName(product.getName());
         productDto.setAmount(orderedProduct.getCount());
-        productDto.setStoreName(store.getName());
+        productDto.setStoreName(storeDto.getName());
         productDto.setUnitWeight(product.getKg());
         productDto.setTotalProductWeight((double) orderedProduct.getCount() * product.getKg());
         return productDto;

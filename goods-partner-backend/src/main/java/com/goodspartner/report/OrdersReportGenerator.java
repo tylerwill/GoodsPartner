@@ -13,7 +13,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +28,10 @@ public class OrdersReportGenerator {
     private static final String TEMPLATE_PATH = "report/template_report_list_of_orders.xlsx";
     private final OrderService orderService;
 
+    private static InputStream getTemplate() {
+        return OrdersReportGenerator.class.getClassLoader().getResourceAsStream(TEMPLATE_PATH);
+    }
+
     public void generateReport(LocalDate date, Consumer<ReportResult> reportResultConsumer) {
         ReportResult reportResult = generateReport(date);
         reportResultConsumer.accept(reportResult);
@@ -39,7 +44,7 @@ public class OrdersReportGenerator {
         String reportName = "[" + currentTime + "]Orders_" + date + ".xlsx";
 
         try (InputStream template = getTemplate();
-             ByteArrayOutputStream arrayStream = new ByteArrayOutputStream();) {
+             ByteArrayOutputStream arrayStream = new ByteArrayOutputStream()) {
 
             XSSFWorkbook workbook = new XSSFWorkbook(template);
             XSSFSheet sheet = workbook.getSheetAt(0);
@@ -63,10 +68,6 @@ public class OrdersReportGenerator {
             workbook.write(arrayStream);
             return new ReportResult(reportName, arrayStream.toByteArray());
         }
-    }
-
-    private static InputStream getTemplate() {
-        return OrdersReportGenerator.class.getClassLoader().getResourceAsStream(TEMPLATE_PATH);
     }
 
     private void addRowsForProductsAndFill(XSSFSheet sheet, CalculationOrdersDto calculationOrdersDto, Row sourceProductRow) {

@@ -1,14 +1,7 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.dto.AddressOrderDto;
-import com.goodspartner.dto.CalculationRoutesDto;
-import com.goodspartner.dto.CarDto;
-import com.goodspartner.dto.CarLoadDto;
-import com.goodspartner.dto.OrderInfoDto;
-import com.goodspartner.dto.ProductInfoDto;
-import com.goodspartner.dto.RouteDto;
-import com.goodspartner.dto.RoutePointDto;
+import com.goodspartner.dto.*;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.service.OrderService;
 import org.junit.jupiter.api.DisplayName;
@@ -26,10 +19,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class RoutesEndpointITest extends AbstractWebITest {
+public class RouteControllerITest extends AbstractWebITest {
 
+    // TODO: Maybe we shouldn't mock all order service in this Integration test
     @MockBean
-    OrderService orderService;
+    private OrderService orderService;
 
     @Test
     @DisplayName("given Routes when Calculate Routers then Json Returned")
@@ -60,16 +54,16 @@ public class RoutesEndpointITest extends AbstractWebITest {
                 .loadSize(59.32)
                 .build();
 
-        ProductInfoDto productInfoDto = ProductInfoDto.builder()
+        ProductDto productInfoDto = ProductDto.builder()
                 .productName("3434 Паста шоколадна")
                 .amount(1)
-                .weight(1.52)
+                .unitWeight(1.52)
                 .build();
 
-        ProductInfoDto productInfoDto2 = ProductInfoDto.builder()
+        ProductDto productInfoDto2 = ProductDto.builder()
                 .productName("46643 Фарба харчова синя")
                 .amount(10)
-                .weight(57.8)
+                .unitWeight(57.8)
                 .build();
 
         OrderInfoDto orderInfoDto = OrderInfoDto.builder()
@@ -108,7 +102,7 @@ public class RoutesEndpointITest extends AbstractWebITest {
 
         Mockito.when(orderService.calculateRoutes(LocalDate.of(2022, 7, 12)))
                 .thenReturn(calculationRoutesDto);
-        mockMvc.perform(get("/api/v1/calculate/routes")
+        mockMvc.perform(get("/api/v1/routes")
                         .param("date", "2022-07-12")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
@@ -181,12 +175,12 @@ public class RoutesEndpointITest extends AbstractWebITest {
                                             {
                                               "productName": "3434 Паста шоколадна",
                                               "amount": 1,
-                                              "weight": 1.52
+                                              "unitWeight": 1.52
                                             },
                                             {
                                               "productName": "46643 Фарба харчова синя",
                                               "amount": 10,
-                                              "weight": 57.8
+                                              "unitWeight": 57.8
                                             }
                                           ]
                                         }

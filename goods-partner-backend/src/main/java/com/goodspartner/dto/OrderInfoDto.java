@@ -13,5 +13,5 @@ import java.util.List;
 public class OrderInfoDto {
     private int orderId;
     private String orderNumber;
-    private List<ProductInfoDto> products;
+    private List<ProductDto> products;
 }

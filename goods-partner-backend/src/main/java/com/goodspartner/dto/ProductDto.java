@@ -1,10 +1,12 @@
 package com.goodspartner.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductDto {
 
     private String productName;

@@ -3,20 +3,14 @@ package com.goodspartner.service.impl;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.CarRoutesDto;
 import com.goodspartner.dto.RoutePointDto;
-import com.goodspartner.factory.Store;
+import com.goodspartner.dto.StoreDto;
 import com.goodspartner.service.CarLoadingService;
 import com.goodspartner.service.CarService;
 import com.goodspartner.service.GoogleApiService;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixRow;
 import com.google.ortools.Loader;
-import com.google.ortools.constraintsolver.Assignment;
-import com.google.ortools.constraintsolver.FirstSolutionStrategy;
-import com.google.ortools.constraintsolver.LocalSearchMetaheuristic;
-import com.google.ortools.constraintsolver.RoutingIndexManager;
-import com.google.ortools.constraintsolver.RoutingModel;
-import com.google.ortools.constraintsolver.RoutingSearchParameters;
-import com.google.ortools.constraintsolver.main;
+import com.google.ortools.constraintsolver.*;
 import com.google.protobuf.Duration;
 import org.springframework.stereotype.Service;
 
@@ -42,10 +36,10 @@ public class DefaultCarLoadingService implements CarLoadingService {
         Loader.loadNativeLibraries();
     }
 
-    public List<CarRoutesDto> loadCars(Store store, List<RoutePointDto> routePoints) {
+    public List<CarRoutesDto> loadCars(StoreDto storeDto, List<RoutePointDto> routePoints) {
         List<CarDto> cars = carService.findByAvailableCars();
         List<String> pointsAddresses = new ArrayList<>();
-        pointsAddresses.add(store.getAddress());
+        pointsAddresses.add(storeDto.getAddress());
         pointsAddresses.addAll(routePoints.stream()
                 .map(RoutePointDto::getAddress).toList());
 

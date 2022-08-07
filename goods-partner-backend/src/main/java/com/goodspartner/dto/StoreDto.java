@@ -1,6 +1,5 @@
-package com.goodspartner.factory;
+package com.goodspartner.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +7,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class Store {
+public class StoreDto {
 
     private String name;
 

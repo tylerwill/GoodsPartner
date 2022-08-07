@@ -1,10 +1,8 @@
 package com.goodspartner.entity;
 
-import javax.persistence.*;
 import lombok.*;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor

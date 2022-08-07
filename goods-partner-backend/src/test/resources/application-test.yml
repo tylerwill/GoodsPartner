@@ -1,6 +1,10 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost/gp-local
+    username: postgres
+    password: root
   flyway:
-    enabled: true
+    enabled: false
     locations: classpath:db/migration, db/test
   jpa:
     properties:

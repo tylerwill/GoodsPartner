@@ -56,10 +56,10 @@ public class DefaultCarService implements CarService {
                 !"".equalsIgnoreCase(updatedCar.getLicencePlate())) {
             dbCar.setLicencePlate(updatedCar.getLicencePlate());
         }
-        if (Objects.nonNull(updatedCar.getAvailable())){
+        if (Objects.nonNull(updatedCar.getAvailable())) {
             dbCar.setAvailable(updatedCar.getAvailable());
         }
-        if (Objects.nonNull(updatedCar.getCooler())){
+        if (Objects.nonNull(updatedCar.getCooler())) {
             dbCar.setCooler(updatedCar.getCooler());
         }
         if (updatedCar.getTravelCost() > 0) {
@@ -80,7 +80,7 @@ public class DefaultCarService implements CarService {
     @Override
     public CarDto getById(int id) {
         return carMapper.carToCarDto(carRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("No car for id: " + id)));
+                .orElseThrow(() -> new IllegalArgumentException("No car for id: " + id)));
     }
 
     @Override

@@ -3,8 +3,8 @@ package com.goodspartner.mapper;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.entity.*;
-import com.goodspartner.factory.Store;
-import com.goodspartner.factory.StoreFactory;
+import com.goodspartner.dto.StoreDto;
+import com.goodspartner.service.impl.MockedStoreService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,14 +29,14 @@ class OrderMapperTest {
     private OrderMapper orderMapper;
     private OrderedProduct mockOrderedProduct;
     private Order mockOrder;
-    private StoreFactory storeFactory = new StoreFactory();
+    private MockedStoreService storeFactory = new MockedStoreService();
 
     @BeforeAll
     void setup() {
         orderMapper = new OrderMapper(storeFactory);
 
-        Store mockStore = mock(Store.class);
-        when(mockStore.getName()).thenReturn("Склад №1");
+        StoreDto mockStoreDto = mock(StoreDto.class);
+        when(mockStoreDto.getName()).thenReturn("Склад №1");
 
         Product mockProduct = mock(Product.class);
         when(mockProduct.getName()).thenReturn("3434 Паста шоколадна");

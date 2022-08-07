@@ -1,11 +1,6 @@
 package com.goodspartner.mapper;
 
-import com.goodspartner.dto.AddressOrderDto;
-import com.goodspartner.dto.CarLoadDto;
-import com.goodspartner.dto.OrderInfoDto;
-import com.goodspartner.dto.ProductInfoDto;
-import com.goodspartner.dto.RouteDto;
-import com.goodspartner.dto.RoutePointDto;
+import com.goodspartner.dto.*;
 import com.goodspartner.entity.Order;
 import com.goodspartner.entity.OrderedProduct;
 import org.springframework.stereotype.Component;
@@ -47,16 +42,16 @@ public class CarDetailsMapper {
                 .build();
     }
 
-    private List<ProductInfoDto> mapOrderToProductInfo(Order order) {
+    private List<ProductDto> mapOrderToProductInfo(Order order) {
         return order.getOrderedProducts().stream()
                 .map(this::mapOrderedProductToProductInfo).toList();
     }
 
-    private ProductInfoDto mapOrderedProductToProductInfo(OrderedProduct orderedProduct) {
-        return ProductInfoDto.builder()
+    private ProductDto mapOrderedProductToProductInfo(OrderedProduct orderedProduct) {
+        return ProductDto.builder()
                 .productName(orderedProduct.getProduct().getName())
                 .amount(orderedProduct.getCount())
-                .weight(getProductTotalWeight(orderedProduct))
+                .totalProductWeight(getProductTotalWeight(orderedProduct))
                 .build();
     }
 

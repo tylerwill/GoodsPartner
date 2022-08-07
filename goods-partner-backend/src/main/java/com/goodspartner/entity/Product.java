@@ -1,6 +1,5 @@
 package com.goodspartner.entity;
 
-import com.goodspartner.factory.Store;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

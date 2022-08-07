@@ -1,18 +1,13 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.CalculationOrdersDto;
-import com.goodspartner.dto.CalculationRoutesDto;
-import com.goodspartner.dto.CarLoadDto;
-import com.goodspartner.dto.OrderDto;
-import com.goodspartner.dto.RouteDto;
+import com.goodspartner.dto.*;
 import com.goodspartner.entity.Order;
-import com.goodspartner.factory.Store;
-import com.goodspartner.factory.StoreFactory;
 import com.goodspartner.mapper.CarDetailsMapper;
 import com.goodspartner.mapper.OrderMapper;
 import com.goodspartner.repository.OrderRepository;
 import com.goodspartner.service.OrderService;
 import com.goodspartner.service.RouteService;
+import com.goodspartner.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,7 +24,7 @@ public class DefaultOrderService implements OrderService {
     private final OrderRepository orderRepository;
     private final RouteService routeService;
     private final OrderMapper orderMapper;
-    private final StoreFactory storeFactory;
+    private final StoreService storeFactory;
     private final CarDetailsMapper carDetailsMapper;
 
     @Override
@@ -51,8 +46,8 @@ public class DefaultOrderService implements OrderService {
 
         List<Order> orders = orderRepository.findAllByShippingDateEquals(date);
 
-        Store store = storeFactory.getStore();
-        List<RouteDto> routes = routeService.calculateRoutes(orders, store);
+        StoreDto storeDto = storeFactory.getStore();
+        List<RouteDto> routes = routeService.calculateRoutes(orders, storeDto);
 
         List<CarLoadDto> carsDetailsList = carDetailsMapper.map(routes, orders);
 
