@@ -101,7 +101,7 @@ public class RoutesEndpointITest extends AbstractWebITest {
 
         Mockito.when(orderService.calculateRoutes(LocalDate.of(2022, 7, 12)))
                 .thenReturn(calculationRoutesDto);
-        mockMvc.perform(get("/calculate/routes")
+        mockMvc.perform(get("/api/v1/calculate/routes")
                         .param("date", "2022-07-12")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))

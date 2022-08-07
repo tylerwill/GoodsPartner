@@ -17,7 +17,7 @@ public class OrdersEndpointITest extends AbstractWebITest {
     @DataSet("common/dataset.yml")
     void givenOrders_whenCalculateOrders_thenJsonReturned() throws Exception {
 
-        mockMvc.perform(get("/calculate/orders")
+        mockMvc.perform(get("/api/v1/calculate/orders")
                         .param("date", "2022-07-10")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
@@ -82,7 +82,7 @@ public class OrdersEndpointITest extends AbstractWebITest {
     @DataSet("common/dataset.yml")
     void givenNoOrdersForSpecifiedDate_whenCalculateOrders_thenJsonWithEmptyOrdersFieldReturned() throws Exception {
 
-        mockMvc.perform(get("/calculate/orders")
+        mockMvc.perform(get("/api/v1/calculate/orders")
                         .param("date", "2000-01-01")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))

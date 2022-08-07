@@ -19,7 +19,7 @@ public class StoresEndpointITest extends AbstractWebITest {
     @DisplayName("Check Json returned after calculate stores")
     void givenStores_whenCalculateStores_thenJsonReturned() throws Exception {
 
-        mockMvc.perform(get("/calculate/stores")
+        mockMvc.perform(get("/api/v1/calculate/stores")
                         .param("date", "2022-07-12")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
@@ -52,7 +52,7 @@ public class StoresEndpointITest extends AbstractWebITest {
     @DisplayName("Check empty Json returned after calculate stores")
     void givenNoStoresForSpecifiedDate_whenCalculateStores_thenJsonWithEmptyStoresFieldReturned() throws Exception {
 
-        mockMvc.perform(get("/calculate/stores")
+        mockMvc.perform(get("/api/v1/calculate/stores")
                         .param("date", "2002-07-12")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
