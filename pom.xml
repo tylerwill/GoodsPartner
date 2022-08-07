@@ -8,12 +8,8 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <!-- TODO: We can skip frontend build on CI/CD https://stackoverflow.com/questions/8304110/skip-a-submodule-during-a-maven-build   -->
     <modules>
         <module>goods-partner-frontend</module>
         <module>goods-partner-backend</module>
     </modules>
-
-
-
 </project>
