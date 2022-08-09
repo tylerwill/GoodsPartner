@@ -8,7 +8,7 @@ import com.goodspartner.repository.OrderRepository;
 import com.goodspartner.web.controller.response.OrdersCalculation;
 import com.goodspartner.web.controller.response.RoutesCalculation;
 import com.goodspartner.service.OrderService;
-import com.goodspartner.service.RouteService;
+import com.goodspartner.service.CalculateRouteService;
 import com.goodspartner.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import java.util.List;
 public class DefaultOrderService implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final RouteService routeService;
+    private final CalculateRouteService calculateRouteService;
     private final OrderMapper orderMapper;
     private final StoreService storeFactory;
     private final CarDetailsMapper carDetailsMapper;
@@ -49,7 +49,7 @@ public class DefaultOrderService implements OrderService {
         List<Order> orders = orderRepository.findAllByShippingDateEquals(date);
 
         StoreDto storeDto = storeFactory.getMainStore();
-        List<RoutesCalculation.RouteDto> routes = routeService.calculateRoutes(orders, storeDto);
+        List<RoutesCalculation.RouteDto> routes = calculateRouteService.calculateRoutes(orders, storeDto);
 
         List<RoutesCalculation.CarLoadDto> carsDetailsList = carDetailsMapper.map(routes, orders);
 

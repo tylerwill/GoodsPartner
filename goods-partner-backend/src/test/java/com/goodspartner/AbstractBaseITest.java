@@ -19,8 +19,7 @@ public class AbstractBaseITest {
                 new PostgreSQLContainer<>("postgres:14.4")
                         .withDatabaseName("test")
                         .withUsername("test")
-                        .withPassword("test")
-                        .withReuse(true);
+                        .withPassword("test");
         POSTGRES_SQL_CONTAINER.start();
     }
 

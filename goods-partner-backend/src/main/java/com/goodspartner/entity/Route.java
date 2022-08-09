@@ -1,20 +1,28 @@
 package com.goodspartner.entity;
 
+import com.goodspartner.dto.RoutePointDto;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "routes")
+@TypeDef(name = "json", typeClass = JsonType.class)
 public class Route {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "routes_sequence")
+    @SequenceGenerator(name = "routes_sequence", sequenceName = "routes_sequence")
     private int id;
 
     @Enumerated(value = EnumType.STRING)
@@ -23,11 +31,15 @@ public class Route {
     private int totalPoints;
     private int totalOrders;
     private double distance;
-    private LocalDateTime estimatedTime;
+    private long estimatedTime;
     private LocalDateTime startTime;
     private LocalDateTime finishTime;
-    private LocalDateTime spentTime;
-    private String routeLink;
+    private long spentTime;
     private String storeName;
     private String storeAddress;
+    private boolean optimization = true;
+
+    @Type(type = "json")
+    @Column(columnDefinition = "jsonb")
+    private List<RoutePointDto> routePoints;
 }

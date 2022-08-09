@@ -37,9 +37,10 @@ public class DefaultCarService implements CarService {
     @Override
     @Transactional
     public void update(int id, CarDto carDto) {
-        carRepository.findById(id)
+       Car updateCar = carRepository.findById(id)
                 .map(car -> carMapper.update(car, carDto))
                 .orElseThrow(() -> new CarNotFoundException("Car not found"));
+       carRepository.save(updateCar);
     }
 
     @Override

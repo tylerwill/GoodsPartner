@@ -30,7 +30,7 @@ public class RouteControllerITest extends AbstractWebITest {
     public static final String ORIGIN_ADDR = "originAddresses";
     public static final String DEST_ADDR = "destinationAddresses";
     public static final String DISTANCE_MATRIX_ROWS = "rows";
-    public static final String URL_TEMPLATE = "/api/v1/routes";
+    public static final String URL_TEMPLATE = "/api/v1/routes/calculate";
     public static final String URL_PARAM_MANE = "date";
     @MockBean
     private GoogleApiService googleApiService;
@@ -49,7 +49,6 @@ public class RouteControllerITest extends AbstractWebITest {
         JsonNode originAddresses = jsonNode.get(ORIGIN_ADDR);
         JsonNode destinationAddresses = jsonNode.get(DEST_ADDR);
         JsonNode rows = jsonNode.get(DISTANCE_MATRIX_ROWS);
-
         String[] origin = mapper.readValue(originAddresses.traverse(), String[].class);
         String[] dest = mapper.readValue(destinationAddresses.traverse(), String[].class);
         DistanceMatrixRow[] distanceMatrixRows = mapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
@@ -74,19 +73,20 @@ public class RouteControllerITest extends AbstractWebITest {
                                       "totalPoints": 3,
                                       "totalOrders": 4,
                                       "distance": 162.44,
-                                      "estimatedTime": "PT2H56M33S",
+                                      "estimatedTime": 176,
                                       "startTime": null,
                                       "finishTime": null,
-                                      "spentTime": null,
+                                      "spentTime": 0,
                                       "storeName": "Склад №1",
                                       "storeAddress": "Фастів, вул. Широка, 15",
                                       "routePoints": [
                                         {
+                                          "status": "PENDING",
                                           "clientId": 1,
                                           "clientName": "ТОВ \\"Пекарня\\"",
                                           "address": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
                                           "addressTotalWeight": 804.98,
-                                          "routePointDistantTime": "PT1H16M26S",
+                                          "routePointDistantTime": 76,
                                           "orders": [
                                             {
                                               "id": 9,
@@ -99,11 +99,12 @@ public class RouteControllerITest extends AbstractWebITest {
                                           ]
                                         },
                                         {
+                                          "status": "PENDING",
                                           "clientId": 1,
                                           "clientName": "ТОВ \\"Пекарня\\"",
                                           "address": "м. Київ, вул. Металістів, 8, оф. 4-24",
                                           "addressTotalWeight": 5.5,
-                                          "routePointDistantTime": "PT10M37S",
+                                          "routePointDistantTime": 10,
                                           "orders": [
                                             {
                                               "id": 3,
@@ -112,11 +113,12 @@ public class RouteControllerITest extends AbstractWebITest {
                                           ]
                                         },
                                         {
+                                          "status": "PENDING",
                                           "clientId": 1,
                                           "clientName": "ТОВ \\"Пекарня\\"",
                                           "address": "м. Київ, вул. Хрещатик, 1",
                                           "addressTotalWeight": 338.28,
-                                          "routePointDistantTime": "PT11M43S",
+                                          "routePointDistantTime": 11,
                                           "orders": [
                                             {
                                               "id": 5,
