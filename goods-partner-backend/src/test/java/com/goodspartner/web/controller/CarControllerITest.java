@@ -11,8 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.NestedServletException;
+
 import static org.junit.Assert.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DBRider
@@ -57,8 +59,8 @@ public class CarControllerITest extends AbstractWebITest {
         carDto.setTravelCost(10);
 
         mockMvc.perform(put("/api/v1/cars/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(carDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(carDto)))
                 .andExpect(status().isOk());
     }
 
@@ -111,51 +113,49 @@ public class CarControllerITest extends AbstractWebITest {
     @DisplayName("when Get All Cars then Ok Status Returned")
     void whenGetAllCars_thenOkStatusReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/cars")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .json("""
                                  [{
-                                  "id":"1",
+                                  "id":1,
                                  "name":"Mercedes Sprinter",
-                                 "licence_plate":"AA 1111 CT",
+                                 "licencePlate":"AA 1111 CT",
                                  "driver":"Oleg Dudka",
-                                 "weight_capacity":"3000",
-                                 "cooler":"false",
-                                 "available":"ENABLE"},
-                                 {"id":"2",
+                                 "weightCapacity":3000,
+                                 "cooler":false,
+                                 "available":true,
+                                 "travelCost": 10},
+                                 {"id":2,
                                  "name":"MAN",
-                                 "licence_plate":"AA 2455 CT",
+                                 "licencePlate":"AA 2455 CT",
                                  "driver":"Ivan Kornienko",
-                                 "weight_capacity":"4000",
-                                 "cooler":"true",
-                                 "available":"false"},
-                                  {
-                                 "id": "3",
-                                "name":"DAF",
-                                "licencePlate":"AA 4567 CT",
-                                "driver":"Roman Levchenko",
-                                "weightCapacity":"5000",
-                                "cooler":"true",
-                                "available":"false"
-                                }]
+                                 "weightCapacity":4000,
+                                 "cooler":true,
+                                 "available":false,
+                                 "travelCost": 10}]
                                 """))
                 .andExpect(status().isOk());
     }
 
     @Test
     @DataSet("common/car/dataset_add_car.yml")
+    @ExpectedDataSet("common/car/dataset_add_car.yml")
     @DisplayName("when Get Car By Id then Ok Status Returned")
     void whenGetCarById_thenOkStatusReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/cars/2")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"id":"2",
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .json("""
+                                {"id":2,
                                  "name":"MAN",
-                                 "licence_plate":"AA 2455 CT",
+                                 "licencePlate":"AA 2455 CT",
                                  "driver":"Ivan Kornienko",
-                                 "weight_capacity":"4000",
-                                 "cooler":"true",
-                                 "available":"false"}
-                                """))
-                .andExpect(status().isOk());
+                                 "weightCapacity":4000,
+                                 "cooler":true,
+                                 "available":false,
+                                 "travelCost": 10}
+                                """));
     }
 }
