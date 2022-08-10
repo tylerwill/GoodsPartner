@@ -1,0 +1,240 @@
+{
+  "originAddresses": [
+    "вулиця Калинова, 15а, Фастів, Київська обл., Україна, 08500",
+    "Гуртожиток №13 НТУУ \"КПІ\", вулиця Металістів, 8, 4 24, Київ, Україна, 03057",
+    "вулиця Хрещатик, 1, Київ, Україна, 02000",
+    "вулиця Володимира Сікевича, 22, 35, Київ, Україна, 02000"
+  ],
+  "destinationAddresses": [
+    "вулиця Калинова, 15а, Фастів, Київська обл., Україна, 08500",
+    "Гуртожиток №13 НТУУ \"КПІ\", вулиця Металістів, 8, 4 24, Київ, Україна, 03057",
+    "вулиця Хрещатик, 1, Київ, Україна, 02000",
+    "вулиця Володимира Сікевича, 22, 35, Київ, Україна, 02000"
+  ],
+  "rows": [
+    {
+      "elements": [
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 0,
+            "humanReadable": "1 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 0,
+            "humanReadable": "1 м"
+          },
+          "fare": null
+        },
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 4591,
+            "humanReadable": "1 год 17 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 74641,
+            "humanReadable": "74,6 км"
+          },
+          "fare": null
+        },
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 4882,
+            "humanReadable": "1 год 21 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 75603,
+            "humanReadable": "75,6 км"
+          },
+          "fare": null
+        },
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 4587,
+            "humanReadable": "1 год 16 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 73277,
+            "humanReadable": "73,3 км"
+          },
+          "fare": null
+        }
+      ]
+    },
+    {
+      "elements": [
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 4644,
+            "humanReadable": "1 год 17 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 75404,
+            "humanReadable": "75,4 км"
+          },
+          "fare": null
+        },
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 0,
+            "humanReadable": "1 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 0,
+            "humanReadable": "1 м"
+          },
+          "fare": null
+        },
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 701,
+            "humanReadable": "12 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 6932,
+            "humanReadable": "6,9 км"
+          },
+          "fare": null
+        },
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 501,
+            "humanReadable": "8 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 4591,
+            "humanReadable": "4,6 км"
+          },
+          "fare": null
+        }
+      ]
+    },
+    {
+      "elements": [
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 4666,
+            "humanReadable": "1 год 18 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 77840,
+            "humanReadable": "77,8 км"
+          },
+          "fare": null
+        },
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 1293,
+            "humanReadable": "22 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 11548,
+            "humanReadable": "11,5 км"
+          },
+          "fare": null
+        },
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 0,
+            "humanReadable": "1 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 0,
+            "humanReadable": "1 м"
+          },
+          "fare": null
+        },
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 1333,
+            "humanReadable": "22 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 14260,
+            "humanReadable": "14,3 км"
+          },
+          "fare": null
+        }
+      ]
+    },
+    {
+      "elements": [
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 4291,
+            "humanReadable": "1 год 12 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 72492,
+            "humanReadable": "72,5 км"
+          },
+          "fare": null
+        },
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 637,
+            "humanReadable": "11 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 4383,
+            "humanReadable": "4,4 км"
+          },
+          "fare": null
+        },
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 1039,
+            "humanReadable": "17 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 8132,
+            "humanReadable": "8,1 км"
+          },
+          "fare": null
+        },
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 0,
+            "humanReadable": "1 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 0,
+            "humanReadable": "1 м"
+          },
+          "fare": null
+        }
+      ]
+    }
+  ]
+}

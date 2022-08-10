@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ public class RoutePointMapper {
 
     public List<RoutePointDto> mapOrders(List<Order> orders) {
         Map<Address, List<Order>> addressOrderMap = orders.stream()
-                .collect(Collectors.groupingBy(Order::getAddress));
+                .collect(Collectors.groupingBy(Order::getAddress, LinkedHashMap::new, Collectors.toList()));
 
         List<RoutePointDto> routePointDtoList = new ArrayList<>(1);
         addressOrderMap.forEach((address, orderList) -> {

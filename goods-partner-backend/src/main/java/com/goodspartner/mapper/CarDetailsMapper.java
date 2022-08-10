@@ -54,6 +54,7 @@ public class CarDetailsMapper {
         return ProductDto.builder()
                 .productName(orderedProduct.getProduct().getName())
                 .amount(orderedProduct.getCount())
+                .unitWeight(orderedProduct.getProduct().getKg())
                 .totalProductWeight(getProductTotalWeight(orderedProduct))
                 .build();
     }

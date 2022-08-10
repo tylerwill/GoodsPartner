@@ -1,197 +1,293 @@
 package com.goodspartner.web.controller;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.dto.CarDto;
-import com.goodspartner.dto.OrderDto;
-import com.goodspartner.dto.ProductDto;
-import com.goodspartner.dto.RoutePointDto;
-import com.goodspartner.entity.RouteStatus;
-import com.goodspartner.web.controller.response.RoutesCalculation;
-import com.goodspartner.service.OrderService;
+import com.goodspartner.service.GoogleApiService;
+import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.DistanceMatrix;
+import com.google.maps.model.DistanceMatrixRow;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DBRider
 public class RouteControllerITest extends AbstractWebITest {
-
-    // TODO: Maybe we shouldn't mock all order service in this Integration test
+    public static final String MOCKED_ROUTE = "datasets/route/route.json";
+    public static final String DISTANCE_MATRIX = "datasets/route/distanceMatrix.json";
+    private static final String EMPTY_DISTANCE_MATRIX = "datasets/route/emptyDistanceMatrix.json";
+    public static final String ORIGIN_ADDR = "originAddresses";
+    public static final String DEST_ADDR = "destinationAddresses";
+    public static final String DISTANCE_MATRIX_ROWS = "rows";
+    public static final String URL_TEMPLATE = "/api/v1/routes";
+    public static final String URL_PARAM_MANE = "date";
     @MockBean
-    private OrderService orderService;
+    private GoogleApiService googleApiService;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    @DisplayName("given Routes when Calculate Routers then Json Returned")
-    public void givenRoutes_whenCalculateRouters_thenJsonReturned() throws Exception {
-        RoutePointDto.AddressOrderDto addressOrderDto = RoutePointDto.AddressOrderDto.builder()
-                .id(6)
-                .orderNumber("356325")
-                .orderTotalWeight(59.32)
-                .build();
+    @DataSet(value = "route/sql_dump.json", disableConstraints = true)
+    @DisplayName("given date with orders when Calculate Routers then Json Returned")
+    public void givenDateWithOrdersWhenCalculateRoutersThenJsonWithRoutesAndCarsReturned() throws Exception {
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        RoutePointDto routePointDto = RoutePointDto.builder()
-                .clientName("ТОВ Кондитерська")
-                .address("м. Київ, вул. Хрещатик, 1")
-                .addressTotalWeight(59.32)
-                .routePointDistantTime(Duration.ofSeconds(3600))
-                .orders(List.of(addressOrderDto))
-                .build();
+        DirectionsRoute directionsRoute =
+                mapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), DirectionsRoute.class);
 
-        CarDto carDto = CarDto.builder()
-                .id(1)
-                .name("Mercedes Vito")
-                .driver("Ivan Piddubny")
-                .licencePlate("AA 2222 CT")
-                .travelCost(10)
-                .available(true)
-                .cooler(false)
-                .weightCapacity(1000)
-                .loadSize(59.32)
-                .build();
+        JsonNode jsonNode = mapper.readTree(getClass().getClassLoader().getResource(DISTANCE_MATRIX));
+        JsonNode originAddresses = jsonNode.get(ORIGIN_ADDR);
+        JsonNode destinationAddresses = jsonNode.get(DEST_ADDR);
+        JsonNode rows = jsonNode.get(DISTANCE_MATRIX_ROWS);
 
-        ProductDto productInfoDto = ProductDto.builder()
-                .productName("3434 Паста шоколадна")
-                .amount(1)
-                .unitWeight(1.52)
-                .build();
+        String[] origin = mapper.readValue(originAddresses.traverse(), String[].class);
+        String[] dest = mapper.readValue(destinationAddresses.traverse(), String[].class);
+        DistanceMatrixRow[] distanceMatrixRows = mapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
+        DistanceMatrix distanceMatrix = new DistanceMatrix(origin, dest, distanceMatrixRows);
 
-        ProductDto productInfoDto2 = ProductDto.builder()
-                .productName("46643 Фарба харчова синя")
-                .amount(10)
-                .unitWeight(57.8)
-                .build();
+        when(googleApiService.getDirectionRoute(anyString(), anyList())).thenReturn(directionsRoute);
+        when(googleApiService.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
 
-        OrderDto orderInfoDto = OrderDto.builder()
-                .products(List.of(productInfoDto, productInfoDto2))
-                .orderNumber(String.valueOf(356325))
-                .id(6)
-                .build();
-
-        RoutesCalculation.CarLoadDto carLoadDto = RoutesCalculation.CarLoadDto.builder()
-                .car(carDto)
-                .orders(List.of(orderInfoDto))
-                .build();
-
-        RoutesCalculation.RouteDto routeDto = RoutesCalculation.RouteDto.builder()
-                .id(1)
-                .status(RouteStatus.DRAFT)
-                .totalWeight(59.32)
-                .totalPoints(1)
-                .totalOrders(1)
-                .distance(153.8)
-                .estimatedTime(Duration.ofSeconds(3600))
-                .startTime(LocalDateTime.of(2022, 07, 12, 11, 00))
-                .finishTime(LocalDateTime.of(2022, 07, 12, 12, 00))
-                .spentTime(Duration.ofSeconds(3600))
-                .storeName("Склад №1")
-                .storeAddress("Фастів, вул. Широка, 15")
-                .routePoints(List.of(routePointDto))
-                .car(carDto)
-                .build();
-
-        RoutesCalculation routesCalculation = RoutesCalculation.builder()
-                .routes(List.of(routeDto))
-                .carLoadDetails(List.of(carLoadDto))
-                .date(LocalDate.of(2022, 7, 12))
-                .build();
-
-        Mockito.when(orderService.calculateRoutes(LocalDate.of(2022, 7, 12)))
-                .thenReturn(routesCalculation);
-        mockMvc.perform(get("/api/v1/routes")
-                        .param("date", "2022-07-12")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
-
+        mockMvc.perform(get(URL_TEMPLATE)
+                        .param(URL_PARAM_MANE, "2022-08-07")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
-                        .json("""
-                                {
-                                  "date": "2022-07-12",
+                        .json("""  
+                                  {
+                                  "date": "2022-08-07",
                                   "routes": [
                                     {
-                                      "id": 1,
+                                      "id": 51,
                                       "status": "DRAFT",
-                                      "totalWeight": 59.32,
-                                      "totalPoints": 1,
-                                      "totalOrders": 1,
-                                      "distance": 153.8,
-                                      "estimatedTime": "PT1H",
-                                      "startTime": "11:00:00",
-                                      "finishTime": "12:00:00",
-                                      "spentTime": "PT1H",
+                                      "totalWeight": 1148.76,
+                                      "totalPoints": 3,
+                                      "totalOrders": 4,
+                                      "distance": 162.44,
+                                      "estimatedTime": "PT2H56M33S",
+                                      "startTime": null,
+                                      "finishTime": null,
+                                      "spentTime": null,
                                       "storeName": "Склад №1",
                                       "storeAddress": "Фастів, вул. Широка, 15",
                                       "routePoints": [
                                         {
-                                          "clientId": 0,
-                                          "clientName": "ТОВ Кондитерська",
-                                          "address": "м. Київ, вул. Хрещатик, 1",
-                                          "addressTotalWeight": 59.32,
-                                          "routePointDistantTime": "PT1H",
+                                          "clientId": 1,
+                                          "clientName": "ТОВ \\"Пекарня\\"",
+                                          "address": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
+                                          "addressTotalWeight": 804.98,
+                                          "routePointDistantTime": "PT1H16M26S",
                                           "orders": [
                                             {
-                                              "id": 6,
-                                              "orderNumber": "356325"
+                                              "id": 9,
+                                              "orderNumber": "986453"
+                                            },
+                                            {
+                                              "id": 10,
+                                              "orderNumber": "426457"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "clientId": 1,
+                                          "clientName": "ТОВ \\"Пекарня\\"",
+                                          "address": "м. Київ, вул. Металістів, 8, оф. 4-24",
+                                          "addressTotalWeight": 5.5,
+                                          "routePointDistantTime": "PT10M37S",
+                                          "orders": [
+                                            {
+                                              "id": 3,
+                                              "orderNumber": "45463"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "clientId": 1,
+                                          "clientName": "ТОВ \\"Пекарня\\"",
+                                          "address": "м. Київ, вул. Хрещатик, 1",
+                                          "addressTotalWeight": 338.28,
+                                          "routePointDistantTime": "PT11M43S",
+                                          "orders": [
+                                            {
+                                              "id": 5,
+                                              "orderNumber": "432565"
                                             }
                                           ]
                                         }
                                       ],
                                       "car": {
-                                        "id": 1,
-                                        "name": "Mercedes Vito",
-                                        "licencePlate": "AA 2222 CT",
-                                        "driver": "Ivan Piddubny",
-                                        "weightCapacity": 1000,
+                                        "id": 51,
+                                        "name": "Mercedes Sprinter",
+                                        "licencePlate": "AA 1111 CT",
+                                        "driver": "Oleg Dudka",
+                                        "weightCapacity": 2000,
                                         "cooler": false,
                                         "available": true,
-                                        "loadSize": 59.32,
-                                        "travelCost": 10
+                                        "loadSize": 1148.76,
+                                        "travelCost": 12
                                       }
                                     }
                                   ],
                                   "carLoadDetails": [
                                     {
                                       "car": {
-                                        "id": 1,
-                                        "name": "Mercedes Vito",
-                                        "licencePlate": "AA 2222 CT",
-                                        "driver": "Ivan Piddubny",
-                                        "weightCapacity": 1000,
+                                        "id": 51,
+                                        "name": "Mercedes Sprinter",
+                                        "licencePlate": "AA 1111 CT",
+                                        "driver": "Oleg Dudka",
+                                        "weightCapacity": 2000,
                                         "cooler": false,
                                         "available": true,
-                                        "loadSize": 59.32,
-                                        "travelCost": 10
+                                        "loadSize": 1148.76,
+                                        "travelCost": 12
                                       },
                                       "orders": [
                                         {
-                                          "id": 6,
-                                          "orderNumber": "356325",
+                                          "id": 5,
+                                          "orderNumber": "432565",
                                           "products": [
                                             {
-                                              "productName": "3434 Паста шоколадна",
-                                              "amount": 1,
-                                              "unitWeight": 1.52
+                                              "productName": "4695 Фарба харчова зелена",
+                                              "amount": 8,
+                                              "storeName": null,
+                                              "unitWeight": 3.54,
+                                              "totalProductWeight": 28.32
                                             },
                                             {
-                                              "productName": "46643 Фарба харчова синя",
-                                              "amount": 10,
-                                              "unitWeight": 57.8
+                                              "productName": "8452 Масло 1й гатунок",
+                                              "amount": 9,
+                                              "storeName": null,
+                                              "unitWeight": 34.44,
+                                              "totalProductWeight": 309.96
                                             }
-                                          ]
+                                          ],
+                                          "createdDate": null,
+                                          "clientName": null,
+                                          "address": null,
+                                          "managerFullName": null,
+                                          "orderWeight": 0
+                                        },
+                                        {
+                                          "id": 3,
+                                          "orderNumber": "45463",
+                                          "products": [
+                                            {
+                                              "productName": "66784 Арахісова паста",
+                                              "amount": 5,
+                                              "storeName": null,
+                                              "unitWeight": 0.55,
+                                              "totalProductWeight": 2.75
+                                            },
+                                            {
+                                              "productName": "66784 Арахісова паста",
+                                              "amount": 5,
+                                              "storeName": null,
+                                              "unitWeight": 0.55,
+                                              "totalProductWeight": 2.75
+                                            }
+                                          ],
+                                          "createdDate": null,
+                                          "clientName": null,
+                                          "address": null,
+                                          "managerFullName": null,
+                                          "orderWeight": 0
+                                        },
+                                        {
+                                          "id": 10,
+                                          "orderNumber": "426457",
+                                          "products": [
+                                            {
+                                              "productName": "56743 Форми пасхальні",
+                                              "amount": 7,
+                                              "storeName": null,
+                                              "unitWeight": 4.65,
+                                              "totalProductWeight": 32.55
+                                            },
+                                            {
+                                              "productName": "4695 Фарба харчова зелена",
+                                              "amount": 8,
+                                              "storeName": null,
+                                              "unitWeight": 3.54,
+                                              "totalProductWeight": 28.32
+                                            }
+                                          ],
+                                          "createdDate": null,
+                                          "clientName": null,
+                                          "address": null,
+                                          "managerFullName": null,
+                                          "orderWeight": 0
+                                        },
+                                        {
+                                          "id": 9,
+                                          "orderNumber": "986453",
+                                          "products": [
+                                            {
+                                              "productName": "66784 Арахісова паста",
+                                              "amount": 5,
+                                              "storeName": null,
+                                              "unitWeight": 0.55,
+                                              "totalProductWeight": 2.75
+                                            },
+                                            {
+                                              "productName": "8795 Мука екстра",
+                                              "amount": 6,
+                                              "storeName": null,
+                                              "unitWeight": 123.56,
+                                              "totalProductWeight": 741.36
+                                            }
+                                          ],
+                                          "createdDate": null,
+                                          "clientName": null,
+                                          "address": null,
+                                          "managerFullName": null,
+                                          "orderWeight": 0
                                         }
                                       ]
                                     }
                                   ]
-                                }"""
-                        ));
+                                }"""));
+    }
+
+    @Test
+    @DataSet(value = "route/sql_dump.json", disableConstraints = true)
+    @DisplayName("given date without orders when Calculate Routers then empty Json Returned")
+    public void givenDateWithoutOrdersWhenCalculateRoutersThenEmptyJsonReturned() throws Exception {
+        JsonNode jsonNode = mapper.readTree(getClass().getClassLoader().getResource(EMPTY_DISTANCE_MATRIX));
+        JsonNode originAddresses = jsonNode.get(ORIGIN_ADDR);
+        JsonNode destinationAddresses = jsonNode.get(DEST_ADDR);
+        JsonNode rows = jsonNode.get(DISTANCE_MATRIX_ROWS);
+
+        String[] origin = mapper.readValue(originAddresses.traverse(), String[].class);
+        String[] dest = mapper.readValue(destinationAddresses.traverse(), String[].class);
+        DistanceMatrixRow[] distanceMatrixRows = mapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
+        DistanceMatrix distanceMatrix = new DistanceMatrix(origin, dest, distanceMatrixRows);
+
+        when(googleApiService.getDirectionRoute(anyString(), anyList())).thenReturn(null);
+        when(googleApiService.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
+
+        mockMvc.perform(get(URL_TEMPLATE)
+                        .param(URL_PARAM_MANE, "7777-07-07")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .json("""  
+                                {
+                                  "date": "7777-07-07",
+                                  "routes": [],
+                                  "carLoadDetails": []
+                                }"""));
     }
 }
+
+
+
