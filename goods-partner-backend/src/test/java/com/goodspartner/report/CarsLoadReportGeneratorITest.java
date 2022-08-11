@@ -32,7 +32,7 @@ public class CarsLoadReportGeneratorITest {
     @Test
     @DisplayName("Generate Report Of Loading Car With One Order")
     void testGenerateReport_ofLoadingCarWithOneOrder() {
-        CarDto carDto = CarDto.builder()
+             CarDto carDto = CarDto.builder()
                 .id(1)
                 .name("Mercedes Vito")
                 .driver("Ivan Piddubny")
