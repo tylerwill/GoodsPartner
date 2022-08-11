@@ -1,0 +1,389 @@
+{
+  "addresses": [
+    {
+      "id": 1,
+      "address": "м. Київ, вул. Металістів, 8, оф. 4-24",
+      "client_id": 1
+    },
+    {
+      "id": 2,
+      "address": "м. Київ, вул. Хрещатик, 1",
+      "client_id": 1
+    },
+    {
+      "id": 3,
+      "address": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
+      "client_id": 1
+    },
+    {
+      "id": 4,
+      "address": "м. Київ, вул. Глибочицька, 12Б, оф. 3",
+      "client_id": 2
+    },
+    {
+      "id": 5,
+      "address": "м. Київ, вул. Межигірська, 22, оф. 3",
+      "client_id": 2
+    },
+    {
+      "id": 6,
+      "address": "м. Київ, вул. Політехнічна, 1, оф. 65",
+      "client_id": 3
+    }
+  ],
+  "cars": [
+    {
+      "id": 51,
+      "name": "Mercedes Sprinter",
+      "licence_plate": "AA 1111 CT",
+      "driver": "Oleg Dudka",
+      "weight_capacity": 2000,
+      "cooler": false,
+      "available": true,
+      "travel_cost": 12
+    },
+    {
+      "id": 101,
+      "name": "Mercedes Vito",
+      "licence_plate": "AA 2222 CT",
+      "driver": "Ivan Piddubny",
+      "weight_capacity": 1000,
+      "cooler": false,
+      "available": true,
+      "travel_cost": 10
+    },
+    {
+      "id": 151,
+      "name": "Mercedes Sprinter",
+      "licence_plate": "AA 3333 CT",
+      "driver": "Anton Geraschenko",
+      "weight_capacity": 2500,
+      "cooler": true,
+      "available": true,
+      "travel_cost": 15
+    },
+    {
+      "id": 201,
+      "name": "Mercedes 818",
+      "licence_plate": "AA 4444 CT",
+      "driver": "Serhiy Kotovich",
+      "weight_capacity": 4000,
+      "cooler": false,
+      "available": true,
+      "travel_cost": 20
+    }
+  ],
+  "clients": [
+    {
+      "id": 1,
+      "name": "ТОВ \"Пекарня\""
+    },
+    {
+      "id": 2,
+      "name": "ТОВ \"Кондитерська\""
+    },
+    {
+      "id": 3,
+      "name": "ТОВ \"Хлібзавод\""
+    }
+  ],
+  "managers": [
+    {
+      "id": 1,
+      "first_name": "Петро",
+      "last_name": "Коваленко",
+      "phone_number": "+380671111111",
+      "email": "p.kovalenko@goodspartner.com"
+    },
+    {
+      "id": 2,
+      "first_name": "Іван",
+      "last_name": "Шугай",
+      "phone_number": "+380672222222",
+      "email": "i.shuhai@goodspartner.com"
+    },
+    {
+      "id": 3,
+      "first_name": "Андрій",
+      "last_name": "Бублик",
+      "phone_number": "+380673333333",
+      "email": "a.bublyk@goodspartner.com"
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "number": 12345,
+      "created_date": "2022-08-05",
+      "shipping_date": "2022-09-07",
+      "address_id": 1,
+      "manager_id": 1,
+      "route_id": 1
+    },
+    {
+      "id": 2,
+      "number": 43532,
+      "created_date": "2022-08-05",
+      "shipping_date": "2022-08-06",
+      "address_id": 1,
+      "manager_id": 2,
+      "route_id": 1
+    },
+    {
+      "id": 3,
+      "number": 45463,
+      "created_date": "2022-08-05",
+      "shipping_date": "2022-08-07",
+      "address_id": 1,
+      "manager_id": 3,
+      "route_id": 1
+    },
+    {
+      "id": 4,
+      "number": 97342,
+      "created_date": "2022-08-06",
+      "shipping_date": "2022-09-07",
+      "address_id": 2,
+      "manager_id": 1,
+      "route_id": 2
+    },
+    {
+      "id": 5,
+      "number": 432565,
+      "created_date": "2022-08-06",
+      "shipping_date": "2022-08-07",
+      "address_id": 2,
+      "manager_id": 3,
+      "route_id": 2
+    },
+    {
+      "id": 6,
+      "number": 356325,
+      "created_date": "2022-08-06",
+      "shipping_date": "2022-08-08",
+      "address_id": 2,
+      "manager_id": 2,
+      "route_id": 2
+    },
+    {
+      "id": 7,
+      "number": 479324,
+      "created_date": "2022-08-07",
+      "shipping_date": "2022-09-07",
+      "address_id": 3,
+      "manager_id": 1,
+      "route_id": 3
+    },
+    {
+      "id": 8,
+      "number": 477255,
+      "created_date": "2022-08-07",
+      "shipping_date": "2022-08-09",
+      "address_id": 3,
+      "manager_id": 3,
+      "route_id": 3
+    },
+    {
+      "id": 9,
+      "number": 986453,
+      "created_date": "2022-08-07",
+      "shipping_date": "2022-08-07",
+      "address_id": 3,
+      "manager_id": 1,
+      "route_id": 3
+    },
+    {
+      "id": 10,
+      "number": 426457,
+      "created_date": "2022-08-07",
+      "shipping_date": "2022-08-07",
+      "address_id": 3,
+      "manager_id": 2,
+      "route_id": 3
+    }
+  ],
+  "orders_products": [
+    {
+      "id": 1,
+      "order_id": 1,
+      "product_id": 1,
+      "count": 1
+    },
+    {
+      "id": 2,
+      "order_id": 1,
+      "product_id": 2,
+      "count": 2
+    },
+    {
+      "id": 3,
+      "order_id": 2,
+      "product_id": 3,
+      "count": 3
+    },
+    {
+      "id": 4,
+      "order_id": 2,
+      "product_id": 4,
+      "count": 4
+    },
+    {
+      "id": 5,
+      "order_id": 3,
+      "product_id": 5,
+      "count": 5
+    },
+    {
+      "id": 6,
+      "order_id": 3,
+      "product_id": 5,
+      "count": 5
+    },
+    {
+      "id": 7,
+      "order_id": 4,
+      "product_id": 5,
+      "count": 5
+    },
+    {
+      "id": 8,
+      "order_id": 4,
+      "product_id": 5,
+      "count": 5
+    },
+    {
+      "id": 9,
+      "order_id": 5,
+      "product_id": 8,
+      "count": 8
+    },
+    {
+      "id": 10,
+      "order_id": 5,
+      "product_id": 9,
+      "count": 9
+    },
+    {
+      "id": 11,
+      "order_id": 6,
+      "product_id": 10,
+      "count": 10
+    },
+    {
+      "id": 12,
+      "order_id": 6,
+      "product_id": 1,
+      "count": 1
+    },
+    {
+      "id": 13,
+      "order_id": 7,
+      "product_id": 10,
+      "count": 10
+    },
+    {
+      "id": 14,
+      "order_id": 7,
+      "product_id": 2,
+      "count": 2
+    },
+    {
+      "id": 15,
+      "order_id": 8,
+      "product_id": 3,
+      "count": 3
+    },
+    {
+      "id": 16,
+      "order_id": 8,
+      "product_id": 4,
+      "count": 4
+    },
+    {
+      "id": 17,
+      "order_id": 9,
+      "product_id": 5,
+      "count": 5
+    },
+    {
+      "id": 18,
+      "order_id": 9,
+      "product_id": 6,
+      "count": 6
+    },
+    {
+      "id": 19,
+      "order_id": 10,
+      "product_id": 7,
+      "count": 7
+    },
+    {
+      "id": 20,
+      "order_id": 10,
+      "product_id": 8,
+      "count": 8
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "3434 Паста шоколадна",
+      "kg": 1.52,
+      "store_id": 1
+    },
+    {
+      "id": 2,
+      "name": "353 Стружка кокосова",
+      "kg": 0.34,
+      "store_id": 1
+    },
+    {
+      "id": 3,
+      "name": "6798 Фарба харчова червона",
+      "kg": 0.52,
+      "store_id": 1
+    },
+    {
+      "id": 4,
+      "name": "576853 Масло екстра",
+      "kg": 20.56,
+      "store_id": 1
+    },
+    {
+      "id": 5,
+      "name": "66784 Арахісова паста",
+      "kg": 0.55,
+      "store_id": 1
+    },
+    {
+      "id": 6,
+      "name": "8795 Мука екстра",
+      "kg": 123.56,
+      "store_id": 2
+    },
+    {
+      "id": 7,
+      "name": "56743 Форми пасхальні",
+      "kg": 4.65,
+      "store_id": 2
+    },
+    {
+      "id": 8,
+      "name": "4695 Фарба харчова зелена",
+      "kg": 3.54,
+      "store_id": 2
+    },
+    {
+      "id": 9,
+      "name": "8452 Масло 1й гатунок",
+      "kg": 34.44,
+      "store_id": 1
+    },
+    {
+      "id": 10,
+      "name": "46643 Фарба харчова синя",
+      "kg": 5.78,
+      "store_id": 2
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "originAddresses": [
+    "вулиця Калинова, 15а, Фастів, Київська обл., Україна, 08500"
+  ],
+  "destinationAddresses": [
+    "вулиця Калинова, 15а, Фастів, Київська обл., Україна, 08500"
+  ],
+  "rows": [
+    {
+      "elements": [
+        {
+          "status": "OK",
+          "duration": {
+            "inSeconds": 0,
+            "humanReadable": "1 хв"
+          },
+          "durationInTraffic": null,
+          "distance": {
+            "inMeters": 0,
+            "humanReadable": "1 м"
+          },
+          "fare": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1584 @@
+{
+  "summary": "P19 and E95/М05",
+  "legs": [
+    {
+      "steps": [
+        {
+          "htmlInstructions": "Head <b>south</b> on <b>вул. Калинова</b> toward <b>Зоряна вул.</b>",
+          "distance": {
+            "inMeters": 370,
+            "humanReadable": "0.4 km"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 47,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.08338759999999,
+            "lng": 29.8854899
+          },
+          "endLocation": {
+            "lat": 50.0800705,
+            "lng": 29.8851
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "e|tpHi_luDd@@`ABj@@xAF|@HzAJxALrAJ`BL"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>left</b> onto <b>Скригалівська вул.</b>",
+          "distance": {
+            "inMeters": 244,
+            "humanReadable": "0.2 km"
+          },
+          "maneuver": "turn-left",
+          "duration": {
+            "inSeconds": 25,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.0800705,
+            "lng": 29.8851
+          },
+          "endLocation": {
+            "lat": 50.0798109,
+            "lng": 29.8884906
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "mgtpH{|kuD@QT_G?AVmI@O@s@"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue onto <b>вул. Свято-Покровська</b>",
+          "distance": {
+            "inMeters": 483,
+            "humanReadable": "0.5 km"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 46,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.0798109,
+            "lng": 29.8884906
+          },
+          "endLocation": {
+            "lat": 50.0791179,
+            "lng": 29.89515909999999
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "yetpHarluDJsE?YFoCJiCRwC\\qFd@_HFgAH{@"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue onto <b>вул. Соборна</b>",
+          "distance": {
+            "inMeters": 2111,
+            "humanReadable": "2.1 km"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 278,
+            "humanReadable": "5 mins"
+          },
+          "startLocation": {
+            "lat": 50.0791179,
+            "lng": 29.89515909999999
+          },
+          "endLocation": {
+            "lat": 50.0767217,
+            "lng": 29.9227585
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "oatpHw{muDNuADg@@a@Ai@I_AQuA[aDCOKcAKq@I]Sy@Wq@_@m@]a@U][c@ACW]AAQYMYO_@UqACs@BqAJuBNwDHkABk@T{CBU\\cEr@cIXcDBOl@cH\\}DH{@@SH_A^aEh@oGx@wJFq@TiCZgDBYDi@@KFw@Dc@BQDa@BS@M@I@GDSLi@^iAz@sCTcAf@yBtByJ"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue onto <b>P19</b>/<wbr/><b>Т1013</b>",
+          "distance": {
+            "inMeters": 1413,
+            "humanReadable": "1.4 km"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 238,
+            "humanReadable": "4 mins"
+          },
+          "startLocation": {
+            "lat": 50.0767217,
+            "lng": 29.9227585
+          },
+          "endLocation": {
+            "lat": 50.075183,
+            "lng": 29.927805
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "orspHghsuDp@cDz@kENq@BKDMBCBEDCDADA@?@?@?B?^PjGnD\\RTNhAz@vB`BDD@@D@B@B?@?B?BA@ABCBE@CBEBKZ{@Pi@DIBIDMFIFMLKJIJGNELGz@MrAQ^Gp@KDADAFCFCDCDCDE?G@I@I?G?CAK?MAK?K?AAIAKCMCOeB@c@?Q@OAM?e@EQAOEMCMCQGSGYMQGYM_Bw@cAk@OKMIMK[[k@i@UUoC{C[]"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>right</b> onto <b>вул. Якубовського</b>/<wbr/><b>P19</b>/<wbr/><b>Т1013</b>",
+          "distance": {
+            "inMeters": 2053,
+            "humanReadable": "2.1 km"
+          },
+          "maneuver": "turn-right",
+          "duration": {
+            "inSeconds": 130,
+            "humanReadable": "2 mins"
+          },
+          "startLocation": {
+            "lat": 50.075183,
+            "lng": 29.927805
+          },
+          "endLocation": {
+            "lat": 50.0670721,
+            "lng": 29.9535891
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "{hspHwgtuDzAoHTiAnEcT|B_LhB}ILq@Nq@|@iEx@_EDOh@oCjAgF`FeVpAsGNq@Nq@lA}Fb@qB\\{A@IF[lB}IrAoGb@qBP[FKFIRWDGDIBG"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "At the roundabout, take the <b>2nd</b> exit onto <b>P19</b> heading to <b>МИТНИЦЯ</b>/<wbr/><b>КИЇВ</b>",
+          "distance": {
+            "inMeters": 23965,
+            "humanReadable": "24.0 km"
+          },
+          "maneuver": "roundabout-right",
+          "duration": {
+            "inSeconds": 1136,
+            "humanReadable": "19 mins"
+          },
+          "startLocation": {
+            "lat": 50.0670721,
+            "lng": 29.9535891
+          },
+          "endLocation": {
+            "lat": 50.1422069,
+            "lng": 30.237798
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "evqpH}hyuD@?@??A@?@A@A@A@A@A@C@A@C@C@C?C@C?C?C?C?C?C?C?C?CAA?A?A?AA?@K@M?K?c@@W?M?M@O@QBYtAkGz@aEb@sBP{@hAiFz@gEBEdAiFbA_Fx@_EdD{O\\_BhF{VpAmGvAaHtBaKbBeIReALo@BUDSBQBO@OBO@OBOBQ@SDm@Ds@DqAX_INsDJqDDcAH{ALaBl@iJv@uKFu@NoBHsADo@Du@DaABiADsB@mIAsJ?}GA{KAoPAaDCuO?eK?a@CqWA{DAcKAgGCgLC_MCwK?aCA{OCaLAeE?]?Y@[B_@@U@WBWBYD]Hy@`@gDVoBTmBZuCHw@j@wEj@{ERmBlA}JfAqIHq@Jy@BSBQBUB[?O@MPoD\\kRJcIHeGFoG?m@@y@?UAi@Ak@CWC]CYEYCOCMEQEOIYGQcAuCkA_DqDwJ]_AgAsCYw@sAuDoCqHMa@Ma@Ma@M_@K]Me@Ki@Oi@Kg@Kc@gA}F{DuTSgA{D{ToB_Lw@mE]sBkDwRyAqIsAuHoHqb@{@kEWgAOq@IYIYeAqD[cA]_ASk@Ui@O_@MWgB{Dq@}AeByD]{@[{@]_AWw@eBkFSo@So@aDkJcAyCKWCICGCCCEGIACCKc@uA}@mCSm@Qe@cCiHiAkDw@_CyC_JeBeFQg@m@iBe@qAcBeFeD}JqAyDeAaDgAcD_BwEy@eCkAkDyDkL{AoEgBoFeBgFaA{CcA_DgAgDGQoAwDu@wBi@}AiAgD[_AqBcGUm@yBsGyC}IyAmEqAwDqIcWiDaKkEuMeGqQSm@qBcGaGkQM_@qAyDuD_LGQ}AuESm@Sm@aDsJSk@?AoAyDqA}Dg@wAm@iBeGsQAA{@kCkC}HoGiR_B{ESo@Ws@mLw]K[qAyDSm@oFgP{GaSqHaUUm@gAeDgFoOoAuDACg@{AuDaLeBgFoAyDSm@GSqBaGuGsR}B{GaAuCGMk@eB_AqCa@uAsBqGWu@cA{CISsBkGEIoCiIsD{Kg@{AEMqDsKUq@wBiGcBgF_KqZyAmE}ByGSm@GQyAqESq@Mc@K[IYKa@I]I]IYI_@Kg@SaAOy@]sBMw@Iq@MeAKcASwBGu@Ew@Cc@Aa@C[AYAg@GyAAi@Ak@M_AG[CSEQCOEQIYGQGUKWSc@GKEKGIEGEIKMMMUWs@o@mBeB_Ay@USSQo@c@w@e@[OUKKEIE[I[Ia@ImBY_@Ig@KMCUEUGWIWIw@Wu@W[Oe@SYMQKQMe@]y@q@_EsD_@[c@]WSWSw@i@UOYOSMQIWKMEQEWGWCSAUAO?K@UBOBSDm@LSBI@I@I?I?G?K?KAMCOEKEGCOESIkCaAkCcA]QECGEIGKIEEGGGIEGIMGMEKKWEKEMCMCMCOCMCOCSCSC_@QuBQsB"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Merge onto <b>E95</b>/<wbr/><b>М05</b> via the ramp to <b>КИЇВ</b>",
+          "distance": {
+            "inMeters": 33037,
+            "humanReadable": "33.0 km"
+          },
+          "maneuver": "ramp-right",
+          "duration": {
+            "inSeconds": 1803,
+            "humanReadable": "30 mins"
+          },
+          "startLocation": {
+            "lat": 50.1422069,
+            "lng": 30.237798
+          },
+          "endLocation": {
+            "lat": 50.3705192,
+            "lng": 30.4591659
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "yk`qHgypwD@a@?_@?UBU@OBMBKBIBEBIBEDGBEDEDEDCDCHE@?DCFAHCH?F@F@HBFDFDHFFHFJDHBF@DBHDJ@JBL@HBJ@L@N?J?JAJ?HAJCJAFCFCHEHCFCDA@CDEDEFEDEDE@EBE@G@G@I?I?u@GoEqAkCs@cCa@wBOqCUuACmA@qAJyAP}@PiAT{@XgAf@iBt@{BdAiExCaErDkCjCsGvH}@bAmAxAgBjBaCjDiAnAsBzBc@f@sApAUT{BxB_Av@o@h@GF_ChBwA`A{@h@[Ro@^[P[PEB_Bx@gAh@a@RUJy@^UJw@ZkAb@g@Pi@RoA`@k@Rc@L{@V_A\\qA`@o@RuAb@cDfAwBr@wBp@uBp@eBj@qHzB}CfAgAZeI~BkDrAWHMDgGfBc@JGB{Bt@kA^a@NiBj@q@Pu@TE@_@JmAZWFa@Jc@JWFKBg@J{Bd@eAJ]Fy@FMB_@B]@uAHy@@w@?iACuBMA?wAMa@G[Ee@Ms@Qy@S_@KYKYKm@UyAo@GE_@QAAgBeAGCSMeAu@o@e@y@m@eA_Ao@k@a@a@_@]c@a@qAsAo@s@eBmB{@aAc@e@Ya@y@aA{@gAmB_C}@iAq@y@aAkA[_@]a@cAmAsFwGa@i@iDmE?AuCiDuBmC_F_G_AgAmHaJmEsF]_@oA{A{AcBaAcAuJsL_GeHAAqCgDoBcCKMoA}As@{@UW_D}DsDqE_AiAEEoCkDgDiEqAeBkKeMWYwBiCaE_FoBcCiB{BuAeBaIuJeE_FqOiR_@e@[_@QSyA}AqAaB{GeIgGqH_@g@_GgHi@q@OOqFuGgAoAeAqAiBqBo@q@SUy@}@cA_AiB_BOKoAaAQOKIu@k@{AcAEC[S_@Ue@YeBeAqDuBo@]oDqBa@Uy@g@aAi@k@]kDqBmAo@gAo@c@W}@e@oHgEe@Yi@[aJgFgEcCmBgAuBwA_Aq@{@o@aA}@k@k@s@y@_@g@_@m@]s@[q@Wq@e@qAe@qAa@uA_@oAaAoDsB_I_BiGAICGCI{BsIeJk]q@mCeBuG[iAQq@Oo@[mAuBcI_BeGYcAGUY}@_AsDcAqDcByFgAuDmA}D}DwMUq@oA{DU{@a@kAM]Uk@Uk@w@mBoAiCqAwCa@}@CG[y@eAmCM]e@uAo@uB_@wA[iAYsA[gBU_BQyAK_ASqC?CGeAAAGyACo@C{@EqBG}FCkH?eACmF@]?QAiH?yCAmB?qAEeCIaCE_AG}@Gy@E]Eg@Km@Ii@Ki@UkA]}AESc@}AKY]_Ac@cA_@w@_@s@a@s@Wa@KQOQMOGISUk@i@k@g@YWWSOIw@i@_@SwAu@uBaAiFcCmFcCmCsA}CuAy@]yAq@{DkBqB_AmAk@g@UUK{@a@oB}@eBw@KEw@a@kD}AgAi@aLgFqAm@mCqA{BgAiD}A{@a@sBgAcAk@i@a@A?aAw@uHcG}AqAuBiBAAcG_FyCgCiAaAmCyBaAw@oAgAyCcCoAeAs@o@]]e@g@[]Y]UYQW]c@S[_A_BaAaBMUcCgEe@w@KSyByDgAkBYe@Wg@Yg@Ye@s@oAiDcGiAwBaCiEQYGMaCcEoA}BYi@q@iAIQQY[i@kA{By@wAqDuGMWKSa@w@MWq@sAcC{EyCwFu@wAcAmBoCgFy@{Aq@kAYg@GKaA}A_A{Am@}@]i@OSIOa@k@m@y@i@s@[_@mA{Ae@m@o@y@gAqA_BiBe@g@_@c@uCwCgBcB_@[aBwAsAgAiDeCWQIIu@i@aCeB{BaBsAaAqCqBg@]q@g@_D{B_CcBUQWOcDaC{@m@_@YmE_DmBwAgDaC{AcAk@a@kCgBeCkBi@c@_@Yu@m@kDkCaBmAyAiAmCkBiBoAq@i@WUYWk@k@{@y@eAaAyD}DoEiFkBeCeBcCYc@[e@u@iA{@sAYg@w@uAcBqCg@{@iDyF_GyJoAsBYe@EKiCmEsCeFcAaBGKeDoFc@u@Yc@cBqCiCiECEiAmBWc@iAmBmBeDgByC?AcBsC}B{D{@yA_FmIc@u@cCaEGKQYmBeDoDeGYg@Ye@OWm@aAeAeBmEsHWa@oLaSuBqDkCqEgBuCy@wAy@wAyAeCgAiB}CgF_@m@yGgLyEeIMQmAqBsIyNYe@s@mAeGeKiAmBgB{Co@cAaDqFoC{EuBoDoDkGc@y@e@w@iDyFq@mAKQYg@q@mAYg@mAsBk@_AoFoJo@kAQ[GMq@oAYg@c@y@_@q@gAqBa@o@m@gAMUS_@OWo@sA"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Take the ramp to <b>ВИШНЕВЕ</b>/<wbr/><b>супермаркет кріплення КРЕПКО</b>/<wbr/><b>проспект ПЕРЕМОГИ</b>",
+          "distance": {
+            "inMeters": 238,
+            "humanReadable": "0.2 km"
+          },
+          "maneuver": "ramp-right",
+          "duration": {
+            "inSeconds": 26,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.3705192,
+            "lng": 30.4591659
+          },
+          "endLocation": {
+            "lat": 50.369826,
+            "lng": 30.4591914
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "w~lrHy`|xDMy@ASAS?IAG@O@QDSDQFOFMHIJGJGJCPAF@H@FBF@DBFHDDDFFLFP@H@HBT?J?L?LARCNCNKh@"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Merge onto <b>Велика Окружна дорога</b>/<wbr/><b>Кільцева дор.</b>/<wbr/><b>T1027</b>/<wbr/><b>Е40</b>/<wbr/><b>М06</b>/<wbr/><b>М07</b>",
+          "distance": {
+            "inMeters": 125,
+            "humanReadable": "0.1 km"
+          },
+          "maneuver": "merge",
+          "duration": {
+            "inSeconds": 10,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.369826,
+            "lng": 30.4591914
+          },
+          "endLocation": {
+            "lat": 50.3706744,
+            "lng": 30.4580385
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "mzlrH}`|xDYb@Yb@SZU\\[d@W\\U^"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Keep <b>left</b> to stay on <b>Велика Окружна дорога</b>/<wbr/><b>Кільцева дор.</b>/<wbr/><b>T1027</b>/<wbr/><b>Е40</b>/<wbr/><b>М06</b>/<wbr/><b>М07</b>",
+          "distance": {
+            "inMeters": 3714,
+            "humanReadable": "3.7 km"
+          },
+          "maneuver": "keep-left",
+          "duration": {
+            "inSeconds": 287,
+            "humanReadable": "5 mins"
+          },
+          "startLocation": {
+            "lat": 50.3706744,
+            "lng": 30.4580385
+          },
+          "endLocation": {
+            "lat": 50.3958749,
+            "lng": 30.42370949999999
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "u_mrHwy{xDo@`AsBzCYd@CB_CpD[h@EHq@~@IJe@j@_AdAEDOPKLGFk@r@UZSZk@`AiCxDiDfFyEdHkBrCi@x@e@v@}@nAgCvD{@pAeA|Ae@p@GH_B`CCDaClDw@lAeA|AyAvB{AzBi@v@q@fAmBtCu@hA{AzB}A|BIJaCpD_@h@]f@gElGEF}BhD]f@KP_ClDKNqBxCk@x@oAlBoAjBoCbEOR[f@mBxCiGdJyAvBc@n@aArAMR_BvBaAxAOVQXQZYf@eAjBkAzBk@jAa@z@MX"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Take the exit toward <b>ВИШНЕВЕ</b>/<wbr/><b>супермаркет</b>/<wbr/><b>РИБНИЙ СВІТ ОКЕАНІЯ</b>",
+          "distance": {
+            "inMeters": 79,
+            "humanReadable": "79 m"
+          },
+          "maneuver": "ramp-right",
+          "duration": {
+            "inSeconds": 10,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.3958749,
+            "lng": 30.42370949999999
+          },
+          "endLocation": {
+            "lat": 50.3964381,
+            "lng": 30.4230466
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "e}qrHecuxDi@z@OTIFEHKHKHOJ"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Keep <b>right</b>",
+          "distance": {
+            "inMeters": 347,
+            "humanReadable": "0.3 km"
+          },
+          "maneuver": "keep-right",
+          "duration": {
+            "inSeconds": 37,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.3964381,
+            "lng": 30.4230466
+          },
+          "endLocation": {
+            "lat": 50.39839809999999,
+            "lng": 30.4202561
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "w`rrHa_uxDYJQDSBe@@y@D_@Dc@No@^]^QZKTIXKl@Kr@Eb@Gx@GhB?\\?d@"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>right</b> toward <b>вул. Нова</b>",
+          "distance": {
+            "inMeters": 80,
+            "humanReadable": "80 m"
+          },
+          "maneuver": "turn-right",
+          "duration": {
+            "inSeconds": 9,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.39839809999999,
+            "lng": 30.4202561
+          },
+          "endLocation": {
+            "lat": 50.39894779999999,
+            "lng": 30.4202794
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "_mrrHsmtxDKXCJEJGFEBE@G?GAECEGEIKSIOACCAEA"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue onto <b>вул. Нова</b>",
+          "distance": {
+            "inMeters": 1831,
+            "humanReadable": "1.8 km"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 131,
+            "humanReadable": "2 mins"
+          },
+          "startLocation": {
+            "lat": 50.39894779999999,
+            "lng": 30.4202794
+          },
+          "endLocation": {
+            "lat": 50.41262030000001,
+            "lng": 30.4335685
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "mprrHwmtxDYk@e@aAy@cB{@cBKUWi@CGoAcCo@iAs@mAm@_A_AwAQUk@w@}@eACEw@aAk@m@k@m@o@m@y@y@QQSS]]k@g@IIOMMKQMYUa@Y[SkAw@q@c@aAk@qAu@[Sc@]USc@a@a@a@g@c@YWYSe@[UKWM]MGA]Ig@Ka@GME_@QyA{@oAu@gDoBk@[iAq@{@g@k@]UM[Sk@]a@USMUOECMMGIEEGICICEACCKAKAKAKAGAG?E?C?C?EB["
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue onto <b>вул. Нова</b>",
+          "distance": {
+            "inMeters": 332,
+            "humanReadable": "0.3 km"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 34,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.41262030000001,
+            "lng": 30.4335685
+          },
+          "endLocation": {
+            "lat": 50.4112665,
+            "lng": 30.4377496
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "{eurHy`wxDDYr@aDv@iD`@iBxBsJ"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>left</b> onto <b>Повітрофлотський просп.</b>",
+          "distance": {
+            "inMeters": 670,
+            "humanReadable": "0.7 km"
+          },
+          "maneuver": "turn-left",
+          "duration": {
+            "inSeconds": 78,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4112665,
+            "lng": 30.4377496
+          },
+          "endLocation": {
+            "lat": 50.4138882,
+            "lng": 30.4442231
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "m}trH}zwxDcDuB{@k@g@]SMOK]SQM_@WQM[WOMMOGIUYQWEECGEGEIKQIQKWEMGOEKEOK_@EMEUESO{@Iw@Ea@AYDc@BQBSDUDQZ{AX{AP_ALs@L}@"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue onto <b>Повітрофлотський просп.</b>",
+          "distance": {
+            "inMeters": 150,
+            "humanReadable": "0.2 km"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 8,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4138882,
+            "lng": 30.4442231
+          },
+          "endLocation": {
+            "lat": 50.4141307,
+            "lng": 30.4462212
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "ymurHkcyxDFs@@]@Y@]?S?QASAQEYEWG]Ka@YgA"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue straight onto <b>вул. Медова</b>",
+          "distance": {
+            "inMeters": 15,
+            "humanReadable": "15 m"
+          },
+          "maneuver": "straight",
+          "duration": {
+            "inSeconds": 1,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4141307,
+            "lng": 30.4462212
+          },
+          "endLocation": {
+            "lat": 50.4142249,
+            "lng": 30.4463822
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "iourH{oyxDQ_@"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>left</b> toward <b>Повітрофлотський просп.</b>",
+          "distance": {
+            "inMeters": 57,
+            "humanReadable": "57 m"
+          },
+          "maneuver": "turn-left",
+          "duration": {
+            "inSeconds": 2,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4142249,
+            "lng": 30.4463822
+          },
+          "endLocation": {
+            "lat": 50.4145847,
+            "lng": 30.4459845
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "{ourH{pyxDICG?I?G@EBEBGHEHCJAHALAP"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Slight <b>left</b> onto <b>Повітрофлотський просп.</b>",
+          "distance": {
+            "inMeters": 360,
+            "humanReadable": "0.4 km"
+          },
+          "maneuver": "turn-slight-left",
+          "duration": {
+            "inSeconds": 34,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4145847,
+            "lng": 30.4459845
+          },
+          "endLocation": {
+            "lat": 50.4143522,
+            "lng": 30.4409587
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "crurHknyxDBb@@d@@dA?d@?fA?`@AxBAtA?xDBxABv@@XD`@Hv@Nz@"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>right</b> onto <b>вул. Волинська</b>",
+          "distance": {
+            "inMeters": 780,
+            "humanReadable": "0.8 km"
+          },
+          "maneuver": "turn-right",
+          "duration": {
+            "inSeconds": 91,
+            "humanReadable": "2 mins"
+          },
+          "startLocation": {
+            "lat": 50.4143522,
+            "lng": 30.4409587
+          },
+          "endLocation": {
+            "lat": 50.4207849,
+            "lng": 30.4441539
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "upurH_oxxDu@b@MHm@\\YNKDKDKBK@K@I?I?A?IAMCKCMGSK[SMI]UUMYSm@a@s@c@u@e@_@WsBsAu@g@[SeAq@SMqBmA_CcBGEu@g@aBeA"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>right</b> onto <b>вул. Вінницька</b>",
+          "distance": {
+            "inMeters": 383,
+            "humanReadable": "0.4 km"
+          },
+          "maneuver": "turn-right",
+          "duration": {
+            "inSeconds": 52,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4207849,
+            "lng": 30.4441539
+          },
+          "endLocation": {
+            "lat": 50.4192998,
+            "lng": 30.44903739999999
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "{xvrH}byxDdCyLtAwG~@sEJk@"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>left</b> onto <b>вулиця Володимира Сікевича</b><div style=\"font-size:0.9em\">Destination will be on the left</div>",
+          "distance": {
+            "inMeters": 440,
+            "humanReadable": "0.4 km"
+          },
+          "maneuver": "turn-left",
+          "duration": {
+            "inSeconds": 73,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4192998,
+            "lng": 30.44903739999999
+          },
+          "endLocation": {
+            "lat": 50.422873,
+            "lng": 30.4516924
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "sovrHoazxDuBuAsBuAYQkCgBWUoCgB{B}AUO"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        }
+      ],
+      "distance": {
+        "inMeters": 73277,
+        "humanReadable": "73.3 km"
+      },
+      "duration": {
+        "inSeconds": 4586,
+        "humanReadable": "1 hour 16 mins"
+      },
+      "durationInTraffic": null,
+      "arrivalTime": null,
+      "departureTime": null,
+      "startLocation": {
+        "lat": 50.08338759999999,
+        "lng": 29.8854899
+      },
+      "endLocation": {
+        "lat": 50.422873,
+        "lng": 30.4516924
+      },
+      "startAddress": "Kalynova St, 15а, Fastiv, Kyivs'ka oblast, Ukraine, 08500",
+      "endAddress": "Volodymyra Sikevycha St, 22, 35, Kyiv, Ukraine, 02000"
+    },
+    {
+      "steps": [
+        {
+          "htmlInstructions": "Head <b>southwest</b> on <b>вулиця Володимира Сікевича</b> toward <b>вул. Смілянська</b>",
+          "distance": {
+            "inMeters": 14,
+            "humanReadable": "14 m"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 3,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.422873,
+            "lng": 30.4516924
+          },
+          "endLocation": {
+            "lat": 50.4227581,
+            "lng": 30.45161379999999
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "}ewrHarzxDTN"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>right</b> at the 1st cross street onto <b>вул. Смілянська</b>",
+          "distance": {
+            "inMeters": 676,
+            "humanReadable": "0.7 km"
+          },
+          "maneuver": "turn-right",
+          "duration": {
+            "inSeconds": 136,
+            "humanReadable": "2 mins"
+          },
+          "startLocation": {
+            "lat": 50.4227581,
+            "lng": 30.45161379999999
+          },
+          "endLocation": {
+            "lat": 50.42531330000001,
+            "lng": 30.4429519
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "gewrHqqzxD}@rEsCvNsAtGaA`FiAzFm@xC]hB"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>right</b> onto <b>вул. Ушинського</b>",
+          "distance": {
+            "inMeters": 1498,
+            "humanReadable": "1.5 km"
+          },
+          "maneuver": "turn-right",
+          "duration": {
+            "inSeconds": 226,
+            "humanReadable": "4 mins"
+          },
+          "startLocation": {
+            "lat": 50.42531330000001,
+            "lng": 30.4429519
+          },
+          "endLocation": {
+            "lat": 50.4375542,
+            "lng": 30.4517618
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "euwrHm{xxDgBmAeBeA_EoCeDqBgCaBaC_B_@WcG_Ea@WaCaBc@Ye@[gBgAWSk@_@QKe@YGE{@i@oEsCAA_Am@k@]i@]mBsA]W{@c@iBiAEC[Q{A_A"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>left</b> onto <b>Чоколівський бул.</b>",
+          "distance": {
+            "inMeters": 155,
+            "humanReadable": "0.2 km"
+          },
+          "maneuver": "turn-left",
+          "duration": {
+            "inSeconds": 42,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4375542,
+            "lng": 30.4517618
+          },
+          "endLocation": {
+            "lat": 50.43815840000001,
+            "lng": 30.4500394
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "uazrHorzxDQWEPENCLENEXGXMr@]lBWxA"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue onto <b>вул. Вадима Гетьмана</b>",
+          "distance": {
+            "inMeters": 1592,
+            "humanReadable": "1.6 km"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 134,
+            "humanReadable": "2 mins"
+          },
+          "startLocation": {
+            "lat": 50.43815840000001,
+            "lng": 30.4500394
+          },
+          "endLocation": {
+            "lat": 50.4500114,
+            "lng": 30.4440518
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "oezrHwgzxDSpAo@pD[jBMp@If@Ib@Mh@Kf@Ml@Md@M`@Qn@Un@MXKXQ`@EJUb@Wd@[f@[d@g@t@IJCBONMNOL[TKLULUNQHSNWLy@b@oCxAeBz@A@A?a@Pa@RC@]LC@MDOFSDODUDQDK@KBO@S@S@Q@U?_@JWJMAKAC?k@A_B][Qg@GEAWGa@Ma@MSI]Ms@WOEUGQIiBc@k@SUCk@UUGmDeAcCs@"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>right</b> onto <b>вул. Металістів</b><div style=\"font-size:0.9em\">Destination will be on the left</div>",
+          "distance": {
+            "inMeters": 448,
+            "humanReadable": "0.4 km"
+          },
+          "maneuver": "turn-right",
+          "duration": {
+            "inSeconds": 96,
+            "humanReadable": "2 mins"
+          },
+          "startLocation": {
+            "lat": 50.4500114,
+            "lng": 30.4440518
+          },
+          "endLocation": {
+            "lat": 50.4489678,
+            "lng": 30.4501661
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "qo|rHibyxDRoB`AmJJoA`@_Ev@iIRoC"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        }
+      ],
+      "distance": {
+        "inMeters": 4383,
+        "humanReadable": "4.4 km"
+      },
+      "duration": {
+        "inSeconds": 637,
+        "humanReadable": "11 mins"
+      },
+      "durationInTraffic": null,
+      "arrivalTime": null,
+      "departureTime": null,
+      "startLocation": {
+        "lat": 50.422873,
+        "lng": 30.4516924
+      },
+      "endLocation": {
+        "lat": 50.4489678,
+        "lng": 30.4501661
+      },
+      "startAddress": "Volodymyra Sikevycha St, 22, 35, Kyiv, Ukraine, 02000",
+      "endAddress": "Гуртожиток №13 НТУУ \"КПІ\", Metalistiv St, 8, 4 24, Kyiv, Ukraine, 03057"
+    },
+    {
+      "steps": [
+        {
+          "htmlInstructions": "Head <b>east</b> on <b>вул. Металістів</b>",
+          "distance": {
+            "inMeters": 213,
+            "humanReadable": "0.2 km"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 45,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4489678,
+            "lng": 30.4501661
+          },
+          "endLocation": {
+            "lat": 50.4485235,
+            "lng": 30.4530918
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "ai|rHqhzxDPyBNaBFs@XkDFe@LeB"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>left</b> onto <b>вул. Академіка Янгеля</b>",
+          "distance": {
+            "inMeters": 531,
+            "humanReadable": "0.5 km"
+          },
+          "maneuver": "turn-left",
+          "duration": {
+            "inSeconds": 85,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4485235,
+            "lng": 30.4530918
+          },
+          "endLocation": {
+            "lat": 50.4532933,
+            "lng": 30.4530366
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "gf|rHyzzxDO?kB@{A@C?gBDyC?C?gBBU?yBFuDGK?]C"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>right</b> onto <b>проспект Перемоги</b>",
+          "distance": {
+            "inMeters": 2075,
+            "humanReadable": "2.1 km"
+          },
+          "maneuver": "turn-right",
+          "duration": {
+            "inSeconds": 115,
+            "humanReadable": "2 mins"
+          },
+          "startLocation": {
+            "lat": 50.4532933,
+            "lng": 30.4530366
+          },
+          "endLocation": {
+            "lat": 50.44857529999999,
+            "lng": 30.4813857
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "ad}rHozzxDRwBd@_F~@aKl@uGPkBFo@^aED_@Fw@Hu@h@iGj@oGj@_Gf@}FNyA@WD]Fs@B[@OBULaBr@wHrAwNrA_OBSL}ANuAb@mFPiB\\wDVoCJmAHs@Fo@Fm@D[BOn@mFFw@"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Keep <b>left</b> to stay on <b>проспект Перемоги</b>",
+          "distance": {
+            "inMeters": 690,
+            "humanReadable": "0.7 km"
+          },
+          "maneuver": "keep-left",
+          "duration": {
+            "inSeconds": 71,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.44857529999999,
+            "lng": 30.4813857
+          },
+          "endLocation": {
+            "lat": 50.4469647,
+            "lng": 30.4907917
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "sf|rHuk`yDLeAZeDPmAJs@@MBm@d@aEFg@Fg@l@oGd@oGz@sJBWj@oF"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue onto <b>пл. Перемоги</b>",
+          "distance": {
+            "inMeters": 239,
+            "humanReadable": "0.2 km"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 26,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4469647,
+            "lng": 30.4907917
+          },
+          "endLocation": {
+            "lat": 50.44641,
+            "lng": 30.4940478
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "o|{rHmfbyDBYH}@Hy@t@kHDg@XeD"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue onto <b>бул. Тараса Шевченка</b>",
+          "distance": {
+            "inMeters": 1912,
+            "humanReadable": "1.9 km"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 196,
+            "humanReadable": "3 mins"
+          },
+          "startLocation": {
+            "lat": 50.44641,
+            "lng": 30.4940478
+          },
+          "endLocation": {
+            "lat": 50.44218960000001,
+            "lng": 30.5202145
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "ay{rHyzbyD@mAX_CjAyNJ}@rAyOD_@Dg@hDe_@j@oGj@_GJoAJ{@xAwODi@De@Fw@Fy@RiBPkBHu@LmA|@sKHo@f@oFTcCJsAVeD"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>left</b> onto <b>вул. Хрещатик</b> (signs for <b>вулиця ХРЕЩАТИК</b>/<wbr/><b>KHRESHCHATYK Str.</b>)",
+          "distance": {
+            "inMeters": 1205,
+            "humanReadable": "1.2 km"
+          },
+          "maneuver": "turn-left",
+          "duration": {
+            "inSeconds": 157,
+            "humanReadable": "3 mins"
+          },
+          "startLocation": {
+            "lat": 50.44218960000001,
+            "lng": 30.5202145
+          },
+          "endLocation": {
+            "lat": 50.45191270000001,
+            "lng": 30.5266766
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "u~zrHi~gyD}@WeA[QE_@IgAUi@M_E_AYGUEyGaBm@MYG[IEAc@Ic@Ig@Ok@MSEc@Ma@MEAECa@S_@Sa@SA?SMKG][_@Y]a@GGe@m@QW[c@CE_@k@u@eAKMOSMOe@u@{A}BOW[c@Ye@Yc@Yc@e@u@MSGK"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>right</b> (signs for <b>вул. МИХАЙЛА ГРУШЕВСЬКОГО</b>/<wbr/><b>MYKHAILA HRUSHEVSKOHO Str</b>)<div style=\"font-size:0.9em\">Destination will be on the right</div>",
+          "distance": {
+            "inMeters": 68,
+            "humanReadable": "68 m"
+          },
+          "maneuver": "turn-right",
+          "duration": {
+            "inSeconds": 8,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.45191270000001,
+            "lng": 30.5266766
+          },
+          "endLocation": {
+            "lat": 50.4518115,
+            "lng": 30.5276192
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "m{|rHwfiyDDg@?KFgAD_A"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        }
+      ],
+      "distance": {
+        "inMeters": 6933,
+        "humanReadable": "6.9 km"
+      },
+      "duration": {
+        "inSeconds": 703,
+        "humanReadable": "12 mins"
+      },
+      "durationInTraffic": null,
+      "arrivalTime": null,
+      "departureTime": null,
+      "startLocation": {
+        "lat": 50.4489678,
+        "lng": 30.4501661
+      },
+      "endLocation": {
+        "lat": 50.4518115,
+        "lng": 30.5276192
+      },
+      "startAddress": "Гуртожиток №13 НТУУ \"КПІ\", Metalistiv St, 8, 4 24, Kyiv, Ukraine, 03057",
+      "endAddress": "Khreschatyk St, 1, Kyiv, Ukraine, 02000"
+    },
+    {
+      "steps": [
+        {
+          "htmlInstructions": "Head <b>east</b> toward <b>вул. Михайла Грушевського</b>",
+          "distance": {
+            "inMeters": 30,
+            "humanReadable": "30 m"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 3,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4518115,
+            "lng": 30.5276192
+          },
+          "endLocation": {
+            "lat": 50.4517714,
+            "lng": 30.5280321
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "yz|rHsliyDFqA"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>right</b> onto <b>вул. Михайла Грушевського</b>",
+          "distance": {
+            "inMeters": 153,
+            "humanReadable": "0.2 km"
+          },
+          "maneuver": "turn-right",
+          "duration": {
+            "inSeconds": 18,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4517714,
+            "lng": 30.5280321
+          },
+          "endLocation": {
+            "lat": 50.4506552,
+            "lng": 30.5292785
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "qz|rHeoiyDr@oAtCsCRU"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>left</b> onto <b>Петрівська ал.</b> (signs for <b>дорога ПАРКОВА</b>/<wbr/><b>узвіз ДНІПРОВСЬКИЙ</b>/<wbr/><b>готль RAMADA ENCORE</b>/<wbr/><b>алея ПЕТРІВСЬКА</b>/<wbr/><b>PETRIVSKA alley</b>)<div style=\"font-size:0.9em\">Closed Mon–Fri 7:00 – 10:00 AM</div><div style=\"font-size:0.9em\">Turn is not allowed 7:00 – 10:00 AM</div>",
+          "distance": {
+            "inMeters": 433,
+            "humanReadable": "0.4 km"
+          },
+          "maneuver": "turn-left",
+          "duration": {
+            "inSeconds": 38,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4506552,
+            "lng": 30.5292785
+          },
+          "endLocation": {
+            "lat": 50.4524256,
+            "lng": 30.5347248
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "ss|rH_wiyDEUMs@EQQu@aAgEOq@_@cBkAkFOs@Qq@Oq@m@wBEQG[ESCQ"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Slight <b>right</b> onto <b>Паркова дор.</b><div style=\"font-size:0.9em\">Parts of this road may be closed at certain times or days</div>",
+          "distance": {
+            "inMeters": 1599,
+            "humanReadable": "1.6 km"
+          },
+          "maneuver": "turn-slight-right",
+          "duration": {
+            "inSeconds": 122,
+            "humanReadable": "2 mins"
+          },
+          "startLocation": {
+            "lat": 50.4524256,
+            "lng": 30.5347248
+          },
+          "endLocation": {
+            "lat": 50.4433678,
+            "lng": 30.5514174
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "u~|rH_yjyD@U@MBQFU`@kAZw@^{@BG~@{BjAeCf@aAf@iAr@{A`@y@b@s@f@i@PMTOJEZM`@SZOBARMFGDEHOL[@CDSV}@d@aBj@eBNc@BIFOJ_@@EFQFOFKNQJINMFEXQJG`@i@HILIJQJOLYFOPg@T{@J]d@qBT}@^yAp@mCBKdA}B\\o@rCyENUNM@AHIp@k@ZWNKDGDGDGRg@DOFSJ]H[DWBODU@S@SBYDu@De@BU?CDYDUBSFWDSH_@"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Slight <b>right</b> onto <b>ал. Героїв Крут</b> (signs for <b>ал. ГЕРОЇВ КРУТ</b>/<wbr/><b>HEROIV KRUT alley</b>)<div style=\"font-size:0.9em\">Parts of this road are closed Mon–Fri 7:05 – 10:00 AM</div>",
+          "distance": {
+            "inMeters": 621,
+            "humanReadable": "0.6 km"
+          },
+          "maneuver": "turn-slight-right",
+          "duration": {
+            "inSeconds": 60,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.4433678,
+            "lng": 30.5514174
+          },
+          "endLocation": {
+            "lat": 50.4404594,
+            "lng": 30.5501987
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "af{rHkanyDLQHMFIHMHKHIHKLODGBGBG@?HUHIHEFG@AFEHGLK@AJIXS@?ROJITOHGJGRO@?VQFGNKNM|@m@`@WHEFCFCJAH?N@LBHBFDFBFHDFLPFPFVDV@V@X?PAPALG\\Mj@Ij@EVE\\APAVAV?x@AfB?^?DD^"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>left</b> at <b>площа Слави</b> onto <b>вул. Лаврська</b> (signs for <b>ЛАВРА</b>/<wbr/><b>муз. ВЕЛИКОЇ ВІТЧИЗНЯНОЇ ВІЙНИ</b>/<wbr/><b>вулиця ЛАВРСЬКА</b>/<wbr/><b>LAVRSKA Str</b>)",
+          "distance": {
+            "inMeters": 1905,
+            "humanReadable": "1.9 km"
+          },
+          "maneuver": "turn-left",
+          "duration": {
+            "inSeconds": 209,
+            "humanReadable": "3 mins"
+          },
+          "startLocation": {
+            "lat": 50.4404594,
+            "lng": 30.5501987
+          },
+          "endLocation": {
+            "lat": 50.4256198,
+            "lng": 30.5602841
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "{szrHwymyDr@g@r@i@v@m@j@a@l@c@j@a@h@a@FEbDwBr@e@XUt@g@RE`BiAXQ^Y~B_BJI^W^WLGLKd@YJGZOlA[~@UNEn@If@ELCHGn@{@ZOfAg@dB{@|@c@DA\\KLETKLGJINKTUJMHKFMDKDIBGDI?CDIDODO@E@G@IFi@Ho@N{AFm@D]Fm@BWFWFSDKL[FKHKJOJIHIPIDALGNEBAb@INCF?D?D?FB@@DFLPFHHJHHDDB@BBFBJDHBF@B@H?L?F?DAJCFCFE`@U`@UXOVOB?JIPIBANGPIPINEHCNC\\ELCJCJCJCXETEf@In@KFAZEb@Gr@@"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue straight onto <b>бул. Дружби Народів</b>/<wbr/><b>E95</b>/<wbr/><b>М01</b>",
+          "distance": {
+            "inMeters": 3389,
+            "humanReadable": "3.4 km"
+          },
+          "maneuver": "straight",
+          "duration": {
+            "inSeconds": 218,
+            "humanReadable": "4 mins"
+          },
+          "startLocation": {
+            "lat": 50.4256198,
+            "lng": 30.5602841
+          },
+          "endLocation": {
+            "lat": 50.4086064,
+            "lng": 30.5220576
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "cwwrHwxoyDv@_@VEVIRCTCJ@PBJBLFHFDBBDBFPRHJNZ@BTd@TrATlALx@b@bCx@~Et@nELr@Lr@Lr@Lr@H`@TdA^~AFVDP@HBHTdAX~@ZdAXbA@BRl@BDPf@HRJVTj@pBxEZr@Pd@z@pBTj@Th@`A|Bn@zArC`HNp@BLv@rBHPXp@rAzCfEvJpBzEPd@rAlDp@jBh@tAhA~C`@jAZbAZ|@L^J`@V|@XbANh@J^Rv@^zAR~@h@~Bz@bEZfBh@jCl@jCRz@b@fB~@jE@BvDhN`CfHjBbFxA`EVh@b@bAx@nB^~@"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue straight onto <b>Голосіївський просп.</b>/<wbr/><b>бул. Дружби Народів</b>/<wbr/><b>E95</b>/<wbr/><b>М01</b><div style=\"font-size:0.9em\">Continue to follow E95</div>",
+          "distance": {
+            "inMeters": 35137,
+            "humanReadable": "35.1 km"
+          },
+          "maneuver": "straight",
+          "duration": {
+            "inSeconds": 1961,
+            "humanReadable": "33 mins"
+          },
+          "startLocation": {
+            "lat": 50.4086064,
+            "lng": 30.5220576
+          },
+          "endLocation": {
+            "lat": 50.1741067,
+            "lng": 30.2204263
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "yltrH{ihyDLXt@hBz@rBr@bBBBFLBDd@|@r@jALTV^JN@@`@h@RVRVRTd@h@Z\\NNHHTRb@^XVVPFFn@d@d@Xd@XHDHDhDjBXNbBz@bAl@TLJFNH@@B@D@R@LLf@b@~@~@xA~APRX\\h@l@z@bADFVZ^f@\\`@v@dANPZb@b@j@fB|Bv@dApA|AdAlAr@r@XXp@n@NLFFHFf@\\XPRJNFFBD@B@DBB@B@B@RNXNXP|A`ANHv@d@n@^r@b@~@l@x@n@\\VPPPPRRPP`@b@LNVXb@l@Zb@RXZf@T^LVT`@Vd@Vj@Vl@Vj@Vp@Vp@^lAVx@rAzEb@zA`@tArApEZhAJ^jBjGJ`@FPBLBHv@lCn@tB`ChIh@dBp@|Bd@~APn@lEdONd@tDpMfAtDrAtEX|@Lb@b@xAbCnIdAjD\\lANf@hAzDTz@r@`CFPv@nCBH@HBNBNBNp@bC^tAZfA^zA@h@p@bCPn@Pn@Rn@Pn@Rn@BLL`@Rn@Pn@Rn@Pn@FPH\\@BFPh@zAnAlDXt@Rd@x@rB\\t@BBb@|@^r@h@~@~AzCrDrGLRFNJPr@nAlApB`BpClCvElAvB~D`Hl@jA~@vA\\j@vBpDHNrEvIZh@Vb@j@bAp@lAf@~@rA~BjDhGHLFJDJxAdCfBzCxClFxCjFLTHLxAdClAxBvAbCNTx@rAxCfFtBpD|ApC|CjFh@|@vC`FpDnGxDpGXf@vC`FbC|DbBpC|@xAhBbDJPdAfB`A~AfChEbBtCr@jAzDvGtFlJ`Xhd@fB~Cb@l@n@fAj@bAbBxCb@t@pBlDlApBfAjBDFlBbDtA`CZh@~AlCrAzBzBtDfBzCfBtCjD|FfChEPZvC|EFL~AhCr@hAZf@lAtBLTdCdEb@v@zDvG|@|Ah@~@HLXd@z@vAnCtEnAxBr@jAnAxBhBxCJPLRpC`Fz@tAT\\`@j@nAnBZb@^h@r@`A~B~CfEdFfAjAzHhH`BpAdCdBPLv@f@jClBlEhD`NjKhIrFzEfDTNHF^X^X~DtCTPTNdChBnCpBj@`@x@j@xF~DB@|HxFzDtC|BlBd@`@pAhAjAhA`@d@zB`C~@`Ap@v@~@hA|@fAp@z@l@v@Z`@~@hAFJz@hAlDhFzAlCr@nAp@nAnBvD`B|CrAbCl@jA|AxCbAlB\\t@Xf@pB`EjBnDv@vA`DbGHLVh@NXFJp@lAxAdCf@~@l@dAFLpAxBXd@lAtBr@nApBjDzB~Dj@bAXf@PZFHXf@RZfAnBxBvDDFDHx@vAlBfDz@xAlArBr@dAb@l@X\\d@h@j@j@bA`AhDtCzBlBdBxAbDnCl@d@jErDtDzCj@f@rAjAzAlAdAz@hDnC~BlBb@XDBl@\\pAt@lB`AXNtAr@`DzArB~@fJhExDbBv@`@p@XhAh@|@`@dBx@z@^\\Pr@\\xAp@f@T^NxAr@`H`DPHhD|A@@r@\\hAh@r@ZvBbAhD~AxMfGz@b@dAp@f@b@^ZXVn@p@tAhBV`@Vd@Xh@f@fA`@`AL\\Ph@Lb@J^Ld@Jf@R~@Pv@RnAF^BRJ~@BXLtBJhCDzB?pA@vE?dE?dD?HBrMB|GBzB@`@FhCBdAHzA@VFfA@DJrAL|AL`AJbAFd@TtAZ~AZvAj@vBv@hCx@`C^`A^~@\\x@Rd@zB~Et@~A\\t@^~@LVFRTl@Rj@Z`A|@vCf@|An@tBpB|Gt@bCxCxJzAfFvCvKJb@DNRj@BH`@|ArBzHx@dDJ\\Pp@l@~BjCzJjFdSfA`Ej@vBFZb@~A`BfGRv@pE~P|@hDTz@\\jAv@`Cj@`BZx@R`@Td@b@x@`@j@b@h@NP|@|@lAdA\\ZRNd@ZZPfBdAPHdDjBzA|@fLrGr@^pHlElDlBvKjGb@VdCtAVLfEdCPJrBjAp@b@?@^T`@XbAn@lA~@VPFFjA`AZT~BtBRPb@b@ZZ\\^vCdDxA`Br@x@bHnInChDbCxCjGvHpB`CzBnClDfE`AdATX\\^v@bAlDhEfOzQnI`Kt@dARXl@p@tA~ArAdBlAxAdBpBpChDpM~OnChDx@`ALNjCdDn@t@hMxOfCzCxCrD\\b@dFbGnDjEvEzFz@dAxAdB`AhAj@n@lEpFnH`J|GfIvBlCrChDjExFrFvGbBpB\\^~@fAVZvAfBlB~Bz@fAtAbB`@d@z@bAdBnBn@t@pArAdBbBn@l@JHx@t@z@n@n@f@bAt@RLFDdBdA`@RHDxAp@@@bA^f@R^Jx@Nr@Pd@HZD`@Dv@F`@BjBFJ@hA?x@Av@CvAK\\A^CLCx@G^GbAIpB[j@KJCtBg@JA`AW^KDAb@MRGp@ShBm@dBi@dCw@fAa@b@OfEqAh@U"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue straight onto <b>E95</b>/<wbr/><b>М05</b>",
+          "distance": {
+            "inMeters": 5431,
+            "humanReadable": "5.4 km"
+          },
+          "maneuver": "straight",
+          "duration": {
+            "inSeconds": 212,
+            "humanReadable": "4 mins"
+          },
+          "startLocation": {
+            "lat": 50.1741067,
+            "lng": 30.2204263
+          },
+          "endLocation": {
+            "lat": 50.1286637,
+            "lng": 30.23159
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "esfqHulmwDlDoAzC}@pEsA|DsArHwB`H}BdA]xIwCv@UhA_@~@[VIb@OrIqCn@UpAk@jB_AlDkBnAy@BCj@_@^WTOLIPM|@o@@APOh@a@`@]VS`@a@|@w@t@q@l@k@HIpAsAn@o@r@s@JM|@_Ab@g@pAiBh@o@fBqBjDeEhJgKlAwA`CuBzAoAtByAdDaBjAi@l@YrBs@zCm@bAKjAEtCAjCLxEn@hI`C^NbAZrCdAfAb@lAb@lGfCxAh@~@^b@PlAd@z@`@~@f@b@Vx@l@`@Zb@^v@p@dA`AvApAz@r@t@l@x@h@NHVLf@Xd@Rh@Rf@Nf@Lh@Lh@J@?f@HR@`AFf@@j@?h@AnEIFAb@AhBEpDK"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>right</b>",
+          "distance": {
+            "inMeters": 332,
+            "humanReadable": "0.3 km"
+          },
+          "maneuver": "turn-right",
+          "duration": {
+            "inSeconds": 25,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.1286637,
+            "lng": 30.23159
+          },
+          "endLocation": {
+            "lat": 50.1285381,
+            "lng": 30.2269431
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "cw}pHmrowD?h@JxN@|AH~G"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Merge onto <b>P19</b>",
+          "distance": {
+            "inMeters": 22108,
+            "humanReadable": "22.1 km"
+          },
+          "maneuver": "merge",
+          "duration": {
+            "inSeconds": 1019,
+            "humanReadable": "17 mins"
+          },
+          "startLocation": {
+            "lat": 50.1285381,
+            "lng": 30.2269431
+          },
+          "endLocation": {
+            "lat": 50.06715519999999,
+            "lng": 29.9541194
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "kv}pHkunwD@j@@h@FxA@f@@XBZ@`@Bb@Dv@Ft@RvBJbALdAHp@Lv@\\rBNx@R`AJf@H^HXH\\H\\J`@HXJZLb@Rp@xApEFPRl@|BxGxAlE~JpZbBfFvBhGTp@pDrKDLf@zArDzKnChIDHrBjGHRbAzCVt@rBpG`@tA~@pCj@dBFL`AtC|BzGtGrRpB`GFRRl@nAxDdBfFtD`Lf@zA@BnAtDfFnOfAdDTl@pH`UzG`SnFfPRl@pAxDJZlLv]Vr@Rn@~AzEnGhRjC|Hz@jC@@dGrQl@hBf@vApA|DnAxD?@Rj@`DrJRl@Rl@|AtEFPtD~KpAxDL^`GjQpBbGRl@dGpQjEtMhD`KpIbWpAvDxAlExC|IxBrGTl@pBbGZ~@hAfDh@|At@vBnAvDFPfAfDbA~C`AzCdBfFfBnFzAnExDjLjAjDx@dC~AvEfAbDdA`DpAxDdD|JbBdFd@pAl@hBPf@dBdFxC~Iv@~BhAjDbChHPd@Rl@|@lCb@tABJ@BFHBDBBBFBHJVbAxC`DjJRn@Rn@dBjFVv@\\~@Zz@\\z@dBxDp@|AfBzDLVN^Th@Rj@\\~@ZbAdApDHXHXNp@VfAz@jEnHpb@rAtHxApIjDvR\\rBv@lEnB~KzDzTRfAzDtTfA|FJb@Jf@Nh@Jh@Ld@J\\L^L`@L`@L`@nCpHrAtDXv@fArC\\~@pDvJjA~CbAtCFPHXDNDPBLBNDXBXB\\BV@j@@h@?TAx@?l@GnGIdGKbI]jRQnDAL?NCZCTCPCRKx@Ip@gApImA|JSlBk@zEk@vEIv@[tCUlBWnBa@fDIx@E\\CXCVAVATC^AZ?X?\\@dEB`L@zO?`CBvKB~LBfL@fG@bK@zDBpW?`@?dKBtO@`D@nP@zK?|G@rJAlIErBChAE`AEt@En@IrAOnBGt@w@tKm@hJM`BIzAEbAKpDOrDY~HEpAEr@El@ARCPCNANCNANCNCPERCTMn@SdAcBdIuB`KwA`HqAlGiFzV]~AeDzOy@~DcA~EeAhFCD{@fEiAhFQz@c@rB{@`EuAjGU|@Sn@CJCNCHAH"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "At the roundabout, take the <b>2nd</b> exit onto <b>вул. Якубовського</b>/<wbr/><b>P19</b>/<wbr/><b>Т1013</b> heading to <b>ФАСТІВ</b><div style=\"font-size:0.9em\">Continue to follow P19/<wbr/>Т1013</div>",
+          "distance": {
+            "inMeters": 2610,
+            "humanReadable": "2.6 km"
+          },
+          "maneuver": "roundabout-right",
+          "duration": {
+            "inSeconds": 194,
+            "humanReadable": "3 mins"
+          },
+          "startLocation": {
+            "lat": 50.06715519999999,
+            "lng": 29.9541194
+          },
+          "endLocation": {
+            "lat": 50.0708371,
+            "lng": 29.9253805
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "wvqpHglyuD?@A?A@C@A@ABA@ABA@?BABAB?B?BAB?B?B?B?B?@@@?@?@AFCFAJKz@Ip@c@pBsAnGmB|IGZAH]zAc@pBmA|FOp@Op@qArGaFdVkAfFi@nCENy@~D}@hEOp@Mp@iB|I}B~KoEbTUhA{AnHZ\\nCzCTTj@h@ZZLJLHNJbAj@~Av@XLPFXLRFPFLBLBNDP@d@DL?N@PAb@?dBA"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>right</b> to stay on <b>P19</b>/<wbr/><b>Т1013</b>",
+          "distance": {
+            "inMeters": 1602,
+            "humanReadable": "1.6 km"
+          },
+          "maneuver": "turn-right",
+          "duration": {
+            "inSeconds": 309,
+            "humanReadable": "5 mins"
+          },
+          "startLocation": {
+            "lat": 50.0708371,
+            "lng": 29.9253805
+          },
+          "endLocation": {
+            "lat": 50.0789854,
+            "lng": 29.9134614
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "wmrpHsxsuDBNBL@J@H?@?J@J?L@J?B?FAHAH?FEDEBEBGBGBE@E@q@J_@FsAP{@LMFODKFKHMJGLGHELCHEHQh@[z@CJCDABCDCBA@C@C?A?C?CAEAAAEEwBaBiA{@UO]SkGoD_@QC?A?A?A?E@E@EBCDCBELCJOp@{@jEq@bDuBxJg@xBUbA{@rC_@hAMh@ERAFAHALCRE`@CPEb@Gv@AJEh@CX[fDUhCGp@y@vJ"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue onto <b>вул. Соборна</b>/<wbr/><b>Т1028</b>",
+          "distance": {
+            "inMeters": 767,
+            "humanReadable": "0.8 km"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 107,
+            "humanReadable": "2 mins"
+          },
+          "startLocation": {
+            "lat": 50.0789854,
+            "lng": 29.9134614
+          },
+          "endLocation": {
+            "lat": 50.0806082,
+            "lng": 29.9030122
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "u`tpHcnquDi@nG_@`EI~@ARIz@]|Dm@bHCNYbDs@bI]bECTUzCCj@IjA"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue straight onto <b>вул. Соборна</b>",
+          "distance": {
+            "inMeters": 628,
+            "humanReadable": "0.6 km"
+          },
+          "maneuver": "straight",
+          "duration": {
+            "inSeconds": 52,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.0806082,
+            "lng": 29.9030122
+          },
+          "endLocation": {
+            "lat": 50.0791179,
+            "lng": 29.89515909999999
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "yjtpHylouDOvDKtBCpABr@TpAN^LXPX@@V\\@BZb@T\\\\`@^l@Vp@Rx@H\\Jp@JbABNZ`DPtAH~@@h@A`@Ef@OtA"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue onto <b>вул. Свято-Покровська</b>",
+          "distance": {
+            "inMeters": 483,
+            "humanReadable": "0.5 km"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 47,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.0791179,
+            "lng": 29.89515909999999
+          },
+          "endLocation": {
+            "lat": 50.0798109,
+            "lng": 29.8884906
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "oatpHw{muDIz@GfAe@~G]pFSvCKhCGnC?XKrE"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Continue onto <b>Скригалівська вул.</b>",
+          "distance": {
+            "inMeters": 244,
+            "humanReadable": "0.2 km"
+          },
+          "maneuver": null,
+          "duration": {
+            "inSeconds": 22,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.0798109,
+            "lng": 29.8884906
+          },
+          "endLocation": {
+            "lat": 50.0800705,
+            "lng": 29.8851
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "yetpHarluDAr@ANWlI?@U~FAP"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        },
+        {
+          "htmlInstructions": "Turn <b>right</b> onto <b>вул. Калинова</b><div style=\"font-size:0.9em\">Destination will be on the left</div>",
+          "distance": {
+            "inMeters": 370,
+            "humanReadable": "0.4 km"
+          },
+          "maneuver": "turn-right",
+          "duration": {
+            "inSeconds": 51,
+            "humanReadable": "1 min"
+          },
+          "startLocation": {
+            "lat": 50.0800705,
+            "lng": 29.8851
+          },
+          "endLocation": {
+            "lat": 50.08338759999999,
+            "lng": 29.8854899
+          },
+          "steps": null,
+          "polyline": {
+            "encodedPath": "mgtpH{|kuDaBMsAKyAM{AK}@IyAGk@AaACe@A"
+          },
+          "travelMode": "DRIVING",
+          "transitDetails": null
+        }
+      ],
+      "distance": {
+        "inMeters": 77842,
+        "humanReadable": "77.8 km"
+      },
+      "duration": {
+        "inSeconds": 4667,
+        "humanReadable": "1 hour 18 mins"
+      },
+      "durationInTraffic": null,
+      "arrivalTime": null,
+      "departureTime": null,
+      "startLocation": {
+        "lat": 50.4518115,
+        "lng": 30.5276192
+      },
+      "endLocation": {
+        "lat": 50.08338759999999,
+        "lng": 29.8854899
+      },
+      "startAddress": "Khreschatyk St, 1, Kyiv, Ukraine, 02000",
+      "endAddress": "Kalynova St, 15а, Fastiv, Kyivs'ka oblast, Ukraine, 08500"
+    }
+  ],
+  "waypointOrder": [
+    0,
+    1,
+    2
+  ],
+  "overviewPolyline": {
+    "encodedPath": "e|tpHi_luDtP~@bBCTaGf@eR|Bab@e@qOiGiOh@yWhEof@pFun@tLsh@hQ|JbByCvIqCHmCmKwAmHaFkDyDpByJdMsm@vP}x@fHs\\bEgNTuClk@qsClFw`AVweCOonBdL{`A|A_}@yNoc@uHqTgOwy@{a@oxBom@ycBqbEo}Lk~AyxEw_@yjA_Em[sBsOaNwLsO{DoSiOeIMoM_EuB}D_@wNfB}@tAjC]vCgRcCaV\\iJ|DkXpWkTzVaNdLkUzK{r@~T{j@~PwUnCoVcFuXiV{gBqxBgiCi_DmXoVan@}]u^gUwGeL_a@}zAg_@qqAuQsf@sCuu@uA{h@kJoUso@k\\ov@c^ur@ui@kXe]c^_o@_t@soA{c@ya@iq@ef@if@__@mWg[sWgc@yb@et@yb@kt@mtB_nDw[{j@cHgRpCi@{ApImw@pjAkdAx|Ao_@rl@qClEsF~@sCpGm@`HeGsJiSaZmQyMgf@cY{@iC|@}ExAsGxBsJcDuBcBiAc@YaBgAsB_C{@kBUqNp@uQ{AaBQrC@xTTjDaBfC_Bb@mBq@mXmQwCmBzEqUjA_GiFkDmIwFqCmBg@bFsJjf@kAbGmEsCoRcMgMqIuH}EoPuKaIyDoB~KkGdXcIfJwNzGaKL{OyEcEmAoBcDfDg]|AwUoQLyICfDo^fDe_@vB}UzKqmAnUkeCtOycB`BmRuDcAcUiF}KoDiMoPuD_GR{DdFkIiF{UwBcJnNu[pGwIhFkJnJsXfJwNnAeKpIgIvFyAC|JEpEx@\\fM_JhR_MlSgIfCwD`CuMtD]xBz@dGuCrLoBbCFpAvBtIze@|KvZf]xz@bNhf@dL|e@jNd_@`LzSba@lZp\\z]lQtMdM`Znu@xhCrS|s@l`AxdBvhE~kH|a@fs@~PnUn_@zZl}@vo@x]zYjLjN~d@jz@|Yrh@|Xbf@tm@di@zQ`M`a@bR~d@fT~]xQfHtLzD~]jA``ArEzTzJxUxYbaA`]|pAvMpd@xHfJndAtl@fVvQ~z@tcAh}CvvDvh@~n@`WzPtW`ArWqFzkAs_@~b@cShRuQd`@wb@tK_G~KsBdY|D~HtCbVvJlV|PbH|@lRFlBzp@jHvZlo@jmB~eBnjFnmBxzFnjAnkDt`@jhArk@vbDhWvs@Hve@aAp[aHtk@gCnl@`@`yDmEtmAmBh[uk@toCiDlQ_ZpvAeMrm@qBxJjDxDjBfB`ExBvC`AtFTIlCwIpCcBxCiQ}JuLrh@qFtn@iEnf@i@xWhGhOd@pO}B`b@g@dRU`GcBBgIo@mFO"
+  },
+  "bounds": {
+    "northeast": {
+      "lat": 50.4532933,
+      "lng": 30.5604727
+    },
+    "southwest": {
+      "lat": 50.0560134,
+      "lng": 29.8851703
+    }
+  },
+  "copyrights": "Map data ©2022 Google",
+  "fare": null,
+  "warnings": [
+
+  ]
+}
