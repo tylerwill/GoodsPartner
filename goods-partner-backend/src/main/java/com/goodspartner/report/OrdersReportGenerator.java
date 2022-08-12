@@ -1,5 +1,6 @@
 package com.goodspartner.report;
 
+import com.goodspartner.web.controller.response.OrdersCalculation;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.service.OrderService;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
@@ -24,6 +26,7 @@ import java.util.function.Consumer;
 @Service
 @RequiredArgsConstructor
 public class OrdersReportGenerator {
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
     private static final String TEMPLATE_PATH = "report/template_report_list_of_orders.xlsx";
     private static final int FIRST_INSERTED_ROW = 5;
     private final OrderService orderService;
@@ -39,8 +42,9 @@ public class OrdersReportGenerator {
 
     @SneakyThrows
     public ReportResult generateReport(LocalDate date) {
-        List<OrderDto> orderDtos = orderService.findAllByShippingDate(date);
-        String reportName = "Замовлення на " + date + ".xlsx";
+        OrdersCalculation ordersCalculation = orderService.calculateOrders(date);
+        String currentTime = DATE_TIME_FORMATTER.format(LocalDateTime.now());
+        String reportName = "[" + currentTime + "]Orders_" + date + ".xlsx";
 
         try (InputStream template = getTemplate();
              ByteArrayOutputStream arrayStream = new ByteArrayOutputStream()) {
@@ -48,29 +52,29 @@ public class OrdersReportGenerator {
             XSSFWorkbook workbook = new XSSFWorkbook(template);
             XSSFSheet sheet = workbook.getSheetAt(0);
 
-            if (orderDtos.isEmpty()) {
+            if (ordersCalculation.getOrders().isEmpty()) {
                 sheet.getRow(3).createCell(4).setCellValue("НА ОБРАНУ ДАТУ ЗАМОВЛЕНЬ НЕ ВИЯВЛЕНО");
                 workbook.write(arrayStream);
                 return new ReportResult(reportName, arrayStream.toByteArray());
             }
 
-            int ordersQuantity = orderDtos.size();
+            int ordersQuantity = ordersCalculation.getOrders().size();
             Row templateProductRow = sheet.getRow(3);
 
             addRowsForOrders(sheet, templateProductRow, ordersQuantity);
-            addRowsForProductsAndFill(sheet, orderDtos, templateProductRow, date);
+            addRowsForProductsAndFill(sheet, ordersCalculation, templateProductRow, date);
 
             workbook.write(arrayStream);
             return new ReportResult(reportName, arrayStream.toByteArray());
         }
     }
 
-    private void addRowsForProductsAndFill(XSSFSheet sheet, List<OrderDto> orderDtos, Row sourceProductRow, LocalDate date) {
+    private void addRowsForProductsAndFill(XSSFSheet sheet, OrdersCalculation ordersCalculation, Row sourceProductRow, LocalDate date) {
         int rowNumber = 3;
         int orderCount = 1;
         Row currentRow = sheet.getRow(rowNumber);
 
-        for (OrderDto orderDto : orderDtos) {
+        for (OrderDto orderDto : ordersCalculation.getOrders()) {
             List<ProductDto> productDtos = orderDto.getProducts();
             if (productDtos.size() > 1) {
                 sheet.shiftRows(rowNumber + 1, sheet.getLastRowNum(), productDtos.size() - 1);
@@ -111,7 +115,7 @@ public class OrdersReportGenerator {
             currentRow = sheet.getRow(rowNumber);
         }
 
-        double sum = orderDtos
+        double sum = ordersCalculation.getOrders()
                 .stream()
                 .mapToDouble(OrderDto::getOrderWeight)
                 .sum();
@@ -122,7 +126,7 @@ public class OrdersReportGenerator {
         currentRow = sheet.getRow(rowNumber);
         String formattedDate = date.format(DateTimeFormatter
                 .ofLocalizedDate(FormatStyle.SHORT));
-        currentRow.getCell(6).setCellValue(formattedDate);
+        currentRow.getCell(6).setCellValue(formattedDate.toString());
     }
 
     private void addRowsForOrders(XSSFSheet sheet, Row sourceProductRow, int ordersQuantity) {
