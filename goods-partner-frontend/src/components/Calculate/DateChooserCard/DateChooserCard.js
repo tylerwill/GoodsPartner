@@ -3,6 +3,8 @@ import {useState} from "react";
 import {NavLink} from "react-router-dom";
 import Box from "@mui/material/Box";
 
+
+// , borderBottom: '1px solid #ccc'
 function DateChooserCard({getCalculatedDataByDate}) {
 
     const today = new Date();
@@ -11,12 +13,12 @@ function DateChooserCard({getCalculatedDataByDate}) {
     const defaultDate = tomorrow.toJSON().slice(0, 10).replace(/-/g, '-');
     const [calculationDate, setCalculationDate] = useState(defaultDate);
     return (
-        <AppBar position="static">
+        <AppBar position="static" style={{ background: '#fff'}}>
             <Toolbar>
                 <Box component="div" sx={{flexGrow: 1}}>
                     <img src="https://images.prom.ua/2143227305_w350_h100_ingrediyenti-dlya-pekariv.jpg"/>
                 </Box>
-                <Stack direction="row"
+                <Stack direction="row" alignItems={"center"}
                        spacing={2}>
                     <Typography variant="h6" gutterBottom component="div">
                         Вкажіть дату:
