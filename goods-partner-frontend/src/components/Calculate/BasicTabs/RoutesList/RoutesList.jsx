@@ -13,6 +13,7 @@ const RoutesList = ({date, routes, routeAddresses}) => {
     setActiveRoute(routeId);
   }
 
+  console.log("api key", process.env.REACT_APP_GOOGLE_MAPS_API_VAR);
   return (<Card sx={{minWidth: 275}}>
       <CardContent>
         <Stack spacing={2}>
@@ -27,12 +28,13 @@ const RoutesList = ({date, routes, routeAddresses}) => {
                     <Grid item xs={3}>
                       <Stack spacing={0.5}>
                         {
-                          routes.map(route =>
+                          routes.map((route, index) =>
                             <Button size="small"
+                                    key = {"routeButton" + route.routeId}
                                     variant={route.routeId === activeRoute ? "contained" : "outlined"}
                                     onClick={() => turnOnRouteTable(route.routeId)}
                             >
-                              МАРШРУТ №{route.routeId}
+                              МАРШРУТ №{index + 1}
                             </Button>)
                         }
                       </Stack>
@@ -44,6 +46,7 @@ const RoutesList = ({date, routes, routeAddresses}) => {
                             {
                               routes.map(route => route.routeId === activeRoute
                                 ? <RouteTable
+                                      key = {"routeTable" + route.routeId}
                                   date={date}
                                   route={route}
                                   routeAddresses={routeAddresses}

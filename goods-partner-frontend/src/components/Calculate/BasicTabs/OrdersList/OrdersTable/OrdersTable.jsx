@@ -9,12 +9,12 @@ const OrdersTable = ({order}) => {
           Замовлення {order.orderNumber} від {order.createdDate}
         </Typography>
         <OrdersHeader
-            client={order.orderData.clientName}
-            address={order.orderData.address}
-            manager={order.orderData.managerFullName}
+            client={order.clientName}
+            address={order.address}
+            manager={order.managerFullName}
         />
         <OrdersBody
-            products={order.orderData.products}
+            products={order.products}
         />
       </>
   );

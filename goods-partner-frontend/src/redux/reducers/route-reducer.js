@@ -40,7 +40,9 @@ const routeReducer = (state = initialRoutes, action) => {
     case actionTypes.ROUTES_BY_DATE:
       return {
         date: action.routes.date,
-        routes: action.routes.routes
+        routes: action.routes.routes,
+        carLoadDetails: action.routes.carLoadDetails
+
       }
     default:
       return state;

@@ -3,46 +3,6 @@ import Calculate from "./Calculate";
 import {connect} from "react-redux";
 import {compose} from "redux";
 import {getCalculatedDataByDate} from "../../redux/thunks/calculate-thunk";
-import Geocode from "react-geocode";
-
-// async function getLatLng(address) {
-//   Geocode.setApiKey("AIzaSyD0M9GvjU-nzoPjTWJCsVuG4jDyAvqHvHc");
-//   Geocode.setLanguage("uk");
-//   Geocode.setRegion("es");
-//   Geocode.setLocationType("ROOFTOP");
-//   Geocode.enableDebug();
-//
-//   let promise = Geocode.fromAddress(address).then(
-//     (response) => {
-//       const {lat, lng} = response.results[0].geometry.location;
-//       return {lat, lng};
-//     },
-//     (error) => {
-//       console.error(error);
-//       return {zxc: "qqq"}
-//     }
-//   );
-//   return await promise;
-// }
-//
-// async function getAddresses(routes){
-//
-//   return await routes.map(route => {
-//     let addresses = route.routePoints.map(routePoint => routePoint.address);
-//     addresses.unshift(route.storeAddress);
-//
-//     let latLngs = [];
-//
-//     addresses.map(address => getLatLng(address).then(resp => {
-//       latLngs.push(resp)
-//     }))
-//     return {
-//       routeId: route.routeId,
-//       addresses: addresses,
-//       latLngs: latLngs
-//     }
-//   });
-// }
 
 class CalculateContainer extends React.Component {
 
