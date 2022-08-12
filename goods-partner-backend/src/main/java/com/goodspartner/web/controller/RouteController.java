@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class RouteController {
     }
 
     @PutMapping("{routeId}/route-points/{routePointID}")
-    public void updateRoutePoint(@PathVariable int routeId, @PathVariable UUID routePointID, @RequestBody RoutePointDto routePoint) {
+    public void updateRoutePoint(@PathVariable int routeId, @PathVariable String routePointID, @RequestBody RoutePointDto routePoint) {
         routeService.updatePoint(routeId, routePointID, routePoint);
     }
 

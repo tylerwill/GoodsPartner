@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @AllArgsConstructor
 @Service
@@ -43,13 +42,13 @@ public class DefaultRouteService implements RouteService {
     }
 
     @Override
-    @Transactional
-    public void updatePoint(int routeId, UUID routePointId, RoutePointDto routePoint) {
+    @Transactional(readOnly = true)
+    public void updatePoint(int routeId, String routePointId, RoutePointDto routePoint) {
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new RouteNotFoundException("Route not found"));
 
         List<RoutePointDto> routePointDtoList = route.getRoutePoints().stream()
-                .filter(routePointDto -> routePointDto.getId().equals(routePointId))
+                .filter(routePointDto -> routePointDto.getId().toString().equals(routePointId))
                 .map(routePointDto -> routePointMapper.update(routePointDto, routePoint)).toList();
 
         route.setRoutePoints(routePointDtoList);
