@@ -32,16 +32,16 @@ function CarTable({cars}) {
                             {car.name}
                         </TableCell>
                         <TableCell sx={{padding: '7px'}} component="th" scope="row" align="center">
-                            {car.licence_plate}
+                            {car.licencePlate}
                         </TableCell>
                         <TableCell sx={{padding: '7px'}} component="th" scope="row" align="center">
                             {car.driver}
                         </TableCell>
                         <TableCell sx={{padding: '7px'}} component="th" scope="row" align="center">
-                            {car.weight_capacity}
+                            {car.weightCapacity}
                         </TableCell>
                         <TableCell sx={{padding: '7px'}} component="th" scope="row" align="center">
-                            {car.travel_cost}
+                            {car.travelCost}
                         </TableCell>
                         <TableCell sx={{padding: '7px'}} component="th" scope="row" align="center">
                             <Switch {...label} defaultChecked/>

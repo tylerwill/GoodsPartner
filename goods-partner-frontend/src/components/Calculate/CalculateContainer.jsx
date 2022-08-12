@@ -67,7 +67,6 @@ class CalculateContainer extends React.Component {
     return <Calculate
       orders={this.props.orderData}
       routes={this.props.routeData}
-      stores={this.props.storeData}
       routeAddresses={routeAddresses}
       getCalculatedDataByDate={this.getCalculatedDataByDate}
     />
@@ -77,8 +76,7 @@ class CalculateContainer extends React.Component {
 let mapStateToProps = (state) => {
   return {
     orderData: state.orders,
-    routeData: state.routes,
-    storeData: state.stores
+    routeData: state.routes
   }
 }
 

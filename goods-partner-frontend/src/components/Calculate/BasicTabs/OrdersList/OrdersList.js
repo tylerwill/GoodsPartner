@@ -23,10 +23,10 @@ function OrdersList({date, orders}) {
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <a target="_blank" rel="noreferrer" href= {reportLink}>
-                                            <Button size="small" variant="outlined" style={{width: '12em'}}>
-                                                Сформувати звіт
-                                            </Button>
+                                            <a target="_blank" rel="noreferrer" href={reportLink}>
+                                                <Button size="small" variant="outlined" style={{width: '12em'}}>
+                                                    Сформувати звіт
+                                                </Button>
                                             </a>
 
                                         </Grid>
@@ -49,12 +49,8 @@ function OrdersList({date, orders}) {
                                         </Grid>
                                         <Grid item xs={9}>
                                             <Stack spacing={2}>
-                                                <Typography variant="h6" component="h1">
-                                                    <Stack>
-                                                        {orders.map(order => order.orderNumber === activeOrder ?
-                                                            <OrdersTable order={order}/> : '')}
-                                                    </Stack>
-                                                </Typography>
+                                                {orders.map(order => order.orderNumber === activeOrder ?
+                                                    <OrdersTable order={order}/> : '')}
                                             </Stack>
                                         </Grid>
                                     </Grid>

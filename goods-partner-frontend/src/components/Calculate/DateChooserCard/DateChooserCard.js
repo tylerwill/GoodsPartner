@@ -1,6 +1,7 @@
 import {AppBar, Button, Stack, TextField, Toolbar, Typography} from "@mui/material";
 import {useState} from "react";
 import {NavLink} from "react-router-dom";
+import Box from "@mui/material/Box";
 
 function DateChooserCard({getCalculatedDataByDate}) {
 
@@ -12,9 +13,9 @@ function DateChooserCard({getCalculatedDataByDate}) {
     return (
         <AppBar position="static">
             <Toolbar>
-                <Typography variant="h6" gutterBottom component="div" sx={{flexGrow: 1}}>
+                <Box component="div" sx={{flexGrow: 1}}>
                     <img src="https://images.prom.ua/2143227305_w350_h100_ingrediyenti-dlya-pekariv.jpg"/>
-                </Typography>
+                </Box>
                 <Stack direction="row"
                        spacing={2}>
                     <Typography variant="h6" gutterBottom component="div">

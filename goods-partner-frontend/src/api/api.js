@@ -1,11 +1,10 @@
 import axios from "axios";
 
 const defaultOptions = {
-    /*  baseURL: process.env.HEROKU_BASE_URL !== undefined
+      baseURL: process.env.HEROKU_BASE_URL !== undefined
           ? process.env.HEROKU_BASE_URL
-          : process.env.REACT_APP_LOCALHOST_BASE_URL*/
+          : process.env.REACT_APP_LOCALHOST_BASE_URL
 
-    baseURL: "https://goods-partner.herokuapp.com/"
 };
 
 let axiosWithSetting = axios.create(defaultOptions);
@@ -231,45 +230,6 @@ let mockedRoutes = {
         ]
     }
 }
-let mockedStores = {
-    data: {
-        date: "2022-05-24",
-        stores: [
-            {
-                storeId: 1,
-                storeName: "Main Store",
-                orders: [
-                    {
-                        orderId: 103,
-                        orderNumber: 12335,
-                        totalOrderWeight: 107
-                    },
-                    {
-                        orderId: 205,
-                        orderNumber: 15654,
-                        totalOrderWeight: 205
-                    }
-                ]
-            },
-            {
-                storeId: 2,
-                storeName: "Addition Store",
-                orders: [
-                    {
-                        orderId: 173,
-                        orderNumber: 574345,
-                        totalOrderWeight: 405
-                    },
-                    {
-                        orderId: 245,
-                        orderNumber: 365675,
-                        totalOrderWeight: 120
-                    }
-                ]
-            }
-        ]
-    }
-}
 
 let mockedCars = [{
     "id": "1",
@@ -305,30 +265,23 @@ let mockedCars = [{
 export const orderApi = {
 
     getOrdersByDateRequest(ordersDate) {
-        // return axiosWithSetting.get(`calculate/orders?date=` + ordersDate);
-        mockedOrders.data.date = ordersDate;
-        return mockedOrders;
+        return axiosWithSetting.get(`api/v1/orders?date=` + ordersDate);
+        // mockedOrders.data.date = ordersDate;
+        // return mockedOrders;
     }
 }
 
 export const routeApi = {
     getRoutesByDateRequest(routesDate) {
-        // return axiosWithSetting.get(`calculate/routes?date=` + routesDate);
-        mockedRoutes.data.date = routesDate;
-        return mockedRoutes;
+        return axiosWithSetting.get(`api/v1/routes?date=` + routesDate);
+        // mockedRoutes.data.date = routesDate;
+        // return mockedRoutes;
     }
 }
 
-export const storeApi = {
-    getStoresByDateRequest(storesDate) {
-        return axiosWithSetting.get(`calculate/stores?date=` + storesDate);
-        mockedStores.data.date = storesDate;
-        return mockedStores;
-    }
-}
 
 export const carsApi = {
     getAll() {
-        return mockedCars;
+        return axiosWithSetting.get(`api/v1/cars`);
     }
 }

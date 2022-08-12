@@ -2,13 +2,11 @@ import {applyMiddleware, combineReducers, compose, legacy_createStore} from "red
 import thunkMiddleware from "redux-thunk";
 import orderReducer from "./reducers/order-reducer";
 import routeReducer from "./reducers/route-reducer";
-import storeReducer from "./reducers/store-reducer";
 import carReducer from "./reducers/car-reducer";
 
 let reducers = combineReducers({
   orders: orderReducer,
   routes: routeReducer,
-  stores: storeReducer,
   cars: carReducer
 });
 

@@ -41,7 +41,7 @@ function a11yProps(index) {
   };
 }
 
-export default function BasicTabs({orders, routes, stores, routeAddresses}) {
+export default function BasicTabs({orders, routes, routeAddresses}) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -54,7 +54,6 @@ export default function BasicTabs({orders, routes, stores, routeAddresses}) {
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
             <Tab label="Замовлення" {...a11yProps(0)} />
             <Tab label="Маршрути" {...a11yProps(1)} />
-            <Tab label="Склади" {...a11yProps(2)} />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
@@ -68,12 +67,6 @@ export default function BasicTabs({orders, routes, stores, routeAddresses}) {
               date={routes.date}
               routes={routes.routes}
               routeAddresses={routeAddresses}
-          />
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <StoreTable
-              date={stores.date}
-              stores={stores.stores}
           />
         </TabPanel>
       </Box>
