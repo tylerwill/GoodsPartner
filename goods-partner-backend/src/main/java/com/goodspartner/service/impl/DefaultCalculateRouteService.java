@@ -1,5 +1,6 @@
 package com.goodspartner.service.impl;
 
+import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.Order;
@@ -30,7 +31,7 @@ public class DefaultCalculateRouteService implements CalculateRouteService {
     private final GoogleApiService googleApiService;
 
     @Override
-    public List<RoutesCalculation.RouteDto> calculateRoutes(List<Order> orders, StoreDto storeDto) {
+    public List<RoutesCalculation.RouteDto> calculateRoutes(List<OrderDto> orders, StoreDto storeDto) {
         List<RoutePointDto> routePoints = calculationRoutePointMapper.mapOrders(orders);
         List<CarLoadingService.CarRoutesDto> carRoutesDtos = carLoadingService.loadCars(storeDto, routePoints);
 

@@ -1,14 +1,12 @@
 package com.goodspartner.service;
 
-import com.goodspartner.web.controller.response.OrdersCalculation;
-import com.goodspartner.web.controller.response.RoutesCalculation;
+import com.goodspartner.dto.OrderDto;;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface OrderService {
 
-    OrdersCalculation calculateOrders(LocalDate date);
-
-    RoutesCalculation calculateRoutes(LocalDate date);
+    List<OrderDto> findAllByShippingDate(LocalDate date);
 
 }

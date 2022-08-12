@@ -17,17 +17,24 @@ import java.util.stream.Collectors;
 @Component
 public class CarDetailsMapper {
 
-    public List<RoutesCalculation.CarLoadDto> map(List<RoutesCalculation.RouteDto> routes, List<Order> orders) {
+    public List<RoutesCalculation.CarLoadDto> map(List<RoutesCalculation.RouteDto> routes, List<OrderDto> orders) {
         return routes.stream().map(route -> routeToCarDetails(route, orders)).toList();
     }
 
-    private RoutesCalculation.CarLoadDto routeToCarDetails(RoutesCalculation.RouteDto route, List<Order> orders) {
-        List<RoutePointDto> routePoints = route.getRoutePoints();
-        List<OrderDto> ordersInfo = routePoints.stream().map(routePoint -> {
-                    List<RoutePointDto.AddressOrderDto> addressOrderDtos = routePoint.getOrders();
-                    List<Integer> ordersId = addressOrderDtos.stream().map(RoutePointDto.AddressOrderDto::getId).toList();
-                    return orders.stream().filter(order -> ordersId.contains(order.getId())).toList();
-                }).flatMap(List::stream).map(this::mapOrder)
+    // TODO refactor stream mapping
+    private RoutesCalculation.CarLoadDto routeToCarDetails(RoutesCalculation.RouteDto route, List<OrderDto> orders) {
+        List<OrderDto> ordersInfo = route.getRoutePoints()
+                .stream()
+                .map(routePoint -> {
+                    List<Integer> routeOrderIds = routePoint.getOrders()
+                            .stream()
+                            .map(RoutePointDto.AddressOrderDto::getId)
+                            .toList();
+                    return orders
+                            .stream()
+                            .filter(order -> routeOrderIds.contains(order.getId()))
+                            .toList();
+                }).flatMap(List::stream)
                 .collect(Collectors.toList());
 
         Collections.reverse(ordersInfo);
@@ -35,32 +42,5 @@ public class CarDetailsMapper {
                 .car(route.getCar())
                 .orders(ordersInfo)
                 .build();
-    }
-
-    private OrderDto mapOrder(Order order) {
-        return OrderDto.builder()
-                .id(order.getId())
-                .orderNumber(String.valueOf(order.getNumber()))
-                .products(mapOrderToProductInfo(order))
-                .build();
-    }
-
-    private List<ProductDto> mapOrderToProductInfo(Order order) {
-        return order.getOrderedProducts().stream()
-                .map(this::mapOrderedProductToProductInfo).toList();
-    }
-
-    private ProductDto mapOrderedProductToProductInfo(OrderedProduct orderedProduct) {
-        return ProductDto.builder()
-                .productName(orderedProduct.getProduct().getName())
-                .amount(orderedProduct.getCount())
-                .unitWeight(orderedProduct.getProduct().getKg())
-                .totalProductWeight(getProductTotalWeight(orderedProduct))
-                .build();
-    }
-
-    private double getProductTotalWeight(OrderedProduct orderedProduct) {
-        return BigDecimal.valueOf(orderedProduct.getCount() * orderedProduct.getProduct().getKg())
-                .setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 }

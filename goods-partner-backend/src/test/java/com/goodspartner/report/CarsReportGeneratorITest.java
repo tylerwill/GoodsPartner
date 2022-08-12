@@ -3,7 +3,7 @@ package com.goodspartner.report;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
-import com.goodspartner.service.OrderService;
+import com.goodspartner.service.RouteService;
 import com.goodspartner.web.controller.response.RoutesCalculation;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
@@ -18,13 +18,20 @@ import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CarsReportGeneratorITest  {
+public class CarsReportGeneratorITest {
     private final static String REPORTS_DESTINATION = "reports";
+
+    @SneakyThrows
+    private static void writeReportToFile(ReportResult reportResult, File destinationFile) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(destinationFile)) {
+            fileOutputStream.write(reportResult.report());
+        }
+    }
 
     @Test
     @DisplayName("Generate Report Of Loading Car With One Order")
     void testGenerateReport_ofLoadingCarWithOneOrder() {
-             CarDto carDto = CarDto.builder()
+        CarDto carDto = CarDto.builder()
                 .id(1)
                 .name("Mercedes Vito")
                 .driver("Ivan Piddubny")
@@ -61,10 +68,10 @@ public class CarsReportGeneratorITest  {
                 .build();
 
 
-        OrderService orderService = Mockito.mock(OrderService.class);
-        CarsReportGenerator carsReportGenerator = new CarsReportGenerator(orderService);
+        RouteService routeService = Mockito.mock(RouteService.class);
+        CarsReportGenerator carsReportGenerator = new CarsReportGenerator(routeService);
 
-        Mockito.when(orderService.calculateRoutes(LocalDate.of(2022, 7, 12)))
+        Mockito.when(routeService.calculateRoutes(LocalDate.of(2022, 7, 12)))
                 .thenReturn(routesCalculation);
 
 
@@ -142,10 +149,10 @@ public class CarsReportGeneratorITest  {
                 .date(LocalDate.of(2022, 7, 12))
                 .build();
 
-        OrderService orderService = Mockito.mock(OrderService.class);
-        CarsReportGenerator carsReportGenerator = new CarsReportGenerator(orderService);
+        RouteService routeService = Mockito.mock(RouteService.class);
+        CarsReportGenerator carsReportGenerator = new CarsReportGenerator(routeService);
 
-        Mockito.when(orderService.calculateRoutes(LocalDate.of(2022, 7, 12)))
+        Mockito.when(routeService.calculateRoutes(LocalDate.of(2022, 7, 12)))
                 .thenReturn(routesCalculation);
 
 
@@ -163,12 +170,5 @@ public class CarsReportGeneratorITest  {
         };
 
         carsReportGenerator.generateReport(date, reportResultConsumer);
-    }
-
-    @SneakyThrows
-    private static void writeReportToFile(ReportResult reportResult, File destinationFile) {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(destinationFile)) {
-            fileOutputStream.write(reportResult.report());
-        }
     }
 }

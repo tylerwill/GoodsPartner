@@ -1,7 +1,6 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.RoutePointDto;
-import com.goodspartner.service.OrderService;
 import com.goodspartner.service.RouteService;
 import com.goodspartner.web.controller.response.RoutesCalculation;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +13,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/routes")
 public class RouteController {
-    private final OrderService orderService;
+
     private final RouteService routeService;
 
     @GetMapping("/calculate")
     public RoutesCalculation calculateRoutes(@RequestParam String date) {
-        return orderService.calculateRoutes(LocalDate.parse(date));
+        return routeService.calculateRoutes(LocalDate.parse(date));
     }
 
     @GetMapping
