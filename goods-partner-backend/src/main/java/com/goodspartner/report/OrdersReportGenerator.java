@@ -44,7 +44,7 @@ public class OrdersReportGenerator {
     public ReportResult generateReport(LocalDate date) {
         OrdersCalculation ordersCalculation = orderService.calculateOrders(date);
         String currentTime = DATE_TIME_FORMATTER.format(LocalDateTime.now());
-        String reportName = "[" + currentTime + "]Orders_" + date + ".xlsx";
+        String reportName = "Замовлення на " + date + ".xlsx";
 
         try (InputStream template = getTemplate();
              ByteArrayOutputStream arrayStream = new ByteArrayOutputStream()) {
