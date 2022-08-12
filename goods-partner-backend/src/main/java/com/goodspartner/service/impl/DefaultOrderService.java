@@ -1,15 +1,10 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.*;
+import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.Order;
-import com.goodspartner.mapper.CarDetailsMapper;
 import com.goodspartner.mapper.OrderMapper;
 import com.goodspartner.repository.OrderRepository;
-import com.goodspartner.web.controller.response.OrdersCalculation;
-import com.goodspartner.web.controller.response.RoutesCalculation;
 import com.goodspartner.service.OrderService;
-import com.goodspartner.service.CalculateRouteService;
-import com.goodspartner.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,40 +19,14 @@ import java.util.List;
 public class DefaultOrderService implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final CalculateRouteService calculateRouteService;
     private final OrderMapper orderMapper;
-    private final StoreService storeFactory;
-    private final CarDetailsMapper carDetailsMapper;
 
-    @Override
     @Transactional
-    public OrdersCalculation calculateOrders(LocalDate date) {
+    @Override
+    public List<OrderDto> findAllByShippingDate(LocalDate date) {
 
         List<Order> ordersByDate = orderRepository.findAllByShippingDateEquals(date);
-        List<OrderDto> orderDtos = orderMapper.mapOrders(ordersByDate);
-
-        OrdersCalculation ordersCalculation = new OrdersCalculation();
-        ordersCalculation.setDate(date);
-        ordersCalculation.setOrders(orderDtos);
-        return ordersCalculation;
+        return orderMapper.mapOrders(ordersByDate);
     }
 
-    @Override
-    @Transactional
-    public RoutesCalculation calculateRoutes(LocalDate date) {
-
-        List<Order> orders = orderRepository.findAllByShippingDateEquals(date);
-
-        StoreDto storeDto = storeFactory.getMainStore();
-        List<RoutesCalculation.RouteDto> routes = calculateRouteService.calculateRoutes(orders, storeDto);
-
-        List<RoutesCalculation.CarLoadDto> carsDetailsList = carDetailsMapper.map(routes, orders);
-
-        RoutesCalculation routesCalculation = new RoutesCalculation();
-        routesCalculation.setDate(date);
-        routesCalculation.setRoutes(routes);
-        routesCalculation.setCarLoadDetails(carsDetailsList);
-
-        return routesCalculation;
-    }
 }

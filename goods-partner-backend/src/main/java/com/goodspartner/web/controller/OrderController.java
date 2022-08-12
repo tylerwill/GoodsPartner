@@ -1,5 +1,6 @@
 package com.goodspartner.web.controller;
 
+import com.goodspartner.dto.OrderDto;
 import com.goodspartner.web.controller.response.OrdersCalculation;
 import com.goodspartner.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +21,15 @@ public class OrderController {
 
     @GetMapping("/orders")
     public OrdersCalculation calculateOrders(@RequestParam String date) {
-        return orderService.calculateOrders(LocalDate.parse(date));
+
+        LocalDate calculationDate = LocalDate.parse(date);
+        List<OrderDto> ordersByDate = orderService.findAllByShippingDate(calculationDate);
+
+        OrdersCalculation ordersCalculation = new OrdersCalculation();
+        ordersCalculation.setDate(calculationDate);
+        ordersCalculation.setOrders(ordersByDate);
+        return ordersCalculation;
+
     }
 
 

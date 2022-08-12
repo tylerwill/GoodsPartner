@@ -3,7 +3,7 @@ package com.goodspartner.report;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
-import com.goodspartner.service.OrderService;
+import com.goodspartner.service.RouteService;
 import com.goodspartner.web.controller.response.RoutesCalculation;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -29,7 +29,8 @@ public class CarsReportGenerator {
     private static final String TEMPLATE_PATH = "report/template_report_of_cars_with_orders.xlsx";
     private static final int FIRST_INSERTED_ROW = 4;
     private static final int LAST_INSERTED_ROW = 5;
-    private final OrderService orderService;
+
+    private final RouteService routeService;
 
     private static InputStream getTemplate() {
         return CarsReportGenerator.class.getClassLoader().getResourceAsStream(TEMPLATE_PATH);
@@ -42,7 +43,7 @@ public class CarsReportGenerator {
 
     @SneakyThrows
     public ReportResult generateReport(LocalDate date) {
-        RoutesCalculation routesCalculation = orderService.calculateRoutes(date);
+        RoutesCalculation routesCalculation = routeService.calculateRoutes(date);
         String currentTime = DATE_TIME_FORMATTER.format(LocalDateTime.now());
         String reportName = "[" + currentTime + "]Cars_with_orders_" + date + ".xlsx";
 

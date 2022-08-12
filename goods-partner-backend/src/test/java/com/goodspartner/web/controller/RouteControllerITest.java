@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
+import java.nio.charset.StandardCharsets;
+
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -26,15 +28,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class RouteControllerITest extends AbstractWebITest {
     public static final String MOCKED_ROUTE = "datasets/route/route.json";
     public static final String DISTANCE_MATRIX = "datasets/route/distanceMatrix.json";
-    private static final String EMPTY_DISTANCE_MATRIX = "datasets/route/emptyDistanceMatrix.json";
     public static final String ORIGIN_ADDR = "originAddresses";
     public static final String DEST_ADDR = "destinationAddresses";
     public static final String DISTANCE_MATRIX_ROWS = "rows";
     public static final String URL_TEMPLATE = "/api/v1/routes/calculate";
     public static final String URL_PARAM_MANE = "date";
+    private static final String EMPTY_DISTANCE_MATRIX = "datasets/route/emptyDistanceMatrix.json";
+
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @MockBean
     private GoogleApiService googleApiService;
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
     @DataSet(value = "route/sql_dump.json", disableConstraints = true)
@@ -49,6 +53,7 @@ public class RouteControllerITest extends AbstractWebITest {
         JsonNode originAddresses = jsonNode.get(ORIGIN_ADDR);
         JsonNode destinationAddresses = jsonNode.get(DEST_ADDR);
         JsonNode rows = jsonNode.get(DISTANCE_MATRIX_ROWS);
+
         String[] origin = mapper.readValue(originAddresses.traverse(), String[].class);
         String[] dest = mapper.readValue(destinationAddresses.traverse(), String[].class);
         DistanceMatrixRow[] distanceMatrixRows = mapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
@@ -57,9 +62,17 @@ public class RouteControllerITest extends AbstractWebITest {
         when(googleApiService.getDirectionRoute(anyString(), anyList())).thenReturn(directionsRoute);
         when(googleApiService.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
 
+
+        String contentAsString = mockMvc.perform(get(URL_TEMPLATE)
+                .param(URL_PARAM_MANE, "2022-08-07")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
         mockMvc.perform(get(URL_TEMPLATE)
-                        .param(URL_PARAM_MANE, "2022-08-07")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .param(URL_PARAM_MANE, "2022-08-07")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .json("""  
@@ -79,10 +92,12 @@ public class RouteControllerITest extends AbstractWebITest {
                                       "spentTime": 0,
                                       "storeName": "Склад №1",
                                       "storeAddress": "Фастів, вул. Широка, 15",
+                                      "optimization": false,
                                       "routePoints": [
                                         {
                                           "status": "PENDING",
-                                          "clientId": 1,
+                                          "completedAt": null,
+                                          "clientId": 0,
                                           "clientName": "ТОВ \\"Пекарня\\"",
                                           "address": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
                                           "addressTotalWeight": 804.98,
@@ -100,7 +115,8 @@ public class RouteControllerITest extends AbstractWebITest {
                                         },
                                         {
                                           "status": "PENDING",
-                                          "clientId": 1,
+                                          "completedAt": null,
+                                          "clientId": 0,
                                           "clientName": "ТОВ \\"Пекарня\\"",
                                           "address": "м. Київ, вул. Металістів, 8, оф. 4-24",
                                           "addressTotalWeight": 5.5,
@@ -114,7 +130,8 @@ public class RouteControllerITest extends AbstractWebITest {
                                         },
                                         {
                                           "status": "PENDING",
-                                          "clientId": 1,
+                                          "completedAt": null,
+                                          "clientId": 0,
                                           "clientName": "ТОВ \\"Пекарня\\"",
                                           "address": "м. Київ, вул. Хрещатик, 1",
                                           "addressTotalWeight": 338.28,
@@ -161,23 +178,23 @@ public class RouteControllerITest extends AbstractWebITest {
                                             {
                                               "productName": "4695 Фарба харчова зелена",
                                               "amount": 8,
-                                              "storeName": null,
+                                              "storeName": "Склад №1",
                                               "unitWeight": 3.54,
                                               "totalProductWeight": 28.32
                                             },
                                             {
                                               "productName": "8452 Масло 1й гатунок",
                                               "amount": 9,
-                                              "storeName": null,
+                                              "storeName": "Склад №1",
                                               "unitWeight": 34.44,
                                               "totalProductWeight": 309.96
                                             }
                                           ],
-                                          "createdDate": null,
-                                          "clientName": null,
-                                          "address": null,
-                                          "managerFullName": null,
-                                          "orderWeight": 0
+                                          "createdDate": "2022-08-06",
+                                          "clientName": "ТОВ \\"Пекарня\\"",
+                                          "address": "м. Київ, вул. Хрещатик, 1",
+                                          "managerFullName": "Андрій Бублик",
+                                          "orderWeight": 338.28
                                         },
                                         {
                                           "id": 3,
@@ -186,23 +203,23 @@ public class RouteControllerITest extends AbstractWebITest {
                                             {
                                               "productName": "66784 Арахісова паста",
                                               "amount": 5,
-                                              "storeName": null,
+                                              "storeName": "Склад №1",
                                               "unitWeight": 0.55,
                                               "totalProductWeight": 2.75
                                             },
                                             {
                                               "productName": "66784 Арахісова паста",
                                               "amount": 5,
-                                              "storeName": null,
+                                              "storeName": "Склад №1",
                                               "unitWeight": 0.55,
                                               "totalProductWeight": 2.75
                                             }
                                           ],
-                                          "createdDate": null,
-                                          "clientName": null,
-                                          "address": null,
-                                          "managerFullName": null,
-                                          "orderWeight": 0
+                                          "createdDate": "2022-08-05",
+                                          "clientName": "ТОВ \\"Пекарня\\"",
+                                          "address": "м. Київ, вул. Металістів, 8, оф. 4-24",
+                                          "managerFullName": "Андрій Бублик",
+                                          "orderWeight": 5.5
                                         },
                                         {
                                           "id": 10,
@@ -211,23 +228,23 @@ public class RouteControllerITest extends AbstractWebITest {
                                             {
                                               "productName": "56743 Форми пасхальні",
                                               "amount": 7,
-                                              "storeName": null,
+                                              "storeName": "Склад №1",
                                               "unitWeight": 4.65,
-                                              "totalProductWeight": 32.55
+                                              "totalProductWeight": 32.550000000000004
                                             },
                                             {
                                               "productName": "4695 Фарба харчова зелена",
                                               "amount": 8,
-                                              "storeName": null,
+                                              "storeName": "Склад №1",
                                               "unitWeight": 3.54,
                                               "totalProductWeight": 28.32
                                             }
                                           ],
-                                          "createdDate": null,
-                                          "clientName": null,
-                                          "address": null,
-                                          "managerFullName": null,
-                                          "orderWeight": 0
+                                          "createdDate": "2022-08-07",
+                                          "clientName": "ТОВ \\"Пекарня\\"",
+                                          "address": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
+                                          "managerFullName": "Іван Шугай",
+                                          "orderWeight": 60.870000000000005
                                         },
                                         {
                                           "id": 9,
@@ -236,23 +253,23 @@ public class RouteControllerITest extends AbstractWebITest {
                                             {
                                               "productName": "66784 Арахісова паста",
                                               "amount": 5,
-                                              "storeName": null,
+                                              "storeName": "Склад №1",
                                               "unitWeight": 0.55,
                                               "totalProductWeight": 2.75
                                             },
                                             {
                                               "productName": "8795 Мука екстра",
                                               "amount": 6,
-                                              "storeName": null,
+                                              "storeName": "Склад №1",
                                               "unitWeight": 123.56,
                                               "totalProductWeight": 741.36
                                             }
                                           ],
-                                          "createdDate": null,
-                                          "clientName": null,
-                                          "address": null,
-                                          "managerFullName": null,
-                                          "orderWeight": 0
+                                          "createdDate": "2022-08-07",
+                                          "clientName": "ТОВ \\"Пекарня\\"",
+                                          "address": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
+                                          "managerFullName": "Петро Коваленко",
+                                          "orderWeight": 744.11
                                         }
                                       ]
                                     }
@@ -278,8 +295,8 @@ public class RouteControllerITest extends AbstractWebITest {
         when(googleApiService.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
 
         mockMvc.perform(get(URL_TEMPLATE)
-                        .param(URL_PARAM_MANE, "7777-07-07")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .param(URL_PARAM_MANE, "7777-07-07")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .json("""  
