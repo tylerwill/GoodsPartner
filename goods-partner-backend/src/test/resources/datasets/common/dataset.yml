@@ -245,27 +245,59 @@ PRODUCTS:
 
 ROUTES:
   - ID: 1
-    STATUS: "pending"
-    DATE: 2022-07-12
-    DISTANCE: 100
-    ESTIMATED_TIME: "05:00:00"
-    ROUTE_LINK: "https://uk.wikipedia.org/wiki/%D0%9A%D0%BE%D0%BC%D1%96%D0%B2%D0%BE%D1%8F%D0%B6%D0%B5%D1%80"
+    STATUS: "DRAFT"
+    TOTAL_WEIGHT: 1500.35
+    TOTAL_POINTS: 3
+    TOTAL_ORDERS: 5
+    DISTANCE: 100.45
+    ESTIMATED_TIME: 360
+    SPENT_TIME: 0
+    STORE_NAME: "Склад №1"
+    STORE_ADDRESS: "Фастів, вул. Широка, 15"
+    OPTIMIZATION: TRUE
+    ROUTE_POINTS: "[{\"id\": \"741a37c1-8f13-4335-95f6-a5b14aaf7fbd\", \"orders\": [{\"id\": 9, \"orderNumber\": \"986453\"}, {\"id\": 10, \"orderNumber\": \"426457\"}, {\"id\": 12, \"orderNumber\": \"586126\"}], \"status\": \"DONE\", \"address\": \"м. Київ, вул. Молодогвардійська, 22, оф. 35\", \"clientId\": 1, \"clientName\": \"ТОВ Пекарня\", \"completedAt\": [2022, 8, 8, 12, 23, 23], \"addressTotalWeight\": 804.98, \"routePointDistantTime\": 60.000000000}, {\"id\": \"93e632fa-18a6-11ed-861d-0242ac120002\", \"orders\": [{\"id\": 3, \"orderNumber\": \"45463\"}], \"status\": \"DONE\", \"address\": \"м. Київ, вул. Глибочицька, 12Б, оф. 3\", \"clientId\": 2, \"clientName\": \"ТОВ Кондитерська\", \"completedAt\": [2022, 8, 8, 15, 45, 12], \"addressTotalWeight\": 5.5, \"routePointDistantTime\": 180.000000000}, {\"id\": \"148b44a8-3fce-45fd-91f2-fccabbb52525\", \"orders\": [{\"id\": 5, \"orderNumber\": \"432565\"}], \"status\": \"DONE\", \"address\": \"м. Київ, вул. Хрещатик, 1\", \"clientId\": 3, \"clientName\": \"ТОВ Хлібзавод\", \"completedAt\": [2022, 8, 8, 19, 38, 19], \"addressTotalWeight\": 338.28, \"routePointDistantTime\": 240.000000000}]"
+
   - ID: 2
-    STATUS: "in progress"
-    DATE: 2022-07-12
-    DISTANCE: 200
-    ESTIMATED_TIME: "06:00:00"
-    START_TIME: "2022-07-12 17:40:00"
-    ROUTE_LINK: "https://developers.google.com/maps"
+    STATUS: "APPROVED"
+    TOTAL_WEIGHT: 2000.20
+    TOTAL_POINTS: 3
+    TOTAL_ORDERS: 5
+    DISTANCE: 150.95
+    ESTIMATED_TIME: 480
+    SPENT_TIME: 0
+    STORE_NAME: "Склад №1"
+    STORE_ADDRESS: "Фастів, вул. Широка, 15"
+    OPTIMIZATION: TRUE
+    ROUTE_POINTS: "[{\"id\": \"741a37c1-8f13-4335-95f6-a5b14aaf7fbd\", \"orders\": [{\"id\": 9, \"orderNumber\": \"986453\"}, {\"id\": 10, \"orderNumber\": \"426457\"}, {\"id\": 12, \"orderNumber\": \"586126\"}], \"status\": \"DONE\", \"address\": \"м. Київ, вул. Молодогвардійська, 22, оф. 35\", \"clientId\": 1, \"clientName\": \"ТОВ Пекарня\", \"completedAt\": [2022, 8, 8, 12, 23, 23], \"addressTotalWeight\": 804.98, \"routePointDistantTime\": 60.000000000}, {\"id\": \"93e632fa-18a6-11ed-861d-0242ac120002\", \"orders\": [{\"id\": 3, \"orderNumber\": \"45463\"}], \"status\": \"DONE\", \"address\": \"м. Київ, вул. Глибочицька, 12Б, оф. 3\", \"clientId\": 2, \"clientName\": \"ТОВ Кондитерська\", \"completedAt\": [2022, 8, 8, 15, 45, 12], \"addressTotalWeight\": 5.5, \"routePointDistantTime\": 180.000000000}, {\"id\": \"148b44a8-3fce-45fd-91f2-fccabbb52525\", \"orders\": [{\"id\": 5, \"orderNumber\": \"432565\"}], \"status\": \"DONE\", \"address\": \"м. Київ, вул. Хрещатик, 1\", \"clientId\": 3, \"clientName\": \"ТОВ Хлібзавод\", \"completedAt\": [2022, 8, 8, 19, 38, 19], \"addressTotalWeight\": 338.28, \"routePointDistantTime\": 240.000000000}]"
+
   - ID: 3
-    STATUS: "done"
-    DATE: 2022-07-12
-    DISTANCE: 300
-    ESTIMATED_TIME: "06:00:00"
-    START_TIME: "2022-07-12 17:40:00"
-    FINISH_TIME: "2022-07-13 01:00:00"
-    SPENT_TIME: "08:00:00"
-    ROUTE_LINK: "https://developers.google.com/maps"
+    STATUS: "INPROGRESS"
+    TOTAL_WEIGHT: 1200.40
+    TOTAL_POINTS: 5
+    TOTAL_ORDERS: 7
+    DISTANCE: 245.64
+    ESTIMATED_TIME: 420
+    START_TIME: "2022-08-08 19:38:19"
+    SPENT_TIME: 0
+    STORE_NAME: "Склад №2"
+    STORE_ADDRESS: "Фастів, вул. Зелена, 5"
+    OPTIMIZATION: FALSE
+    ROUTE_POINTS: "[{\"id\": \"741a37c1-8f13-4335-95f6-a5b14aaf7fbd\", \"orders\": [{\"id\": 9, \"orderNumber\": \"986453\"}, {\"id\": 10, \"orderNumber\": \"426457\"}, {\"id\": 12, \"orderNumber\": \"586126\"}], \"status\": \"DONE\", \"address\": \"м. Київ, вул. Молодогвардійська, 22, оф. 35\", \"clientId\": 1, \"clientName\": \"ТОВ Пекарня\", \"completedAt\": [2022, 8, 8, 12, 23, 23], \"addressTotalWeight\": 804.98, \"routePointDistantTime\": 60.000000000}, {\"id\": \"93e632fa-18a6-11ed-861d-0242ac120002\", \"orders\": [{\"id\": 3, \"orderNumber\": \"45463\"}], \"status\": \"DONE\", \"address\": \"м. Київ, вул. Глибочицька, 12Б, оф. 3\", \"clientId\": 2, \"clientName\": \"ТОВ Кондитерська\", \"completedAt\": [2022, 8, 8, 15, 45, 12], \"addressTotalWeight\": 5.5, \"routePointDistantTime\": 180.000000000}, {\"id\": \"148b44a8-3fce-45fd-91f2-fccabbb52525\", \"orders\": [{\"id\": 5, \"orderNumber\": \"432565\"}], \"status\": \"DONE\", \"address\": \"м. Київ, вул. Хрещатик, 1\", \"clientId\": 3, \"clientName\": \"ТОВ Хлібзавод\", \"completedAt\": [2022, 8, 8, 19, 38, 19], \"addressTotalWeight\": 338.28, \"routePointDistantTime\": 240.000000000}]"
+
+  - ID: 4
+    STATUS: "COMPLETE"
+    TOTAL_WEIGHT: 1870.40
+    TOTAL_POINTS: 3
+    TOTAL_ORDERS: 5
+    DISTANCE: 145.59
+    ESTIMATED_TIME: 480
+    START_TIME: "2022-08-08 10:38:19"
+    FINISH_TIME: "2022-08-08 19:38:19"
+    SPENT_TIME: 540
+    STORE_NAME: "Склад №2"
+    STORE_ADDRESS: "Фастів, вул. Зелена, 5"
+    OPTIMIZATION: FALSE
+    ROUTE_POINTS: "[{\"id\": \"741a37c1-8f13-4335-95f6-a5b14aaf7fbd\", \"orders\": [{\"id\": 9, \"orderNumber\": \"986453\"}, {\"id\": 10, \"orderNumber\": \"426457\"}, {\"id\": 12, \"orderNumber\": \"586126\"}], \"status\": \"DONE\", \"address\": \"м. Київ, вул. Молодогвардійська, 22, оф. 35\", \"clientId\": 1, \"clientName\": \"ТОВ Пекарня\", \"completedAt\": [2022, 8, 8, 12, 23, 23], \"addressTotalWeight\": 804.98, \"routePointDistantTime\": 60.000000000}, {\"id\": \"93e632fa-18a6-11ed-861d-0242ac120002\", \"orders\": [{\"id\": 3, \"orderNumber\": \"45463\"}], \"status\": \"DONE\", \"address\": \"м. Київ, вул. Глибочицька, 12Б, оф. 3\", \"clientId\": 2, \"clientName\": \"ТОВ Кондитерська\", \"completedAt\": [2022, 8, 8, 15, 45, 12], \"addressTotalWeight\": 5.5, \"routePointDistantTime\": 180.000000000}, {\"id\": \"148b44a8-3fce-45fd-91f2-fccabbb52525\", \"orders\": [{\"id\": 5, \"orderNumber\": \"432565\"}], \"status\": \"DONE\", \"address\": \"м. Київ, вул. Хрещатик, 1\", \"clientId\": 3, \"clientName\": \"ТОВ Хлібзавод\", \"completedAt\": [2022, 8, 8, 19, 38, 19], \"addressTotalWeight\": 338.28, \"routePointDistantTime\": 240.000000000}]"
 
 STORES:
   - ID: 1

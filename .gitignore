@@ -48,7 +48,7 @@ data
 # production
 **/build
 
-flyway.conf
+goods-partner-backend/flyway.conf
 
 application-dev.yml
 application-dev.properties

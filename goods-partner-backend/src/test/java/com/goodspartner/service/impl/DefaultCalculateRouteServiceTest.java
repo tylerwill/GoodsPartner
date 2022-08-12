@@ -13,12 +13,13 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-class DefaultRouteServiceTest {
+class DefaultCalculateRouteServiceTest {
 
     private final DirectionsRoute route = new DirectionsRoute();
     private final DirectionsLeg[] legs = new DirectionsLeg[4];
     private final List<RoutePointDto> routePoints = new ArrayList<>(3);
-    private final DefaultRouteService routeService = new DefaultRouteService(null, null, null);
+    private final DefaultCalculateRouteService routeService = new DefaultCalculateRouteService(null,
+            null, null);
 
     @BeforeEach
     public void setUp() {
@@ -40,7 +41,7 @@ class DefaultRouteServiceTest {
     public void testAddDurationTORoutingPointDto() {
         routeService.addRoutPointDistantTime(routePoints, route);
         for (int i = 0; i < routePoints.size(); i++) {
-            assertEquals(java.time.Duration.ofSeconds(600 + i * 300L), routePoints.get(i).getRoutePointDistantTime());
+            assertEquals(java.time.Duration.ofSeconds(600 + i * 300L).toMinutes(), routePoints.get(i).getRoutePointDistantTime());
         }
     }
 }

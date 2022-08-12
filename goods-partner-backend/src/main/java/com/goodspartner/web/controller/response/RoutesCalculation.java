@@ -38,14 +38,13 @@ public class RoutesCalculation {
         private int totalPoints;
         private int totalOrders;
         private double distance;
-        private Duration estimatedTime;
-        @JsonFormat(pattern = "HH:mm:ss")
+        private long estimatedTime;
         private LocalDateTime startTime;
-        @JsonFormat(pattern = "HH:mm:ss")
         private LocalDateTime finishTime;
-        private Duration spentTime;
+        private long spentTime;
         private String storeName;
         private String storeAddress;
+        private boolean optimization;
         private List<RoutePointDto> routePoints;
         private CarDto car;
     }
