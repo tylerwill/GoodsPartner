@@ -1,10 +1,12 @@
 import axios from "axios";
 
 const defaultOptions = {
-      baseURL: process.env.HEROKU_BASE_URL !== undefined
-          ? process.env.HEROKU_BASE_URL
-          : process.env.REACT_APP_LOCALHOST_BASE_URL
+    // TODO: Fix this
+      // baseURL: process.env.HEROKU_BASE_URL !== undefined
+      //     ? process.env.HEROKU_BASE_URL
+      //     : process.env.REACT_APP_LOCALHOST_BASE_URL
 
+    baseURL: 'https://goods-partner.herokuapp.com/'
 };
 
 let axiosWithSetting = axios.create(defaultOptions);
