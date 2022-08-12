@@ -5,6 +5,8 @@ import com.goodspartner.dto.ProductDto;
 import com.goodspartner.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -17,26 +19,30 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
-
-import static com.goodspartner.report.ReportUtils.getTemplate;
+import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
-public class OrdersReportGenerator implements ReportGenerator {
-
+public class OrdersReportGenerator {
     private static final String TEMPLATE_PATH = "report/template_report_list_of_orders.xlsx";
-
-    private static final String REPORT_NAME = "Завантаження_машин_на_";
     private static final int FIRST_INSERTED_ROW = 5;
     private final OrderService orderService;
 
+    private static InputStream getTemplate() {
+        return OrdersReportGenerator.class.getClassLoader().getResourceAsStream(TEMPLATE_PATH);
+    }
+
+    public void generateReport(LocalDate date, Consumer<ReportResult> reportResultConsumer) {
+        ReportResult reportResult = generateReport(date);
+        reportResultConsumer.accept(reportResult);
+    }
+
     @SneakyThrows
-    @Override
     public ReportResult generateReport(LocalDate date) {
         List<OrderDto> orderDtos = orderService.findAllByShippingDate(date);
-        String reportName = ReportUtils.generateReportName(REPORT_NAME, date);
+        String reportName = "Замовлення на " + date + ".xlsx";
 
-        try (InputStream template = getTemplate(TEMPLATE_PATH);
+        try (InputStream template = getTemplate();
              ByteArrayOutputStream arrayStream = new ByteArrayOutputStream()) {
 
             XSSFWorkbook workbook = new XSSFWorkbook(template);
@@ -59,9 +65,7 @@ public class OrdersReportGenerator implements ReportGenerator {
         }
     }
 
-
     private void addRowsForProductsAndFill(XSSFSheet sheet, List<OrderDto> orderDtos, Row sourceProductRow, LocalDate date) {
-
         int rowNumber = 3;
         int orderCount = 1;
         Row currentRow = sheet.getRow(rowNumber);
@@ -82,7 +86,7 @@ public class OrdersReportGenerator implements ReportGenerator {
             for (ProductDto productDto : productDtos) {
                 if (currentRow == null) {
                     currentRow = sheet.createRow(rowNumber);
-                    ReportUtils.copyCells(sourceProductRow, currentRow);
+                    createCell(sourceProductRow, currentRow);
                 }
 
                 currentRow.getCell(2).setCellValue(productCount++);
@@ -129,11 +133,22 @@ public class OrdersReportGenerator implements ReportGenerator {
                 Row sourceWeightRow = sheet.getRow(FIRST_INSERTED_ROW - 1);
                 Row newRow = sheet.createRow(i);
                 if (i % 2 == 0) {
-                    ReportUtils.copyCells(sourceWeightRow, newRow);
+                    createCell(sourceWeightRow, newRow);
                 } else {
-                    ReportUtils.copyCells(sourceProductRow, newRow);
+                    createCell(sourceProductRow, newRow);
                 }
             }
+        }
+    }
+
+    private void createCell(Row sourceRow, Row destinationRow) {
+        for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
+            Cell oldCell = sourceRow.getCell(i);
+            Cell newCell = destinationRow.createCell(i);
+
+            CellStyle newCellStyle = sourceRow.getSheet().getWorkbook().createCellStyle();
+            newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
+            newCell.setCellStyle(newCellStyle);
         }
     }
 }
