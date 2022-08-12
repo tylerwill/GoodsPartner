@@ -5,9 +5,8 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import OrdersList from "./OrdersList/OrdersList";
-import StoreTable from "./CarLoadList/CarLoadList";
+import StoreTable from "./StoreTable/StoreTable";
 import RoutesList from "./RoutesList/RoutesList";
-import CarLoadList from "./CarLoadList/CarLoadList";
 
 function TabPanel(props) {
   const {children, value, index, ...other} = props;
@@ -22,7 +21,7 @@ function TabPanel(props) {
       >
         {value === index && (
             <Box sx={{p: 3}}>
-              {children}
+              <Typography>{children}</Typography>
             </Box>
         )}
       </div>
@@ -55,7 +54,6 @@ export default function BasicTabs({orders, routes, routeAddresses}) {
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
             <Tab label="Замовлення" {...a11yProps(0)} />
             <Tab label="Маршрути" {...a11yProps(1)} />
-            <Tab label="Завантаження" {...a11yProps(2)} />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
@@ -71,12 +69,6 @@ export default function BasicTabs({orders, routes, routeAddresses}) {
               routeAddresses={routeAddresses}
           />
         </TabPanel>
-          <TabPanel value={value} index={2}>
-              <CarLoadList
-                  date={routes.date}
-                  carLoadDetails = {routes.carLoadDetails}
-              />
-          </TabPanel>
       </Box>
   );
 }

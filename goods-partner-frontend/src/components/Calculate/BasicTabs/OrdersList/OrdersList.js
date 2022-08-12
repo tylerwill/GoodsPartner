@@ -5,8 +5,7 @@ import OrdersTable from "./OrdersTable/OrdersTable";
 import React, {useState} from "react";
 
 function OrdersList({date, orders}) {
-    console.log("orders", orders);
-    const initialOrder = orders.length === 0 ? '' : orders[0].orderNumber;
+    const initialOrder = orders === null ? '' : orders[0].orderNumber;
 
     const [activeOrder, setActiveOrder] = useState(initialOrder);
     const reportLink = "http://localhost:8081/reports/orders/generate?date=" + date;
@@ -14,7 +13,7 @@ function OrdersList({date, orders}) {
             <CardContent>
                 <Stack spacing={2}>
                     {
-                        initialOrder !== ''
+                        date
                             ? <>
                                 <Box>
                                     <Grid container spacing={1}>
@@ -40,7 +39,6 @@ function OrdersList({date, orders}) {
                                                 {
                                                     orders.map(order =>
                                                         <Button size="small"
-                                                                key={order.orderNumber + "button"}
                                                                 variant={order.orderNumber === activeOrder ? "contained" : "outlined"}
                                                                 onClick={() => setActiveOrder(order.orderNumber)}
                                                         >
@@ -52,20 +50,15 @@ function OrdersList({date, orders}) {
                                         <Grid item xs={9}>
                                             <Stack spacing={2}>
                                                 {orders.map(order => order.orderNumber === activeOrder ?
-                                                    <OrdersTable order={order} key={order.orderNumber + "table"} /> : '')
-                                                }
+                                                    <OrdersTable order={order}/> : '')}
                                             </Stack>
                                         </Grid>
                                     </Grid>
                                 </Box>
                             </>
-                            : date ? <Typography variant="h5" gutterBottom component="div">
-                                    Немає ордерів на зазначену дату
-                                </Typography>
-                                :
-                                <Typography variant="h5" gutterBottom component="div">
-                                    Оберіть дату та натисніть "РОЗРАХУВАТИ"
-                                </Typography>
+                            : <Typography variant="h5" gutterBottom component="div">
+                                Оберіть дату та натисніть "РОЗРАХУВАТИ"
+                            </Typography>
                     }
                 </Stack>
             </CardContent>
