@@ -276,7 +276,7 @@ export const orderApi = {
 
 export const routeApi = {
     getRoutesByDateRequest(routesDate) {
-        return axiosWithSetting.get(`api/v1/routes?date=` + routesDate);
+        return axiosWithSetting.get(`api/v1/routes/calculate?date=` + routesDate);
         // mockedRoutes.data.date = routesDate;
         // return mockedRoutes;
     }
