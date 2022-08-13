@@ -1,13 +1,10 @@
 package com.goodspartner.report;
 
-import com.goodspartner.web.controller.response.OrdersCalculation;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -17,64 +14,59 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
-import java.util.function.Consumer;
+
+import static com.goodspartner.report.ReportUtils.getTemplate;
 
 @Service
 @RequiredArgsConstructor
-public class OrdersReportGenerator {
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+public class OrdersReportGenerator implements ReportGenerator {
+
     private static final String TEMPLATE_PATH = "report/template_report_list_of_orders.xlsx";
+
+    private static final String REPORT_NAME = "Завантаження_машин_на_";
     private static final int FIRST_INSERTED_ROW = 5;
     private final OrderService orderService;
 
-    private static InputStream getTemplate() {
-        return OrdersReportGenerator.class.getClassLoader().getResourceAsStream(TEMPLATE_PATH);
-    }
-
-    public void generateReport(LocalDate date, Consumer<ReportResult> reportResultConsumer) {
-        ReportResult reportResult = generateReport(date);
-        reportResultConsumer.accept(reportResult);
-    }
-
     @SneakyThrows
+    @Override
     public ReportResult generateReport(LocalDate date) {
-        OrdersCalculation ordersCalculation = orderService.calculateOrders(date);
-        String currentTime = DATE_TIME_FORMATTER.format(LocalDateTime.now());
-        String reportName = "Замовлення на " + date + ".xlsx";
+        List<OrderDto> orderDtos = orderService.findAllByShippingDate(date);
+        String reportName = ReportUtils.generateReportName(REPORT_NAME, date);
 
-        try (InputStream template = getTemplate();
+        try (InputStream template = getTemplate(TEMPLATE_PATH);
              ByteArrayOutputStream arrayStream = new ByteArrayOutputStream()) {
 
             XSSFWorkbook workbook = new XSSFWorkbook(template);
             XSSFSheet sheet = workbook.getSheetAt(0);
 
-            if (ordersCalculation.getOrders().isEmpty()) {
+            if (orderDtos.isEmpty()) {
                 sheet.getRow(3).createCell(4).setCellValue("НА ОБРАНУ ДАТУ ЗАМОВЛЕНЬ НЕ ВИЯВЛЕНО");
                 workbook.write(arrayStream);
                 return new ReportResult(reportName, arrayStream.toByteArray());
             }
 
-            int ordersQuantity = ordersCalculation.getOrders().size();
+            int ordersQuantity = orderDtos.size();
             Row templateProductRow = sheet.getRow(3);
 
             addRowsForOrders(sheet, templateProductRow, ordersQuantity);
-            addRowsForProductsAndFill(sheet, ordersCalculation, templateProductRow, date);
+            addRowsForProductsAndFill(sheet, orderDtos, templateProductRow, date);
 
             workbook.write(arrayStream);
             return new ReportResult(reportName, arrayStream.toByteArray());
         }
     }
 
-    private void addRowsForProductsAndFill(XSSFSheet sheet, OrdersCalculation ordersCalculation, Row sourceProductRow, LocalDate date) {
+
+    private void addRowsForProductsAndFill(XSSFSheet sheet, List<OrderDto> orderDtos, Row sourceProductRow, LocalDate date) {
+
         int rowNumber = 3;
         int orderCount = 1;
         Row currentRow = sheet.getRow(rowNumber);
 
-        for (OrderDto orderDto : ordersCalculation.getOrders()) {
+        for (OrderDto orderDto : orderDtos) {
             List<ProductDto> productDtos = orderDto.getProducts();
             if (productDtos.size() > 1) {
                 sheet.shiftRows(rowNumber + 1, sheet.getLastRowNum(), productDtos.size() - 1);
@@ -90,7 +82,7 @@ public class OrdersReportGenerator {
             for (ProductDto productDto : productDtos) {
                 if (currentRow == null) {
                     currentRow = sheet.createRow(rowNumber);
-                    createCell(sourceProductRow, currentRow);
+                    ReportUtils.copyCells(sourceProductRow, currentRow);
                 }
 
                 currentRow.getCell(2).setCellValue(productCount++);
@@ -115,7 +107,7 @@ public class OrdersReportGenerator {
             currentRow = sheet.getRow(rowNumber);
         }
 
-        double sum = ordersCalculation.getOrders()
+        double sum = orderDtos
                 .stream()
                 .mapToDouble(OrderDto::getOrderWeight)
                 .sum();
@@ -126,7 +118,7 @@ public class OrdersReportGenerator {
         currentRow = sheet.getRow(rowNumber);
         String formattedDate = date.format(DateTimeFormatter
                 .ofLocalizedDate(FormatStyle.SHORT));
-        currentRow.getCell(6).setCellValue(formattedDate.toString());
+        currentRow.getCell(6).setCellValue(formattedDate);
     }
 
     private void addRowsForOrders(XSSFSheet sheet, Row sourceProductRow, int ordersQuantity) {
@@ -137,22 +129,11 @@ public class OrdersReportGenerator {
                 Row sourceWeightRow = sheet.getRow(FIRST_INSERTED_ROW - 1);
                 Row newRow = sheet.createRow(i);
                 if (i % 2 == 0) {
-                    createCell(sourceWeightRow, newRow);
+                    ReportUtils.copyCells(sourceWeightRow, newRow);
                 } else {
-                    createCell(sourceProductRow, newRow);
+                    ReportUtils.copyCells(sourceProductRow, newRow);
                 }
             }
-        }
-    }
-
-    private void createCell(Row sourceRow, Row destinationRow) {
-        for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
-            Cell oldCell = sourceRow.getCell(i);
-            Cell newCell = destinationRow.createCell(i);
-
-            CellStyle newCellStyle = sourceRow.getSheet().getWorkbook().createCellStyle();
-            newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
-            newCell.setCellStyle(newCellStyle);
         }
     }
 }

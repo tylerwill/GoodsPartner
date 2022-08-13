@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DBRider
+@Transactional
 public class CarControllerITest extends AbstractWebITest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();

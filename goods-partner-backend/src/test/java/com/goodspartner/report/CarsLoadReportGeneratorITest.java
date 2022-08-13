@@ -4,7 +4,6 @@ import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.service.RouteService;
-
 import com.goodspartner.web.controller.response.RoutesCalculation;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +31,7 @@ public class CarsLoadReportGeneratorITest {
     @Test
     @DisplayName("Generate Report Of Loading Car With One Order")
     void testGenerateReport_ofLoadingCarWithOneOrder() {
-             CarDto carDto = CarDto.builder()
+        CarDto carDto = CarDto.builder()
                 .id(1)
                 .name("Mercedes Vito")
                 .driver("Ivan Piddubny")
@@ -67,6 +66,7 @@ public class CarsLoadReportGeneratorITest {
                 .carLoadDetails(List.of(carLoadDto))
                 .date(LocalDate.of(2022, 7, 12))
                 .build();
+
 
         RouteService routeService = Mockito.mock(RouteService.class);
         CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(routeService);
