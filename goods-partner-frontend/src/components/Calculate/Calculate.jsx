@@ -6,7 +6,7 @@ import BasicTabs from "./BasicTabs/BasicTabs";
 import React from "react";
 import {Route, Routes} from "react-router-dom";
 import CalculateContainer from "./CalculateContainer";
-import Cars from "../Cars/Cars";
+import Cars from "./Cars/Cars";
 
 const Calculate = ({orders, routes, getCalculatedDataByDate, routeAddresses}) => {
     return (

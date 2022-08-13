@@ -23,7 +23,8 @@ import static com.goodspartner.report.ReportUtils.copyCells;
 @RequiredArgsConstructor
 public class CarsLoadReportGenerator implements ReportGenerator {
     private static final String TEMPLATE_PATH = "report/template_report_of_cars_with_orders.xlsx";
-    private static final String REPORT_NAME = "Замовлення_на_";
+
+    private static final String REPORT_NAME = "Завантаження_машин_на_";
     private static final int FIRST_INSERTED_ROW = 4;
     private static final int LAST_INSERTED_ROW = 5;
     private final RouteService routeService;

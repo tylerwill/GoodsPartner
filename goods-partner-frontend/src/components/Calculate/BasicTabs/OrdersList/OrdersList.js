@@ -3,13 +3,14 @@ import {Button, Card, CardContent, Stack, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import OrdersTable from "./OrdersTable/OrdersTable";
 import React, {useState} from "react";
+import {generateReportLink} from "../../../../util/util";
 
 function OrdersList({date, orders}) {
     console.log("orders", orders);
     const initialOrder = orders.length === 0 ? '' : orders[0].orderNumber;
 
     const [activeOrder, setActiveOrder] = useState(initialOrder);
-    const reportLink = "http://localhost:8081/reports/orders/generate?date=" + date;
+    const reportLink = generateReportLink("orders", date);
     return (<Card sx={{minWidth: 275}}>
             <CardContent>
                 <Stack spacing={2}>
@@ -25,11 +26,10 @@ function OrdersList({date, orders}) {
                                         </Grid>
                                         <Grid item xs={2}>
                                             <a target="_blank" rel="noreferrer" href={reportLink}>
-                                                <Button size="small" variant="outlined" style={{width: '12em'}}>
+                                                <Button size="small" variant="contained" color="success" style={{width: '12em'}}>
                                                     Сформувати звіт
                                                 </Button>
                                             </a>
-
                                         </Grid>
                                     </Grid>
                                 </Box>

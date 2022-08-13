@@ -26,7 +26,7 @@ public class OrdersReportGenerator implements ReportGenerator {
 
     private static final String TEMPLATE_PATH = "report/template_report_list_of_orders.xlsx";
 
-    private static final String REPORT_NAME = "Завантаження_машин_на_";
+    private static final String REPORT_NAME = "Замовлення_на_";
     private static final int FIRST_INSERTED_ROW = 5;
     private final OrderService orderService;
 

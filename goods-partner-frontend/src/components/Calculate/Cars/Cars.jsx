@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import {compose} from "redux";
-import {getCars} from "../../redux/thunks/calculate-thunk";
+import {getCars} from "../../../redux/thunks/calculate-thunk";
 import Grid from "@mui/material/Grid";
 import CarTable from "./CarTable/CarTable";
 

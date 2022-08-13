@@ -1,9 +1,8 @@
 import axios from "axios";
+import {currentHost} from "../util/util";
 
 const defaultOptions = {
-      baseURL: process.env.NODE_ENV === "development"
-          ? process.env.REACT_APP_LOCALHOST_BASE_URL
-          : process.env.REACT_APP_HEROKU_BASE_URL
+    baseURL: currentHost()
 };
 
 let axiosWithSetting = axios.create(defaultOptions);

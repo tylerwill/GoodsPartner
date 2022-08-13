@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import {Card, CardContent, Stack, Typography} from "@mui/material";
+import {Button, Card, CardContent, Stack, Typography} from "@mui/material";
 
 import * as React from 'react';
 import Table from '@mui/material/Table';
@@ -9,12 +9,14 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TableBody from "@mui/material/TableBody";
+import Grid from "@mui/material/Grid";
+import {generateReportLink} from "../../../../util/util";
 
 function StoreTable({date, carLoadDetails}) {
     if(carLoadDetails.length === 0) {
         return (<div>Nothing</div>);
     }
-
+    const reportLink = generateReportLink("carsload", date);
     const rows = [];
     carLoadDetails.forEach(carLoadDetail => {
         const currentCar = carLoadDetail.car;
@@ -34,9 +36,22 @@ function StoreTable({date, carLoadDetails}) {
                     {
                         date
                             ? <>
-                                <Typography variant="h5" gutterBottom component="div">
-                                    Загрузка машин на {date}
-                                </Typography>
+                                <Box>
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={10}>
+                                            <Typography variant="h5" gutterBottom component="div">
+                                                Загрузка машин на {date}
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            <a target="_blank" rel="noreferrer" href={reportLink}>
+                                                <Button size="small" variant="contained" color="success" style={{width: '12em'}}>
+                                                    Сформувати звіт
+                                                </Button>
+                                            </a>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
                                 <Box sx={{flexGrow: 1}}>
                                     <TableContainer component={Paper}>
                                         <Table aria-label="simple table">
