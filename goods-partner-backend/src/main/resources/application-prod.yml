@@ -1,4 +1,7 @@
 spring:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
   datasource:
     username: ${JDBC_DATABASE_USERNAME}
     url: ${JDBC_DATABASE_URL}
