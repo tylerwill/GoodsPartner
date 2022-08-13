@@ -1,13 +1,9 @@
 import axios from "axios";
 
 const defaultOptions = {
-    // TODO: Fix this
-      // baseURL: process.env.HEROKU_BASE_URL !== undefined
-      //     ? process.env.HEROKU_BASE_URL
-      //     : process.env.REACT_APP_LOCALHOST_BASE_URL
-
-    baseURL: 'https://goods-partner.herokuapp.com/'
-    // baseURL: process.env.REACT_APP_LOCALHOST_BASE_URL
+      baseURL: process.env.NODE_ENV === "development"
+          ? process.env.REACT_APP_LOCALHOST_BASE_URL
+          : process.env.REACT_APP_HEROKU_BASE_URL
 };
 
 let axiosWithSetting = axios.create(defaultOptions);
@@ -285,6 +281,7 @@ export const routeApi = {
 
 export const carsApi = {
     getAll() {
+        console.log("envs", process.env);
         return axiosWithSetting.get(`api/v1/cars`);
     }
 }

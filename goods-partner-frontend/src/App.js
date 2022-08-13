@@ -6,10 +6,7 @@ import Cars from "./components/Cars/Cars";
 
 function App() {
     return (
-        <Routes>
-            <Route path="/" element={<CalculateContainer/>}/>
-            <Route path="/cars" element={<Cars/>}/>
-        </Routes>
+        <CalculateContainer/>
     );
 }
 
