@@ -7,8 +7,6 @@ import com.goodspartner.service.RouteService;
 import com.goodspartner.web.controller.response.RoutesCalculation;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -17,37 +15,26 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.function.Consumer;
+
+import static com.goodspartner.report.ReportUtils.copyCells;
 
 @Service
 @RequiredArgsConstructor
-public class CarsReportGenerator {
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+public class CarsLoadReportGenerator implements ReportGenerator {
     private static final String TEMPLATE_PATH = "report/template_report_of_cars_with_orders.xlsx";
+    private static final String REPORT_NAME = "Замовлення_на_";
     private static final int FIRST_INSERTED_ROW = 4;
     private static final int LAST_INSERTED_ROW = 5;
-
     private final RouteService routeService;
 
-    private static InputStream getTemplate() {
-        return CarsReportGenerator.class.getClassLoader().getResourceAsStream(TEMPLATE_PATH);
-    }
-
-    public void generateReport(LocalDate date, Consumer<ReportResult> reportResultConsumer) {
-        ReportResult reportResult = generateReport(date);
-        reportResultConsumer.accept(reportResult);
-    }
-
     @SneakyThrows
+    @Override
     public ReportResult generateReport(LocalDate date) {
         RoutesCalculation routesCalculation = routeService.calculateRoutes(date);
-        String currentTime = DATE_TIME_FORMATTER.format(LocalDateTime.now());
-        String reportName = "[" + currentTime + "]Cars_with_orders_" + date + ".xlsx";
+        String reportName = ReportUtils.generateReportName(REPORT_NAME, date);
 
-        try (InputStream template = getTemplate();
+        try (InputStream template = ReportUtils.getTemplate(TEMPLATE_PATH);
              ByteArrayOutputStream arrayStream = new ByteArrayOutputStream()) {
 
             XSSFWorkbook workbook = new XSSFWorkbook(template);
@@ -95,7 +82,7 @@ public class CarsReportGenerator {
                 for (ProductDto productDto : productDtos) {
                     if (currentRow == null) {
                         currentRow = sheet.createRow(rowNumber);
-                        createCell(sourceProductRow, currentRow);
+                        copyCells(sourceProductRow, currentRow);
                     }
                     currentRow.getCell(4).setCellValue(productDto.getProductName());
                     currentRow.getCell(5).setCellValue(productDto.getUnitWeight());
@@ -128,22 +115,13 @@ public class CarsReportGenerator {
                 Row sourceWeightRow = sheet.getRow(FIRST_INSERTED_ROW + (ordersQuantity - 1) * 2);
                 Row newRow = sheet.createRow(i);
                 if (i % 2 == 0) {
-                    createCell(sourceWeightRow, newRow);
+                    ReportUtils.copyCells(sourceWeightRow, newRow);
                 } else {
-                    createCell(sourceProductRow, newRow);
+                    ReportUtils.copyCells(sourceProductRow, newRow);
                 }
             }
         }
     }
 
-    private void createCell(Row sourceRow, Row destinationRow) {
-        for (int i = 0; i < sourceRow.getLastCellNum(); i++) {
-            Cell oldCell = sourceRow.getCell(i);
-            Cell newCell = destinationRow.createCell(i);
 
-            CellStyle newCellStyle = sourceRow.getSheet().getWorkbook().createCellStyle();
-            newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
-            newCell.setCellStyle(newCellStyle);
-        }
-    }
 }

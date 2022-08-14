@@ -23,7 +23,7 @@ public class CalculationRoutePointMapper {
     public List<RoutePointDto> mapOrders(List<OrderDto> orders) {
         Map<Pair<String, String>, List<OrderDto>> addressOrderMap = orders.stream()
                 .collect(Collectors.groupingBy(orderDto ->
-                        Pair.of(orderDto.getAddress(), orderDto.getClientName()),
+                                Pair.of(orderDto.getAddress(), orderDto.getClientName()),
                         LinkedHashMap::new, Collectors.toList()));
 
         List<RoutePointDto> routePointDtoList = new ArrayList<>(1);

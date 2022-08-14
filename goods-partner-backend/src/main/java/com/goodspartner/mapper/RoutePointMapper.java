@@ -8,7 +8,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface RoutePointMapper {
 
-    @Mapping( target = "id", ignore = true)
+    @Mapping(target = "id", ignore = true)
     RoutePointDto update(@MappingTarget RoutePointDto route, RoutePointDto routeDto);
 
 }

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.function.Consumer;
 
@@ -28,10 +27,46 @@ class OrdersReportGeneratorITest extends AbstractBaseITest {
     @Value("${reports.destination}")
     private String reportsDestination;
 
-    @DisplayName("Test for generate orders report")
+    @DisplayName("Test for generate orders report with three orders")
     @Test
-    void testGenerateOrderReport() throws IOException {
+    void testGenerateOrderReportWithThreeOrders() {
         LocalDate date = LocalDate.of(2022, 7, 11);
+
+        new File(reportsDestination).mkdirs();
+
+        Consumer<ReportResult> reportResultConsumer = r -> {
+            File destinationFile = new File(reportsDestination, r.name());
+            writeReportToFile(r, destinationFile);
+
+            assertTrue(destinationFile.exists());
+            assertTrue(destinationFile.length() > 0);
+        };
+
+        ordersReportGenerator.generateReport(date, reportResultConsumer);
+    }
+
+    @DisplayName("Test for generate orders report with one order")
+    @Test
+    void testGenerateOrderReportWithOneOrder() {
+        LocalDate date = LocalDate.of(2022, 7, 13);
+
+        new File(reportsDestination).mkdirs();
+
+        Consumer<ReportResult> reportResultConsumer = r -> {
+            File destinationFile = new File(reportsDestination, r.name());
+            writeReportToFile(r, destinationFile);
+
+            assertTrue(destinationFile.exists());
+            assertTrue(destinationFile.length() > 0);
+        };
+
+        ordersReportGenerator.generateReport(date, reportResultConsumer);
+    }
+
+    @DisplayName("Test for generate orders report on date without orders")
+    @Test
+    void testGenerateOrderReportOnDateWithoutOrders() {
+        LocalDate date = LocalDate.of(2023, 7, 13);
 
         new File(reportsDestination).mkdirs();
 

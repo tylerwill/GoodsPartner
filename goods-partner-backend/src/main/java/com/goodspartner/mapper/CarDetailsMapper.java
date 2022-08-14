@@ -1,15 +1,10 @@
 package com.goodspartner.mapper;
 
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.dto.ProductDto;
 import com.goodspartner.dto.RoutePointDto;
-import com.goodspartner.entity.Order;
-import com.goodspartner.entity.OrderedProduct;
 import com.goodspartner.web.controller.response.RoutesCalculation;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -11,7 +11,6 @@ import com.google.maps.model.DistanceMatrixRow;
 import com.google.ortools.Loader;
 import com.google.ortools.constraintsolver.*;
 import com.google.protobuf.Duration;
-import lombok.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -156,7 +155,6 @@ public class DefaultCarLoadingService implements CarLoadingService {
                 .routePoints(routePoints)
                 .build();
     }
-
 
 
 }

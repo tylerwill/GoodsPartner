@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CarsReportGeneratorITest {
+public class CarsLoadReportGeneratorITest {
     private final static String REPORTS_DESTINATION = "reports";
 
     @SneakyThrows
@@ -69,7 +69,7 @@ public class CarsReportGeneratorITest {
 
 
         RouteService routeService = Mockito.mock(RouteService.class);
-        CarsReportGenerator carsReportGenerator = new CarsReportGenerator(routeService);
+        CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(routeService);
 
         Mockito.when(routeService.calculateRoutes(LocalDate.of(2022, 7, 12)))
                 .thenReturn(routesCalculation);
@@ -88,8 +88,9 @@ public class CarsReportGeneratorITest {
             assertTrue(destinationFile.length() > 0);
         };
 
-        carsReportGenerator.generateReport(date, reportResultConsumer);
+        carsLoadReportGenerator.generateReport(date, reportResultConsumer);
     }
+
 
     @Test
     @DisplayName("Generate Report Of Loading Car With Three Orders")
@@ -150,7 +151,7 @@ public class CarsReportGeneratorITest {
                 .build();
 
         RouteService routeService = Mockito.mock(RouteService.class);
-        CarsReportGenerator carsReportGenerator = new CarsReportGenerator(routeService);
+        CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(routeService);
 
         Mockito.when(routeService.calculateRoutes(LocalDate.of(2022, 7, 12)))
                 .thenReturn(routesCalculation);
@@ -169,6 +170,6 @@ public class CarsReportGeneratorITest {
             assertTrue(destinationFile.length() > 0);
         };
 
-        carsReportGenerator.generateReport(date, reportResultConsumer);
+        carsLoadReportGenerator.generateReport(date, reportResultConsumer);
     }
 }
