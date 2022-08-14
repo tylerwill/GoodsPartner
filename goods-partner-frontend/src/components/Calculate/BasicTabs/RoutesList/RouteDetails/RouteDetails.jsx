@@ -103,7 +103,7 @@ const RouteDetails = ({
     const estimatedTimeSeconds = estimatedTime && (estimatedTime % 60)
         .toLocaleString(undefined, {maximumFractionDigits: 0}) + " хв.";
 
-    const estimatedTimeString  = estimatedTimeHours + "s " + estimatedTimeSeconds;
+    const estimatedTimeString  = estimatedTimeHours + " " + estimatedTimeSeconds;
 
     return (
         <TableContainer component={Paper} sx={{marginTop: '10px'}}>
