@@ -7,8 +7,10 @@ import React from "react";
 import {Route, Routes} from "react-router-dom";
 import Cars from "./Cars/Cars";
 
-const Calculate = ({orders, routes, getCalculatedDataByDate, routeAddresses, changeRoutePointStatus,
-                       changeRouteStatus,updateRoute}) => {
+const Calculate = ({
+                       orders, routes, getCalculatedDataByDate, routeAddresses, updateRoutePoint,
+                       updateRoute
+                   }) => {
     return (
         <div className="App">
             <Container>
@@ -25,9 +27,8 @@ const Calculate = ({orders, routes, getCalculatedDataByDate, routeAddresses, cha
                                     orders={orders}
                                     routes={routes}
                                     routeAddresses={routeAddresses}
-                                    changeRoutePointStatus = {changeRoutePointStatus}
-                                    changeRouteStatus = {changeRouteStatus}
-                                    updateRoute = {updateRoute}
+                                    updateRoutePoint={updateRoutePoint}
+                                    updateRoute={updateRoute}
                                 />}/>
                                 <Route path="/cars" element={<Cars/>}/>
                             </Routes>

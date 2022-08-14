@@ -8,20 +8,45 @@ let initialRoutes = {
 const routeReducer = (state = initialRoutes, action) => {
     switch (action.type) {
         case actionTypes.CALCULATE_ROUTES_BY_DATE:
-            return {
-                date: action.routes.date,
-                routes: action.routes.routes,
-                carLoadDetails: action.routes.carLoadDetails
-            }
-        case actionTypes.CHANGE_ROUTE_POINT_STATUS:
-            return changeRoutePointStatus(state, action);
+            return calculateRoutesByDate(action);
+        case actionTypes.UPDATE_ROUTE_POINT:
+            return updateRoutePoint(state, action);
 
-        case actionTypes.CHANGE_ROUTE_STATUS:
-            return changeRouteStatus(state, action);
         case actionTypes.UPDATE_ROUTE:
             return updateRoute(state, action);
         default:
             return state;
+    }
+}
+
+function addMinutes(numOfMinutes, date = new Date()) {
+    const newDate = new Date(date);
+    newDate.setMinutes(date.getMinutes() + numOfMinutes);
+
+    return newDate;
+}
+
+const calculateRoutesByDate = (action) => {
+    const newRoutes = action.routes.routes.map(route => {
+        let currentTime = new Date();
+        currentTime.setHours(9);
+        currentTime.setMinutes(0);
+        const newRoutePoints = route.routePoints.map(routePoint => {
+            const predictedCompleteAt = addMinutes(routePoint.routePointDistantTime + 30, currentTime);
+            routePoint.predictedCompleteAt = predictedCompleteAt;
+            currentTime = predictedCompleteAt;
+            return routePoint;
+        });
+
+        route.routePoints = newRoutePoints;
+        return route;
+    });
+
+
+    return {
+        date: action.routes.date,
+        routes: newRoutes.length === 0 ? action.routes.routes : newRoutes,
+        carLoadDetails: action.routes.carLoadDetails
     }
 }
 
@@ -48,9 +73,8 @@ const updateRoute = (state, action) => {
     return newState;
 }
 
-const changeRoutePointStatus = (state, action) => {
-    const routePointId = action.routePointId;
-    const newStatus = action.newStatus;
+const updateRoutePoint = (state, action) => {
+    const newRoutePoint = action.updatedRoutePoint;
     const newState = {...state};
     const newRoutes = [...state.routes];
     newState.routes = newRoutes;
@@ -58,31 +82,18 @@ const changeRoutePointStatus = (state, action) => {
     newRoutes.forEach(route => {
         const newRoutePoints = route.routePoints.map(routePoint => {
 
-            const newRoutePoint = {...routePoint};
-            if (routePoint.id === routePointId) {
-                newRoutePoint.status = newStatus;
+            const routePointCopy = {...routePoint};
+            if (routePoint.id === newRoutePoint.id) {
+                if (newRoutePoint.status === 'DONE') {
+                    newRoutePoint.actualCompleteAt = new Date();
+                }
+
+                return newRoutePoint;
             }
-            return newRoutePoint;
+            return routePointCopy;
         })
         route.routePoints = newRoutePoints;
     })
-
-    return newState;
-}
-
-const changeRouteStatus = (state, action) => {
-
-    const routeId = action.routeId;
-    const newStatus = action.newStatus;
-    const newState = {...state};
-    const newRoutes = state.routes.map(route => {
-        if (route.id === routeId) {
-            route.status = newStatus;
-        }
-        return route;
-    });
-
-    newState.routes = newRoutes;
 
     return newState;
 }

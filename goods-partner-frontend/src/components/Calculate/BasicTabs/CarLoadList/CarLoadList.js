@@ -13,7 +13,7 @@ import Grid from "@mui/material/Grid";
 import {generateReportLink} from "../../../../util/util";
 
 function StoreTable({date, carLoadDetails}) {
-    if(carLoadDetails.length === 0) {
+    if (carLoadDetails.length === 0) {
         return (<div>Nothing</div>);
     }
     const reportLink = generateReportLink("carsload", date);
@@ -45,7 +45,8 @@ function StoreTable({date, carLoadDetails}) {
                                         </Grid>
                                         <Grid item xs={2}>
                                             <a target="_blank" rel="noreferrer" href={reportLink}>
-                                                <Button size="small" variant="contained" color="success" style={{width: '12em'}}>
+                                                <Button size="small" variant="contained" color="success"
+                                                        style={{width: '12em'}}>
                                                     Сформувати звіт
                                                 </Button>
                                             </a>
@@ -105,11 +106,11 @@ const createTableRow = (car, orderNumber, product) => {
         </TableCell>
 
         <TableCell sx={{padding: '7px'}} component="th" scope="row" align="right">
-            {product.unitWeight.toLocaleString(undefined, {maximumFractionDigits:2})}
+            {product.unitWeight.toLocaleString(undefined, {maximumFractionDigits: 2})}
         </TableCell>
 
         <TableCell sx={{padding: '7px'}} component="th" scope="row" align="right">
-            {product.totalProductWeight.toLocaleString(undefined, {maximumFractionDigits:2})}
+            {product.totalProductWeight.toLocaleString(undefined, {maximumFractionDigits: 2})}
         </TableCell>
 
 

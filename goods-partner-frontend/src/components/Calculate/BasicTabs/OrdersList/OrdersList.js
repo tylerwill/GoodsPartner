@@ -25,7 +25,8 @@ function OrdersList({date, orders}) {
                                         </Grid>
                                         <Grid item xs={2}>
                                             <a target="_blank" rel="noreferrer" href={reportLink}>
-                                                <Button size="small" variant="contained" color="success" style={{width: '12em'}}>
+                                                <Button size="small" variant="contained" color="success"
+                                                        style={{width: '12em'}}>
                                                     Сформувати звіт
                                                 </Button>
                                             </a>
@@ -51,7 +52,7 @@ function OrdersList({date, orders}) {
                                         <Grid item xs={9}>
                                             <Stack spacing={2}>
                                                 {orders.map(order => order.orderNumber === activeOrder ?
-                                                    <OrdersTable order={order} key={order.orderNumber + "table"} /> : '')
+                                                    <OrdersTable order={order} key={order.orderNumber + "table"}/> : '')
                                                 }
                                             </Stack>
                                         </Grid>
