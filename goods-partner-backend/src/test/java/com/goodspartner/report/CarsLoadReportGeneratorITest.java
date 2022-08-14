@@ -44,7 +44,7 @@ public class CarsLoadReportGeneratorITest {
                 .build();
 
         ProductDto product = ProductDto.builder()
-                .productName("3434 Паста шоколадна")
+                .productName("678968 Суміш для випікання Мрія Маффіни з апельсиновою цедрою")
                 .amount(1)
                 .unitWeight(1.52)
                 .totalProductWeight(1.52)
@@ -91,7 +91,6 @@ public class CarsLoadReportGeneratorITest {
         carsLoadReportGenerator.generateReport(date, reportResultConsumer);
     }
 
-
     @Test
     @DisplayName("Generate Report Of Loading Car With Three Orders")
     void testGenerateReport_ofLoadingCarWithThreeOrders() {
@@ -115,20 +114,27 @@ public class CarsLoadReportGeneratorITest {
                 .build();
 
         ProductDto product2 = ProductDto.builder()
-                .productName("46643 Фарба харчова синя")
+                .productName("46643 Фарба харчова синя натуральна")
                 .amount(10)
                 .unitWeight(57.8)
                 .totalProductWeight(578)
                 .build();
 
+        ProductDto product3 = ProductDto.builder()
+                .productName("678968 Суміш для випікання Мрія Маффіни з апельсиновою цедрою")
+                .amount(10)
+                .unitWeight(47.8)
+                .totalProductWeight(478)
+                .build();
+
         OrderDto order1 = OrderDto.builder()
-                .products(List.of(product1, product2))
+                .products(List.of(product2, product3))
                 .orderNumber(String.valueOf(35665))
                 .orderWeight(579.52)
                 .id(1)
                 .build();
         OrderDto order2 = OrderDto.builder()
-                .products(List.of(product1))
+                .products(List.of(product3))
                 .orderNumber(String.valueOf(36325))
                 .orderWeight(1.52)
                 .id(2)
