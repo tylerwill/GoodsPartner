@@ -6,7 +6,6 @@ import React, {useState} from "react";
 import {generateReportLink} from "../../../../util/util";
 
 function OrdersList({date, orders}) {
-    console.log("orders", orders);
     const initialOrder = orders.length === 0 ? '' : orders[0].orderNumber;
 
     const [activeOrder, setActiveOrder] = useState(initialOrder);

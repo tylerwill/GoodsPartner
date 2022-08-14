@@ -105,11 +105,11 @@ const createTableRow = (car, orderNumber, product) => {
         </TableCell>
 
         <TableCell sx={{padding: '7px'}} component="th" scope="row" align="right">
-            {product.unitWeight}
+            {product.unitWeight.toLocaleString(undefined, {maximumFractionDigits:2})}
         </TableCell>
 
         <TableCell sx={{padding: '7px'}} component="th" scope="row" align="right">
-            {product.totalProductWeight}
+            {product.totalProductWeight.toLocaleString(undefined, {maximumFractionDigits:2})}
         </TableCell>
 
 

@@ -13,7 +13,6 @@ const RoutesList = ({date, routes, routeAddresses}) => {
     setActiveRoute(routeId);
   }
 
-  console.log("api key", process.env.REACT_APP_GOOGLE_MAPS_API_VAR);
   return (<Card sx={{minWidth: 275}}>
       <CardContent>
         <Stack spacing={2}>
