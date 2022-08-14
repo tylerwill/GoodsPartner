@@ -4,20 +4,23 @@ import * as React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableRow from '@mui/material/TableRow';
-import {Button, Modal, TableCell} from "@mui/material";
+import {Button, FormControl, MenuItem, Modal, Select, TableCell} from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import RouteMap from "../../RoutMap/RouteMap";
+import RouteMap from "../RoutMap/RouteMap";
 import {useLoadScript} from "@react-google-maps/api";
 
-const RouteDetails = (
-  {
-    date,
-    routeId,
+const RouteDetails = ({
+   date,
+   routeAddresses,
+   changeRouteStatus,
+   updateRoute,
+    route,
+  route: {
+    id,
     distance,
     estimatedTime,
     finishTime,
-    routeLink,
     spentTime,
     startTime,
     status,
@@ -26,8 +29,7 @@ const RouteDetails = (
     totalWeight,
     storeName,
     storeAddress,
-    routeAddresses
-  }) => {
+  }}) => {
 
   const style = {
     position: 'absolute',
@@ -49,16 +51,54 @@ const RouteDetails = (
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_VAR
   })
 
+  const handleChange = (event) => {
+    const newRoute = {...route};
+    newRoute.status = event.target.value;
+    updateRoute(newRoute);
+  };
+
+  const createStatusSelect = (routeId)=> {
+    let background;
+
+    if (status === "DRAFT") {
+      background = "#1976d2";
+    } else if (status === "APPROVED") {
+      background = "#2e7d32";
+    }else if (status === "IN_PROGRESS") {
+      background = "#ffab00";
+    }else if (status === "COMPLETED") {
+      background = "#2e7d32";
+    }else {
+      background = '#A9A9A9';
+    }
+
+    return (<FormControl sx={{ m: 1  }}>
+      <Select
+          sx={{textAlign:'center', backgroundColor:background, color: '#fff',  textTransform :'UPPERCASE', minWidth: '150px', fontSize: '13px' }}
+          value={status}
+          onChange={(event)=>handleChange(event)}
+          inputProps={{ 'aria-label': 'Without label' }}
+      >
+        <MenuItem value={'DRAFT'}>Новий</MenuItem>
+        <MenuItem value={'APPROVED'}>Затвердженний</MenuItem>
+        <MenuItem value={'IN_PROGRESS'}>В роботі</MenuItem>
+        <MenuItem value={'COMPLETED'}>Завершений</MenuItem>
+        <MenuItem value={'INCOMPLETE'}>Незавершений</MenuItem>
+      </Select>
+    </FormControl>);
+  }
+
+  const statusSelect = createStatusSelect();
   return (
     <TableContainer component={Paper} sx={{marginTop: '10px'}}>
       <Table aria-label="spanning table">
         <TableBody>
           <TableRow>
             <TableCell align="left">
-              Маршрут №{routeId} від {date}
+              Маршрут №{id} від {date}
             </TableCell>
             <TableCell align="left">
-              Статус: {status}
+              {statusSelect}
             </TableCell>
             <TableCell align="left">
               {
@@ -73,13 +113,13 @@ const RouteDetails = (
                   >
                     <Box sx={style}>
                       <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Route #{routeId}
+                        Route #{id}
                       </Typography>
                       <Typography id="modal-modal-description">
                         <RouteMap
                           addresses={
                             routeAddresses
-                              .filter(routeAdd => routeAdd.routeId === routeId)
+                              .filter(routeAdd => routeAdd.routeId === id)
                               .map(route => route.addresses)
                           }
                         />
@@ -121,17 +161,26 @@ const RouteDetails = (
           </TableRow>
           <TableRow>
             <TableCell colSpan={3} align="left">
-              Початок виконання: {startTime}
+              Початок виконання: {startTime && startTime.toLocaleTimeString('en-US', {
+              hour12: false,
+              hour: "numeric",
+              minute: "numeric"
+            })}
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell colSpan={3} align="left">
-              Кінець виконання: {finishTime}
+              Кінець виконання: {finishTime && finishTime.toLocaleTimeString('en-US', {
+              hour12: false,
+              hour: "numeric",
+              minute: "numeric"
+            })}
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell colSpan={3} align="left">
-              Фактичний час виконання: {spentTime}
+              Фактичний час виконання: {spentTime && (spentTime / 1000 / 60)
+                .toLocaleString(undefined, {maximumFractionDigits:2}) + " хв."}
             </TableCell>
           </TableRow>
         </TableBody>

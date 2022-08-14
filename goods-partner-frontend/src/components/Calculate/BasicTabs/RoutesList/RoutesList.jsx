@@ -2,11 +2,12 @@ import React, {useState} from "react";
 import {Button, Card, CardContent, Stack, Typography} from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import RouteTable from "./RouteTable/RouteTable";
+import RouteDetails from "./RouteDetails/RouteDetails";
+import RouteBody from "./RouteBody/RouteBody";
 
-const RoutesList = ({date, routes, routeAddresses}) => {
+const RoutesList = ({date, routes, routeAddresses, changeRoutePointStatus, changeRouteStatus, updateRoute}) => {
 
-  const initialRoute = routes === null ? '' : routes[0].routeId;
+  const initialRoute = routes === null ? '' : routes[0].id;
   const [activeRoute, setActiveRoute] = useState(initialRoute);
 
   const turnOnRouteTable = (routeId) => {
@@ -29,8 +30,8 @@ const RoutesList = ({date, routes, routeAddresses}) => {
                         {
                           routes.map((route, index) =>
                             <Button size="small"
-                                    key = {"routeButton" + route.routeId}
-                                    variant={route.routeId === activeRoute ? "contained" : "outlined"}
+                                    key = {"routeButton" + route.id}
+                                    variant={route.id === activeRoute ? "contained" : "outlined"}
                                     onClick={() => turnOnRouteTable(route.routeId)}
                             >
                               МАРШРУТ №{index + 1}
@@ -40,24 +41,37 @@ const RoutesList = ({date, routes, routeAddresses}) => {
                     </Grid>
                     <Grid item xs={9}>
                       <Stack spacing={2}>
-                        <Typography variant="h6" component="h1">
                           <Stack>
                             {
-                              routes.map(route => route.routeId === activeRoute
-                                ? <RouteTable
-                                      key = {"routeTable" + route.routeId}
-                                  date={date}
-                                  route={route}
-                                  routeAddresses={routeAddresses}
-                                />
+                              routes.map(route => route.id === activeRoute
+                                ? <RouteDetails
+                                      route={route}
+                                      date={date}
+                                      routeAddresses={routeAddresses}
+                                      changeRouteStatus = {changeRouteStatus}
+                                      updateRoute = {updateRoute}
+                                  />
                                 : ''
                               )
                             }
                           </Stack>
-                        </Typography>
                       </Stack>
                     </Grid>
                   </Grid>
+                  <Box>
+                    {
+                      routes.map(route => route.id === activeRoute
+                          ? <RouteBody
+                              changeRoutePointStatus = {changeRoutePointStatus}
+                              storeStatus={route.status}
+                              routePoints={route.routePoints}
+                              storeName={route.storeName}
+                              storeAddress={route.storeAddress}
+                          />
+                          : ''
+                      )
+                    }
+                  </Box>
                 </Box>
               </>
               : <Typography variant="h5" gutterBottom component="div">

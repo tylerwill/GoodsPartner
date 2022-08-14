@@ -2,7 +2,12 @@ import React from "react";
 import Calculate from "./Calculate";
 import {connect} from "react-redux";
 import {compose} from "redux";
-import {getCalculatedDataByDate} from "../../redux/thunks/calculate-thunk";
+import {
+  changeRoutePointStatus,
+  changeRouteStatus,
+  getCalculatedDataByDate,
+  updateRoute
+} from "../../redux/thunks/calculate-thunk";
 
 class CalculateContainer extends React.Component {
 
@@ -29,6 +34,9 @@ class CalculateContainer extends React.Component {
       routes={this.props.routeData}
       routeAddresses={routeAddresses}
       getCalculatedDataByDate={this.getCalculatedDataByDate}
+      changeRoutePointStatus = {this.props.changeRoutePointStatus}
+      changeRouteStatus = {this.props.changeRouteStatus}
+      updateRoute = {this.props.updateRoute}
     />
   }
 }
@@ -40,4 +48,5 @@ let mapStateToProps = (state) => {
   }
 }
 
-export default compose(connect(mapStateToProps, {getCalculatedDataByDate}))(CalculateContainer);
+export default compose(connect(mapStateToProps, {getCalculatedDataByDate,
+  changeRoutePointStatus, changeRouteStatus, updateRoute}))(CalculateContainer);

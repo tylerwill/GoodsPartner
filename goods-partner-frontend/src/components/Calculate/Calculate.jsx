@@ -5,10 +5,10 @@ import DateChooserCard from "./DateChooserCard/DateChooserCard";
 import BasicTabs from "./BasicTabs/BasicTabs";
 import React from "react";
 import {Route, Routes} from "react-router-dom";
-import CalculateContainer from "./CalculateContainer";
 import Cars from "./Cars/Cars";
 
-const Calculate = ({orders, routes, getCalculatedDataByDate, routeAddresses}) => {
+const Calculate = ({orders, routes, getCalculatedDataByDate, routeAddresses, changeRoutePointStatus,
+                       changeRouteStatus,updateRoute}) => {
     return (
         <div className="App">
             <Container>
@@ -25,6 +25,9 @@ const Calculate = ({orders, routes, getCalculatedDataByDate, routeAddresses}) =>
                                     orders={orders}
                                     routes={routes}
                                     routeAddresses={routeAddresses}
+                                    changeRoutePointStatus = {changeRoutePointStatus}
+                                    changeRouteStatus = {changeRouteStatus}
+                                    updateRoute = {updateRoute}
                                 />}/>
                                 <Route path="/cars" element={<Cars/>}/>
                             </Routes>

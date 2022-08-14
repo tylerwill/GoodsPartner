@@ -1,6 +1,11 @@
 import {carsApi, orderApi, routeApi} from "../../api/api";
 import {setOrders} from "../actions/order-action";
-import {setRoutes} from "../actions/route-action";
+import {
+  setRoutes,
+  changeRoutePointStatusAction,
+  changeRouteStatusAction,
+  updateRouteAction
+} from "../actions/route-action";
 import {setCars} from "../actions/car-action";
 
 export const getCalculatedDataByDate = (date) => async dispatch => {
@@ -13,4 +18,16 @@ export const getCalculatedDataByDate = (date) => async dispatch => {
 export const getCars = () => async dispatch => {
   let response = await carsApi.getAll();
   dispatch(setCars(response.data));
+}
+
+export const changeRoutePointStatus = (routePointId, newStatus) => async dispatch =>{
+  dispatch(changeRoutePointStatusAction(routePointId, newStatus));
+}
+
+export const changeRouteStatus = (routeId, newStatus) => async dispatch =>{
+  dispatch(changeRouteStatusAction(routeId, newStatus));
+}
+
+export const updateRoute = (updatedRoute) => async dispatch =>{
+  dispatch(updateRouteAction(updatedRoute));
 }

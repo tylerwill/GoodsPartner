@@ -1,4 +1,6 @@
-import {Card, CardContent, Stack, TableCell} from "@mui/material";
+import React from 'react';
+
+import {Card, CardContent, FormControl, MenuItem, Select, Stack, TableCell} from "@mui/material";
 import Box from "@mui/material/Box";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
@@ -7,7 +9,40 @@ import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
 import Paper from "@mui/material/Paper";
 
-const RouteBody = ({routePoints, storeAddress, storeName}) => {
+const RouteBody = ({storeStatus, routePoints, storeAddress, storeName, changeRoutePointStatus}) => {
+
+  const handleChange = (event, routepoint) => {
+    changeRoutePointStatus(routepoint.id, event.target.value);
+  };
+
+  const createRoutePointStatusSelect = (routePoint)=> {
+    let background;
+
+    if (routePoint.status === "PENDING") {
+      background = "#1976d2";
+    } else if (routePoint.status === "DONE") {
+      background = "#2e7d32";
+    }else {
+      background = "#A9A9A9";
+    }
+
+
+    return (<FormControl sx={{ m: 1  }}>
+      <Select
+          sx={{ backgroundColor:background, color: '#fff', textTransform :'UPPERCASE', minWidth: '150px', fontSize: '13px' }}
+          value={routePoint.status}
+          onChange={(event)=>handleChange(event, routePoint)}
+          inputProps={{ 'aria-label': 'Without label' }}
+      >
+        <MenuItem value={'PENDING'}>В очікуванні</MenuItem>
+        <MenuItem value={'DONE'}>Готово</MenuItem>
+        <MenuItem value={'SKIPPED'}>Пропущено</MenuItem>
+      </Select>
+    </FormControl>);
+  }
+
+
+
   let isNumberPrinted = false;
   let isAddressPrinted = false;
   let isClientPrinted = false;
@@ -22,6 +57,9 @@ const RouteBody = ({routePoints, storeAddress, storeName}) => {
                 <TableHead sx={{backgroundColor: 'rgba(0, 0, 0, 0.12);'}}>
                   <TableRow>
                     <TableCell sx={{padding: '7px'}} align="center">№</TableCell>
+                    <TableCell sx={{padding: '7px'}} align="center">Статус</TableCell>
+                    <TableCell sx={{padding: '7px'}} align="center">Завершення Прогноз</TableCell>
+                    <TableCell sx={{padding: '7px'}} align="center">Завершення Фактичне</TableCell>
                     <TableCell sx={{padding: '7px'}} align="center">Клієнт</TableCell>
                     <TableCell sx={{padding: '7px'}} align="center">Адреса</TableCell>
                     <TableCell sx={{padding: '7px'}} align="center">Замовлення</TableCell>
@@ -32,6 +70,15 @@ const RouteBody = ({routePoints, storeAddress, storeName}) => {
                   <TableRow>
                     <TableCell sx={{padding: '7px'}} align="center">
                       {clientNumber = clientNumber + 1}
+                    </TableCell>
+                    <TableCell sx={{padding: '7px'}} align="center">
+
+                    </TableCell>
+                    <TableCell sx={{padding: '7px'}} align="center">
+                      -
+                    </TableCell>
+                    <TableCell sx={{padding: '7px'}} align="center">
+                      -
                     </TableCell>
                     <TableCell scope="row" sx={{padding: '7px'}} component="th" align="center">
                       {storeAddress}
@@ -51,16 +98,44 @@ const RouteBody = ({routePoints, storeAddress, storeName}) => {
                       {
                         routePoint.orders.map(order => (<>
                           <TableRow>
+
                             {
-                              isNumberPrinted === false &&
-                              <TableCell rowSpan={routePoint.orders.length}
-                                         sx={{padding: '7px'}}
-                                         component="th"
-                                         scope="row"
-                                         align="center">
-                                {clientNumber = clientNumber + 1}
-                              </TableCell>
+                             isNumberPrinted === false &&
+                                <>
+                                <TableCell rowSpan={routePoint.orders.length}
+                                           sx={{padding: '7px'}}
+                                           component="th"
+                                           scope="row"
+                                           align="center">
+                                  {clientNumber = clientNumber + 1}
+                                </TableCell>
+                                <TableCell rowSpan={routePoint.orders.length}
+                                           sx={{padding: '7px'}}
+                                           component="th"
+                                           scope="row"
+                                           align="center">
+                                  {createRoutePointStatusSelect(routePoint)}
+                                </TableCell>
+                                  <TableCell rowSpan={routePoint.orders.length}
+                                             sx={{padding: '7px'}}
+                                             component="th"
+                                             scope="row"
+                                             align="center">
+                                    -
+                                  </TableCell>
+                                  <TableCell rowSpan={routePoint.orders.length}
+                                             sx={{padding: '7px'}}
+                                             component="th"
+                                             scope="row"
+                                             align="center">
+                                    -
+                                  </TableCell>
+
+                              </>
                             }
+
+
+
                             {
                               isAddressPrinted === false &&
                               <TableCell rowSpan={routePoint.orders.length}
@@ -85,6 +160,8 @@ const RouteBody = ({routePoints, storeAddress, storeName}) => {
                               <TableCell rowSpan={routePoint.orders.length} sx={{padding: '7px'}}
                                          align="center">{routePoint.addressTotalWeight}</TableCell>
                             }
+
+
                             {isNumberPrinted = true}
                             {isAddressPrinted = true}
                             {isClientPrinted = true}
@@ -103,5 +180,6 @@ const RouteBody = ({routePoints, storeAddress, storeName}) => {
     </Card>
   );
 }
+
 
 export default RouteBody;
