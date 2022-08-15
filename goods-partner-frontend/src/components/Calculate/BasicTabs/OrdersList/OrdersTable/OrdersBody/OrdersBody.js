@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 function subtotal(products) {
-    return products.map(({amount}) => amount).reduce((sum, i) => sum + i, 0);
+    return products.map(({totalProductWeight}) => totalProductWeight).reduce((sum, i) => sum + i, 0);
 }
 
 export default function OrdersBody({products}) {
@@ -19,21 +19,23 @@ export default function OrdersBody({products}) {
                 <TableHead sx={{backgroundColor: 'rgba(0, 0, 0, 0.12);'}}>
                     <TableRow>
                         <TableCell sx={{padding: '7px'}}>Артикул</TableCell>
-                        <TableCell sx={{padding: '7px'}} align="right">Склад</TableCell>
-                        <TableCell sx={{padding: '7px'}} align="right">Маса, кг</TableCell>
+                        <TableCell sx={{padding: '7px'}} align="right">Кількість</TableCell>
+                        <TableCell sx={{padding: '7px'}} align="right">Вага, кг</TableCell>
+                        <TableCell sx={{padding: '7px'}} align="right">Вага заг., кг</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {products.map((product) => (
                         <TableRow key={product.productName}>
                             <TableCell sx={{padding: '7px'}}>{product.productName}</TableCell>
-                            <TableCell sx={{padding: '7px'}} align="right">{product.storeName}</TableCell>
                             <TableCell sx={{padding: '7px'}} align="right">{product.amount}</TableCell>
+                            <TableCell sx={{padding: '7px'}} align="right">{product.unitWeight}</TableCell>
+                            <TableCell sx={{padding: '7px'}} align="right">{product.totalProductWeight}</TableCell>
                         </TableRow>
                     ))}
 
                     <TableRow>
-                        <TableCell rowSpan={3}/>
+                        <TableCell colspan={2}/>
                         <TableCell sx={{padding: '7px'}} align="right">Всього: </TableCell>
                         <TableCell sx={{padding: '7px'}} align="right">{overallWeight}</TableCell>
                     </TableRow>
