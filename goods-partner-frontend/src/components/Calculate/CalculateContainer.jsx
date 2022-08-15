@@ -15,7 +15,7 @@ class CalculateContainer extends React.Component {
             let addresses = route.routePoints.map(routePoint => routePoint.address);
             addresses.unshift(route.storeAddress);
             return {
-                routeId: route.routeId,
+                routeId: route.id,
                 addresses: addresses
             }
         });

@@ -51,7 +51,7 @@ const RouteDetails = ({
     const {isLoaded} = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_VAR
     })
-
+    debugger;
     const handleChange = (event) => {
         const newRoute = {...route};
         newRoute.status = event.target.value;
@@ -131,7 +131,6 @@ const RouteDetails = ({
                                             <Typography id="modal-modal-title" variant="h6" component="h2">
                                                 Route #{id}
                                             </Typography>
-                                            <Typography id="modal-modal-description">
                                                 <RouteMap
                                                     addresses={
                                                         routeAddresses
@@ -139,7 +138,6 @@ const RouteDetails = ({
                                                             .map(route => route.addresses)
                                                     }
                                                 />
-                                            </Typography>
                                         </Box>
                                     </Modal>
                                 </>

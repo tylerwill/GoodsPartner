@@ -12,6 +12,7 @@ function timeConvert(n) {
 }
 
 async function getLatLng(address) {
+    // TODO: Remove secret!!!!
     Geocode.setApiKey("AIzaSyD0M9GvjU-nzoPjTWJCsVuG4jDyAvqHvHc");
     Geocode.setLanguage("uk");
     Geocode.setRegion("es");
