@@ -7,13 +7,11 @@ import com.goodspartner.repository.OrderRepository;
 import com.goodspartner.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
-@Service
 @RequiredArgsConstructor
 @Slf4j
 public class DefaultOrderService implements OrderService {

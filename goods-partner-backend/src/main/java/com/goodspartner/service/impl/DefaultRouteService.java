@@ -16,8 +16,8 @@ import com.goodspartner.service.StoreService;
 import com.goodspartner.web.controller.response.RoutesCalculation;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -57,8 +57,9 @@ public class DefaultRouteService implements RouteService {
         return routeMapper.routesToRouteDtos(routeRepository.findAll());
     }
 
+    // TODO fix me
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public void updatePoint(int routeId, String routePointId, RoutePointDto routePoint) {
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new RouteNotFoundException("Route not found"));
@@ -72,10 +73,12 @@ public class DefaultRouteService implements RouteService {
     }
 
     @Override
-    @javax.transaction.Transactional
+    @Transactional
     public RoutesCalculation calculateRoutes(LocalDate date) {
 
         List<OrderDto> orders = orderService.findAllByShippingDate(date);
+
+        cleanupOrderAdresses(orders);
 
         StoreDto storeDto = storeFactory.getMainStore();
         List<RoutesCalculation.RouteDto> routes = calculateRouteService.calculateRoutes(orders, storeDto);
@@ -89,4 +92,10 @@ public class DefaultRouteService implements RouteService {
 
         return routesCalculation;
     }
+
+    private void cleanupOrderAdresses(List<OrderDto> orders) {
+        // Meanwhile we skip it to demo client the real cases
+    }
+
+
 }

@@ -5,12 +5,12 @@ spring:
   jpa:
     properties:
       hibernate:
-        format_sql: true
-        show_sql: true
+        format_sql: false
+        show_sql: false
 
 google:
   api:
-    key: some-test_key
+    key: some-test-key
 
 reports:
   destination: reports

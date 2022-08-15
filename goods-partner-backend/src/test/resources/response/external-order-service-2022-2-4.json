@@ -1,0 +1,297 @@
+[
+  {
+    "id":0,
+    "orderNumber":"5f351313-84fa-11ec-b3ce-00155dd72305",
+    "products":[
+      {
+        "productName":"AAB0C6 Заморожене фруктове пюре з Абрикосу",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":1.0,
+        "totalProductWeight":1.0
+      },
+      {
+        "productName":"332451 Хрусткі пластівці Royal (2кг)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":2.0,
+        "totalProductWeight":2.0
+      }
+    ],
+    "createdDate":"2022-02-03",
+    "clientName":"Премьер Буланжер (Бедь Б.І.ФОП 18.10.2021)",
+    "address":"01001, м.Київ, вул. Городецького 6А",
+    "managerFullName":"Шевцова Галина",
+    "orderWeight":3.0
+  },
+  {
+    "id":0,
+    "orderNumber":"560eb7b8-84ec-11ec-b3ce-00155dd72305",
+    "products":[
+      {
+        "productName":"Молоко згущ. варене 8,5%ж. ДСТУ (8 кг)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":8.0,
+        "totalProductWeight":8.0
+      },
+      {
+        "productName":"Молоко згущ. варене 8,5%ж. ДСТУ (8 кг)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":8.0,
+        "totalProductWeight":8.0
+      },
+      {
+        "productName":"Аріба Какао Гірке (AR48WA), 1кг",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":2.0,
+        "totalProductWeight":2.0
+      },
+      {
+        "productName":"ГЛЮТЕН, 1 кг",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":1.0,
+        "totalProductWeight":1.0
+      },
+      {
+        "productName":"W3-554 Білий шоколад ВЕЛЬВЕТ (1 кг)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":1.0,
+        "totalProductWeight":1.0
+      },
+      {
+        "productName":"70-30-42NV-554 Темний шоколад кувертюр калети (1 кг)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":1.0,
+        "totalProductWeight":1.0
+      },
+      {
+        "productName":"Rye Malt Extract Житній солодовий екстракт (14кг)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":14.0,
+        "totalProductWeight":14.0
+      }
+    ],
+    "createdDate":"2022-02-03",
+    "clientName":"Гості Ресторан ТОВ",
+    "address":"м.Київ, вул.Драгомирова, 14. Ресторан \"Гості\"",
+    "managerFullName":"Наталія Рябченко",
+    "orderWeight":35.0
+  },
+  {
+    "id":0,
+    "orderNumber":"e1759d35-84cd-11ec-b3ce-00155dd72305",
+    "products":[
+      {
+        "productName":"Аріба білі диски (AQ48AB) (5 кг)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":5.0,
+        "totalProductWeight":5.0
+      },
+      {
+        "productName":"Аріба чорні краплі  (AQ49UA) (1 кг)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":1.0,
+        "totalProductWeight":1.0
+      },
+      {
+        "productName":"NCB-HDO3-473 Масло какао, 1 кг",
+        "amount":2,
+        "storeName":"Склад №1",
+        "unitWeight":1.0,
+        "totalProductWeight":2.0
+      },
+      {
+        "productName":"Аріба Какао Гірке (AR48WA), 1кг",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":2.0,
+        "totalProductWeight":2.0
+      }
+    ],
+    "createdDate":"2022-02-03",
+    "clientName":"Максимова А. А. ФОП (нал)",
+    "address":"м. Київ, Княжий Затон, 5, кв. 47",
+    "managerFullName":"Яна Седляр",
+    "orderWeight":10.0
+  },
+  {
+    "id":0,
+    "orderNumber":"a5177751-84c4-11ec-b3ce-00155dd72305",
+    "products":[
+      {
+        "productName":"Молочна Слобода .Продукт молоковміс. згущ. варений \"Іриска\" 8,5%ж. ТУ  (8 кг)",
+        "amount":50,
+        "storeName":"Склад №1",
+        "unitWeight":8.0,
+        "totalProductWeight":400.0
+      }
+    ],
+    "createdDate":"2022-02-03",
+    "clientName":"ЕКО ТОВ",
+    "address":"м.Київ, Радунська, будинок № 40",
+    "managerFullName":"Крамаренко Леся",
+    "orderWeight":400.0
+  },
+  {
+    "id":0,
+    "orderNumber":"2088faff-84f3-11ec-b3ce-00155dd72305",
+    "products":[
+      {
+        "productName":"Гурме Голд  (AV23AB) 12л",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":1.0,
+        "totalProductWeight":1.0
+      },
+      {
+        "productName":"Мастер Гурме 12х1л.(AV20TD)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":12.0,
+        "totalProductWeight":12.0
+      }
+    ],
+    "createdDate":"2022-02-03",
+    "clientName":"Тераса ТОВ (Іль Моліно)",
+    "address":"м.Київ, вул. Дніпровська Набережна, будинок № 19, 067-538-90-94",
+    "managerFullName":"Наталія Рябченко",
+    "orderWeight":13.0
+  },
+  {
+    "id":0,
+    "orderNumber":"ecdc9069-84f4-11ec-b3ce-00155dd72305",
+    "products":[
+      {
+        "productName":"Вафельні коржі для торта \"КЛАСИКА\" 90 гр/16 уп",
+        "amount":3,
+        "storeName":"Склад №1",
+        "unitWeight":0.3333333333333333,
+        "totalProductWeight":1.0
+      },
+      {
+        "productName":"Гурме Голд  (AV23AB) 12л",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":1.0,
+        "totalProductWeight":1.0
+      },
+      {
+        "productName":"Мастер Гурме 12х1л.(AV20TD)",
+        "amount":2,
+        "storeName":"Склад №1",
+        "unitWeight":12.0,
+        "totalProductWeight":24.0
+      },
+      {
+        "productName":"Ароматизуюча Паста Фісташка 873055 (1 кг)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":1.0,
+        "totalProductWeight":1.0
+      }
+    ],
+    "createdDate":"2022-02-03",
+    "clientName":"Тераса ТОВ (Іль Моліно)",
+    "address":"м.Київ, пр-т Оболонський, будинок № 1Б (Дрим Таун), 067-245-23-99",
+    "managerFullName":"Наталія Рябченко",
+    "orderWeight":27.0
+  },
+  {
+    "id":0,
+    "orderNumber":"53fa0b62-84f3-11ec-b3ce-00155dd72305",
+    "products":[
+      {
+        "productName":"Гурме Голд  (AV23AB) 12л",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":1.0,
+        "totalProductWeight":1.0
+      },
+      {
+        "productName":"Мастер Гурме 12х1л.(AV20TD)",
+        "amount":2,
+        "storeName":"Склад №1",
+        "unitWeight":12.0,
+        "totalProductWeight":24.0
+      }
+    ],
+    "createdDate":"2022-02-03",
+    "clientName":"Тераса ТОВ (Іль Моліно)",
+    "address":"м.Київ, вул. Вишгородська, будинок 45 (ЖК ПАРКОВЕ МІСТО), 067-445-66-09",
+    "managerFullName":"Наталія Рябченко",
+    "orderWeight":25.0
+  },
+  {
+    "id":0,
+    "orderNumber":"0b053d0f-84f4-11ec-b3ce-00155dd72305",
+    "products":[
+      {
+        "productName":"Вафельні коржі для торта \"КЛАСИКА\" 90 гр/16 уп",
+        "amount":2,
+        "storeName":"Склад №1",
+        "unitWeight":0.5,
+        "totalProductWeight":1.0
+      },
+      {
+        "productName":"Мед натуральний, (1,5 кг)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":1.5,
+        "totalProductWeight":1.5
+      },
+      {
+        "productName":"Гурме Голд  (AV23AB) 12л",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":1.0,
+        "totalProductWeight":1.0
+      },
+      {
+        "productName":"Мастер Гурме 12х1л.(AV20TD)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":12.0,
+        "totalProductWeight":12.0
+      }
+    ],
+    "createdDate":"2022-02-03",
+    "clientName":"Тераса ТОВ (Іль Моліно)",
+    "address":"м.Київ, вул. Г.Хоткевича, 1в (ТРЦ ПРОСПЕКТ),067-443-44-04",
+    "managerFullName":"Наталія Рябченко",
+    "orderWeight":15.5
+  },
+  {
+    "id":0,
+    "orderNumber":"5c7c3687-84f2-11ec-b3ce-00155dd72305",
+    "products":[
+      {
+        "productName":"7158405 Інвертний цукровий сироп 81% (5 кг)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":5.0,
+        "totalProductWeight":5.0
+      },
+      {
+        "productName":"A11 Харчовий барвник водорозчинний 50 г яскраво червоний",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":1.0,
+        "totalProductWeight":1.0
+      }
+    ],
+    "createdDate":"2022-02-03",
+    "clientName":"ФОП Верба Анна 11 01 22",
+    "address":"м.Київ, вул. Златоустівська 50, під'їзд №2",
+    "managerFullName":"Тетяна Кирильченко",
+    "orderWeight":6.0
+  }
+]

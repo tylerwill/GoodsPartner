@@ -5,6 +5,9 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
   jpa:
+    open-in-view: false
+#    hibernate:
+#      ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   mvc:
     pathmatch:

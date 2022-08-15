@@ -21,6 +21,7 @@
         <mapstruct.version>1.5.2.Final</mapstruct.version>
         <testcontainers.version>1.17.3</testcontainers.version>
         <poi.version>5.2.2</poi.version>
+        <odata.version>4.9.0</odata.version>
     </properties>
 
     <dependencies>
@@ -101,6 +102,13 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
+        </dependency>
+
+        <!--   ODATA   -->
+        <dependency>
+            <groupId>org.apache.olingo</groupId>
+            <artifactId>odata-client-core</artifactId>
+            <version>${odata.version}</version>
         </dependency>
 
         <!--  TESTS   -->

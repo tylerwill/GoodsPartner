@@ -39,6 +39,7 @@ public class Route {
     private String storeAddress;
     private boolean optimization = true;
 
+    // TODO DTO in model??
     @Type(type = "json")
     @Column(columnDefinition = "jsonb")
     private List<RoutePointDto> routePoints;

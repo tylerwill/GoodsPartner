@@ -1,4 +1,4 @@
-package com.goodspartner;
+package com.goodspartner.config;
 
 import net.ttddyy.dsproxy.listener.ChainListener;
 import net.ttddyy.dsproxy.listener.DataSourceQueryCountListener;
