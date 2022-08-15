@@ -3,6 +3,7 @@ package com.goodspartner.mapper;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.web.controller.response.RoutesCalculation;
+import com.google.common.annotations.VisibleForTesting;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -17,17 +18,18 @@ public class CarDetailsMapper {
     }
 
     // TODO refactor stream mapping
-    private RoutesCalculation.CarLoadDto routeToCarDetails(RoutesCalculation.RouteDto route, List<OrderDto> orders) {
+    @VisibleForTesting
+    RoutesCalculation.CarLoadDto routeToCarDetails(RoutesCalculation.RouteDto route, List<OrderDto> orders) {
         List<OrderDto> ordersInfo = route.getRoutePoints()
                 .stream()
                 .map(routePoint -> {
-                    List<Integer> routeOrderIds = routePoint.getOrders()
+                    List<String> routeOrderNumbers = routePoint.getOrders()
                             .stream()
-                            .map(RoutePointDto.AddressOrderDto::getId)
+                            .map(RoutePointDto.AddressOrderDto::getOrderNumber)
                             .toList();
                     return orders
                             .stream()
-                            .filter(order -> routeOrderIds.contains(order.getId()))
+                            .filter(order -> routeOrderNumbers.contains(order.getOrderNumber()))
                             .toList();
                 }).flatMap(List::stream)
                 .collect(Collectors.toList());
