@@ -30,11 +30,12 @@ const RoutesList = ({date, routes, routeAddresses, updateRoutePoint, updateRoute
                                                 {
                                                     routes.map((route, index) =>
                                                         <Button size="small"
+                                                                sx = {{textAlign: 'center'}}
                                                                 key={"routeButton" + route.id}
                                                                 variant={route.id === activeRoute ? "contained" : "outlined"}
-                                                                onClick={() => turnOnRouteTable(route.routeId)}
+                                                                onClick={() => turnOnRouteTable(route.id)}
                                                         >
-                                                            МАРШРУТ №{index + 1}
+                                                            {route.car.name} <br/>  {route.car.licencePlate}
                                                         </Button>)
                                                 }
                                             </Stack>
