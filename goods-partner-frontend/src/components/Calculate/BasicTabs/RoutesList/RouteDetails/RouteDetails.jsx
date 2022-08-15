@@ -167,8 +167,11 @@ const RouteDetails = ({
                         <TableCell align="left">
                             Автомобіль: {route.car.name}
                         </TableCell>
-                        <TableCell colSpan={2} align="left">
+                        <TableCell align="left">
                             Номер: {route.car.licencePlate}
+                        </TableCell>
+                        <TableCell align="left">
+                            Вантажність: {route.car.weightCapacity}
                         </TableCell>
                     </TableRow>
                     <TableRow>
