@@ -32,15 +32,12 @@ public class ExternalOrderServiceITest extends AbstractBaseITest {
 
         List<OrderDto> orders = externalOrderService.findAllByShippingDate(DATE);
 
-        String s = objectMapper.writeValueAsString(orders);
-
         Assertions.assertEquals(9, orders.size());
 
         orders.forEach(order -> {
             Assertions.assertNotNull(order.getAddress());
             Assertions.assertNotEquals("", order.getAddress());
         });
-
     }
 
 }
