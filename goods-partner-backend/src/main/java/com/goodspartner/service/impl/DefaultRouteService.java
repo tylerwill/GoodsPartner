@@ -72,13 +72,18 @@ public class DefaultRouteService implements RouteService {
         routeRepository.save(route);
     }
 
+    /**
+     * TODO:
+     * Order.addresses post processing and validation required. We should at least:
+     * - trim the spaces and various trailing symbols
+     * - trim the phone number by regexp, either 8 digit or with dash delimiters
+     * - try to trim whatever in brackets, e.g: (Dream town) etc
+     */
     @Override
     @Transactional
     public RoutesCalculation calculateRoutes(LocalDate date) {
 
         List<OrderDto> orders = orderService.findAllByShippingDate(date);
-
-        cleanupOrderAdresses(orders);
 
         StoreDto storeDto = storeFactory.getMainStore();
         List<RoutesCalculation.RouteDto> routes = calculateRouteService.calculateRoutes(orders, storeDto);
@@ -92,10 +97,5 @@ public class DefaultRouteService implements RouteService {
 
         return routesCalculation;
     }
-
-    private void cleanupOrderAdresses(List<OrderDto> orders) {
-        // Meanwhile we skip it to demo client the real cases
-    }
-
 
 }

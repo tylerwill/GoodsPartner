@@ -25,6 +25,11 @@ import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.when;
 
+/*
+ * IntegrationTest with 1C service and GoogleAPI. Requires actual API key. Disabled by default
+ * Used for reporting
+ */
+@Disabled
 @Slf4j
 @DBRider
 public class CalculateRouteServiceITest extends AbstractBaseITest {
@@ -58,7 +63,7 @@ public class CalculateRouteServiceITest extends AbstractBaseITest {
 
             StoreDto store = mockedStoreService.getMainStore();
 
-            System.out.println("By Date " + DATE + " fetched Orders size: " +  orders.size());
+            log.info("By Date " + DATE + " fetched Orders size: " +  orders.size());
 
             if (!orders.isEmpty()) {
 
@@ -69,13 +74,13 @@ public class CalculateRouteServiceITest extends AbstractBaseITest {
                 RoutesCalculation.RouteDto routeDto = routeDtos.get(0);
                 List<RoutePointDto> routePoints = routeDto.getRoutePoints();
 
-                System.out.println("Size " + routePoints.size() + "  Parsed adresses:");
+                log.info("Size " + routePoints.size() + "  Parsed adresses:");
 
                 routePoints.stream()
                         .map(RoutePointDto::getAddress)
-                        .forEach(address -> System.out.println("   " + address));
+                        .forEach(address -> log.info("   " + address));
             } else  {
-                System.out.println("No Orders found for date: " + DATE);
+                log.info("No Orders found for date: " + DATE);
             }
 
             log.info("\n");
