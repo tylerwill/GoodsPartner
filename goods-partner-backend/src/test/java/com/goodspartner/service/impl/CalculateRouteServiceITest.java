@@ -143,5 +143,6 @@ public class CalculateRouteServiceITest extends AbstractBaseITest {
 
         Assertions.assertEquals(9, routePoints.size());
 
+
     }
 }
