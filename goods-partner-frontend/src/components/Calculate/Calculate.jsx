@@ -4,8 +4,13 @@ import Grid from "@mui/material/Grid";
 import DateChooserCard from "./DateChooserCard/DateChooserCard";
 import BasicTabs from "./BasicTabs/BasicTabs";
 import React from "react";
+import {Route, Routes} from "react-router-dom";
+import Cars from "./Cars/Cars";
 
-const Calculate = ({orders, routes, stores, getCalculatedDataByDate, routeAddresses}) => {
+const Calculate = ({
+                       orders, routes, getCalculatedDataByDate, routeAddresses, updateRoutePoint,
+                       updateRoute
+                   }) => {
     return (
         <div className="App">
             <Container>
@@ -17,12 +22,17 @@ const Calculate = ({orders, routes, stores, getCalculatedDataByDate, routeAddres
                             />
                         </Grid>
                         <Grid item xs={10}>
-                            <BasicTabs
-                                orders={orders}
-                                routes={routes}
-                                stores={stores}
-                                routeAddresses={routeAddresses}
-                            />
+                            <Routes>
+                                <Route path="/" exact element={<BasicTabs
+                                    orders={orders}
+                                    routes={routes}
+                                    routeAddresses={routeAddresses}
+                                    updateRoutePoint={updateRoutePoint}
+                                    updateRoute={updateRoute}
+                                />}/>
+                                <Route path="/cars" element={<Cars/>}/>
+                            </Routes>
+
                         </Grid>
                     </Grid>
                 </Box>

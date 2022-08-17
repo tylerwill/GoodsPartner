@@ -1,7 +1,10 @@
 import {AppBar, Button, Stack, TextField, Toolbar, Typography} from "@mui/material";
 import {useState} from "react";
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
+import Box from "@mui/material/Box";
 
+
+// , borderBottom: '1px solid #ccc'
 function DateChooserCard({getCalculatedDataByDate}) {
 
     const today = new Date();
@@ -9,13 +12,20 @@ function DateChooserCard({getCalculatedDataByDate}) {
     tomorrow.setDate(tomorrow.getDate() + 1);
     const defaultDate = tomorrow.toJSON().slice(0, 10).replace(/-/g, '-');
     const [calculationDate, setCalculationDate] = useState(defaultDate);
+
+    let navigate = useNavigate();
+
+
     return (
-        <AppBar position="static">
+        <AppBar position="static" style={{background: '#fff'}}>
             <Toolbar>
-                <Typography variant="h6" gutterBottom component="div" sx={{flexGrow: 1}}>
-                    <img src="https://images.prom.ua/2143227305_w350_h100_ingrediyenti-dlya-pekariv.jpg"/>
-                </Typography>
-                <Stack direction="row"
+                <Box component="div" sx={{flexGrow: 1}}>
+                    <NavLink to={"/"}>
+                        <img src="https://images.prom.ua/2143227305_w350_h100_ingrediyenti-dlya-pekariv.jpg"/>
+                    </NavLink>
+
+                </Box>
+                <Stack direction="row" alignItems={"center"}
                        spacing={2}>
                     <Typography variant="h6" gutterBottom component="div">
                         Вкажіть дату:
@@ -29,9 +39,11 @@ function DateChooserCard({getCalculatedDataByDate}) {
                             shrink: true,
                         }}
                         onChange={(e) => setCalculationDate(e.target.value)}/>
+
                     <Button variant="contained"
                             onClick={() => {
-                                getCalculatedDataByDate(calculationDate)
+                                getCalculatedDataByDate(calculationDate);
+                                navigate("/");
                             }}>
                         Розрахувати
                     </Button>

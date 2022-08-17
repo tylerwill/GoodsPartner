@@ -20,6 +20,8 @@ import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeException;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -162,16 +164,20 @@ public class ExternalOrderService implements OrderService {
         List<String> allowableMeasure = List.of("кг", "л", "шт");
         int amount = Integer.parseInt(parsePrimitive(productProperties.get("КоличествоМест")));
         String measure = parseComplex(productProperties.get("ЕдиницаИзмерения"));
+
         double totalWeight = allowableMeasure.contains(measure) ?
                 (!measure.equals("шт") ?
                         Double.parseDouble(parsePrimitive(productProperties.get("Количество")).toString()) :
                         1.0)
                 : 0.0;
 
+        double unitWeight = amount == 0 ? 0 :
+                new BigDecimal(totalWeight / amount).setScale(2, RoundingMode.FLOOR).doubleValue();
+
         ProductDto product = ProductDto.builder()
                 .productName(parseComplex(productProperties.get("Номенклатура")))
                 .amount(amount)
-                .unitWeight(amount == 0 ? 0 : totalWeight / amount)
+                .unitWeight(unitWeight)
                 .totalProductWeight(totalWeight)
                 .storeName(mockedStoreService.getMainStore().getName())
                 .build();

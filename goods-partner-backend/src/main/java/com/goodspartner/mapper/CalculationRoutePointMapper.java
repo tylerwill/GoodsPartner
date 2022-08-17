@@ -40,7 +40,7 @@ public class CalculationRoutePointMapper {
 //            routePointDto.setClientId(addressClientPair.getClient().getId()); TOOD Refactoring
             routePointDto.setClientName(addressClientPair.getSecond());
             routePointDto.setOrders(addressOrderDtos);
-            routePointDto.setAddressTotalWeight(addRessTotalWeight);
+            routePointDto.setAddressTotalWeight(addRessTotalWeight * 50);
             routePointDtoList.add(routePointDto);
         });
         return routePointDtoList;

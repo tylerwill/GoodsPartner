@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8080}
+  port: ${PORT:3001}
 
 spring:
   datasource:
@@ -10,6 +10,8 @@ spring:
 #      ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   mvc:
+    format:
+      date: yyyy-MM-dd
     pathmatch:
       matching-strategy: ant_path_matcher
 google:

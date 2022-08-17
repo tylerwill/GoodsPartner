@@ -8,6 +8,7 @@ import com.goodspartner.web.controller.response.RoutesCalculation;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
 
 import static com.goodspartner.report.ReportUtils.copyCells;
@@ -23,9 +26,9 @@ import static com.goodspartner.report.ReportUtils.copyCells;
 @RequiredArgsConstructor
 public class CarsLoadReportGenerator implements ReportGenerator {
     private static final String TEMPLATE_PATH = "report/template_report_of_cars_with_orders.xlsx";
-    private static final String REPORT_NAME = "Замовлення_на_";
+
+    private static final String REPORT_NAME = "Завантаження_машин_на_";
     private static final int FIRST_INSERTED_ROW = 4;
-    private static final int LAST_INSERTED_ROW = 5;
     private final RouteService routeService;
 
     @SneakyThrows
@@ -40,9 +43,6 @@ public class CarsLoadReportGenerator implements ReportGenerator {
             XSSFWorkbook workbook = new XSSFWorkbook(template);
             XSSFSheet sheet = workbook.getSheetAt(0);
 
-            Row rowHeader = sheet.getRow(0);
-            rowHeader.getCell(1).setCellValue(date.toString());
-
             if (routesCalculation.getCarLoadDetails().isEmpty()) {
                 sheet.getRow(7).createCell(3).setCellValue("НА ОБРАНУ ДАТУ ЗАВАНТАЖЕНЬ НЕМАЄ");
                 workbook.write(arrayStream);
@@ -54,14 +54,14 @@ public class CarsLoadReportGenerator implements ReportGenerator {
                 Row templateProductRow = sheet.getRow(3);
 
                 addRows(sheet, templateProductRow, ordersQuantity);
-                addRowsForProductsAndFill(sheet, routesCalculation, templateProductRow);
+                addRowsForProductsAndFill(sheet, routesCalculation, templateProductRow, date);
                 workbook.write(arrayStream);
             }
             return new ReportResult(reportName, arrayStream.toByteArray());
         }
     }
 
-    private void addRowsForProductsAndFill(XSSFSheet sheet, RoutesCalculation routesCalculation, Row sourceProductRow) {
+    private void addRowsForProductsAndFill(XSSFSheet sheet, RoutesCalculation routesCalculation, Row sourceProductRow, LocalDate date) {
         int rowNumber = 3;
         int orderCount = 1;
         Row currentRow = sheet.getRow(rowNumber);
@@ -71,9 +71,13 @@ public class CarsLoadReportGenerator implements ReportGenerator {
                 List<ProductDto> productDtos = orderDto.getProducts();
                 if (productDtos.size() > 1) {
                     sheet.shiftRows(rowNumber + 1, sheet.getLastRowNum(), productDtos.size() - 1);
+                    sheet.addMergedRegion(new CellRangeAddress(rowNumber, rowNumber + productDtos.size() - 1, 0, 0));
+                    sheet.addMergedRegion(new CellRangeAddress(rowNumber, rowNumber + productDtos.size() - 1, 1, 1));
+                    sheet.addMergedRegion(new CellRangeAddress(rowNumber, rowNumber + productDtos.size() - 1, 2, 2));
+                    sheet.addMergedRegion(new CellRangeAddress(rowNumber, rowNumber + productDtos.size() - 1, 3, 3));
                 }
                 CarDto carDto = carLoadDetail.getCar();
-
+                currentRow.setHeight((short) -1);
                 currentRow.getCell(0).setCellValue(orderCount++);
                 currentRow.getCell(1).setCellValue(carDto.getName());
                 currentRow.getCell(2).setCellValue(carDto.getLicencePlate());
@@ -96,8 +100,11 @@ public class CarsLoadReportGenerator implements ReportGenerator {
                 currentRow.getCell(6).setCellValue("Загальна вага замовлення");
                 currentRow.getCell(7).setCellValue(orderDto.getOrderWeight());
                 rowNumber++;
+                sheet.shiftRows(rowNumber, sheet.getLastRowNum(), 1);
+                rowNumber++;
                 currentRow = sheet.getRow(rowNumber);
             }
+            currentRow.getCell(6).setCellValue("Загальна вага всіх замовлень");
             double sum = carLoadDetail.getOrders()
                     .stream()
                     .mapToDouble(OrderDto::getOrderWeight)
@@ -105,11 +112,18 @@ public class CarsLoadReportGenerator implements ReportGenerator {
 
             currentRow.getCell(7).setCellValue(sum);
         }
+        rowNumber++;
+        currentRow = sheet.getRow(rowNumber);
+        currentRow.getCell(6).setCellValue("Дата");
+
+        String formattedDate = date.format(DateTimeFormatter
+                .ofLocalizedDate(FormatStyle.SHORT));
+        currentRow.getCell(7).setCellValue(formattedDate);
     }
 
     private void addRows(XSSFSheet sheet, Row sourceProductRow, int ordersQuantity) {
         if (ordersQuantity > 1) {
-            sheet.shiftRows(FIRST_INSERTED_ROW, LAST_INSERTED_ROW, (ordersQuantity - 1) * 2);
+            sheet.shiftRows(FIRST_INSERTED_ROW, sheet.getLastRowNum(), (ordersQuantity - 1) * 2);
 
             for (int i = FIRST_INSERTED_ROW; i < FIRST_INSERTED_ROW + (ordersQuantity - 1) * 2; i++) {
                 Row sourceWeightRow = sheet.getRow(FIRST_INSERTED_ROW + (ordersQuantity - 1) * 2);
@@ -122,6 +136,4 @@ public class CarsLoadReportGenerator implements ReportGenerator {
             }
         }
     }
-
-
 }

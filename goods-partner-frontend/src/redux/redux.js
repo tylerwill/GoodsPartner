@@ -2,19 +2,17 @@ import {applyMiddleware, combineReducers, compose, legacy_createStore} from "red
 import thunkMiddleware from "redux-thunk";
 import orderReducer from "./reducers/order-reducer";
 import routeReducer from "./reducers/route-reducer";
-import storeReducer from "./reducers/store-reducer";
 import carReducer from "./reducers/car-reducer";
 
 let reducers = combineReducers({
-  orders: orderReducer,
-  routes: routeReducer,
-  stores: storeReducer,
-  cars: carReducer
+    orders: orderReducer,
+    routes: routeReducer,
+    cars: carReducer
 });
 
 const composeEnhancers = (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-  trace: true,
-  traceLimit: 25
+    trace: true,
+    traceLimit: 25
 })) || compose;
 
 const store = legacy_createStore(reducers, composeEnhancers(applyMiddleware(thunkMiddleware)

@@ -3,17 +3,18 @@ import {Button, Card, CardContent, Stack, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import OrdersTable from "./OrdersTable/OrdersTable";
 import React, {useState} from "react";
+import {generateReportLink} from "../../../../util/util";
 
 function OrdersList({date, orders}) {
-    const initialOrder = orders === null ? '' : orders[0].orderNumber;
+    const initialOrder = orders.length === 0 ? '' : orders[0].orderNumber;
 
     const [activeOrder, setActiveOrder] = useState(initialOrder);
-    const reportLink = "http://localhost:8081/reports/orders/generate?date=" + date;
+    const reportLink = generateReportLink("orders", date);
     return (<Card sx={{minWidth: 275}}>
             <CardContent>
                 <Stack spacing={2}>
                     {
-                        date
+                        initialOrder !== ''
                             ? <>
                                 <Box>
                                     <Grid container spacing={1}>
@@ -23,12 +24,12 @@ function OrdersList({date, orders}) {
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={2}>
-                                            <a target="_blank" rel="noreferrer" href= {reportLink}>
-                                            <Button size="small" variant="outlined" style={{width: '12em'}}>
-                                                Сформувати звіт
-                                            </Button>
+                                            <a target="_blank" rel="noreferrer" href={reportLink}>
+                                                <Button size="small" variant="contained" color="success"
+                                                        style={{width: '12em'}}>
+                                                    Сформувати звіт
+                                                </Button>
                                             </a>
-
                                         </Grid>
                                     </Grid>
                                 </Box>
@@ -39,6 +40,7 @@ function OrdersList({date, orders}) {
                                                 {
                                                     orders.map(order =>
                                                         <Button size="small"
+                                                                key={order.orderNumber + "button"}
                                                                 variant={order.orderNumber === activeOrder ? "contained" : "outlined"}
                                                                 onClick={() => setActiveOrder(order.orderNumber)}
                                                         >
@@ -49,20 +51,21 @@ function OrdersList({date, orders}) {
                                         </Grid>
                                         <Grid item xs={9}>
                                             <Stack spacing={2}>
-                                                <Typography variant="h6" component="h1">
-                                                    <Stack>
-                                                        {orders.map(order => order.orderNumber === activeOrder ?
-                                                            <OrdersTable order={order}/> : '')}
-                                                    </Stack>
-                                                </Typography>
+                                                {orders.map(order => order.orderNumber === activeOrder ?
+                                                    <OrdersTable order={order} key={order.orderNumber + "table"}/> : '')
+                                                }
                                             </Stack>
                                         </Grid>
                                     </Grid>
                                 </Box>
                             </>
-                            : <Typography variant="h5" gutterBottom component="div">
-                                Оберіть дату та натисніть "РОЗРАХУВАТИ"
-                            </Typography>
+                            : date ? <Typography variant="h5" gutterBottom component="div">
+                                    Немає ордерів на зазначену дату
+                                </Typography>
+                                :
+                                <Typography variant="h5" gutterBottom component="div">
+                                    Оберіть дату та натисніть "РОЗРАХУВАТИ"
+                                </Typography>
                     }
                 </Stack>
             </CardContent>
