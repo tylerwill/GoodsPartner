@@ -12,9 +12,10 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@EqualsAndHashCode
 public class RoutesCalculation {
     private LocalDate date;
     private List<RouteDto> routes;
@@ -25,6 +26,7 @@ public class RoutesCalculation {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    @EqualsAndHashCode
     public static class RouteDto {
         private int id;
         private RouteStatus status;
@@ -43,11 +45,12 @@ public class RoutesCalculation {
         private CarDto car;
     }
 
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
     @Getter
     @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @EqualsAndHashCode
     public static class CarLoadDto {
         private CarDto car;
         private List<OrderDto> orders;

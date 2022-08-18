@@ -12,6 +12,7 @@ public interface CarLoadingService {
 
     @AllArgsConstructor
     @NoArgsConstructor
+    @ToString
     @Builder
     @Getter
     @Setter

@@ -10,9 +10,10 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 public class RoutePointDto {
     private UUID id;
     private RoutePointStatus status;
@@ -28,9 +29,10 @@ public class RoutePointDto {
 
     @Getter
     @Setter
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Builder
+    @EqualsAndHashCode
     public static class AddressOrderDto {
         private int id;
         private String orderNumber;
