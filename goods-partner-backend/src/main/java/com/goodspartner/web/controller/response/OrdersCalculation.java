@@ -12,4 +12,5 @@ import java.util.List;
 public class OrdersCalculation {
     private LocalDate date;
     private List<OrderDto> orders;
+    private double totalOrdersWeight;
 }

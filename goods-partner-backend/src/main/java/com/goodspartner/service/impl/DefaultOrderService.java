@@ -27,4 +27,13 @@ public class DefaultOrderService implements OrderService {
         return orderMapper.mapOrders(ordersByDate);
     }
 
+    @Override
+    public double calculateTotalOrdersWeight(List<OrderDto> ordersByDate) {
+        double totalOrdersWeight = ordersByDate
+                .stream()
+                .mapToDouble(OrderDto::getOrderWeight)
+                .sum();
+        return totalOrdersWeight;
+    }
+
 }

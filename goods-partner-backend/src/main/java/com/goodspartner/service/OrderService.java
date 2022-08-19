@@ -11,4 +11,6 @@ public interface OrderService {
 
     List<OrderDto> findAllByShippingDate(LocalDate date);
 
+    double calculateTotalOrdersWeight(List<OrderDto> ordersByDate);
+
 }
