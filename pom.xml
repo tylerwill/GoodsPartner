@@ -12,4 +12,12 @@
         <module>goods-partner-frontend</module>
         <module>goods-partner-backend</module>
     </modules>
+
+    <properties>
+        <sonar.organization>bogdanparashchak</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.projectKey>BogdanParashchak_GoodsPartner</sonar.projectKey>
+        <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+    </properties>
+
 </project>

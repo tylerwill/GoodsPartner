@@ -21,7 +21,7 @@ function DateChooserCard({getCalculatedDataByDate}) {
             <Toolbar>
                 <Box component="div" sx={{flexGrow: 1}}>
                     <NavLink to={"/"}>
-                        <img src="https://images.prom.ua/2143227305_w350_h100_ingrediyenti-dlya-pekariv.jpg"/>
+                        <img src="https://images.prom.ua/2143227305_w350_h100_ingrediyenti-dlya-pekariv.jpg" alt={''}/>
                     </NavLink>
 
                 </Box>
