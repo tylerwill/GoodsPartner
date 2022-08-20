@@ -28,5 +28,5 @@ public class OrderDto {
     //Enrichment
     private List<ProductDto> products;
     private double orderWeight;
-
+    private boolean isAddressValid;
 }
