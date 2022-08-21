@@ -6,11 +6,14 @@ import com.goodspartner.AbstractBaseITest;
 import com.goodspartner.dto.OrderDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // Test integration with 1C server
 @Disabled
@@ -38,6 +41,17 @@ public class ExternalOrderServiceITest extends AbstractBaseITest {
             Assertions.assertNotNull(order.getAddress());
             Assertions.assertNotEquals("", order.getAddress());
         });
+    }
+
+    @Test
+    @DisplayName("when CalculateOrders then Correct Total Orders Weight Returned")
+    void givenOrders_whenCalculateTotalOrdersWeight_thenCorrectResultReturned() {
+        double expectedTotalWeight = 100;
+
+        List<OrderDto> ordersByDate = externalOrderService.findAllByShippingDate(DATE);
+        double totalOrdersWeight = externalOrderService.calculateTotalOrdersWeight(ordersByDate);
+
+        Assertions.assertEquals(expectedTotalWeight, totalOrdersWeight);
     }
 
 }
