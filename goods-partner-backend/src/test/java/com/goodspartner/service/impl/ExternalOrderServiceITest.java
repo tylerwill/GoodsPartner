@@ -46,7 +46,7 @@ public class ExternalOrderServiceITest extends AbstractBaseITest {
     @Test
     @DisplayName("when CalculateOrders then Correct Total Orders Weight Returned")
     void givenOrders_whenCalculateTotalOrdersWeight_thenCorrectResultReturned() {
-        double expectedTotalWeight = 100;
+        double expectedTotalWeight = 2494;
 
         List<OrderDto> ordersByDate = externalOrderService.findAllByShippingDate(DATE);
         double totalOrdersWeight = externalOrderService.calculateTotalOrdersWeight(ordersByDate);
