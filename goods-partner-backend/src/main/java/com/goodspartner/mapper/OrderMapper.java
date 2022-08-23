@@ -2,72 +2,47 @@ package com.goodspartner.mapper;
 
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
-import com.goodspartner.dto.StoreDto;
-import com.goodspartner.entity.*;
-import com.goodspartner.service.StoreService;
-import com.google.common.annotations.VisibleForTesting;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import com.goodspartner.entity.Manager;
+import com.goodspartner.entity.Order;
+import com.goodspartner.entity.OrderedProduct;
+import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
+import lombok.Setter;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-@AllArgsConstructor
-@Component
-public class OrderMapper {
+@Setter
+@Service
+@Mapper(componentModel = "spring")
+public abstract class OrderMapper {
 
-    private final StoreService storeService;
+    @Autowired
+    private ProductMapper productMapper;
 
-    public List<OrderDto> mapOrders(List<Order> orders) {
-        return orders.stream()
-                .map(this::mapOrder)
-                .collect(Collectors.toList());
+    @Mapping(target = "orderNumber", source = "number")
+    @Mapping(target = "clientName", source = "order.address.client.name")
+    @Mapping(target = "address", source = "order.address.address")
+    @Mapping(target = "managerFullName", source = "order.manager", qualifiedByName = "getManagerFullName")
+    @Mapping(target = "products", source = "order.orderedProducts", qualifiedByName = "mapProducts")
+    public abstract OrderDto mapOrder(Order order);
+
+    public abstract List<OrderDto> mapOrders(List<Order> orders);
+
+    @Named("getManagerFullName")
+    String getManagerFullName(Manager manager) {
+        return manager.getFirstName() + " " + manager.getLastName();
     }
 
-    @VisibleForTesting
-    OrderDto mapOrder(Order order) {
-        Address address = order.getAddress();
-        Client client = address.getClient();
+    public abstract OrderDto toOrderDto(ODataOrderDto oDataOrderDto);
 
-        Manager manager = order.getManager();
+    public abstract List<OrderDto> toOrderDtosList(List<ODataOrderDto> oDataOrderDtos);
 
-        List<ProductDto> products = mapProducts(order.getOrderedProducts());
-        double orderWeight = products.stream()
-                .mapToDouble(ProductDto::getTotalProductWeight)
-                .sum();
-
-        OrderDto orderDto = new OrderDto();
-        orderDto.setId(order.getId());
-        orderDto.setCreatedDate(order.getCreatedDate());
-        orderDto.setOrderNumber(String.valueOf(order.getNumber()));
-        orderDto.setClientName(client.getName());
-        orderDto.setAddress(address.getAddress());
-        orderDto.setManagerFullName(manager.getFirstName() + " " + manager.getLastName()); // TODO check with Taras to have single field for this
-        orderDto.setProducts(products);
-        orderDto.setOrderWeight(orderWeight);
-
-        return orderDto;
+    @Named("mapProducts")
+    List<ProductDto> mapProducts(List<OrderedProduct> orderedProducts) {
+        return productMapper.mapProducts(orderedProducts);
     }
-
-    @VisibleForTesting
-    List<ProductDto> mapProducts(List<OrderedProduct> products) {
-        return products.stream()
-                .map(this::mapProduct)
-                .collect(Collectors.toList());
-    }
-
-    @VisibleForTesting
-    ProductDto mapProduct(OrderedProduct orderedProduct) {
-        Product product = orderedProduct.getProduct();
-        StoreDto storeDto = storeService.getMainStore();
-
-        ProductDto productDto = new ProductDto();
-        productDto.setProductName(product.getName());
-        productDto.setAmount(orderedProduct.getCount());
-        productDto.setStoreName(storeDto.getName());
-        productDto.setUnitWeight(product.getKg());
-        productDto.setTotalProductWeight((double) orderedProduct.getCount() * product.getKg());
-        return productDto;
-    }
-
 }

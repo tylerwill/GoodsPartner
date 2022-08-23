@@ -18,6 +18,10 @@ google:
   api:
     key: ${GOOGLE_API_KEY}
 
+grandeDolce:
+  1c:
+    url: http://89.76.239.245:8080/test/odata/standard.odata/
+
 
 
 

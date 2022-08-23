@@ -2,9 +2,8 @@ package com.goodspartner.mapper;
 
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
-import com.goodspartner.entity.*;
 import com.goodspartner.dto.StoreDto;
-import com.goodspartner.service.impl.MockedStoreService;
+import com.goodspartner.entity.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,25 +14,21 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @TestInstance(PER_CLASS)
 class OrderMapperTest {
 
     private OrderMapper orderMapper;
+    private ProductMapper productMapper;
     private OrderedProduct mockOrderedProduct;
     private Order mockOrder;
-    private final MockedStoreService storeService = new MockedStoreService();
 
     @BeforeAll
     void setup() {
-        orderMapper = new OrderMapper(storeService);
+        productMapper = new ProductMapperImpl();
+        orderMapper = new OrderMapperImpl();
+        orderMapper.setProductMapper(productMapper);
 
         StoreDto mockStoreDto = mock(StoreDto.class);
         when(mockStoreDto.getName()).thenReturn("Склад №1");
@@ -68,27 +63,15 @@ class OrderMapperTest {
     }
 
     @Test
-    @DisplayName("Mapping OrderedProduct to ProductDto")
-    void test_givenOrderedProduct_whenMapProduct_thenReturnProductDto() {
-        ProductDto productDto = orderMapper.mapProduct(mockOrderedProduct);
-        assertEquals("3434 Паста шоколадна", productDto.getProductName());
-        assertEquals(5, productDto.getAmount());
-        assertEquals("Склад №1", productDto.getStoreName());
-        assertEquals(1.2, productDto.getUnitWeight());
-        assertEquals(6, productDto.getTotalProductWeight());
-    }
-
-    @Test
     @DisplayName("Mapping OrderedProduct list to ProductDto list")
     void test_givenOrderedProductList_whenMapProducts_thenReturnProductDtoList() {
         OrderMapper spyOrderMapper = spy(orderMapper);
+        ProductMapper spyProductMapper = spy(productMapper);
         List<ProductDto> productDtoList = spyOrderMapper
                 .mapProducts(List.of(mockOrderedProduct, mockOrderedProduct, mockOrderedProduct));
 
         assertEquals(3, productDtoList.size());
         verify(spyOrderMapper).mapProducts(anyList());
-        verify(spyOrderMapper, times(3)).mapProduct(any(OrderedProduct.class));
-
     }
 
     @Test
@@ -105,9 +88,7 @@ class OrderMapperTest {
         assertEquals("м. Київ, вул. Хрещатик, 1", orderDto.getAddress());
         assertEquals("Петро Коваленко", orderDto.getManagerFullName());
         assertEquals(1, products.size());
-        assertEquals(6, orderDto.getOrderWeight());
         verify(spyOrderMapper).mapProducts(anyList());
-        verify(spyOrderMapper).mapProduct(mockOrderedProduct);
 
     }
 
@@ -119,14 +100,42 @@ class OrderMapperTest {
                 .mapOrders(List.of(mockOrder, mockOrder, mockOrder));
 
         assertEquals(3, orderDtoList.size());
-        assertEquals(18, orderDtoList.stream()
-                .mapToDouble(OrderDto::getOrderWeight)
-                .sum());
+        assertEquals(0.0, 0.0);
         verify(spyOrderMapper).mapOrders(anyList());
-        verify(spyOrderMapper, times(3)).mapProduct(mockOrderedProduct);
         verify(spyOrderMapper, times(3)).mapProducts(anyList());
         verify(spyOrderMapper, times(3)).mapOrder(mockOrder);
+    }
 
+
+    @Test
+    @DisplayName("Mapping Order (with list of OrderedProduct) to OrderDto (with list of ProductDto) ")
+    void test_givenOrderWithOrderedProductList_whenMapOrder_thenReturnOrderDtoWithProductDtoList() {
+        Manager manager = new Manager();
+        manager.setFirstName("First");
+        manager.setLastName("Last");
+
+        Client client = new Client();
+        client.setName("Client name");
+
+        Address address = new Address();
+        address.setAddress("Test address");
+        address.setClient(client);
+
+        List<OrderedProduct> orderedProducts = List.of(new OrderedProduct(), new OrderedProduct());
+
+        Order order = new Order();
+        order.setManager(manager);
+        order.setAddress(address);
+        order.setOrderedProducts(orderedProducts);
+        OrderDto orderDto = orderMapper.mapOrder(order);
+
+        List<ProductDto> products = orderDto.getProducts();
+
+        assertEquals("Client name", orderDto.getClientName());
+        assertEquals("Test address", orderDto.getAddress());
+        assertEquals("First Last", orderDto.getManagerFullName());
+        assertEquals(orderedProducts.size(), products.size());
+        assertEquals(ProductDto.class, products.get(0).getClass());
     }
 
 }
