@@ -25,10 +25,12 @@ public class OrderController {
 
         LocalDate calculationDate = LocalDate.parse(date);
         List<OrderDto> ordersByDate = orderService.findAllByShippingDate(calculationDate);
+        double totalOrdersWeight = orderService.calculateTotalOrdersWeight(ordersByDate);
 
         OrdersCalculation ordersCalculation = new OrdersCalculation();
         ordersCalculation.setDate(calculationDate);
         ordersCalculation.setOrders(ordersByDate);
+        ordersCalculation.setTotalOrdersWeight(totalOrdersWeight);
         return ordersCalculation;
 
     }

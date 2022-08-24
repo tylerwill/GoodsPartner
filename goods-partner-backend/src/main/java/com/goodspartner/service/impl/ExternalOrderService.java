@@ -82,6 +82,15 @@ public class ExternalOrderService implements OrderService {
 
     }
 
+    @Override
+    public double calculateTotalOrdersWeight(List<OrderDto> ordersByDate) {
+        double totalOrdersWeight = ordersByDate
+                .stream()
+                .mapToDouble(OrderDto::getOrderWeight)
+                .sum();
+        return totalOrdersWeight;
+    }
+
     /*URI*/
     private URI buildOrderUri(String filter) {
         return client.newURIBuilder(SERVER_ODATA_URL)
