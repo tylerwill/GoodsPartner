@@ -28,6 +28,9 @@ const drawerWidth = 256;
 
 const Main = styled('main', {shouldForwardProp: (prop) => prop !== 'open'})(
     ({theme, open}) => ({
+        background: '#F5F5F5',
+        mt: 2,
+        minHeight: '100vh',
         flexGrow: 1,
         marginLeft: `-${drawerWidth}px`,
         padding: theme.spacing(3),
@@ -57,6 +60,18 @@ const ListButton = (icon, name, paddingLeft) => {
     </>);
 }
 
+const ListButtonWithLink = (icon, name, paddingLeft, component, to) => {
+    return (<>
+        <ListItemButton component={component} to={to} sx={{pl: paddingLeft}}>
+            <ListItemIcon>
+                {icon}
+            </ListItemIcon>
+            <ListItemText primary={name}/>
+        </ListItemButton>
+        <Divider/>
+    </>);
+}
+
 
 export default function Layout(props) {
     const [open, setOpen] = React.useState(true);
@@ -77,6 +92,7 @@ export default function Layout(props) {
 
     return (
         <Box sx={{display: 'flex'}}>
+            {/*TODO: [Nastya] Move into separate component*/}
             <AppBar position="fixed" open={open} sx={
                 {
                     zIndex: (theme) => theme.zIndex.drawer + 1,
@@ -105,11 +121,13 @@ export default function Layout(props) {
                     </IconButton>
 
                     <Typography sx={{textTransform: 'uppercase'}} noWrap component="div">
+                        {/*TODO: [Nastya] Move into 'company' logo component*/}
                         Goods partner
                     </Typography>
                 </Toolbar>
             </AppBar>
 
+            {/*TODO: [Nastya] Move into separate component*/}
             <Drawer sx={{
                 width: drawerWidth,
                 flexShrink: 0,
@@ -124,10 +142,11 @@ export default function Layout(props) {
             >
                 <Toolbar/>
 
+                {/*TODO: [Nastya] Link in sidebar should be highlighted based on current URI*/}
                 <List sx={{overflow: 'auto', paddingTop: 0}}>
 
-                    {/*TODO: [Tolik] Move into company logo component*/}
                     <ListItem sx={{padding: ' 16px 24px'}}>
+                        {/*TODO: [Nastya] Move into 'processed company' logo component*/}
                         <img src="/logo.jpg" alt={"Grande Dolce logo"} width='180px' height='30px'/>
                     </ListItem>
                     <Divider/>
@@ -149,7 +168,7 @@ export default function Layout(props) {
 
                     <Collapse in={subMenuOpen} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
-                            {ListButton(<ShoppingCartIcon/>, "Замовлення", 4)}
+                            {ListButtonWithLink(<ShoppingCartIcon/>, "Замовлення", 4, Link, "/new/orders")}
                             {ListButton(<RouteIcon/>, "Маршрути", 4)}
                             {ListButton(<Download/>, "Завантаження", 4)}
 
