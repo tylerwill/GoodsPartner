@@ -14,7 +14,8 @@ class ODataUrlBuilderTest {
     private static final String FORMAT = "JSON";
     private static final int ORDER_FETCH_LIMIT = 3;
 
-    public static final String SERVER_ODATA_URL = "http://89.76.239.245:8080/test/odata/standard.odata/";
+    private static final String SERVER_ODATA_URL = "http://89.76.239.245:8080/";
+    private static final String HOST_PREFIX = "test/odata/standard.odata/";
 
     private final ODataUrlBuilder ODataUrlBuilder = new ODataUrlBuilder();
 
@@ -23,6 +24,7 @@ class ODataUrlBuilderTest {
     public void testURLBuilderWithAllChunks() {
         URI uri = ODataUrlBuilder
                 .baseUrl(SERVER_ODATA_URL)
+                .hostPrefix(HOST_PREFIX)
                 .appendEntitySetSegment(ORDER_ENTRY_SET_NAME)
                 .filter("Ref_Key eq guid'e5a1c733-57d4-11ea-b5ce-94de80dde3f4'")
                 .expand(ORDER_EXPAND_FIELDS)

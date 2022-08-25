@@ -28,6 +28,11 @@ public class ODataUrlBuilder {
         return this;
     }
 
+    public ODataUrlBuilder hostPrefix(String segmentValue) {
+        this.addSegment(URLOptionType.HOSTPREFIX, segmentValue);
+        return this;
+    }
+
     private void addSegment(URLOptionType segmetType, String value) {
         this.segments.add(new ODataUrlBuilder.Segment(segmetType, value));
     }
@@ -116,6 +121,7 @@ public class ODataUrlBuilder {
     private enum URLOptionType {
         SERVICEROOT,
         ENTITYSET,
+        HOSTPREFIX,
         EXPAND,
         FORMAT,
         SELECT,

@@ -20,7 +20,7 @@ google:
 
 grandeDolce:
   1c:
-    url: http://89.76.239.245:8080/test/odata/standard.odata/
+    url: ${GRANDE_DOLCE_1C_URL}
 
 
 

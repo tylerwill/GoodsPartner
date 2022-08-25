@@ -30,6 +30,7 @@ public class GrandeDolceOrderService implements OrderService {
 
     private static final int PARTITION_SIZE = 100;
     private static final int ORDER_FETCH_LIMIT = 9; // API Key limit
+    private static final String HOST_PREFIX = "test/odata/standard.odata/";
     private static final String FORMAT = "json";
     // Order
     private static final String ORDER_ENTRY_SET_NAME = "Document_ЗаказПокупателя";
@@ -121,6 +122,7 @@ public class GrandeDolceOrderService implements OrderService {
     private URI buildOrderUri(String filter) {
         return new ODataUrlBuilder()
                 .baseUrl(serverOdataUrl)
+                .hostPrefix(HOST_PREFIX)
                 .appendEntitySetSegment(ORDER_ENTRY_SET_NAME)
                 .filter(filter)
                 .expand(ORDER_EXPAND_FIELDS)
@@ -133,6 +135,7 @@ public class GrandeDolceOrderService implements OrderService {
     private URI buildProductUri(String filter) {
         return new ODataUrlBuilder()
                 .baseUrl(serverOdataUrl)
+                .hostPrefix(HOST_PREFIX)
                 .appendEntitySetSegment(PRODUCT_ENTRY_SET_NAME)
                 .filter(filter)
                 .expand(PRODUCT_EXPAND_FIELDS)
