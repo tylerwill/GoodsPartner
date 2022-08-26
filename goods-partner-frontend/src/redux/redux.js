@@ -3,11 +3,13 @@ import thunkMiddleware from "redux-thunk";
 import orderReducer from "./reducers/order-reducer";
 import routeReducer from "./reducers/route-reducer";
 import carsReducer from "./../newUI/reducers/cars-reducer";
+import newOrdersReducer from "./../newUI/reducers/orders-reducer";
 
 let reducers = combineReducers({
     orders: orderReducer,
     routes: routeReducer,
-    carsPage: carsReducer
+    carsPage: carsReducer,
+    ordersPage: newOrdersReducer
 });
 
 const composeEnhancers = (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({

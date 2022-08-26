@@ -1,4 +1,4 @@
-import {CLOSE_CAR_DIALOG, GET_ALL_CARS, OPEN_CAR_DIALOG} from "../actions/car-action";
+import {CLOSE_CAR_DIALOG, GET_ALL_CARS, OPEN_CAR_DIALOG} from "../actions/car-actions";
 
 let initialCars = {
         cars: [
