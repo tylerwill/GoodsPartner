@@ -12,5 +12,9 @@ google:
   api:
     key: some-test-key
 
+grandeDolce:
+  1c:
+    url: some-test-url
+
 reports:
   destination: reports

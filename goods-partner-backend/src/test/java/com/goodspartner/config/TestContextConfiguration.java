@@ -1,6 +1,7 @@
 package com.goodspartner.config;
 
 import com.goodspartner.mapper.OrderMapper;
+import com.goodspartner.util.DtoCalculationHelper;
 import com.goodspartner.repository.OrderRepository;
 import com.goodspartner.service.OrderService;
 import com.goodspartner.service.impl.DefaultOrderService;
@@ -14,8 +15,8 @@ public class TestContextConfiguration {
     @Bean
     @Primary
     public OrderService getDefaultImpl(OrderRepository orderRepository,
-                                       OrderMapper orderMapper) {
-        return new DefaultOrderService(orderRepository, orderMapper);
+                                       OrderMapper orderMapper, DtoCalculationHelper dtoHelper) {
+        return new DefaultOrderService(orderRepository, orderMapper, dtoHelper);
     }
 
 }

@@ -13,14 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 // Test integration with 1C server
 @Disabled
-public class ExternalOrderServiceITest extends AbstractBaseITest {
+public class GrandeDolceOrderServiceITest extends AbstractBaseITest {
 
     @Autowired
-    private ExternalOrderService externalOrderService;
+    private GrandeDolceOrderService grandeDolceOrderService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -33,7 +31,7 @@ public class ExternalOrderServiceITest extends AbstractBaseITest {
     @Test
     void getOrdersFromExternalSource() throws JsonProcessingException {
 
-        List<OrderDto> orders = externalOrderService.findAllByShippingDate(DATE);
+        List<OrderDto> orders = grandeDolceOrderService.findAllByShippingDate(DATE);
 
         Assertions.assertEquals(9, orders.size());
 
@@ -48,8 +46,8 @@ public class ExternalOrderServiceITest extends AbstractBaseITest {
     void givenOrders_whenCalculateTotalOrdersWeight_thenCorrectResultReturned() {
         double expectedTotalWeight = 2494;
 
-        List<OrderDto> ordersByDate = externalOrderService.findAllByShippingDate(DATE);
-        double totalOrdersWeight = externalOrderService.calculateTotalOrdersWeight(ordersByDate);
+        List<OrderDto> ordersByDate = grandeDolceOrderService.findAllByShippingDate(DATE);
+        double totalOrdersWeight = grandeDolceOrderService.calculateTotalOrdersWeight(ordersByDate);
 
         Assertions.assertEquals(expectedTotalWeight, totalOrdersWeight);
     }

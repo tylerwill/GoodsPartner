@@ -1,6 +1,10 @@
 package com.goodspartner.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,15 +17,16 @@ import java.util.List;
 // common
 public class OrderDto {
 
+    // TODO add refKey property
     private int id;
     private String orderNumber;
-    private List<ProductDto> products;
-
-    //Enrichment
     private LocalDate createdDate;
     private String clientName;
     private String address;
     private String managerFullName;
+
+    //Enrichment
+    private List<ProductDto> products;
     private double orderWeight;
 
 }

@@ -18,6 +18,10 @@ google:
   api:
     key: ${GOOGLE_API_KEY}
 
+grandeDolce:
+  1c:
+    url: ${GRANDE_DOLCE_1C_URL}
+
 
 
 
