@@ -20,16 +20,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-@DBRider
 public class OrdersControllerITest extends AbstractWebITest {
 
     @MockBean
     private OrderService orderService;
 
     @Test
-    @DataSet("common/orders_external/dataset_order_external.yml")
-    @ExpectedDataSet("common/orders_external/dataset_save_orders_external.yml")
     @DisplayName("given OrderDto when Calculate Orders then Orders External Saved and Json Returned")
     void givenOrderDto_whenCalculateOrders_thenOrdersExternalSaved_andJsonReturned() throws Exception {
         ProductDto firstProductDto = ProductDto.builder()
@@ -48,7 +44,7 @@ public class OrdersControllerITest extends AbstractWebITest {
                 .managerFullName("Балашова Лариса")
                 .products(List.of(firstProductDto))
                 .orderWeight(12.00)
-                .isAddressValid(false)
+                .validAddress(false)
                 .build();
 
         ProductDto secondProductDto = ProductDto.builder()
@@ -67,7 +63,7 @@ public class OrdersControllerITest extends AbstractWebITest {
                 .managerFullName("Шульженко Олег")
                 .products(List.of(secondProductDto))
                 .orderWeight(20.00)
-                .isAddressValid(false)
+                .validAddress(false)
                 .build();
 
         Mockito.when(orderService.findAllByShippingDate(LocalDate.parse("2022-07-10")))
@@ -88,7 +84,7 @@ public class OrdersControllerITest extends AbstractWebITest {
                                          "clientName":"Домашня випічка",
                                          "address":"Бровари, Марії Лагунової, 11",
                                          "managerFullName":"Балашова Лариса",
-                                         "addressValid":true,
+                                         "validAddress":true,
                                          "products":[
                                             {
                                                "productName":"Наповнювач фруктово-ягідний (декоргель) (12 кг)",
@@ -105,7 +101,7 @@ public class OrdersControllerITest extends AbstractWebITest {
                                          "clientName":"ТОВ Пекарня",
                                          "address":"м. Київ, вул. Металістів, 8, оф. 4-24",
                                          "managerFullName":"Шульженко Олег",
-                                         "addressValid":false,
+                                         "validAddress":false,
                                          "products":[
                                             {
                                                "productName":"66784 Арахісова паста",
@@ -120,7 +116,6 @@ public class OrdersControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/dataset.yml")
     void givenNoOrdersForSpecifiedDate_whenCalculateOrders_thenJsonWithEmptyOrdersFieldReturned() throws Exception {
 
         mockMvc.perform(get("/api/v1/orders")

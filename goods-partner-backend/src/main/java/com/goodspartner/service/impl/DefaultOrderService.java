@@ -39,11 +39,10 @@ public class DefaultOrderService implements OrderService {
 
     @Override
     public double calculateTotalOrdersWeight(List<OrderDto> ordersByDate) {
-        double totalOrdersWeight = ordersByDate
+        return ordersByDate
                 .stream()
                 .mapToDouble(OrderDto::getOrderWeight)
                 .sum();
-        return totalOrdersWeight;
     }
 
 }

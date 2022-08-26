@@ -9,7 +9,13 @@ import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -44,7 +50,7 @@ public class OrderExternal {
     private double orderWeight;
 
     @Column(name = "valid_address")
-    private boolean isAddressValid;
+    private boolean validAddress;
 
     @Type(type = "json")
     @Column(columnDefinition = "jsonb")

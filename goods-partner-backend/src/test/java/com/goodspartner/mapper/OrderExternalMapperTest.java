@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OrderExternalMapperTest {
 
@@ -39,7 +40,7 @@ public class OrderExternalMapperTest {
                 .managerFullName("Балашова Лариса")
                 .products(List.of(productDto))
                 .orderWeight(12.00)
-                .isAddressValid(true)
+                .validAddress(true)
                 .build();
 
         orderExternal = orderExternalMapper.mapOrderDtoToOrderExternal(orderDto);
@@ -52,6 +53,6 @@ public class OrderExternalMapperTest {
         assertEquals("Балашова Лариса", orderExternal.getManagerFullName());
         assertEquals(List.of(productDto), orderExternal.getProducts());
         assertEquals(12.00, orderExternal.getOrderWeight());
-        assertEquals(true, orderExternal.isAddressValid());
+        assertTrue(orderExternal.isValidAddress());
     }
 }

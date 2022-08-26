@@ -1,10 +1,9 @@
 package com.goodspartner.service;
 
-import com.goodspartner.dto.OrderDto;
-
-import java.util.List;
-import java.util.Map;
+import com.goodspartner.service.dto.OrderValidationDto;
 
 public interface OrderExternalService {
-    void save(Map<Boolean, List<OrderDto>> sortedOrderDtos);
+
+    void save(OrderValidationDto orderValidationDto);
+
 }
