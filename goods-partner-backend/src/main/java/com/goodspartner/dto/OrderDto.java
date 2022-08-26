@@ -14,7 +14,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-// common
 public class OrderDto {
 
     // TODO add refKey property
@@ -28,5 +27,5 @@ public class OrderDto {
     //Enrichment
     private List<ProductDto> products;
     private double orderWeight;
-
+    private boolean validAddress;
 }

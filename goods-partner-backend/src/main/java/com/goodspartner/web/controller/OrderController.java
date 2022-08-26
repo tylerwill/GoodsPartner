@@ -1,7 +1,9 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.service.OrderValidationService;
 import com.goodspartner.service.OrderService;
+import com.goodspartner.service.dto.OrderValidationDto;
 import com.goodspartner.web.controller.response.OrdersCalculation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -19,21 +21,23 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderValidationService orderValidationService;
 
     @GetMapping("/orders")
     public OrdersCalculation calculateOrders(@RequestParam String date) {
 
         LocalDate calculationDate = LocalDate.parse(date);
         List<OrderDto> ordersByDate = orderService.findAllByShippingDate(calculationDate);
+
         double totalOrdersWeight = orderService.calculateTotalOrdersWeight(ordersByDate);
 
-        OrdersCalculation ordersCalculation = new OrdersCalculation();
-        ordersCalculation.setDate(calculationDate);
-        ordersCalculation.setOrders(ordersByDate);
-        ordersCalculation.setTotalOrdersWeight(totalOrdersWeight);
-        return ordersCalculation;
+        OrderValidationDto orderValidationDto = orderValidationService.validateOrders(ordersByDate);
 
+        return OrdersCalculation.builder()
+                .date(calculationDate)
+                .validOrders(orderValidationDto.getValidOrders())
+                .invalidOrders(orderValidationDto.getInvalidOrders())
+                .totalOrdersWeight(totalOrdersWeight)
+                .build();
     }
-
-
 }
