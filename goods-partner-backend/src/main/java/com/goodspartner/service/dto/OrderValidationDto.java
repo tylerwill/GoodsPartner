@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 public class OrderValidationDto {
 
-    List<OrderDto> validOrders;
-    List<OrderDto> invalidOrders;
+    private List<OrderDto> validOrders;
+    private List<OrderDto> invalidOrders;
 
 }
