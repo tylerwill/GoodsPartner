@@ -286,6 +286,17 @@
                                 </configuration>
                             </execution>
                         </executions>
+                        <configuration>
+                            <excludes>
+                                <exclude>com/goodspartner/dto/**/*.class</exclude>
+                                <exclude>com/goodspartner/entity/**/*.class</exclude>
+                                <exclude>com/goodspartner/exceptions/**/*.class</exclude>
+                                <exclude>com/goodspartner/repository/**/*.class</exclude>
+                                <exclude>com/goodspartner/web/config/**/*.class</exclude>
+                                <exclude>com/goodspartner/web/controller/response/**/*.class</exclude>
+                                <exclude>com/goodspartner/web/RestResponseEntityExceptionHandler.class</exclude>
+                            </excludes>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
