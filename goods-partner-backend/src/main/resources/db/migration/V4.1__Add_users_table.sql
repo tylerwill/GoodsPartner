@@ -1,0 +1,7 @@
+CREATE TABLE "users"(
+   "id" INTEGER PRIMARY KEY NOT NULL,
+   "user_name" VARCHAR(255) NOT NULL,
+   "email" VARCHAR(255) NOT NULL UNIQUE,
+   "role" VARCHAR(255) NOT NULL,
+   "enabled" BOOLEAN NOT NULL
+);
