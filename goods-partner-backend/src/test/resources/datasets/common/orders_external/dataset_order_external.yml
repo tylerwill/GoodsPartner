@@ -1,0 +1,9 @@
+GRANDEDOLCE_ORDERS:
+  - ORDER_NUMBER: 56788
+    CREATED_DATE: "2022-02-13"
+    CLIENT_NAME: "ТОВ Фудком"
+    ADDRESS: "Бровари, Марії Лагунової, 11"
+    MANAGER: "Олег Дудка"
+    ORDER_WEIGHT: 30.00
+    VALID_ADDRESS: TRUE
+    PRODUCTS: "[{\"amount\": 1, \"storeName\": \"Склад №1\", \"unitWeight\": 12.0, \"productName\": \"Наповнювач фруктово-ягідний (декоргель) (12 кг)\", \"totalProductWeight\": 12.0}]"
