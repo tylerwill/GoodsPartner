@@ -31,7 +31,6 @@ public class OsmOrderValidationService implements OrderValidationService {
                 orderDto.setValidAddress(true);
                 validOrders.add(orderDto);
             } else {
-                orderDto.setValidAddress(false);
                 inValidOrders.add(orderDto);
             }
         });

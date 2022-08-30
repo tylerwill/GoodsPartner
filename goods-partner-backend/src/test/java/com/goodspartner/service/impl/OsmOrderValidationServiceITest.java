@@ -17,20 +17,17 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 @TestInstance(PER_CLASS)
 public class OsmOrderValidationServiceITest {
 
-    private final String BASE_URL = "https://nominatim.openstreetmap.org/search?q=";
-    private final String RESPONSE_FORMAT = "&format=geojson";
     private OsmOrderValidationService osmOrderValidationService;
 
     @BeforeAll
     public void setUp() {
-        String address = "";
-        WebClient webClient = WebClient.create(BASE_URL + address + RESPONSE_FORMAT);
+        WebClient webClient = WebClient.create();
         osmOrderValidationService = new OsmOrderValidationService(webClient);
     }
 
     @Test
-    @DisplayName("given Valid Address when Validate Address then True Return")
-    public void givenValidAddress_whenValidateAddress_thenTrueReturn() {
+    @DisplayName("given Valid Address when Validate Address then True Returned")
+    public void givenValidAddress_whenValidateAddress_thenTrueReturned() {
 
         Assertions.assertTrue(osmOrderValidationService.validateAddress("Київ, вул. Генерала Aлмазова 11"));
         Assertions.assertTrue(osmOrderValidationService.validateAddress("Київ Генерала Aлмазова 11"));
@@ -39,8 +36,8 @@ public class OsmOrderValidationServiceITest {
     }
 
     @Test
-    @DisplayName("given Invalid Address when Validate Address then False Return")
-    public void givenInvalidAddress_whenValidateAddress_thenFalseReturn() {
+    @DisplayName("given Invalid Address when Validate Address then False Returned")
+    public void givenInvalidAddress_whenValidateAddress_thenFalseReturned() {
 
         Assertions.assertFalse(osmOrderValidationService.validateAddress("Киїїв, вул. Генерала Aлмазова 11"));
         Assertions.assertFalse(osmOrderValidationService.validateAddress("Київ вул. Некоректна 11"));
@@ -49,8 +46,8 @@ public class OsmOrderValidationServiceITest {
     }
 
     @Test
-    @DisplayName("given Valid Address when Get OsmGeocodingDto then Not Null Dto Return")
-    public void givenValidAddress_whenGetOsmGeocodingDto_thenNotNullDtoReturn() {
+    @DisplayName("given Valid Address when Get OsmGeocodingDto then Not Null Dto Returned")
+    public void givenValidAddress_whenGetOsmGeocodingDto_thenNotNullDtoReturned() {
         String validAddress = "Київ, вул. Генерала Aлмазова 11";
 
         OsmGeocodingDto osmGeocodingDto = osmOrderValidationService.getOsmGeocodingDto(validAddress);
@@ -59,8 +56,8 @@ public class OsmOrderValidationServiceITest {
     }
 
     @Test
-    @DisplayName("given Invalid Address when GetOsmGeocodingDto then Empty Fields of OsmGeocodingDto Return")
-    public void givenInvalidAddress_whenGetOsmGeocodingDto_thenEmptyFields_ofOsmGeocodingDtoReturn() {
+    @DisplayName("given Invalid Address when GetOsmGeocodingDto then Empty Fields of OsmGeocodingDto Returned")
+    public void givenInvalidAddress_whenGetOsmGeocodingDto_thenEmptyFields_ofOsmGeocodingDtoReturned() {
         String invalidAddress = "Киїїїв,вул. алмазова 567888 тел.097748904";
 
         OsmGeocodingDto osmGeocodingDto = osmOrderValidationService.getOsmGeocodingDto(invalidAddress);
@@ -70,8 +67,8 @@ public class OsmOrderValidationServiceITest {
     }
 
     @Test
-    @DisplayName("given OrderDtos when ValidateOrders then OrderValidationDto Return")
-    public void givenOrderDtos_whenValidateOrders_thenOrderValidationDtoReturn() {
+    @DisplayName("given OrderDtos when ValidateOrders then OrderValidationDto Returned")
+    public void givenOrderDtos_whenValidateOrders_thenOrderValidationDtoReturned() {
         ProductDto firstProductDto = ProductDto.builder()
                 .amount(1)
                 .storeName("Склад №1")
