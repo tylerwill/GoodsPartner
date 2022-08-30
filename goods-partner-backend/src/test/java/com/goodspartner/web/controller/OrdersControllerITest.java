@@ -1,8 +1,5 @@
 package com.goodspartner.web.controller;
 
-import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
@@ -26,8 +23,8 @@ public class OrdersControllerITest extends AbstractWebITest {
     private OrderService orderService;
 
     @Test
-    @DisplayName("given OrderDto when Calculate Orders then Orders External Saved and Json Returned")
-    void givenOrderDto_whenCalculateOrders_thenOrdersExternalSaved_andJsonReturned() throws Exception {
+    @DisplayName("given OrderDto when Calculate Orders then Json Returned")
+    void givenOrderDto_whenCalculateOrders_thenJsonReturned() throws Exception {
         ProductDto firstProductDto = ProductDto.builder()
                 .amount(1)
                 .storeName("Склад №1")
@@ -59,7 +56,7 @@ public class OrdersControllerITest extends AbstractWebITest {
                 .orderNumber("43532")
                 .createdDate(LocalDate.parse("2022-02-17"))
                 .clientName("ТОВ Пекарня")
-                .address("м. Київ, вул. Металістів, 8, оф. 4-24")
+                .address("м.Киїїїв, вул. Некрасова 8667")
                 .managerFullName("Шульженко Олег")
                 .products(List.of(secondProductDto))
                 .orderWeight(20.00)
@@ -68,6 +65,9 @@ public class OrdersControllerITest extends AbstractWebITest {
 
         Mockito.when(orderService.findAllByShippingDate(LocalDate.parse("2022-07-10")))
                 .thenReturn(List.of(firstOrderDto, secondOrderDto));
+
+        Mockito.when(orderService.calculateTotalOrdersWeight(List.of(firstOrderDto, secondOrderDto)))
+                .thenReturn(32.00);
 
         mockMvc.perform(get("/api/v1/orders")
                         .param("date", "2022-07-10")
@@ -99,7 +99,7 @@ public class OrdersControllerITest extends AbstractWebITest {
                                          "orderNumber":"43532",
                                          "createdDate":"2022-02-17",
                                          "clientName":"ТОВ Пекарня",
-                                         "address":"м. Київ, вул. Металістів, 8, оф. 4-24",
+                                         "address":"м.Киїїїв, вул. Некрасова 8667",
                                          "managerFullName":"Шульженко Олег",
                                          "validAddress":false,
                                          "products":[
@@ -110,7 +110,8 @@ public class OrdersControllerITest extends AbstractWebITest {
                                             }
                                          ]
                                       }
-                                   ]
+                                   ],
+                                   "totalOrdersWeight": 32.00
                                 }
                                                                           """));
     }
@@ -129,7 +130,8 @@ public class OrdersControllerITest extends AbstractWebITest {
                                 {
                                    "date":"2000-01-01",
                                    "validOrders":[],
-                                   "invalidOrders":[]
+                                   "invalidOrders":[],
+                                   "totalOrdersWeight":0.00
                                 }
                                    """));
     }
