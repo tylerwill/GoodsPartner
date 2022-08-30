@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CarsLoadReportGeneratorITest {
     private final static String REPORTS_DESTINATION = "reports";
+    private final CarLoadSheetGenerator carLoadSheetGenerator = new CarLoadSheetGenerator();
 
     @SneakyThrows
     private static void writeReportToFile(ReportResult reportResult, File destinationFile) {
@@ -69,7 +70,7 @@ public class CarsLoadReportGeneratorITest {
 
 
         RouteService routeService = Mockito.mock(RouteService.class);
-        CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(routeService);
+        CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(routeService, carLoadSheetGenerator);
 
         Mockito.when(routeService.calculateRoutes(LocalDate.of(2022, 7, 12)))
                 .thenReturn(routesCalculation);
@@ -106,41 +107,41 @@ public class CarsLoadReportGeneratorITest {
                 .loadSize(59.32)
                 .build();
 
-        ProductDto product1 = ProductDto.builder()
+        ProductDto productFirst = ProductDto.builder()
                 .productName("3434 Паста шоколадна")
                 .amount(1)
                 .unitWeight(1.52)
                 .totalProductWeight(1.52)
                 .build();
 
-        ProductDto product2 = ProductDto.builder()
+        ProductDto productSecond = ProductDto.builder()
                 .productName("46643 Фарба харчова синя натуральна")
                 .amount(10)
                 .unitWeight(57.8)
                 .totalProductWeight(578)
                 .build();
 
-        ProductDto product3 = ProductDto.builder()
+        ProductDto productThird = ProductDto.builder()
                 .productName("678968 Суміш для випікання Мрія Маффіни з апельсиновою цедрою")
                 .amount(10)
                 .unitWeight(47.8)
                 .totalProductWeight(478)
                 .build();
 
-        OrderDto order1 = OrderDto.builder()
-                .products(List.of(product2, product3))
+        OrderDto orderFirst = OrderDto.builder()
+                .products(List.of(productSecond, productThird))
                 .orderNumber(String.valueOf(35665))
                 .orderWeight(579.52)
                 .id(1)
                 .build();
-        OrderDto order2 = OrderDto.builder()
-                .products(List.of(product3))
+        OrderDto orderSecond = OrderDto.builder()
+                .products(List.of(productThird))
                 .orderNumber(String.valueOf(36325))
                 .orderWeight(1.52)
                 .id(2)
                 .build();
-        OrderDto order3 = OrderDto.builder()
-                .products(List.of(product1, product2))
+        OrderDto orderThird = OrderDto.builder()
+                .products(List.of(productFirst, productSecond))
                 .orderNumber(String.valueOf(353625))
                 .orderWeight(579.52)
                 .id(3)
@@ -148,7 +149,7 @@ public class CarsLoadReportGeneratorITest {
 
         RoutesCalculation.CarLoadDto carLoadDto = RoutesCalculation.CarLoadDto.builder()
                 .car(carDto)
-                .orders(List.of(order1, order2, order3))
+                .orders(List.of(orderFirst, orderSecond, orderThird))
                 .build();
 
         RoutesCalculation routesCalculation = RoutesCalculation.builder()
@@ -157,7 +158,7 @@ public class CarsLoadReportGeneratorITest {
                 .build();
 
         RouteService routeService = Mockito.mock(RouteService.class);
-        CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(routeService);
+        CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(routeService, carLoadSheetGenerator);
 
         Mockito.when(routeService.calculateRoutes(LocalDate.of(2022, 7, 12)))
                 .thenReturn(routesCalculation);
