@@ -10,12 +10,14 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.TravelMode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @Service
 public class DefaultGoogleApiService implements GoogleApiService {
     private static final String DEFAULT_LANGUAGE = "uk-UK";
@@ -39,7 +41,11 @@ public class DefaultGoogleApiService implements GoogleApiService {
                     .departureTimeNow()
                     .await()
                     .routes[0];
-        } catch (IOException | ApiException | InterruptedException e) {
+        } catch (InterruptedException e) {
+            log.warn("Interrupted!", e);
+            Thread.currentThread().interrupt();
+            throw new AssertionError(e);
+        } catch (IOException | ApiException e) {
             throw new GoogleApiException(e);
         }
     }
@@ -53,7 +59,11 @@ public class DefaultGoogleApiService implements GoogleApiService {
                     .mode(TravelMode.DRIVING)
                     .language(DEFAULT_LANGUAGE)
                     .await();
-        } catch (IOException | ApiException | InterruptedException e) {
+        } catch (InterruptedException e) {
+            log.warn("Interrupted!", e);
+            Thread.currentThread().interrupt();
+            throw new AssertionError(e);
+        } catch (IOException | ApiException e) {
             throw new GoogleApiException(e);
         }
     }

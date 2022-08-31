@@ -11,6 +11,7 @@ import com.goodspartner.util.DtoCalculationHelper;
 import com.goodspartner.util.ODataUrlBuilder;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service

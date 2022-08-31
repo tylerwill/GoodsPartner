@@ -105,7 +105,6 @@ class OrderMapperTest {
                 .mapOrders(List.of(mockOrder, mockOrder, mockOrder));
 
         assertEquals(3, orderDtoList.size());
-        assertEquals(0.0, 0.0);
         verify(spyOrderMapper).mapOrders(anyList());
         verify(spyOrderMapper, times(3)).mapProducts(anyList());
         verify(spyOrderMapper, times(3)).mapOrder(mockOrder);

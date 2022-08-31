@@ -78,7 +78,7 @@ class CarLoadSheetGeneratorTest {
     }
 
     @Test
-    public void testGroupByProducts() {
+    void testGroupByProducts() {
         Map<String, List<Pair<String, ProductDto>>> map = carLoadSheetGenerator.groupByProducts(carLoadDto);
 
         List<Pair<String, ProductDto>> chocolatePasteList = map.remove("3434 Паста шоколадна");
@@ -97,7 +97,7 @@ class CarLoadSheetGeneratorTest {
     }
 
     @Test
-    public void testGroupByOrders() {
+    void testGroupByOrders() {
         Map<String, List<Pair<String, ProductDto>>> map = carLoadSheetGenerator.groupByOrders(carLoadDto);
 
         List<Pair<String, ProductDto>> order_35665 = map.remove("35665");
@@ -116,7 +116,7 @@ class CarLoadSheetGeneratorTest {
     }
 
     @Test
-    public void testGetAllProductAmount() {
+    void testGetAllProductAmount() {
         List<Pair<String, ProductDto>> list = List.of(
                 Pair.of("35665", productSecond),
                 Pair.of("36325", productThird)

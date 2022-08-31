@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Import(TestConfigurationToCountAllQueries.class)
 @DBRider
-public class DefaultOrderServiceITest extends AbstractBaseITest {
+class DefaultOrderServiceITest extends AbstractBaseITest {
 
     @Autowired
     private OrderService orderService;
