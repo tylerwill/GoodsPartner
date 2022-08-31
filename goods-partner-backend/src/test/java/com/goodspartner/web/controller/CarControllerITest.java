@@ -8,6 +8,7 @@ import com.goodspartner.AbstractWebITest;
 import com.goodspartner.dto.CarDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.NestedServletException;
@@ -18,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DBRider
+@AutoConfigureMockMvc(addFilters = false)
 public class CarControllerITest extends AbstractWebITest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();

@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc(addFilters = false)
 //@EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class
 //        org.springframework.boot.autoconfigure.security.oauth2.OAuth2AutoConfiguration.class
 //})
@@ -39,12 +39,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //@WebMvcTest(OrderController.class)
 //@WebMvcTest
 //@SpringBootTest(webEnvironment = RANDOM_PORT)
-public class OrdersControllerITest extends AbstractWebITest {
+class OrdersControllerITest extends AbstractWebITest {
 
     @MockBean
     private OrderService orderService;
 
-//    @WithMockUser(username = "john", roles={"ADMIN"})
     @Test
     @DisplayName("given OrderDto when Calculate Orders then Orders External Saved and Json Returned")
     void givenOrderDto_whenCalculateOrders_thenOrdersExternalSaved_andJsonReturned() throws Exception {

@@ -12,6 +12,7 @@ import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixRow;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
@@ -25,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DBRider
+@AutoConfigureMockMvc(addFilters = false)
 public class RouteControllerITest extends AbstractWebITest {
     public static final String MOCKED_ROUTE = "datasets/route/route.json";
     public static final String DISTANCE_MATRIX = "datasets/route/distanceMatrix.json";
