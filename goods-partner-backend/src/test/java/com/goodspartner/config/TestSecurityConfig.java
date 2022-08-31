@@ -1,18 +1,16 @@
-package com.goodspartner.web.config;
+package com.goodspartner.config;
 
-import org.junit.jupiter.api.Order;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.test.context.ActiveProfiles;
 
 @TestConfiguration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-//@ActiveProfiles(profiles = "test")
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class TestSecurityConfig {
 
     @Bean
@@ -23,7 +21,8 @@ public class TestSecurityConfig {
                 // Permit all requests without authentication
                 .authorizeRequests().anyRequest().permitAll();
 
-        return http.build();
+        DefaultSecurityFilterChain build = http.build();
+        return build;
     }
 
 }

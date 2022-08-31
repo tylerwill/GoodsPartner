@@ -1,7 +1,10 @@
 package com.goodspartner;
 
 import com.goodspartner.config.TestContextConfiguration;
+import com.goodspartner.config.TestSecurityConfig;
 import org.apache.commons.io.FileUtils;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
@@ -19,7 +22,7 @@ import java.nio.charset.StandardCharsets;
 @SpringBootTest
 @Testcontainers
 @ActiveProfiles("test")
-@Import(TestContextConfiguration.class)
+@Import({TestContextConfiguration.class, TestSecurityConfig.class})
 public class AbstractBaseITest {
 
     private static final PostgreSQLContainer<?> POSTGRES_SQL_CONTAINER;
