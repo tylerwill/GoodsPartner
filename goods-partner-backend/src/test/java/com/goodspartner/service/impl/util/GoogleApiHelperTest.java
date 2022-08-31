@@ -25,7 +25,7 @@ class GoogleApiHelperTest {
 
     @Test
     @DisplayName("Check getRouteTotalDistance Correctly Calculates The Total Distance Of The Route")
-    public void testGetRouteTotalDistance() {
+    void testGetRouteTotalDistance() {
 
         // prepare
         int count = 2;
@@ -47,7 +47,7 @@ class GoogleApiHelperTest {
 
     @Test
     @DisplayName("Check getRouteTotalTime Correctly Calculates The Total Time Of The Route ")
-    public void testGetRouteTotalTime() {
+    void testGetRouteTotalTime() {
 
         //prepare
         int count = 2;
@@ -69,7 +69,7 @@ class GoogleApiHelperTest {
 
     @Test
     @DisplayName("Check Filling routPointDistantTime Field Of RoutePointDto From Route")
-    public void testAddDurationTORoutingPointDto() {
+    void testAddDurationTORoutingPointDto() {
 
         //prepare
         List<RoutePointDto> routePoints = new ArrayList<>(3);

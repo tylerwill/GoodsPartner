@@ -16,7 +16,7 @@ import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
 
 @Import(TestConfigurationToCountAllQueries.class)
 @DBRider
-public class DefaultCarServiceITest extends AbstractBaseITest {
+class DefaultCarServiceITest extends AbstractBaseITest {
 
     private static final int CAR_ID = 1;
 

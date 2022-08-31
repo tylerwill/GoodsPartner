@@ -33,7 +33,7 @@ class DtoCalculationHelperTest {
 
     @Test
     @DisplayName("Test odata product unit weight, depends on total product weight, amount, coefficient")
-    public void testCalculateProductUnitWeight() {
+    void testCalculateProductUnitWeight() {
         var unitWeight = dtoHelper.calculateProductUnitWeight(oDataProductInKg);
 
         assertEquals(6.6, unitWeight);
@@ -41,7 +41,7 @@ class DtoCalculationHelperTest {
 
     @Test
     @DisplayName("Test get total product unit weight depends on allowed measure (кг and л as (1:1), шт (many : 1), not allowed 0")
-    public void testGetTotalProductWeight_whenMeasure() {
+    void testGetTotalProductWeight_whenMeasure() {
         var totalWeightKg = dtoHelper.getTotalProductWeight(oDataProductInKg);
         assertEquals(26.4, totalWeightKg);
         var totalWeighL = dtoHelper.getTotalProductWeight(oDataProductInL);
@@ -54,7 +54,7 @@ class DtoCalculationHelperTest {
 
     @Test
     @DisplayName("Test get total product weight as multiple of amount and unit weight")
-    public void testGetTotalProductWeight() {
+    void testGetTotalProductWeight() {
         double totalProductWeight = dtoHelper.getTotalProductWeight(productDto);
 
         assertEquals(2.0, totalProductWeight);
@@ -62,7 +62,7 @@ class DtoCalculationHelperTest {
 
     @Test
     @DisplayName("Test set to product store name and calculated total weight")
-    public void testEnrichProduct() {
+    void testEnrichProduct() {
         dtoHelper.enrichProduct(productDto);
 
         assertEquals(2.0, productDto.getTotalProductWeight());
@@ -71,7 +71,7 @@ class DtoCalculationHelperTest {
 
     @Test
     @DisplayName("Test set to oData product store name, calculated total and unit weight")
-    public void testEnrichODataProduct() {
+    void testEnrichODataProduct() {
         dtoHelper.enrichODataProduct(oDataProductInKg);
 
         assertEquals(6.6, oDataProductInKg.getUnitWeight());

@@ -15,7 +15,7 @@ import java.util.List;
 
 // Test integration with 1C server
 @Disabled
-public class GrandeDolceOrderServiceITest extends AbstractBaseITest {
+class GrandeDolceOrderServiceITest extends AbstractBaseITest {
 
     @Autowired
     private GrandeDolceOrderService grandeDolceOrderService;

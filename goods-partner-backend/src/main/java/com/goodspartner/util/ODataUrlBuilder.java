@@ -77,7 +77,7 @@ public class ODataUrlBuilder {
     public URI build() {
         StringBuilder urlBuilder = new StringBuilder();
 
-        if (segments.size() != 0) {
+        if (!segments.isEmpty()) {
             StringJoiner segmentJoiner = new StringJoiner("/");
             for (Segment segment : segments) {
                 String value = segment.getValue();
@@ -128,6 +128,7 @@ public class ODataUrlBuilder {
         TOP,
         FILTER;
 
+        @Override
         public String toString() {
             return this.name().toLowerCase();
         }

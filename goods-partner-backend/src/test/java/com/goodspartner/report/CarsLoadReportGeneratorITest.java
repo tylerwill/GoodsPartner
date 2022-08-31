@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CarsLoadReportGeneratorITest {
+class CarsLoadReportGeneratorITest {
     private final static String REPORTS_DESTINATION = "reports";
     private final CarLoadSheetGenerator carLoadSheetGenerator = new CarLoadSheetGenerator();
 

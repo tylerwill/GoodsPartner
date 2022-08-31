@@ -21,7 +21,7 @@ class ODataUrlBuilderTest {
 
     @Test
     @DisplayName("Test build url with all chunks (filter, expand, select, format, top)")
-    public void testURLBuilderWithAllChunks() {
+    void testURLBuilderWithAllChunks() {
         URI uri = ODataUrlBuilder
                 .baseUrl(SERVER_ODATA_URL)
                 .hostPrefix(HOST_PREFIX)
