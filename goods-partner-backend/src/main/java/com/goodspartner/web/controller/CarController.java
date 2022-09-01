@@ -14,31 +14,31 @@ import java.util.List;
 public class CarController {
     private final CarService carService;
 
-//    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
     @GetMapping
     public List<CarDto> getAll() {
         return carService.findAll();
     }
 
-//    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PutMapping("/{id}")
     public void update(@PathVariable int id, @RequestBody CarDto car) {
         carService.update(id, car);
     }
 
-//    @PreAuthorize("hasAnyRole('ROLE_ANONYMOUS', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ROLE_ANONYMOUS', 'LOGIST')")
     @PostMapping()
     public void add(@RequestBody CarDto car) {
         carService.add(car);
     }
 
-//    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @DeleteMapping("{id}")
     public void delete(@PathVariable("id") int id) {
         carService.delete(id);
     }
 
-//    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
     @GetMapping("/{id}")
     public CarDto getById(@PathVariable("id") int id) {
         return carService.getById(id);

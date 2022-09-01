@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
 @SpringBootTest
 @Testcontainers
 @ActiveProfiles("test")
-@Import({TestContextConfiguration.class, TestSecurityConfig.class})
+@Import({TestContextConfiguration.class})
 public class AbstractBaseITest {
 
     private static final PostgreSQLContainer<?> POSTGRES_SQL_CONTAINER;

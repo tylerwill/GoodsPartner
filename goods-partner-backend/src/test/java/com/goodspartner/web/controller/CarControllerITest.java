@@ -5,15 +5,14 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
+import com.goodspartner.config.TestContextConfiguration;
+import com.goodspartner.config.TestSecurityConfig;
 import com.goodspartner.dto.CarDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.NestedServletException;
 
@@ -23,12 +22,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DBRider
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
+@Import({TestSecurityConfig.class})
 public class CarControllerITest extends AbstractWebITest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @WithMockUser(roles = "ADMIN")
     @Test
     @DataSet("common/car/dataset_cars.yml")
     @ExpectedDataSet("common/car/dataset_add_car.yml")

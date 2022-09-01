@@ -1,44 +1,27 @@
 package com.goodspartner.web.controller;
 
-import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
+import com.goodspartner.config.TestSecurityConfig;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.service.OrderService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTestContextBootstrapper;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import({TestSecurityConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
-//@EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class
-//        org.springframework.boot.autoconfigure.security.oauth2.OAuth2AutoConfiguration.class
-//})
-//@SpringBootTest(classes = {TestSecurityConfig.class})
-//@OAuth2ContextConfiguration
-//@WebMvcTest(OrderController.class)
-//@WebMvcTest
-//@SpringBootTest(webEnvironment = RANDOM_PORT)
 class OrdersControllerITest extends AbstractWebITest {
 
     @MockBean

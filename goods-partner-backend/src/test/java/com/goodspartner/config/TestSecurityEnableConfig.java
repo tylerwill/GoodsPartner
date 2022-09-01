@@ -5,22 +5,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 
 @TestConfiguration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class TestSecurityConfig {
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class TestSecurityEnableConfig {
 
     @Bean
     public SecurityFilterChain filterTest(HttpSecurity http) throws Exception {
         http
-                // Permit all requests without authentication
-                .authorizeRequests().anyRequest().permitAll();
+                // Secure all requests with authentication
+                .authorizeRequests().anyRequest().authenticated()
+                .and().oauth2Login();
 
-        DefaultSecurityFilterChain build = http.build();
-        return build;
+        return http.build();
     }
-
 }
