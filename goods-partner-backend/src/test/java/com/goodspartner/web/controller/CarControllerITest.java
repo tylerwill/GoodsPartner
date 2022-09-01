@@ -29,7 +29,6 @@ public class CarControllerITest extends AbstractWebITest {
 
     @Test
     @DataSet("common/car/dataset_cars.yml")
-    @ExpectedDataSet("common/car/dataset_add_car.yml")
     @DisplayName("when Add Car then Ok Status Returned")
     void whenAddTheFirstCar_thenOkStatusReturned() throws Exception {
         CarDto carDto = CarDto.builder()
