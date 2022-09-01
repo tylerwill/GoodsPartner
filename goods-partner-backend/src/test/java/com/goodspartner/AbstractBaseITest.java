@@ -1,10 +1,7 @@
 package com.goodspartner;
 
 import com.goodspartner.config.TestContextConfiguration;
-import com.goodspartner.config.TestSecurityConfig;
 import org.apache.commons.io.FileUtils;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;

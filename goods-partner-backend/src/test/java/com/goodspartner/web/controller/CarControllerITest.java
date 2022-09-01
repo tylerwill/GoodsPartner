@@ -5,8 +5,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.config.TestContextConfiguration;
-import com.goodspartner.config.TestSecurityConfig;
+import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.CarDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DBRider
 @AutoConfigureMockMvc(addFilters = false)
-@Import({TestSecurityConfig.class})
+@Import({TestSecurityDisableConfig.class})
 public class CarControllerITest extends AbstractWebITest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();

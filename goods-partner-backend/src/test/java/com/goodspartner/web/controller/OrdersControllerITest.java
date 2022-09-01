@@ -1,7 +1,7 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.config.TestSecurityConfig;
+import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.service.OrderService;
@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import({TestSecurityConfig.class})
+@Import({TestSecurityDisableConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 class OrdersControllerITest extends AbstractWebITest {
 

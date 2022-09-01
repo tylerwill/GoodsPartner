@@ -26,7 +26,7 @@ public class CarController {
         carService.update(id, car);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ANONYMOUS', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PostMapping()
     public void add(@RequestBody CarDto car) {
         carService.add(car);

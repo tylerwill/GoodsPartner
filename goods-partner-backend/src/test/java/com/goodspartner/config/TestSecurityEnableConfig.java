@@ -15,6 +15,7 @@ public class TestSecurityEnableConfig {
     @Bean
     public SecurityFilterChain filterTest(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
                 // Secure all requests with authentication
                 .authorizeRequests().anyRequest().authenticated()
                 .and().oauth2Login();
