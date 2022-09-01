@@ -2,7 +2,6 @@ package com.goodspartner.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestSecurityEnableConfig;
@@ -23,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @Import({TestSecurityEnableConfig.class})
 @AutoConfigureMockMvc
-public class CarControllerSecurityITest extends AbstractWebITest {
+class CarControllerSecurityITest extends AbstractWebITest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -146,7 +145,7 @@ public class CarControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
-    @DisplayName("when Get Cars Without Auth then Redirected Status Returned")
+    @DisplayName("when Get Cars Without Rights Then Forbidden Status Returned")
     @WithMockUser(username = "mary", roles = "NORIGHTS")
     void whenGetCarsWithNoAuthorizationThenStatusIsForbidden() throws Exception {
 
@@ -157,7 +156,7 @@ public class CarControllerSecurityITest extends AbstractWebITest {
 
     @Test
     @DataSet("common/car/dataset_add_car.yml")
-    @DisplayName("when Delete Car Without Auth then Redirected Status Returned")
+    @DisplayName("when Delete Car Without Rights Then Forbidden Status Returned")
     @WithMockUser(username = "mary", roles = "NORIGHTS")
     void whenDeleteCarWithNoAuthorizationThenStatusIsForbidden() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/cars/1")
@@ -167,7 +166,7 @@ public class CarControllerSecurityITest extends AbstractWebITest {
 
     @Test
     @DataSet("common/car/dataset_add_car.yml")
-    @DisplayName("when Get Car By Id Without Auth then Redirected Status Returned")
+    @DisplayName("when Get Car By Id Without Rights Then Forbidden Status Returned")
     @WithMockUser(username = "mary", roles = "NORIGHTS")
     void whenGetCarByIdWithNoAuthorizationThenStatusIsForbidden() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/cars/2")
@@ -177,7 +176,7 @@ public class CarControllerSecurityITest extends AbstractWebITest {
 
     @Test
     @DataSet("common/car/dataset_cars.yml")
-    @DisplayName("when Add Car Without Auth then Redirected Status Returned")
+    @DisplayName("when Add Car Without Rights Then Forbidden Status Returned")
     @WithMockUser(username = "mary", roles = "NORIGHTS")
     void whenAddCarWithNoAuthorizationThenStatusIsForbidden() throws Exception {
 
@@ -189,7 +188,7 @@ public class CarControllerSecurityITest extends AbstractWebITest {
 
     @Test
     @DataSet("common/car/dataset_cars.yml")
-    @DisplayName("when Put Car Without Auth then Redirected Status Returned")
+    @DisplayName("when Put Car Without Rights Then Forbidden Status Returned")
     @WithMockUser(username = "mary", roles = "NORIGHTS")
     void whenPutCarWithNoAuthorizationThenStatusIsForbidden() throws Exception {
 

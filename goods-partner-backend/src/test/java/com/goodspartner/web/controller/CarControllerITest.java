@@ -42,8 +42,8 @@ public class CarControllerITest extends AbstractWebITest {
                 .travelCost(10)
                 .build();
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/cars")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(carDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(carDto)))
                 .andExpect(status().isOk());
     }
 

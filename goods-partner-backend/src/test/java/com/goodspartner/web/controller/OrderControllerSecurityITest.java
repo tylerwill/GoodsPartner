@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Import({TestSecurityEnableConfig.class})
 @AutoConfigureMockMvc
-public class OrderControllerSecurityITest extends AbstractWebITest {
+class OrderControllerSecurityITest extends AbstractWebITest {
 
     @Test
     @DisplayName("When try to reach endpoint without authentication then expect to get a 302 Redirect to google login.")

@@ -2,6 +2,7 @@ package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.service.CarService;
+import com.goodspartner.security.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +13,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/cars")
 public class CarController {
+
     private final CarService carService;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'LOGIST')")
     @GetMapping
     public List<CarDto> getAll() {
         return carService.findAll();
