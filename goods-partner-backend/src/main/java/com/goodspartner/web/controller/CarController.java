@@ -2,7 +2,6 @@ package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.service.CarService;
-import com.goodspartner.security.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

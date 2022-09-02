@@ -4,9 +4,7 @@ import com.goodspartner.report.CarsLoadReportGenerator;
 import com.goodspartner.report.OrdersReportGenerator;
 import com.goodspartner.report.ReportResult;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.function.Consumer;
 
 @RestController
 @RequestMapping("/api/v1/reports")
