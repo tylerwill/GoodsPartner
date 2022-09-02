@@ -1,6 +1,7 @@
 [
     {
       "id": 0,
+      "refKey": "01grande-0000-0000-0000-000000000000",
       "orderNumber": "45463",
       "products": [
         {
@@ -20,11 +21,13 @@
       ],
       "clientName": "ТОВ \"Пекарня\"",
       "address": "м. Київ, вул. Металістів, 8, оф. 4-24",
+      "comment": "бн",
       "managerFullName": "Андрій Бублик",
       "orderWeight": 5.5
     },
     {
       "id": 0,
+      "refKey": "02grande-0000-0000-0000-000000000000",
       "orderNumber": "432565",
       "products": [
         {
@@ -44,11 +47,13 @@
       ],
       "clientName": "ТОВ \"Пекарня\"",
       "address": "м. Київ, вул. Хрещатик, 1",
+      "comment": "нал",
       "managerFullName": "Андрій Бублик",
       "orderWeight": 338.28
     },
     {
       "id": 0,
+      "refKey": "03grande-0000-0000-0000-000000000000",
       "orderNumber": "426457",
       "products": [
         {
@@ -68,11 +73,13 @@
       ],
       "clientName": "ТОВ \"Пекарня\"",
       "address": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
+      "comment": "бн",
       "managerFullName": "Іван Шугай",
       "orderWeight": 60.870000000000005
     },
     {
       "id": 0,
+      "refKey": "04grande-0000-0000-0000-000000000000",
       "orderNumber": "986453",
       "products": [
         {
@@ -92,6 +99,7 @@
       ],
       "clientName": "ТОВ \"Пекарня\"",
       "address": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
+      "comment": "нал",
       "managerFullName": "Петро Коваленко",
       "orderWeight": 744.11
     }

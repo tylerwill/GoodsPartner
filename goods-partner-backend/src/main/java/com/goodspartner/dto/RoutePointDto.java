@@ -36,6 +36,7 @@ public class RoutePointDto {
     public static class AddressOrderDto {
         private int id;
         private String orderNumber;
+        private String comment;
         private double orderTotalWeight;
     }
 }

@@ -16,7 +16,7 @@ import java.net.URI;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Disabled
-public class WebClientTest extends AbstractBaseITest {
+class WebClientTest extends AbstractBaseITest {
     // Orders
     private static final String ORDER_ENTRY_SET_NAME = "Document_ЗаказПокупателя";
     private static final String ORDER_SELECT_FIELDS = "Ref_Key,Number,Date,АдресДоставки,Контрагент/Description,Ответственный/Code";
@@ -38,7 +38,7 @@ public class WebClientTest extends AbstractBaseITest {
     private WebClient webClient;
 
     @Test
-    public void testGetOrders() {
+    void testGetOrders() {
         URI uri = new ODataUrlBuilder()
                 .baseUrl(SERVER_ODATA_URL)
                 .appendEntitySetSegment(ORDER_ENTRY_SET_NAME)
@@ -60,7 +60,7 @@ public class WebClientTest extends AbstractBaseITest {
     }
 
     @Test
-    public void testGetProducts() {
+    void testGetProducts() {
         URI uri = new ODataUrlBuilder()
                 .baseUrl(SERVER_ODATA_URL)
                 .appendEntitySetSegment(PRODUCT_ENTRY_SET_NAME)

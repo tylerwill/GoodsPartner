@@ -27,6 +27,8 @@ public class ODataOrderDto {
     private LocalDate createdDate;
     @JsonAlias("АдресДоставки")
     private String address;
+    @JsonAlias("Комментарий")
+    private String comment;
 
     private String clientName;
     private String managerFullName;

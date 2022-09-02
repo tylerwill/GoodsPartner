@@ -61,6 +61,7 @@ public class CalculationRoutePointMapper {
         RoutePointDto.AddressOrderDto addressOrderDto = new RoutePointDto.AddressOrderDto();
         addressOrderDto.setId(order.getId());
         addressOrderDto.setOrderNumber(String.valueOf(order.getOrderNumber()));
+        addressOrderDto.setComment(order.getComment());
         addressOrderDto.setOrderTotalWeight(orderTotalWeight);
 
         return addressOrderDto;
