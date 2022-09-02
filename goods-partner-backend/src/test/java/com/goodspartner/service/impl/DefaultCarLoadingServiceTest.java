@@ -19,7 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -37,8 +40,8 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     private CarLoadingService.CarRoutesDto carRoutesDto;
     @MockBean
     private GoogleApiService googleApiService;
-    private RoutePointDto secondRoutePoints;
-    private RoutePointDto firstRoutePoints;
+    private RoutePointDto routePointsFirst;
+    private RoutePointDto routePointsSecond;
     @MockBean
     private CarService carService;
     private StoreDto storeDto;
@@ -71,7 +74,7 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
                 .orderTotalWeight(13.90)
                 .build();
 
-        firstRoutePoints = RoutePointDto.builder()
+        routePointsFirst = RoutePointDto.builder()
                 .id(null)
                 .status(RoutePointStatus.PENDING)
                 .completedAt(null)
@@ -83,7 +86,7 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
                 .orders(List.of(addressOrderDtoFirst))
                 .build();
 
-        secondRoutePoints = RoutePointDto.builder()
+        routePointsSecond = RoutePointDto.builder()
                 .id(null)
                 .status(RoutePointStatus.PENDING)
                 .completedAt(null)
@@ -97,7 +100,7 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
 
         carRoutesDto = CarLoadingService.CarRoutesDto.builder()
                 .car(carDto)
-                .routePoints(List.of(firstRoutePoints, secondRoutePoints))
+                .routePoints(List.of(routePointsFirst, routePointsSecond))
                 .build();
 
         storeDto = StoreDto.builder()
@@ -124,12 +127,13 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
         when(carService.findByAvailableCars()).thenReturn(List.of(carDto));
         when(googleApiService.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
 
-        List<CarLoadingService.CarRoutesDto> actualCarRoutesDtos = defaultCarLoadingService.loadCars(storeDto, List.of(firstRoutePoints, secondRoutePoints));
+        List<CarLoadingService.CarRoutesDto> actualCarRoutesDtos = defaultCarLoadingService
+                .loadCars(storeDto, List.of(routePointsFirst, routePointsSecond));
 
         CarDto actualCarDto = actualCarRoutesDtos.get(0).getCar();
 
         List<RoutePointDto> actualRoutePoints = actualCarRoutesDtos.get(0).getRoutePoints();
-        List<RoutePointDto> expectedRoutePoints = List.of(firstRoutePoints, secondRoutePoints);
+        List<RoutePointDto> expectedRoutePoints = List.of(routePointsFirst, routePointsSecond);
 
         Assertions.assertFalse(actualCarRoutesDtos.isEmpty());
         Assertions.assertEquals(expectedRoutePoints, actualRoutePoints);
@@ -154,12 +158,13 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
         when(carService.findByAvailableCars()).thenReturn(List.of(carDto));
         when(googleApiService.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
 
-        List<CarLoadingService.CarRoutesDto> actualCarRoutesDtos = defaultCarLoadingService.load(List.of(carDto), List.of(firstRoutePoints, secondRoutePoints), distanceMatrix);
+        List<CarLoadingService.CarRoutesDto> actualCarRoutesDtos = defaultCarLoadingService
+                .load(List.of(carDto), List.of(routePointsFirst, routePointsSecond), distanceMatrix);
 
         CarDto actualCarDto = actualCarRoutesDtos.get(0).getCar();
 
         List<RoutePointDto> actualRoutePoints = actualCarRoutesDtos.get(0).getRoutePoints();
-        List<RoutePointDto> expectedRoutePoints = List.of(firstRoutePoints, secondRoutePoints);
+        List<RoutePointDto> expectedRoutePoints = List.of(routePointsFirst, routePointsSecond);
 
         Assertions.assertFalse(actualCarRoutesDtos.isEmpty());
         Assertions.assertEquals(expectedRoutePoints, actualRoutePoints);
@@ -185,7 +190,7 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
         when(googleApiService.getDistanceMatrix(anyList())).thenReturn(routePointsMatrix);
 
         long[][] distanceMatrix = defaultCarLoadingService.calculateDistanceMatrix(routePointsMatrix);
-        long[] demands = defaultCarLoadingService.calculateDemands(List.of(firstRoutePoints, secondRoutePoints));
+        long[] demands = defaultCarLoadingService.calculateDemands(List.of(routePointsFirst, routePointsSecond));
 
         long[] vehicleCapacities = List.of(carDto).stream()
                 .mapToLong(CarDto::getWeightCapacity).toArray();
@@ -195,15 +200,16 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
         int carsAmount = List.of(carDto).size();
 
         RoutingIndexManager manager = new RoutingIndexManager(distanceMatrix.length, carsAmount, 0);
-        RoutingModel routing =
-                defaultCarLoadingService.configureRoutingModel(manager, distanceMatrix, demands, vehicleCapacities, vehicleCosts, carsAmount);
 
-        List<CarLoadingService.CarRoutesDto> actualCarRoutesDtos =
-                defaultCarLoadingService.getCarLoadDtos(List.of(carDto), List.of(firstRoutePoints, secondRoutePoints), manager, routing);
+        RoutingModel routing = defaultCarLoadingService
+                .configureRoutingModel(manager, distanceMatrix, demands, vehicleCapacities, vehicleCosts, carsAmount);
+
+        List<CarLoadingService.CarRoutesDto> actualCarRoutesDtos = defaultCarLoadingService
+                .getCarLoadDtos(List.of(carDto), List.of(routePointsFirst, routePointsSecond), manager, routing);
 
         CarDto actualCarDto = actualCarRoutesDtos.get(0).getCar();
         List<RoutePointDto> actualRoutePoints = actualCarRoutesDtos.get(0).getRoutePoints();
-        List<RoutePointDto> expectedRoutePoints = List.of(firstRoutePoints, secondRoutePoints);
+        List<RoutePointDto> expectedRoutePoints = List.of(routePointsFirst, routePointsSecond);
 
         Assertions.assertFalse(actualCarRoutesDtos.isEmpty());
         Assertions.assertEquals(expectedRoutePoints, actualRoutePoints);
@@ -214,7 +220,7 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     @DisplayName("Check testCalculateDemands Correctly Calculate Demands")
     void testCalculateDemands() {
 
-        long[] actualDemands = defaultCarLoadingService.calculateDemands(List.of(firstRoutePoints, secondRoutePoints));
+        long[] actualDemands = defaultCarLoadingService.calculateDemands(List.of(routePointsFirst, routePointsSecond));
         long[] expectedDemands = new long[]{0, 5, 5};
 
         Assertions.assertNotNull(actualDemands);
@@ -249,7 +255,10 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     @DisplayName("Check getCarLoading Return Correct CarRoutesDto Object")
     void testGetCarLoad() {
 
-        CarLoadingService.CarRoutesDto actualCarRoutesDto = defaultCarLoadingService.getCarLoad(carDto, List.of(firstRoutePoints, secondRoutePoints));
+        List<RoutePointDto> routePointDtoList = List.of(routePointsFirst, routePointsSecond);
+
+        CarLoadingService.CarRoutesDto actualCarRoutesDto = defaultCarLoadingService
+                .getCarLoad(carDto, routePointDtoList);
 
         CarDto actualCarDto = actualCarRoutesDto.getCar();
         List<RoutePointDto> actualRoutePoints = actualCarRoutesDto.getRoutePoints();
@@ -259,5 +268,13 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
 
         Assertions.assertEquals(expectedCarDto, actualCarDto);
         Assertions.assertEquals(expectedRoutePoints, actualRoutePoints);
+        Assertions.assertEquals(expectedLoadSize,actualCarDto.getLoadSize());
+
+       /* here you test just the builder logic works fine in method you`re testing
+        you should also assert this logic:
+        double loadSize = BigDecimal.valueOf(routePoints.stream()
+                        .map(RoutePointDto::getAddressTotalWeight)
+                        .collect(Collectors.summarizingDouble(count -> count)).getSum())
+                .setScale(2, RoundingMode.HALF_UP).doubleValue();*/
     }
 }
