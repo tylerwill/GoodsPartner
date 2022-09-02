@@ -35,9 +35,11 @@ class OrdersControllerITest extends AbstractWebITest {
 
         OrderDto firstOrderDto = OrderDto.builder()
                 .orderNumber("45678")
+                .refKey("01grande-0000-0000-0000-000000000000")
                 .createdDate(LocalDate.parse("2022-02-17"))
                 .clientName("Домашня випічка")
                 .address("Бровари, Марії Лагунової, 11")
+                .comment("бн")
                 .managerFullName("Балашова Лариса")
                 .products(List.of(firstProductDto))
                 .orderWeight(12.00)
@@ -54,9 +56,11 @@ class OrdersControllerITest extends AbstractWebITest {
 
         OrderDto secondOrderDto = OrderDto.builder()
                 .orderNumber("43532")
+                .refKey("02grande-0000-0000-0000-000000000000")
                 .createdDate(LocalDate.parse("2022-02-17"))
                 .clientName("ТОВ Пекарня")
                 .address("м.Киїїїв, вул. Некрасова 8667")
+                .comment("бн")
                 .managerFullName("Шульженко Олег")
                 .products(List.of(secondProductDto))
                 .orderWeight(20.00)
@@ -80,10 +84,12 @@ class OrdersControllerITest extends AbstractWebITest {
                                    "validOrders":[
                                       {
                                          "orderNumber":"45678",
+                                         "refKey": "01grande-0000-0000-0000-000000000000",
                                          "createdDate":"2022-02-17",
                                          "clientName":"Домашня випічка",
                                          "address":"Бровари, Марії Лагунової, 11",
                                          "managerFullName":"Балашова Лариса",
+                                         "comment": "бн",
                                          "validAddress":true,
                                          "products":[
                                             {
@@ -97,9 +103,11 @@ class OrdersControllerITest extends AbstractWebITest {
                                   "invalidOrders":[
                                       {
                                          "orderNumber":"43532",
+                                         "refKey": "02grande-0000-0000-0000-000000000000",
                                          "createdDate":"2022-02-17",
                                          "clientName":"ТОВ Пекарня",
                                          "address":"м.Киїїїв, вул. Некрасова 8667",
+                                         "comment": "бн",
                                          "managerFullName":"Шульженко Олег",
                                          "validAddress":false,
                                          "products":[

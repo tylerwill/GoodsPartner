@@ -26,11 +26,13 @@
           "orders": [
             {
               "id": 10,
-              "orderNumber": "426457"
+              "orderNumber": "426457",
+              "comment": "бн"
             },
             {
               "id": 9,
-              "orderNumber": "986453"
+              "orderNumber": "986453",
+              "comment": "бн"
             }
           ]
         },
@@ -46,7 +48,8 @@
           "orders": [
             {
               "id": 3,
-              "orderNumber": "45463"
+              "orderNumber": "45463",
+              "comment": "бн"
             }
           ]
         },

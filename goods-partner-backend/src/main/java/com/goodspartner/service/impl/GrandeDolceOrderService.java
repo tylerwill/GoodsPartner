@@ -32,7 +32,7 @@ public class GrandeDolceOrderService implements OrderService {
     private static final String FORMAT = "json";
     // Order
     private static final String ORDER_ENTRY_SET_NAME = "Document_ЗаказПокупателя";
-    private static final String ORDER_SELECT_FIELDS = "Ref_Key,Number,Date,АдресДоставки,Контрагент/Description,Ответственный/Code";
+    private static final String ORDER_SELECT_FIELDS = "Ref_Key,Number,Date,АдресДоставки,Комментарий,Контрагент/Description,Ответственный/Code";
     private static final String ORDER_EXPAND_FIELDS = "Ответственный/ФизЛицо,Контрагент";
     // Product
     private static final String PRODUCT_ENTRY_SET_NAME = "Document_ЗаказПокупателя_Товары";
