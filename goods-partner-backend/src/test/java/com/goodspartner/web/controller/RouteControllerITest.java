@@ -29,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @AutoConfigureMockMvc(addFilters = false)
 public class RouteControllerITest extends AbstractWebITest {
+
     public static final String MOCKED_ROUTE = "datasets/route/route.json";
     public static final String DISTANCE_MATRIX = "datasets/route/distanceMatrix.json";
     public static final String ORIGIN_ADDR = "originAddresses";
@@ -46,7 +47,7 @@ public class RouteControllerITest extends AbstractWebITest {
     @Test
     @DataSet(value = "route/sql_dump.json", disableConstraints = true)
     @DisplayName("given date with orders when Calculate Routers then Json Returned")
-    public void givenDateWithOrdersWhenCalculateRoutersThenJsonWithRoutesAndCarsReturned() throws Exception {
+    void givenDateWithOrdersWhenCalculateRoutersThenJsonWithRoutesAndCarsReturned() throws Exception {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         DirectionsRoute directionsRoute =
@@ -76,7 +77,7 @@ public class RouteControllerITest extends AbstractWebITest {
     @Test
     @DataSet(value = "route/sql_dump.json", disableConstraints = true)
     @DisplayName("given date without orders when Calculate Routers then empty Json Returned")
-    public void givenDateWithoutOrdersWhenCalculateRoutersThenEmptyJsonReturned() throws Exception {
+    void givenDateWithoutOrdersWhenCalculateRoutersThenEmptyJsonReturned() throws Exception {
         JsonNode jsonNode = mapper.readTree(getClass().getClassLoader().getResource(EMPTY_DISTANCE_MATRIX));
         JsonNode originAddresses = jsonNode.get(ORIGIN_ADDR);
         JsonNode destinationAddresses = jsonNode.get(DEST_ADDR);

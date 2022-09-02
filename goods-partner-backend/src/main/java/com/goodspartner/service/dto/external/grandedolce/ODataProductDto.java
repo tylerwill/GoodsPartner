@@ -36,7 +36,7 @@ public class ODataProductDto {
 
     @JsonProperty("ЕдиницаИзмерения")
     private void mapMeasurer(Map<String, String> value) {
-        String measure = value.get("Description");
-        this.measure = measure != null ? measure : "";
+        String unit = value.get("Description");
+        this.measure = unit != null ? unit : "";
     }
 }

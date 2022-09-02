@@ -19,6 +19,9 @@ public class Order {
     @Id
     private int id;
 
+    @Column(name = "ref_key")
+    private String refKey;
+
     private int number;
 
     //private LocalDate date;
@@ -30,6 +33,7 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Address address;
+    private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id", referencedColumnName = "id")

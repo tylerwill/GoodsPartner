@@ -331,6 +331,7 @@
                                 <exclude>com/goodspartner/web/config/**/*.class</exclude>
                                 <exclude>com/goodspartner/web/controller/response/**/*.class</exclude>
                                 <exclude>com/goodspartner/web/RestResponseEntityExceptionHandler.class</exclude>
+                                <exclude>com/goodspartner/service/dto/**/*.class</exclude>
                             </excludes>
                         </configuration>
                     </plugin>

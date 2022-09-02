@@ -18,10 +18,12 @@ public class OrderDto {
 
     // TODO add refKey property
     private int id;
+    private String refKey;
     private String orderNumber;
     private LocalDate createdDate;
     private String clientName;
     private String address;
+    private String comment;
     private String managerFullName;
 
     //Enrichment

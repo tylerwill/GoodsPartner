@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 @Disabled
 @Slf4j
 @DBRider
-public class CalculateRouteServiceITest extends AbstractBaseITest {
+class CalculateRouteServiceITest extends AbstractBaseITest {
 
     private static LocalDate DATE = LocalDate.of(2022, 2, 1);
 

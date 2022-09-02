@@ -85,7 +85,7 @@ class DefaultCalculateRouteServiceTest {
 
     @Test
     @DisplayName("test calculateRoute Should Create And Return Correct RouteDto Object")
-    public void testCalculateRoute() {
+    void testCalculateRoute() {
 
         // prepare
         // ------------  objects accepted by the method  ----------------
@@ -190,7 +190,7 @@ class DefaultCalculateRouteServiceTest {
 
     @Test
     @DisplayName("test getTotalOrders Returns Total Count Of All Orders")
-    public void testGetTotalOrders() {
+    void testGetTotalOrders() {
 
         //prepare
         routePoints = List.of(firstRoutePointDto, secondRoutePointDto);
@@ -204,7 +204,7 @@ class DefaultCalculateRouteServiceTest {
 
     @Test
     @DisplayName("test getRouteOrdersTotalWeight Returns Total Weight Of All Orders")
-    public void testGetRouteOrdersTotalWeight() {
+    void testGetRouteOrdersTotalWeight() {
 
         // prepare
         routePoints = List.of(firstRoutePointDto, secondRoutePointDto);

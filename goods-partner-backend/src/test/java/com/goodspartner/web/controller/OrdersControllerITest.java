@@ -28,8 +28,8 @@ class OrdersControllerITest extends AbstractWebITest {
     private OrderService orderService;
 
     @Test
-    @DisplayName("given OrderDto when Calculate Orders then Orders External Saved and Json Returned")
-    void givenOrderDto_whenCalculateOrders_thenOrdersExternalSaved_andJsonReturned() throws Exception {
+    @DisplayName("given OrderDto when Calculate Orders then Json Returned")
+    void givenOrderDto_whenCalculateOrders_thenJsonReturned() throws Exception {
         ProductDto firstProductDto = ProductDto.builder()
                 .amount(1)
                 .storeName("Склад №1")
@@ -40,9 +40,11 @@ class OrdersControllerITest extends AbstractWebITest {
 
         OrderDto firstOrderDto = OrderDto.builder()
                 .orderNumber("45678")
+                .refKey("01grande-0000-0000-0000-000000000000")
                 .createdDate(LocalDate.parse("2022-02-17"))
                 .clientName("Домашня випічка")
                 .address("Бровари, Марії Лагунової, 11")
+                .comment("бн")
                 .managerFullName("Балашова Лариса")
                 .products(List.of(firstProductDto))
                 .orderWeight(12.00)
@@ -59,9 +61,11 @@ class OrdersControllerITest extends AbstractWebITest {
 
         OrderDto secondOrderDto = OrderDto.builder()
                 .orderNumber("43532")
+                .refKey("02grande-0000-0000-0000-000000000000")
                 .createdDate(LocalDate.parse("2022-02-17"))
                 .clientName("ТОВ Пекарня")
-                .address("м. Київ, вул. Металістів, 8, оф. 4-24")
+                .address("м.Киїїїв, вул. Некрасова 8667")
+                .comment("бн")
                 .managerFullName("Шульженко Олег")
                 .products(List.of(secondProductDto))
                 .orderWeight(20.00)
@@ -70,6 +74,9 @@ class OrdersControllerITest extends AbstractWebITest {
 
         Mockito.when(orderService.findAllByShippingDate(LocalDate.parse("2022-07-10")))
                 .thenReturn(List.of(firstOrderDto, secondOrderDto));
+
+        Mockito.when(orderService.calculateTotalOrdersWeight(List.of(firstOrderDto, secondOrderDto)))
+                .thenReturn(32.00);
 
         mockMvc.perform(get("/api/v1/orders")
                         .param("date", "2022-07-10")
@@ -82,10 +89,12 @@ class OrdersControllerITest extends AbstractWebITest {
                                    "validOrders":[
                                       {
                                          "orderNumber":"45678",
+                                         "refKey": "01grande-0000-0000-0000-000000000000",
                                          "createdDate":"2022-02-17",
                                          "clientName":"Домашня випічка",
                                          "address":"Бровари, Марії Лагунової, 11",
                                          "managerFullName":"Балашова Лариса",
+                                         "comment": "бн",
                                          "validAddress":true,
                                          "products":[
                                             {
@@ -99,9 +108,11 @@ class OrdersControllerITest extends AbstractWebITest {
                                   "invalidOrders":[
                                       {
                                          "orderNumber":"43532",
+                                         "refKey": "02grande-0000-0000-0000-000000000000",
                                          "createdDate":"2022-02-17",
                                          "clientName":"ТОВ Пекарня",
-                                         "address":"м. Київ, вул. Металістів, 8, оф. 4-24",
+                                         "address":"м.Киїїїв, вул. Некрасова 8667",
+                                         "comment": "бн",
                                          "managerFullName":"Шульженко Олег",
                                          "validAddress":false,
                                          "products":[
@@ -112,7 +123,8 @@ class OrdersControllerITest extends AbstractWebITest {
                                             }
                                          ]
                                       }
-                                   ]
+                                   ],
+                                   "totalOrdersWeight": 32.00
                                 }
                                                                           """));
     }
@@ -131,7 +143,8 @@ class OrdersControllerITest extends AbstractWebITest {
                                 {
                                    "date":"2000-01-01",
                                    "validOrders":[],
-                                   "invalidOrders":[]
+                                   "invalidOrders":[],
+                                   "totalOrdersWeight":0.00
                                 }
                                    """));
     }
