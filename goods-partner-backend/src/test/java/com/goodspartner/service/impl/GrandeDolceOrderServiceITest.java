@@ -4,24 +4,42 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodspartner.AbstractBaseITest;
 import com.goodspartner.dto.OrderDto;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletWebRequest;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+
 // Test integration with 1C server
-@Disabled
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@TestInstance(PER_CLASS)
 class GrandeDolceOrderServiceITest extends AbstractBaseITest {
+
+    @LocalServerPort
+    private int port;
 
     @Autowired
     private GrandeDolceOrderService grandeDolceOrderService;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @BeforeAll
+    public void setup() {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        mockRequest.setLocalPort(port);
+        RequestAttributes request = new ServletWebRequest(mockRequest);
+        RequestContextHolder.setRequestAttributes(request);
+    }
 
     /*
     For some reason 1C is not responding for an orders fo 2020/02/02

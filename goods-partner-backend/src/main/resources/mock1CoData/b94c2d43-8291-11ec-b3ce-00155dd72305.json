@@ -1,0 +1,238 @@
+{
+"odata.metadata": "http://89.76.239.245:8080/test/odata/standard.odata/$metadata#Document_ЗаказПокупателя_Товары",
+"value": [{
+"Ref_Key": "c78190c8-858a-11ec-b3ce-00155dd72305",
+"Количество": 24,
+"КоличествоМест": "2",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'c78190c8-858a-11ec-b3ce-00155dd72305', LineNumber=1)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'c78190c8-858a-11ec-b3ce-00155dd72305', LineNumber=1)/Номенклатура",
+"Номенклатура": {
+"Description": "0624 Наповнювач харчовий «Вишневий»  80% (12 кг)"
+}
+},{
+"Ref_Key": "20a6101f-858a-11ec-b3ce-00155dd72305",
+"Количество": 20,
+"КоличествоМест": "20",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'20a6101f-858a-11ec-b3ce-00155dd72305', LineNumber=1)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'20a6101f-858a-11ec-b3ce-00155dd72305', LineNumber=1)/Номенклатура",
+"Номенклатура": {
+"Description": "GL1 Глюкозний сироп (1 кг)"
+}
+},{
+"Ref_Key": "abaa9b64-84ca-11ec-b3ce-00155dd72305",
+"Количество": 6.25,
+"КоличествоМест": "1",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'abaa9b64-84ca-11ec-b3ce-00155dd72305', LineNumber=2)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'abaa9b64-84ca-11ec-b3ce-00155dd72305', LineNumber=2)/Номенклатура",
+"Номенклатура": {
+"Description": "Мигдальні пластівці, 6,250 кг/  Sliced almonds, 6,250 kg"
+}
+},{
+"Ref_Key": "d5a56078-84cb-11ec-b3ce-00155dd72305",
+"Количество": 10,
+"КоличествоМест": "2",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'd5a56078-84cb-11ec-b3ce-00155dd72305', LineNumber=1)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'd5a56078-84cb-11ec-b3ce-00155dd72305', LineNumber=1)/Номенклатура",
+"Номенклатура": {
+"Description": "7158405 Інвертний цукровий сироп 81% (5 кг)"
+}
+},{
+"Ref_Key": "fec71b02-84ea-11ec-b3ce-00155dd72305",
+"Количество": 24,
+"КоличествоМест": "4",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'fec71b02-84ea-11ec-b3ce-00155dd72305', LineNumber=2)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'fec71b02-84ea-11ec-b3ce-00155dd72305', LineNumber=2)/Номенклатура",
+"Номенклатура": {
+"Description": "AFR0C6 Заморожене фруктове пюре з Малини"
+}
+},{
+"Ref_Key": "fec71b02-84ea-11ec-b3ce-00155dd72305",
+"Количество": 42,
+"КоличествоМест": "7",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'fec71b02-84ea-11ec-b3ce-00155dd72305', LineNumber=3)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'fec71b02-84ea-11ec-b3ce-00155dd72305', LineNumber=3)/Номенклатура",
+"Номенклатура": {
+"Description": "ACA0C6 Заморожене фруктове пюре з Чорної смородини"
+}
+},{
+"Ref_Key": "abaa9b64-84ca-11ec-b3ce-00155dd72305",
+"Количество": 1,
+"КоличествоМест": "1",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'abaa9b64-84ca-11ec-b3ce-00155dd72305', LineNumber=3)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'abaa9b64-84ca-11ec-b3ce-00155dd72305', LineNumber=3)/Номенклатура",
+"Номенклатура": {
+"Description": "Фіорфіоре Ізі (AM50AB) (1 кг)"
+}
+},{
+"Ref_Key": "d5a56078-84cb-11ec-b3ce-00155dd72305",
+"Количество": 2,
+"КоличествоМест": "2",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'd5a56078-84cb-11ec-b3ce-00155dd72305', LineNumber=2)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'd5a56078-84cb-11ec-b3ce-00155dd72305', LineNumber=2)/Номенклатура",
+"Номенклатура": {
+"Description": "Агар-агар (1 кг)"
+}
+},{
+"Ref_Key": "fec71b02-84ea-11ec-b3ce-00155dd72305",
+"Количество": 42,
+"КоличествоМест": "7",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'fec71b02-84ea-11ec-b3ce-00155dd72305', LineNumber=4)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'fec71b02-84ea-11ec-b3ce-00155dd72305', LineNumber=4)/Номенклатура",
+"Номенклатура": {
+"Description": "AKA0C6 Заморожене фруктове пюре з Каламансі"
+}
+},{
+"Ref_Key": "f4c6de85-84f3-11ec-b3ce-00155dd72305",
+"Количество": 5,
+"КоличествоМест": "1",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'f4c6de85-84f3-11ec-b3ce-00155dd72305', LineNumber=1)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'f4c6de85-84f3-11ec-b3ce-00155dd72305', LineNumber=1)/Номенклатура",
+"Номенклатура": {
+"Description": "Міраль лимонний (AF21ZA), 5кг"
+}
+},{
+"Ref_Key": "f4c6de85-84f3-11ec-b3ce-00155dd72305",
+"Количество": 13,
+"КоличествоМест": "1",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'f4c6de85-84f3-11ec-b3ce-00155dd72305', LineNumber=2)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'f4c6de85-84f3-11ec-b3ce-00155dd72305', LineNumber=2)/Номенклатура",
+"Номенклатура": {
+"Description": "Каравела анте-форно горіховий (AX52BB), 13кг"
+}
+},{
+"Ref_Key": "abaa9b64-84ca-11ec-b3ce-00155dd72305",
+"Количество": 4,
+"КоличествоМест": "1",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'abaa9b64-84ca-11ec-b3ce-00155dd72305', LineNumber=1)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'abaa9b64-84ca-11ec-b3ce-00155dd72305', LineNumber=1)/Номенклатура",
+"Номенклатура": {
+"Description": "Мигдальне борошно, 4 кг / Almond dust fine, 4 kg"
+}
+},{
+"Ref_Key": "214453ef-84ce-11ec-b3ce-00155dd72305",
+"Количество": 5,
+"КоличествоМест": "1",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'214453ef-84ce-11ec-b3ce-00155dd72305', LineNumber=1)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'214453ef-84ce-11ec-b3ce-00155dd72305', LineNumber=1)/Номенклатура",
+"Номенклатура": {
+"Description": "Цукор в гранулах NIB SUGAR (5 кг)"
+}
+},{
+"Ref_Key": "fec71b02-84ea-11ec-b3ce-00155dd72305",
+"Количество": 175,
+"КоличествоМест": "35",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'fec71b02-84ea-11ec-b3ce-00155dd72305', LineNumber=5)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'fec71b02-84ea-11ec-b3ce-00155dd72305', LineNumber=5)/Номенклатура",
+"Номенклатура": {
+"Description": "Н Яблучне пюре (№ мат. 651450) KB35"
+}
+},{
+"Ref_Key": "eaff2de1-84ce-11ec-b3ce-00155dd72305",
+"Количество": 72,
+"КоличествоМест": "1",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'eaff2de1-84ce-11ec-b3ce-00155dd72305', LineNumber=1)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "шт"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'eaff2de1-84ce-11ec-b3ce-00155dd72305', LineNumber=1)/Номенклатура",
+"Номенклатура": {
+"Description": "Тістечка \"ЧокоБол\" (1ящ/12лоток/72шт)"
+}
+},{
+"Ref_Key": "b94c2d43-8291-11ec-b3ce-00155dd72305",
+"Количество": 216,
+"КоличествоМест": "3",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'b94c2d43-8291-11ec-b3ce-00155dd72305', LineNumber=1)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "шт"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'b94c2d43-8291-11ec-b3ce-00155dd72305', LineNumber=1)/Номенклатура",
+"Номенклатура": {
+"Description": "Напівфабрикат для тістечка \"Тарт\" (72шт)"
+}
+},{
+"Ref_Key": "fec71b02-84ea-11ec-b3ce-00155dd72305",
+"Количество": 1,
+"КоличествоМест": "1",
+"Коэффициент": 144,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'fec71b02-84ea-11ec-b3ce-00155dd72305', LineNumber=1)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "ящ"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'fec71b02-84ea-11ec-b3ce-00155dd72305', LineNumber=1)/Номенклатура",
+"Номенклатура": {
+"Description": "Тістечка \"Макаронс\""
+}
+},{
+"Ref_Key": "abaa9b64-84ca-11ec-b3ce-00155dd72305",
+"Количество": 2,
+"КоличествоМест": "2",
+"Коэффициент": 1,
+"ЕдиницаИзмерения@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'abaa9b64-84ca-11ec-b3ce-00155dd72305', LineNumber=4)/ЕдиницаИзмерения",
+"ЕдиницаИзмерения": {
+"Description": "кг"
+},
+"Номенклатура@navigationLinkUrl": "Document_ЗаказПокупателя_Товары(Ref_Key=guid'abaa9b64-84ca-11ec-b3ce-00155dd72305', LineNumber=4)/Номенклатура",
+"Номенклатура": {
+"Description": "DCP-10R118-790 Какао-порошок алкалізований (1 кг)"
+}
+}]
+}
