@@ -1,14 +1,10 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.CarDto;
-import com.goodspartner.dto.RoutePointDto;
-import com.goodspartner.dto.StoreDto;
+import com.goodspartner.dto.*;
 import com.goodspartner.service.CarLoadingService;
 import com.goodspartner.service.CarService;
-import com.goodspartner.service.GoogleApiService;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.maps.model.DistanceMatrix;
-import com.google.maps.model.DistanceMatrixRow;
+import com.goodspartner.service.GraphhopperService;
 import com.google.ortools.Loader;
 import com.google.ortools.constraintsolver.*;
 import com.google.protobuf.Duration;
@@ -28,30 +24,37 @@ public class DefaultCarLoadingService implements CarLoadingService {
     private static final String VEHICLE_CAPACITY_DIMENSION_NAME = "Capacity";
     private static final boolean START_CUMUL_TO_ZERO = true;
     private final CarService carService;
-    private final GoogleApiService googleApiService;
 
-    public DefaultCarLoadingService(CarService carService, GoogleApiService googleApiService) {
+    private final GraphhopperService graphhopperService;
+
+    public DefaultCarLoadingService(CarService carService, GraphhopperService graphhopperService) {
         this.carService = carService;
-        this.googleApiService = googleApiService;
+        this.graphhopperService = graphhopperService;
         Loader.loadNativeLibraries();
     }
 
     public List<CarRoutesDto> loadCars(StoreDto storeDto, List<RoutePointDto> routePoints) {
         List<CarDto> cars = carService.findByAvailableCars();
-        List<String> pointsAddresses = new ArrayList<>();
-        pointsAddresses.add(storeDto.getAddress());
-        pointsAddresses.addAll(routePoints.stream()
-                .map(RoutePointDto::getAddress).toList());
 
-        DistanceMatrix routePointsMatrix = googleApiService.getDistanceMatrix(pointsAddresses);
-        return load(cars, routePoints, routePointsMatrix);
+//        TODO: REMOVE!
+        List<RoutePointDto> kievPoints = routePoints.stream().filter(routePointDto ->
+                routePointDto.getMapPoint().getAddress().contains("Київська область")
+                        || routePointDto.getMapPoint().getAddress().contains("Київ,")).toList();
+
+        List<MapPoint> mapPoints = new ArrayList<>();
+        mapPoints.add(storeDto.getMapPoint());
+        mapPoints.addAll(kievPoints.stream().map(RoutePointDto::getMapPoint).toList());
+
+        DistanceMatrix matrix = graphhopperService.getMatrix(mapPoints);
+
+        return load(cars, kievPoints, matrix);
     }
 
     @VisibleForTesting
     List<CarRoutesDto> load(List<CarDto> cars,
-                            List<RoutePointDto> routePoints,
-                            DistanceMatrix routePointsMatrix) {
-        long[][] distanceMatrix = calculateDistanceMatrix(routePointsMatrix);
+                                    List<RoutePointDto> routePoints,
+                                    DistanceMatrix routePointsMatrix) {
+        Long[][] distanceMatrix = routePointsMatrix.getDistance();
         long[] demands = calculateDemands(routePoints);
         long[] vehicleCapacities = cars.stream()
                 .mapToLong(CarDto::getWeightCapacity).toArray();
@@ -98,9 +101,9 @@ public class DefaultCarLoadingService implements CarLoadingService {
                         .build();
         return routing.solveWithParameters(searchParameters);
     }
-
+    
     @VisibleForTesting
-    RoutingModel configureRoutingModel(RoutingIndexManager manager, long[][] distanceMatrix, long[] demands, long[] vehicleCapacities, long[] vehicleCosts, int carsAmount) {
+    RoutingModel configureRoutingModel(RoutingIndexManager manager, Long[][] distanceMatrix, long[] demands, long[] vehicleCapacities, long[] vehicleCosts, int carsAmount) {
         RoutingModel routing = new RoutingModel(manager);
         int transitCallbackIndex =
                 routing.registerTransitCallback((long fromIndex, long toIndex) -> {
@@ -138,18 +141,6 @@ public class DefaultCarLoadingService implements CarLoadingService {
     }
 
     @VisibleForTesting
-    long[][] calculateDistanceMatrix(DistanceMatrix routePointsMatrix) {
-        DistanceMatrixRow[] rows = routePointsMatrix.rows;
-        long[][] distanceMatrix = new long[rows.length][rows.length];
-        for (int i = 0; i < rows.length; i++) {
-            for (int j = 0; j < rows.length; j++) {
-                distanceMatrix[i][j] = rows[i].elements[j].distance.inMeters;
-            }
-        }
-        return distanceMatrix;
-    }
-
-    @VisibleForTesting
     CarRoutesDto getCarLoad(CarDto car, List<RoutePointDto> routePoints) {
         double loadSize = BigDecimal.valueOf(routePoints.stream()
                         .map(RoutePointDto::getAddressTotalWeight)
@@ -162,4 +153,5 @@ public class DefaultCarLoadingService implements CarLoadingService {
                 .routePoints(routePoints)
                 .build();
     }
+
 }

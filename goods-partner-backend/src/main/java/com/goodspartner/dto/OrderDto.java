@@ -1,10 +1,7 @@
 package com.goodspartner.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.goodspartner.entity.OrderAddressValidationStatus;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,9 +22,11 @@ public class OrderDto {
     private String address;
     private String comment;
     private String managerFullName;
+    private MapPoint mapPoint;
 
     //Enrichment
     private List<ProductDto> products;
     private double orderWeight;
     private boolean validAddress;
+    private OrderAddressValidationStatus validationStatus;
 }

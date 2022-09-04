@@ -12,6 +12,7 @@ import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixRow;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -68,6 +69,7 @@ public class RouteControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
+    @Disabled
     @DataSet(value = "route/sql_dump.json", disableConstraints = true)
     @DisplayName("given date with orders when Calculate Routers After Auth then Ok Status Returned")
     @WithMockUser(username = "mary", roles = "ADMIN")
