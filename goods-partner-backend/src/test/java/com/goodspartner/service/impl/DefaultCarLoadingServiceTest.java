@@ -19,18 +19,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @TestInstance(PER_CLASS)
 public class DefaultCarLoadingServiceTest extends AbstractWebITest {
-    private static final String DISTANCE_MATRIX_FOR_LOAD_CARS = "datasets/common/cars_loading/distanceMatrix_for_load_cars.json";
+    private static final String DISTANCE_MATRIX_FOR_LOAD_CARS = "datasets/route/distanceMatrix_for_loadCars.json";
     private static final String DESTINATION_ADDRESSES = "destinationAddresses";
     private static final String ORIGIN_ADDRESSES = "originAddresses";
     private static final String DISTANCE_MATRIX_ROWS = "rows";
@@ -38,17 +38,28 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     private DefaultCarLoadingService defaultCarLoadingService;
     private final ObjectMapper mapper = new ObjectMapper();
     private CarLoadingService.CarRoutesDto carRoutesDto;
+    private List<RoutePointDto> routePointDtoList;
     @MockBean
-    private GoogleApiService googleApiService;
-    private RoutePointDto routePointsFirst;
-    private RoutePointDto routePointsSecond;
+    private GoogleApiService googleApiServiceMock;
+    private DistanceMatrix distanceMatrix;
     @MockBean
-    private CarService carService;
+    private CarService carServiceMock;
     private StoreDto storeDto;
     private CarDto carDto;
 
     @BeforeAll
-    void before() {
+    void setUp() throws IOException {
+
+        JsonNode jsonNode = mapper.readTree(getClass().getClassLoader().getResource(DISTANCE_MATRIX_FOR_LOAD_CARS));
+        JsonNode originAddresses = jsonNode.get(ORIGIN_ADDRESSES);
+        JsonNode destinationAddresses = jsonNode.get(DESTINATION_ADDRESSES);
+        JsonNode rows = jsonNode.get(DISTANCE_MATRIX_ROWS);
+
+        String[] origin = mapper.readValue(originAddresses.traverse(), String[].class);
+        String[] dest = mapper.readValue(destinationAddresses.traverse(), String[].class);
+
+        DistanceMatrixRow[] distanceMatrixRows = mapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
+        distanceMatrix = new DistanceMatrix(origin, dest, distanceMatrixRows);
 
         carDto = CarDto.builder()
                 .id(44)
@@ -74,8 +85,8 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
                 .orderTotalWeight(13.90)
                 .build();
 
-        routePointsFirst = RoutePointDto.builder()
-                .id(null)
+        RoutePointDto routePointsFirst = RoutePointDto.builder()
+                .id(new UUID(1, 1))
                 .status(RoutePointStatus.PENDING)
                 .completedAt(null)
                 .clientId(1)
@@ -86,21 +97,23 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
                 .orders(List.of(addressOrderDtoFirst))
                 .build();
 
-        routePointsSecond = RoutePointDto.builder()
-                .id(null)
+        RoutePointDto routePointsSecond = RoutePointDto.builder()
+                .id(new UUID(2, 2))
                 .status(RoutePointStatus.PENDING)
                 .completedAt(null)
                 .clientId(1)
                 .clientName("ТОВ Фудком")
                 .address("м. Київ, вул. Пирогівський шлях 138")
-                .addressTotalWeight(5.30)
+                .addressTotalWeight(10.90)
                 .routePointDistantTime(55)
                 .orders(List.of(addressOrderDtoSecond))
                 .build();
 
+        routePointDtoList = List.of(routePointsFirst, routePointsSecond);
+
         carRoutesDto = CarLoadingService.CarRoutesDto.builder()
                 .car(carDto)
-                .routePoints(List.of(routePointsFirst, routePointsSecond))
+                .routePoints(routePointDtoList)
                 .build();
 
         storeDto = StoreDto.builder()
@@ -110,30 +123,32 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     }
 
     @Test
-    @DisplayName("Check loadCars Correctly Load Car")
-    void testLoadCars() throws IOException {
+    @DisplayName("Test loadCars Verify Correctly Invocation Of Methods findByAvailableCars And getDistanceMatrix")
+    void testLoadCars() {
 
-        JsonNode jsonNode = mapper.readTree(getClass().getClassLoader().getResource(DISTANCE_MATRIX_FOR_LOAD_CARS));
-        JsonNode originAddresses = jsonNode.get(ORIGIN_ADDRESSES);
-        JsonNode destinationAddresses = jsonNode.get(DESTINATION_ADDRESSES);
-        JsonNode rows = jsonNode.get(DISTANCE_MATRIX_ROWS);
+        when(carServiceMock.findByAvailableCars()).thenReturn(List.of(carDto));
+        when(googleApiServiceMock.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
 
-        String[] origin = mapper.readValue(originAddresses.traverse(), String[].class);
-        String[] dest = mapper.readValue(destinationAddresses.traverse(), String[].class);
+        defaultCarLoadingService.loadCars(storeDto, routePointDtoList);
 
-        DistanceMatrixRow[] distanceMatrixRows = mapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
-        DistanceMatrix distanceMatrix = new DistanceMatrix(origin, dest, distanceMatrixRows);
+        verify(carServiceMock).findByAvailableCars();
+        verify(googleApiServiceMock).getDistanceMatrix(anyList());
+    }
 
-        when(carService.findByAvailableCars()).thenReturn(List.of(carDto));
-        when(googleApiService.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
+    @Test
+    @DisplayName("Test load Checks Whether It Is Correctly Loads And Create List Of CarRoutesDto Object")
+    void testLoad() {
+
+        when(carServiceMock.findByAvailableCars()).thenReturn(List.of(carDto));
+        when(googleApiServiceMock.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
 
         List<CarLoadingService.CarRoutesDto> actualCarRoutesDtos = defaultCarLoadingService
-                .loadCars(storeDto, List.of(routePointsFirst, routePointsSecond));
+                .load(List.of(carDto), routePointDtoList, distanceMatrix);
 
         CarDto actualCarDto = actualCarRoutesDtos.get(0).getCar();
 
         List<RoutePointDto> actualRoutePoints = actualCarRoutesDtos.get(0).getRoutePoints();
-        List<RoutePointDto> expectedRoutePoints = List.of(routePointsFirst, routePointsSecond);
+        List<RoutePointDto> expectedRoutePoints = routePointDtoList;
 
         Assertions.assertFalse(actualCarRoutesDtos.isEmpty());
         Assertions.assertEquals(expectedRoutePoints, actualRoutePoints);
@@ -141,75 +156,28 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     }
 
     @Test
-    @DisplayName("Check load Correctly Load And Return List Of CarRoutesDto Object")
-    void testLoad() throws IOException {
+    @DisplayName("Test getCarloadDtos Checks Whether It Is Correctly Create List Of CarRoutesDto Objects")
+    void testGetCarLoadDtos() {
 
-        JsonNode jsonNode = mapper.readTree(getClass().getClassLoader().getResource(DISTANCE_MATRIX_FOR_LOAD_CARS));
-        JsonNode originAddresses = jsonNode.get(ORIGIN_ADDRESSES);
-        JsonNode destinationAddresses = jsonNode.get(DESTINATION_ADDRESSES);
-        JsonNode rows = jsonNode.get(DISTANCE_MATRIX_ROWS);
+        long[][] distanceMatrixArray = defaultCarLoadingService.calculateDistanceMatrix(distanceMatrix);
+        long[] demands = defaultCarLoadingService.calculateDemands(routePointDtoList);
 
-        String[] origin = mapper.readValue(originAddresses.traverse(), String[].class);
-        String[] dest = mapper.readValue(destinationAddresses.traverse(), String[].class);
+        long[] vehicleCapacities = Stream.of(carDto).mapToLong(CarDto::getWeightCapacity).toArray();
+        long[] vehicleCosts = Stream.of(carDto).mapToLong(CarDto::getTravelCost).toArray();
 
-        DistanceMatrixRow[] distanceMatrixRows = mapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
-        DistanceMatrix distanceMatrix = new DistanceMatrix(origin, dest, distanceMatrixRows);
-
-        when(carService.findByAvailableCars()).thenReturn(List.of(carDto));
-        when(googleApiService.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
-
-        List<CarLoadingService.CarRoutesDto> actualCarRoutesDtos = defaultCarLoadingService
-                .load(List.of(carDto), List.of(routePointsFirst, routePointsSecond), distanceMatrix);
-
-        CarDto actualCarDto = actualCarRoutesDtos.get(0).getCar();
-
-        List<RoutePointDto> actualRoutePoints = actualCarRoutesDtos.get(0).getRoutePoints();
-        List<RoutePointDto> expectedRoutePoints = List.of(routePointsFirst, routePointsSecond);
-
-        Assertions.assertFalse(actualCarRoutesDtos.isEmpty());
-        Assertions.assertEquals(expectedRoutePoints, actualRoutePoints);
-        Assertions.assertEquals(carDto, actualCarDto);
-    }
-
-    @Test
-    @DisplayName("Check getCarloadDtos Return Correctly CarRoutesDto List")
-    void testGetCarLoadDtos() throws IOException {
-
-        JsonNode jsonNode = mapper.readTree(getClass().getClassLoader().getResource(DISTANCE_MATRIX_FOR_LOAD_CARS));
-        JsonNode originAddresses = jsonNode.get(ORIGIN_ADDRESSES);
-        JsonNode destinationAddresses = jsonNode.get(DESTINATION_ADDRESSES);
-        JsonNode rows = jsonNode.get(DISTANCE_MATRIX_ROWS);
-
-        String[] origin = mapper.readValue(originAddresses.traverse(), String[].class);
-        String[] dest = mapper.readValue(destinationAddresses.traverse(), String[].class);
-
-        DistanceMatrixRow[] distanceMatrixRows = mapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
-        DistanceMatrix routePointsMatrix = new DistanceMatrix(origin, dest, distanceMatrixRows);
-
-        when(carService.findByAvailableCars()).thenReturn(List.of(carDto));
-        when(googleApiService.getDistanceMatrix(anyList())).thenReturn(routePointsMatrix);
-
-        long[][] distanceMatrix = defaultCarLoadingService.calculateDistanceMatrix(routePointsMatrix);
-        long[] demands = defaultCarLoadingService.calculateDemands(List.of(routePointsFirst, routePointsSecond));
-
-        long[] vehicleCapacities = List.of(carDto).stream()
-                .mapToLong(CarDto::getWeightCapacity).toArray();
-
-        long[] vehicleCosts = List.of(carDto).stream()
-                .mapToLong(CarDto::getTravelCost).toArray();
         int carsAmount = List.of(carDto).size();
 
-        RoutingIndexManager manager = new RoutingIndexManager(distanceMatrix.length, carsAmount, 0);
+        RoutingIndexManager manager = new RoutingIndexManager(distanceMatrixArray.length, carsAmount, 0);
 
         RoutingModel routing = defaultCarLoadingService
-                .configureRoutingModel(manager, distanceMatrix, demands, vehicleCapacities, vehicleCosts, carsAmount);
+                .configureRoutingModel(manager, distanceMatrixArray, demands, vehicleCapacities, vehicleCosts, carsAmount);
 
         List<CarLoadingService.CarRoutesDto> actualCarRoutesDtos = defaultCarLoadingService
-                .getCarLoadDtos(List.of(carDto), List.of(routePointsFirst, routePointsSecond), manager, routing);
+                .getCarLoadDtos(List.of(carDto), routePointDtoList, manager, routing);
 
         CarDto actualCarDto = actualCarRoutesDtos.get(0).getCar();
         List<RoutePointDto> actualRoutePoints = actualCarRoutesDtos.get(0).getRoutePoints();
-        List<RoutePointDto> expectedRoutePoints = List.of(routePointsFirst, routePointsSecond);
+        List<RoutePointDto> expectedRoutePoints = routePointDtoList;
 
         Assertions.assertFalse(actualCarRoutesDtos.isEmpty());
         Assertions.assertEquals(expectedRoutePoints, actualRoutePoints);
@@ -217,32 +185,19 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     }
 
     @Test
-    @DisplayName("Check testCalculateDemands Correctly Calculate Demands")
+    @DisplayName("Test testCalculateDemands Checks Whether It Is Correctly Calculate Demands")
     void testCalculateDemands() {
 
-        long[] actualDemands = defaultCarLoadingService.calculateDemands(List.of(routePointsFirst, routePointsSecond));
-        long[] expectedDemands = new long[]{0, 5, 5};
+        long[] actualDemands = defaultCarLoadingService.calculateDemands(routePointDtoList);
+        long[] expectedDemands = new long[]{0, 5, 11};
 
         Assertions.assertNotNull(actualDemands);
         Assertions.assertArrayEquals(expectedDemands, actualDemands);
     }
 
     @Test
-    @DisplayName("Check testCalculateDistance Correctly Calculate Distance Matrix")
-    void testCalculateDistanceMatrix() throws IOException {
-
-        JsonNode jsonNode = mapper.readTree(getClass().getClassLoader().getResource(DISTANCE_MATRIX_FOR_LOAD_CARS));
-        JsonNode originAddresses = jsonNode.get(ORIGIN_ADDRESSES);
-        JsonNode destinationAddresses = jsonNode.get(DESTINATION_ADDRESSES);
-        JsonNode rows = jsonNode.get(DISTANCE_MATRIX_ROWS);
-
-        String[] origin = mapper.readValue(originAddresses.traverse(), String[].class);
-        String[] dest = mapper.readValue(destinationAddresses.traverse(), String[].class);
-
-        DistanceMatrixRow[] distanceMatrixRows = mapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
-        DistanceMatrix distanceMatrix = new DistanceMatrix(origin, dest, distanceMatrixRows);
-
-        when(googleApiService.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
+    @DisplayName("Test testCalculateDistance Checks Whether It Is Correctly Calculate Distance Matrix")
+    void testCalculateDistanceMatrix() {
 
         long[][] actualDistanceMatrix = defaultCarLoadingService.calculateDistanceMatrix(distanceMatrix);
         long[][] expectedDistanceMatrix = new long[][]{{0, 18149, 27074}, {18229, 0, 16523}, {24525, 16401, 0}};
@@ -252,10 +207,8 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     }
 
     @Test
-    @DisplayName("Check getCarLoading Return Correct CarRoutesDto Object")
+    @DisplayName("Test getCarLoading Checks Whether It Is Correctly Load Size And Create CarRoutesDto Object")
     void testGetCarLoad() {
-
-        List<RoutePointDto> routePointDtoList = List.of(routePointsFirst, routePointsSecond);
 
         CarLoadingService.CarRoutesDto actualCarRoutesDto = defaultCarLoadingService
                 .getCarLoad(carDto, routePointDtoList);
@@ -268,13 +221,6 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
 
         Assertions.assertEquals(expectedCarDto, actualCarDto);
         Assertions.assertEquals(expectedRoutePoints, actualRoutePoints);
-        Assertions.assertEquals(expectedLoadSize,actualCarDto.getLoadSize());
-
-       /* here you test just the builder logic works fine in method you`re testing
-        you should also assert this logic:
-        double loadSize = BigDecimal.valueOf(routePoints.stream()
-                        .map(RoutePointDto::getAddressTotalWeight)
-                        .collect(Collectors.summarizingDouble(count -> count)).getSum())
-                .setScale(2, RoundingMode.HALF_UP).doubleValue();*/
+        Assertions.assertEquals(16.2, actualCarDto.getLoadSize());
     }
 }
