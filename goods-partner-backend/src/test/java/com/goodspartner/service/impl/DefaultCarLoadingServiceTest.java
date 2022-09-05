@@ -30,20 +30,25 @@ import static org.mockito.Mockito.when;
 
 @TestInstance(PER_CLASS)
 public class DefaultCarLoadingServiceTest extends AbstractWebITest {
+
     private static final String DISTANCE_MATRIX_FOR_LOAD_CARS = "datasets/route/distanceMatrix_for_loadCars.json";
     private static final String DESTINATION_ADDRESSES = "destinationAddresses";
     private static final String ORIGIN_ADDRESSES = "originAddresses";
     private static final String DISTANCE_MATRIX_ROWS = "rows";
-    @Autowired
-    private DefaultCarLoadingService defaultCarLoadingService;
+
     private final ObjectMapper mapper = new ObjectMapper();
-    private CarLoadingService.CarRoutesDto carRoutesDto;
-    private List<RoutePointDto> routePointDtoList;
+
     @MockBean
     private GoogleApiService googleApiServiceMock;
-    private DistanceMatrix distanceMatrix;
     @MockBean
     private CarService carServiceMock;
+
+    @Autowired
+    private DefaultCarLoadingService defaultCarLoadingService;
+
+    private CarLoadingService.CarRoutesDto carRoutesDto;
+    private List<RoutePointDto> routePointDtoList;
+    private DistanceMatrix distanceMatrix;
     private StoreDto storeDto;
     private CarDto carDto;
 
@@ -57,8 +62,8 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
 
         String[] origin = mapper.readValue(originAddresses.traverse(), String[].class);
         String[] dest = mapper.readValue(destinationAddresses.traverse(), String[].class);
-
         DistanceMatrixRow[] distanceMatrixRows = mapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
+
         distanceMatrix = new DistanceMatrix(origin, dest, distanceMatrixRows);
 
         carDto = CarDto.builder()
@@ -85,7 +90,7 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
                 .orderTotalWeight(13.90)
                 .build();
 
-        RoutePointDto routePointsFirst = RoutePointDto.builder()
+        RoutePointDto routePointFirst = RoutePointDto.builder()
                 .id(new UUID(1, 1))
                 .status(RoutePointStatus.PENDING)
                 .completedAt(null)
@@ -97,7 +102,7 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
                 .orders(List.of(addressOrderDtoFirst))
                 .build();
 
-        RoutePointDto routePointsSecond = RoutePointDto.builder()
+        RoutePointDto routePointSecond = RoutePointDto.builder()
                 .id(new UUID(2, 2))
                 .status(RoutePointStatus.PENDING)
                 .completedAt(null)
@@ -109,7 +114,7 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
                 .orders(List.of(addressOrderDtoSecond))
                 .build();
 
-        routePointDtoList = List.of(routePointsFirst, routePointsSecond);
+        routePointDtoList = List.of(routePointFirst, routePointSecond);
 
         carRoutesDto = CarLoadingService.CarRoutesDto.builder()
                 .car(carDto)
@@ -138,9 +143,6 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     @Test
     @DisplayName("Test load Checks Whether It Is Correctly Loads And Create List Of CarRoutesDto Object")
     void testLoad() {
-
-        when(carServiceMock.findByAvailableCars()).thenReturn(List.of(carDto));
-        when(googleApiServiceMock.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
 
         List<CarLoadingService.CarRoutesDto> actualCarRoutesDtos = defaultCarLoadingService
                 .load(List.of(carDto), routePointDtoList, distanceMatrix);
