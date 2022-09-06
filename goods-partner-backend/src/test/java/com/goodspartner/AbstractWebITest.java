@@ -5,6 +5,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.test.web.servlet.MockMvc;
 
 
+
 @AutoConfigureMockMvc
 public class AbstractWebITest extends AbstractBaseITest {
 

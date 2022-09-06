@@ -2,6 +2,18 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+
   datasource:
     username: ${JDBC_DATABASE_USERNAME}
     url: ${JDBC_DATABASE_URL}
