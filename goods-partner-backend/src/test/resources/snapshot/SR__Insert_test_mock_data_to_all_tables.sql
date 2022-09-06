@@ -382,3 +382,10 @@ insert into cars (name, licence_plate, driver, weight_capacity, cooler, travel_c
 values ('Mercedes Sprinter', 'AA 3333 CT', 'Anton Geraschenko', 2500, TRUE, 15, TRUE);
 insert into cars (name, licence_plate, driver, weight_capacity, cooler, travel_cost, available)
 values ('Mercedes 818', 'AA 4444 CT', 'Serhiy Kotovich', 4000, FALSE, 20, TRUE);
+
+insert into users (user_name, email, role, enabled)
+values ('User 1', 'user1@gmail.com', 'ADMIN', TRUE);
+insert into users (user_name, email, role, enabled)
+values ('User 2', 'user2@gmail.com', 'DRIVER', TRUE);
+insert into users (user_name, email, role, enabled)
+values ('User 3', 'user3@gmail.com', 'LOGIST', TRUE);

@@ -7,6 +7,7 @@ import com.goodspartner.service.dto.OrderValidationDto;
 import com.goodspartner.web.controller.response.OrdersCalculation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +24,7 @@ public class OrderController {
     private final OrderService orderService;
     private final OrderValidationService orderValidationService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @GetMapping("/orders")
     public OrdersCalculation calculateOrders(@RequestParam String date) {
 
