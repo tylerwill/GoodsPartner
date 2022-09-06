@@ -6,6 +6,7 @@ import com.goodspartner.dto.StoreDto;
 import com.goodspartner.service.CarLoadingService;
 import com.goodspartner.service.CarService;
 import com.goodspartner.service.GoogleApiService;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixRow;
 import com.google.ortools.Loader;
@@ -46,9 +47,10 @@ public class DefaultCarLoadingService implements CarLoadingService {
         return load(cars, routePoints, routePointsMatrix);
     }
 
-    private List<CarRoutesDto> load(List<CarDto> cars,
-                                    List<RoutePointDto> routePoints,
-                                    DistanceMatrix routePointsMatrix) {
+    @VisibleForTesting
+    List<CarRoutesDto> load(List<CarDto> cars,
+                            List<RoutePointDto> routePoints,
+                            DistanceMatrix routePointsMatrix) {
         long[][] distanceMatrix = calculateDistanceMatrix(routePointsMatrix);
         long[] demands = calculateDemands(routePoints);
         long[] vehicleCapacities = cars.stream()
@@ -65,7 +67,8 @@ public class DefaultCarLoadingService implements CarLoadingService {
         return getCarLoadDtos(cars, routePoints, manager, routing);
     }
 
-    private List<CarRoutesDto> getCarLoadDtos(List<CarDto> cars, List<RoutePointDto> routePoints, RoutingIndexManager manager, RoutingModel routing) {
+    @VisibleForTesting
+    List<CarRoutesDto> getCarLoadDtos(List<CarDto> cars, List<RoutePointDto> routePoints, RoutingIndexManager manager, RoutingModel routing) {
         Assignment solution = getSolution(routing);
         List<CarRoutesDto> loadCars = new ArrayList<>(1);
         for (int i = 0; i < cars.size(); ++i) {
@@ -96,7 +99,8 @@ public class DefaultCarLoadingService implements CarLoadingService {
         return routing.solveWithParameters(searchParameters);
     }
 
-    private RoutingModel configureRoutingModel(RoutingIndexManager manager, long[][] distanceMatrix, long[] demands, long[] vehicleCapacities, long[] vehicleCosts, int carsAmount) {
+    @VisibleForTesting
+    RoutingModel configureRoutingModel(RoutingIndexManager manager, long[][] distanceMatrix, long[] demands, long[] vehicleCapacities, long[] vehicleCosts, int carsAmount) {
         RoutingModel routing = new RoutingModel(manager);
         int transitCallbackIndex =
                 routing.registerTransitCallback((long fromIndex, long toIndex) -> {
@@ -122,7 +126,8 @@ public class DefaultCarLoadingService implements CarLoadingService {
         return routing;
     }
 
-    private long[] calculateDemands(List<RoutePointDto> routePoints) {
+    @VisibleForTesting
+    long[] calculateDemands(List<RoutePointDto> routePoints) {
         long[] demands = new long[routePoints.size() + 1];
         List<Long> collect = routePoints.stream()
                 .map(point -> Math.round(point.getAddressTotalWeight())).toList();
@@ -132,7 +137,8 @@ public class DefaultCarLoadingService implements CarLoadingService {
         return demands;
     }
 
-    private long[][] calculateDistanceMatrix(DistanceMatrix routePointsMatrix) {
+    @VisibleForTesting
+    long[][] calculateDistanceMatrix(DistanceMatrix routePointsMatrix) {
         DistanceMatrixRow[] rows = routePointsMatrix.rows;
         long[][] distanceMatrix = new long[rows.length][rows.length];
         for (int i = 0; i < rows.length; i++) {
@@ -143,7 +149,8 @@ public class DefaultCarLoadingService implements CarLoadingService {
         return distanceMatrix;
     }
 
-    private CarRoutesDto getCarLoad(CarDto car, List<RoutePointDto> routePoints) {
+    @VisibleForTesting
+    CarRoutesDto getCarLoad(CarDto car, List<RoutePointDto> routePoints) {
         double loadSize = BigDecimal.valueOf(routePoints.stream()
                         .map(RoutePointDto::getAddressTotalWeight)
                         .collect(Collectors.summarizingDouble(count -> count)).getSum())
@@ -155,6 +162,4 @@ public class DefaultCarLoadingService implements CarLoadingService {
                 .routePoints(routePoints)
                 .build();
     }
-
-
 }

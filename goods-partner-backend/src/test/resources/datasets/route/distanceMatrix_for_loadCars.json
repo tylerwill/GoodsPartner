@@ -1,0 +1,143 @@
+{
+  "originAddresses":[
+    "вулиця Некрасова, Київ, Україна, 02000",
+    "Гуртожиток №13 НТУУ \"КПІ\", вулиця Металістів, 8, 4 24, Київ, Україна, 03057",
+    "вулиця Пирогівський шлях, 138, Київ, Україна, 02000"
+  ],
+  "destinationAddresses":[
+    "вулиця Некрасова, Київ, Україна, 02000",
+    "Гуртожиток №13 НТУУ \"КПІ\", вулиця Металістів, 8, 4 24, Київ, Україна, 03057",
+    "вулиця Пирогівський шлях, 138, Київ, Україна, 02000"
+  ],
+  "rows":[
+    {
+      "elements":[
+        {
+          "status":"OK",
+          "duration":{
+            "inSeconds":0,
+            "humanReadable":"1 хв"
+          },
+          "durationInTraffic":null,
+          "distance":{
+            "inMeters":0,
+            "humanReadable":"1 м"
+          },
+          "fare":null
+        },
+        {
+          "status":"OK",
+          "duration":{
+            "inSeconds":1441,
+            "humanReadable":"24 хв"
+          },
+          "durationInTraffic":null,
+          "distance":{
+            "inMeters":18149,
+            "humanReadable":"18,1 км"
+          },
+          "fare":null
+        },
+        {
+          "status":"OK",
+          "duration":{
+            "inSeconds":1696,
+            "humanReadable":"28 хв"
+          },
+          "durationInTraffic":null,
+          "distance":{
+            "inMeters":27074,
+            "humanReadable":"27,1 км"
+          },
+          "fare":null
+        }
+      ]
+    },
+    {
+      "elements":[
+        {
+          "status":"OK",
+          "duration":{
+            "inSeconds":1493,
+            "humanReadable":"25 хв"
+          },
+          "durationInTraffic":null,
+          "distance":{
+            "inMeters":18229,
+            "humanReadable":"18,2 км"
+          },
+          "fare":null
+        },
+        {
+          "status":"OK",
+          "duration":{
+            "inSeconds":0,
+            "humanReadable":"1 хв"
+          },
+          "durationInTraffic":null,
+          "distance":{
+            "inMeters":0,
+            "humanReadable":"1 м"
+          },
+          "fare":null
+        },
+        {
+          "status":"OK",
+          "duration":{
+            "inSeconds":1523,
+            "humanReadable":"25 хв"
+          },
+          "durationInTraffic":null,
+          "distance":{
+            "inMeters":16523,
+            "humanReadable":"16,5 км"
+          },
+          "fare":null
+        }
+      ]
+    },
+    {
+      "elements":[
+        {
+          "status":"OK",
+          "duration":{
+            "inSeconds":1989,
+            "humanReadable":"33 хв"
+          },
+          "durationInTraffic":null,
+          "distance":{
+            "inMeters":24525,
+            "humanReadable":"24,5 км"
+          },
+          "fare":null
+        },
+        {
+          "status":"OK",
+          "duration":{
+            "inSeconds":1579,
+            "humanReadable":"26 хв"
+          },
+          "durationInTraffic":null,
+          "distance":{
+            "inMeters":16401,
+            "humanReadable":"16,4 км"
+          },
+          "fare":null
+        },
+        {
+          "status":"OK",
+          "duration":{
+            "inSeconds":0,
+            "humanReadable":"1 хв"
+          },
+          "durationInTraffic":null,
+          "distance":{
+            "inMeters":0,
+            "humanReadable":"1 м"
+          },
+          "fare":null
+        }
+      ]
+    }
+  ]
+}
