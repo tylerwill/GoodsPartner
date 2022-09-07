@@ -22,6 +22,17 @@ grandeDolce:
   1c:
     url: ${GRANDE_DOLCE_1C_URL}
 
+graphhopper:
+  enabled: true
+  osm:
+    url: ${OSM_FILE_URL}
+    file: ${OSM_FILE_LOCATION}
+    graph: ${OSM_GRAPH_LOCATION}
+  profiles:
+    name: car
+    vehicle: car
+    weighting: fastest
+
 
 
 

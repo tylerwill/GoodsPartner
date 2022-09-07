@@ -1,5 +1,6 @@
 package com.goodspartner.mapper;
 
+import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.dto.RoutePointDto;
@@ -21,9 +22,9 @@ public class CalculationRoutePointMapper {
      *      and will be included in OrderDto
      */
     public List<RoutePointDto> mapOrders(List<OrderDto> orders) {
-        Map<Pair<String, String>, List<OrderDto>> addressOrderMap = orders.stream()
+        Map<Pair<MapPoint, String>, List<OrderDto>> addressOrderMap = orders.stream()
                 .collect(Collectors.groupingBy(orderDto ->
-                                Pair.of(orderDto.getAddress(), orderDto.getClientName()),
+                                Pair.of(orderDto.getMapPoint(), orderDto.getClientName()),
                         LinkedHashMap::new, Collectors.toList()));
 
         List<RoutePointDto> routePointDtoList = new ArrayList<>(1);
@@ -36,11 +37,11 @@ public class CalculationRoutePointMapper {
             RoutePointDto routePointDto = new RoutePointDto();
             routePointDto.setId(UUID.randomUUID());
             routePointDto.setStatus(RoutePointStatus.PENDING);
-            routePointDto.setAddress(addressClientPair.getFirst());
-//            routePointDto.setClientId(addressClientPair.getClient().getId()); TOOD Refactoring
+            routePointDto.setAddress(addressClientPair.getFirst().getAddress());
             routePointDto.setClientName(addressClientPair.getSecond());
             routePointDto.setOrders(addressOrderDtos);
             routePointDto.setAddressTotalWeight(addRessTotalWeight);
+            routePointDto.setMapPoint(addressClientPair.getFirst());
             routePointDtoList.add(routePointDto);
         });
         return routePointDtoList;

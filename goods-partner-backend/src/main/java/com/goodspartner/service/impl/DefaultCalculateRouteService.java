@@ -1,5 +1,6 @@
 package com.goodspartner.service.impl;
 
+import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.dto.StoreDto;
@@ -7,17 +8,17 @@ import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.mapper.CalculationRoutePointMapper;
 import com.goodspartner.service.CalculateRouteService;
 import com.goodspartner.service.CarLoadingService;
-import com.goodspartner.service.GoogleApiService;
-import com.goodspartner.service.impl.util.GoogleApiHelper;
+import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.web.controller.response.RoutesCalculation;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.maps.model.DirectionsRoute;
+import com.graphhopper.ResponsePath;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,8 +27,8 @@ import java.util.stream.Collectors;
 public class DefaultCalculateRouteService implements CalculateRouteService {
     private final CalculationRoutePointMapper calculationRoutePointMapper;
     private final CarLoadingService carLoadingService;
-    private final GoogleApiService googleApiService;
-    private final GoogleApiHelper googleApiHelper;
+    private final GraphhopperService graphhopperService;
+
 
     @Override
     public List<RoutesCalculation.RouteDto> calculateRoutes(List<OrderDto> orders, StoreDto storeDto) {
@@ -42,25 +43,24 @@ public class DefaultCalculateRouteService implements CalculateRouteService {
     @VisibleForTesting
     RoutesCalculation.RouteDto calculateRoute(CarLoadingService.CarRoutesDto carLoad, StoreDto storeDto) {
         List<RoutePointDto> routePoints = carLoad.getRoutePoints();
-        List<String> pointsAddresses = routePoints.stream()
-                .map(RoutePointDto::getAddress).toList();
 
-        DirectionsRoute route = googleApiService.getDirectionRoute(storeDto.getAddress(), pointsAddresses);
+        List<MapPoint> mapPoints = new ArrayList<>();
+        mapPoints.add(storeDto.getMapPoint());
+        mapPoints.addAll(carLoad.getRoutePoints().stream().map(RoutePointDto::getMapPoint).toList());
 
-        double totalDistance = googleApiHelper.getRouteTotalDistance(route);
-        long totalTime = googleApiHelper.getRouteTotalTime(route);
-        googleApiHelper.addRoutPointDistantTime(routePoints, route);
+        ResponsePath route = graphhopperService.getRoute(mapPoints);
 
+        //TODO: RoutePointDistantTime ?
         return RoutesCalculation.RouteDto.builder()
                 .id(carLoad.getCar().getId())
                 .status(RouteStatus.DRAFT)
                 .totalWeight(getRouteOrdersTotalWeight(routePoints))
                 .totalPoints(routePoints.size())
                 .totalOrders(getTotalOrders(routePoints))
-                .distance(totalDistance)
-                .estimatedTime(Duration.ofSeconds(totalTime).toMinutes())
+                .distance(route.getDistance() / 1000)
+                .estimatedTime(Duration.ofMillis(route.getTime()).toMinutes())
                 .storeName(storeDto.getName())
-                .storeAddress(storeDto.getAddress())
+                .storeAddress(storeDto.getMapPoint().getAddress())
                 .routePoints(routePoints)
                 .car(carLoad.getCar())
                 .build();

@@ -23,6 +23,7 @@ public class RoutePointDto {
     private String address;
     private double addressTotalWeight;
     private long routePointDistantTime;
+    private MapPoint mapPoint;
 
     @JsonIgnoreProperties(value = {"orderTotalWeight"})
     private List<AddressOrderDto> orders;

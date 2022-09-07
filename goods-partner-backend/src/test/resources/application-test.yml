@@ -31,3 +31,13 @@ reports:
 
 server:
   port: 9876
+
+graphhopper:
+  enabled: false
+  osm:
+    url: ~
+    file: ~
+    graph: ~
+
+
+

@@ -12,5 +12,6 @@ public class StoreDto {
 
     private String name;
     private String address;
+    private MapPoint mapPoint;
 
 }

@@ -9,10 +9,8 @@ import com.goodspartner.mapper.CarDetailsMapper;
 import com.goodspartner.mapper.RouteMapper;
 import com.goodspartner.mapper.RoutePointMapper;
 import com.goodspartner.repository.RouteRepository;
-import com.goodspartner.service.CalculateRouteService;
-import com.goodspartner.service.OrderService;
-import com.goodspartner.service.RouteService;
-import com.goodspartner.service.StoreService;
+import com.goodspartner.service.*;
+import com.goodspartner.service.dto.OrderValidationDto;
 import com.goodspartner.web.controller.response.RoutesCalculation;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,6 +33,8 @@ public class DefaultRouteService implements RouteService {
     private final OrderService orderService;
 
     private final StoreService storeFactory;
+
+    private final OrderValidationService orderValidationService;
 
 
     @Override
@@ -84,9 +84,10 @@ public class DefaultRouteService implements RouteService {
     public RoutesCalculation calculateRoutes(LocalDate date) {
 
         List<OrderDto> orders = orderService.findAllByShippingDate(date);
+        OrderValidationDto orderValidationDto = orderValidationService.validateOrders(orders);
 
         StoreDto storeDto = storeFactory.getMainStore();
-        List<RoutesCalculation.RouteDto> routes = calculateRouteService.calculateRoutes(orders, storeDto);
+        List<RoutesCalculation.RouteDto> routes = calculateRouteService.calculateRoutes(orderValidationDto.getValidOrders(), storeDto);
 
         List<RoutesCalculation.CarLoadDto> carsDetailsList = carDetailsMapper.map(routes, orders);
 

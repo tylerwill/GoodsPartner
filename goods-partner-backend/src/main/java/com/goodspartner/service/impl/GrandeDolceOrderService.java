@@ -11,7 +11,6 @@ import com.goodspartner.util.DtoCalculationHelper;
 import com.goodspartner.util.ODataUrlBuilder;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,7 +29,7 @@ import java.util.stream.Collectors;
 public class GrandeDolceOrderService implements OrderService {
 
     private static final int PARTITION_SIZE = 100;
-    private static final int ORDER_FETCH_LIMIT = 9; // API Key limit
+    private static final int ORDER_FETCH_LIMIT = Integer.MAX_VALUE; // API Key limit
     private static final String HOST_PREFIX = "test/odata/standard.odata/";
     private static final String FORMAT = "json";
     // Order
