@@ -97,6 +97,7 @@ public class GrandeDolceOrderService implements OrderService {
     private ODataWrapperDto<ODataOrderDto> getOrders(URI orderUri) {
         return webClient.get()
                 .uri(orderUri)
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("test", "test"))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
                 })
@@ -112,6 +113,7 @@ public class GrandeDolceOrderService implements OrderService {
     private ODataWrapperDto<ODataProductDto> parseProducts(URI productUri) {
         return webClient.get()
                 .uri(productUri)
+                .headers(httpHeaders -> httpHeaders.setBasicAuth("test", "test"))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataProductDto>>() {
                 })
