@@ -21,6 +21,8 @@ google:
 grandeDolce:
   1c:
     url: ${GRANDE_DOLCE_1C_URL}
+    login: ${GRANDE_DOLCE_1C_LOGIN}
+    password: ${GRANDE_DOLCE_1C_PASSWORD}
 
 graphhopper:
   enabled: true
