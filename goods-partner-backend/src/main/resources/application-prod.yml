@@ -18,14 +18,3 @@ spring:
     username: ${JDBC_DATABASE_USERNAME}
     url: ${JDBC_DATABASE_URL}
     password: ${JDBC_DATABASE_PASSWORD}
-
-graphhopper:
-  enabled: true
-  osm:
-    url: https://download.openstreetmap.fr/extracts/europe/ukraine/kiev_oblast-latest.osm.pbf
-    file: osm_file/kiev_oblast.osm.pbf
-    graph: osm_routing_graph
-  profiles:
-    name: car
-    vehicle: car
-    weighting: fastest
