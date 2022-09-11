@@ -1,9 +1,11 @@
 package com.goodspartner.service;
 
-import com.goodspartner.service.dto.OrderValidationDto;
+import com.goodspartner.dto.OrderDto;
+
+import java.util.List;
 
 public interface OrderExternalService {
 
-    void save(OrderValidationDto orderValidationDto);
+    void save(List<OrderDto> orderValidationDto);
 
 }

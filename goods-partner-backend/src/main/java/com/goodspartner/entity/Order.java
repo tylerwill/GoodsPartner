@@ -33,6 +33,7 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Address address;
+
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)

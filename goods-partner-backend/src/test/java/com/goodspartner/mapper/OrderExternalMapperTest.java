@@ -15,10 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OrderExternalMapperTest {
 
-    private OrderExternalMapper orderExternalMapper
-            = Mappers.getMapper(OrderExternalMapper.class);
-
-    private OrderExternal orderExternal;
+    private final OrderExternalMapper orderExternalMapper = Mappers.getMapper(OrderExternalMapper.class);
 
     @Test
     @DisplayName("test given OrderDto when Map OrderDto then Return OrderExternal")
@@ -40,10 +37,9 @@ class OrderExternalMapperTest {
                 .managerFullName("Балашова Лариса")
                 .products(List.of(productDto))
                 .orderWeight(12.00)
-                .validAddress(true)
                 .build();
 
-        orderExternal = orderExternalMapper.mapOrderDtoToOrderExternal(orderDto);
+        OrderExternal orderExternal = orderExternalMapper.mapOrderDtoToOrderExternal(orderDto);
 
         assertEquals(1, orderExternal.getId());
         assertEquals("45678", orderExternal.getOrderNumber());
@@ -53,6 +49,5 @@ class OrderExternalMapperTest {
         assertEquals("Балашова Лариса", orderExternal.getManagerFullName());
         assertEquals(List.of(productDto), orderExternal.getProducts());
         assertEquals(12.00, orderExternal.getOrderWeight());
-        assertTrue(orderExternal.isValidAddress());
     }
 }

@@ -2,6 +2,7 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.StoreDto;
+import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.service.StoreService;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,12 @@ public class MockedStoreService implements StoreService {
     private static final StoreDto MAIN_STORE = StoreDto.builder()
             .address(STORE_ADDRESS)
             .name(STORE_NAME)
-            .mapPoint(new MapPoint("15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
-                    50.08340335,
-                    29.885050630832627))
+            .mapPoint(MapPoint.builder()
+                    .address("15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна")
+                    .latitude(50.08340335)
+                    .longitude(29.885050630832627)
+                    .status(AddressStatus.KNOWN)
+                    .build())
             .build();
 
     @Override

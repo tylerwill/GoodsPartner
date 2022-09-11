@@ -3,7 +3,6 @@ package com.goodspartner.web.controller;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.service.OrderValidationService;
 import com.goodspartner.service.OrderService;
-import com.goodspartner.service.dto.OrderValidationDto;
 import com.goodspartner.web.controller.response.OrdersCalculation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -18,27 +17,27 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/orders", produces = MediaType.APPLICATION_JSON_VALUE)
 public class OrderController {
 
     private final OrderService orderService;
     private final OrderValidationService orderValidationService;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
-    @GetMapping("/orders")
-    public OrdersCalculation calculateOrders(@RequestParam String date) {
+    @GetMapping
+    public OrdersCalculation getExternalOrdersByDate(@RequestParam String date) {
 
         LocalDate calculationDate = LocalDate.parse(date);
-        List<OrderDto> ordersByDate = orderService.findAllByShippingDate(calculationDate);
 
-        double totalOrdersWeight = orderService.calculateTotalOrdersWeight(ordersByDate);
+        List<OrderDto> orders = orderService.findAllByShippingDate(calculationDate);
 
-        OrderValidationDto orderValidationDto = orderValidationService.validateOrders(ordersByDate);
+        orderValidationService.enrichValidAddress(orders);
+
+        double totalOrdersWeight = orderService.calculateTotalOrdersWeight(orders);
 
         return OrdersCalculation.builder()
                 .date(calculationDate)
-                .validOrders(orderValidationDto.getValidOrders())
-                .invalidOrders(orderValidationDto.getInvalidOrders())
+                .orders(orders)
                 .totalOrdersWeight(totalOrdersWeight)
                 .build();
     }

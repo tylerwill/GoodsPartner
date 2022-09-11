@@ -13,7 +13,6 @@ import java.util.List;
 @Setter
 public class OrdersCalculation {
     private LocalDate date;
-    private List<OrderDto> validOrders;
-    private List<OrderDto> invalidOrders;
+    private List<OrderDto> orders;
     private double totalOrdersWeight;
 }

@@ -2,13 +2,11 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.exceptions.GoogleApiException;
 import com.goodspartner.service.GoogleApiService;
-import com.google.maps.DirectionsApi;
-import com.google.maps.DistanceMatrixApi;
-import com.google.maps.DistanceMatrixApiRequest;
-import com.google.maps.GeoApiContext;
+import com.google.maps.*;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DistanceMatrix;
+import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.TravelMode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,6 +57,19 @@ public class DefaultGoogleApiService implements GoogleApiService {
                     .mode(TravelMode.DRIVING)
                     .language(DEFAULT_LANGUAGE)
                     .await();
+        } catch (InterruptedException e) {
+            log.warn("Interrupted!", e);
+            Thread.currentThread().interrupt();
+            throw new AssertionError(e);
+        } catch (IOException | ApiException e) {
+            throw new GoogleApiException(e);
+        }
+    }
+
+    @Override
+    public GeocodingResult[] getGeocodingResults(String address) {
+        try {
+            return GeocodingApi.geocode(context, address).await();
         } catch (InterruptedException e) {
             log.warn("Interrupted!", e);
             Thread.currentThread().interrupt();

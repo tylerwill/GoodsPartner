@@ -37,6 +37,7 @@ public class OrderExternal {
     @Column(name = "created_date")
     private LocalDate createdDate;
 
+    // TODO check if we could map to external address
     @Column(name = "client_name")
     private String clientName;
 
