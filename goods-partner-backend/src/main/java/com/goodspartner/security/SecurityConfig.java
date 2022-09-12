@@ -18,8 +18,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filter(HttpSecurity http) throws Exception {
-
+        // FIXME: Disable CORS only in dev mode
         http
+                .cors().disable()
                 .authorizeRequests().anyRequest().authenticated()
                 .and().oauth2Login();
 
