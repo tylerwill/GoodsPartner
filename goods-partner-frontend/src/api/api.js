@@ -261,7 +261,6 @@ let mockedCars = [{
     }]
 
 export const orderApi = {
-
     getOrdersByDateRequest(ordersDate) {
         return axiosWithSetting.get(`api/v1/orders?date=` + ordersDate);
         // mockedOrders.data.date = ordersDate;

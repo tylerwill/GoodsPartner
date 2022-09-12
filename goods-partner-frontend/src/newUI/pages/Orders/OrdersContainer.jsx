@@ -1,22 +1,19 @@
 import React from 'react';
 import {connect} from "react-redux";
 import Orders from "./Orders";
-import {getOrdersByDate} from "../../actions/orders-actions";
+import {getOrders} from "../../reducers/orders-reducer";
 
 const mapStateToProps = (state) => {
     return {
-        orders: state.ordersPage.orders,
+        validOrders: state.ordersPage.validOrders,
+        invalidOrders: state.ordersPage.invalidOrders,
         loaded: state.ordersPage.loaded,
         date: state.ordersPage.date
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getByDate: (date) => dispatch(getOrdersByDate(date))
-    }
-}
-
-const OrdersContainer = connect(mapStateToProps, mapDispatchToProps)(Orders);
+const OrdersContainer = connect(mapStateToProps, {
+    getOrders
+})(Orders);
 
 export default OrdersContainer;

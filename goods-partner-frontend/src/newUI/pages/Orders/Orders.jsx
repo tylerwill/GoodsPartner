@@ -4,8 +4,8 @@ import OrdersContent from "./OrdersContent/OrdersContent";
 
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-const Orders = ({orders, loaded, date, getByDate}) => {
-    const tomorrow = new Date();
+const Orders = ({validOrders, invalidOrders, loaded, date, getOrders}) => {
+    const tomorrow = new Date(date);
     tomorrow.setDate(tomorrow.getDate() + 1);
     const defaultDate = tomorrow.toJSON().slice(0, 10).replace(/-/g, '-');
     const [calculationDate, setCalculationDate] = useState(defaultDate);
@@ -28,7 +28,7 @@ const Orders = ({orders, loaded, date, getByDate}) => {
                         }}
                         onChange={(e) => setCalculationDate(e.target.value)}/>
                     <Button sx={{ml: 2}} variant={'contained'}
-                            onClick={(calculationDate) => getByDate(calculationDate)}>Показати</Button>
+                            onClick={() => getOrders(calculationDate)}>Показати</Button>
                 </Box>
                 <Button sx={{color: 'rgba(0, 0, 0, 0.26)'}} variant={'contained'} disabled>
                     Розрахувати маршрут
@@ -40,12 +40,19 @@ const Orders = ({orders, loaded, date, getByDate}) => {
             <Box sx={{mt: 4}}>
                 <Card variant="outlined">
                     {loaded && (
-                        <Box sx={{marginTop:'24px',marginRight:'40px',  display:'flex', justifyContent:'flex-end', alignItems:'center'}}>
-                        <Button variant="text" onClick={()=>alert("Hello")}>Сформувати звіт</Button>
-                        <Button variant="outlined">Оновити</Button>
-                    </Box>)}
+                        <Box sx={{
+                            marginTop: '24px',
+                            marginRight: '40px',
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            alignItems: 'center'
+                        }}>
+                            <Button variant="text" onClick={() => alert("Hello")}>Сформувати звіт</Button>
+                            <Button variant="outlined">Оновити</Button>
+                        </Box>)}
                     <Box sx={{marginTop: '-56px'}}>
-                        {loaded ? <OrdersContent orders={orders}/> : notLoadedYet()}
+                        {loaded ?
+                            <OrdersContent validOrders={validOrders} invalidOrders={invalidOrders}/> : notLoadedYet()}
                     </Box>
                 </Card>
             </Box>

@@ -17,14 +17,14 @@ import {Edit} from "@mui/icons-material";
 import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
 
-const OrdersContent = ({orders}) => {
-    const tabLabels = [`Всі замовлення (${orders.validOrders.length + orders.invalidOrders.length})`,
-        `потребують уточнення (${orders.invalidOrders.length})`]
+const OrdersContent = ({validOrders, invalidOrders}) => {
+    const tabLabels = [`Всі замовлення (${validOrders.length + invalidOrders.length})`,
+        `потребують уточнення (${invalidOrders.length})`]
 
     return <CardContent>
         <BasicTabs labels={tabLabels}>
-            {createTable([...orders.validOrders, ...orders.invalidOrders], "valid")}
-            {createTable(orders.invalidOrders, "invalid")}
+            {createTable([...validOrders, ...invalidOrders], "valid")}
+            {createTable(invalidOrders, "invalid")}
         </BasicTabs>
     </CardContent>
 }
@@ -78,7 +78,7 @@ const Row = ({order, keyPrefix}) => {
                         display: 'flex',
                         alignItems: 'center',
                     }}>
-                        {!order.addressValid && <InfoIcon sx={{color: '#FFC107', marginRight: '5px'}}>
+                        {!order.validAddress && <InfoIcon sx={{color: '#FFC107', marginRight: '5px'}}>
                             <Edit fontSize="medium"/>
                         </InfoIcon>}
                         <span>{order.address}</span>
@@ -127,24 +127,6 @@ const Row = ({order, keyPrefix}) => {
         </>
     );
 }
-//
-// Row.propTypes = {
-//     row: PropTypes.shape({
-//         calories: PropTypes.number.isRequired,
-//         carbs: PropTypes.number.isRequired,
-//         fat: PropTypes.number.isRequired,
-//         history: PropTypes.arrayOf(
-//             PropTypes.shape({
-//                 amount: PropTypes.number.isRequired,
-//                 customerId: PropTypes.string.isRequired,
-//                 date: PropTypes.string.isRequired,
-//             }),
-//         ).isRequired,
-//         name: PropTypes.string.isRequired,
-//         price: PropTypes.number.isRequired,
-//         protein: PropTypes.number.isRequired,
-//     }).isRequired,
-// };
 
 
 export default OrdersContent;

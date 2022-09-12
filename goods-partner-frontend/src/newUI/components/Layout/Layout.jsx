@@ -120,8 +120,8 @@ export default function Layout(props) {
                         <CloseIcon/>
                     </IconButton>
 
+                    {/*TODO: [Nastya] Move into 'company' logo component*/}
                     <Typography sx={{textTransform: 'uppercase'}} noWrap component="div">
-                        {/*TODO: [Nastya] Move into 'company' logo component*/}
                         Goods partner
                     </Typography>
                 </Toolbar>
