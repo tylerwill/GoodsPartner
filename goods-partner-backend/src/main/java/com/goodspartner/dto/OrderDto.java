@@ -1,5 +1,6 @@
 package com.goodspartner.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class OrderDto {
 
     // TODO add refKey property
     private int id;
+    @ApiModelProperty(notes = "The unique uuid of order from 1C")
     private String refKey;
     private String orderNumber;
     private LocalDate createdDate;
