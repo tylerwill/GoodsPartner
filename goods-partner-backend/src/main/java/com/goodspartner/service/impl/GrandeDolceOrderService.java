@@ -1,5 +1,6 @@
 package com.goodspartner.service.impl;
 
+import com.goodspartner.configuration.properties.GrandeDolce1CProperties;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.mapper.OrderMapper;
 import com.goodspartner.mapper.ProductMapper;
@@ -11,7 +12,7 @@ import com.goodspartner.util.DtoCalculationHelper;
 import com.goodspartner.util.ODataUrlBuilder;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -42,15 +43,29 @@ public class GrandeDolceOrderService implements OrderService {
     private static final String PRODUCT_EXPAND_FIELDS = "Номенклатура,ЕдиницаИзмерения";
 
     private final String serverOdataUrl;
+    private final String login;
+    private final String password;
     private final WebClient webClient;
     private final OrderMapper orderMapper;
     private final ProductMapper productMapper;
     private final DtoCalculationHelper dtoHelper;
 
+    private GrandeDolce1CProperties properties;
+
+    @Autowired
+    public void setProperties(GrandeDolce1CProperties properties) {
+        this.properties = properties;
+    }
+
     // TODO Refactor to reduce the number of dependencies in the service
-    public GrandeDolceOrderService(@Value("${grandeDolce.1c.url}") String serverOdataUrl, WebClient webClient,
-                                   OrderMapper orderMapper, ProductMapper productMapper, DtoCalculationHelper dtoHelper) {
-        this.serverOdataUrl = serverOdataUrl;
+    public GrandeDolceOrderService(GrandeDolce1CProperties properties,
+                                   WebClient webClient,
+                                   OrderMapper orderMapper,
+                                   ProductMapper productMapper,
+                                   DtoCalculationHelper dtoHelper) {
+        this.serverOdataUrl = properties.getUrl();
+        this.login = properties.getLogin();
+        this.password = properties.getPassword();
         this.webClient = webClient;
         this.orderMapper = orderMapper;
         this.productMapper = productMapper;
@@ -97,7 +112,7 @@ public class GrandeDolceOrderService implements OrderService {
     private ODataWrapperDto<ODataOrderDto> getOrders(URI orderUri) {
         return webClient.get()
                 .uri(orderUri)
-                .headers(httpHeaders -> httpHeaders.setBasicAuth("test", "test"))
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(login, password))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
                 })
@@ -113,7 +128,7 @@ public class GrandeDolceOrderService implements OrderService {
     private ODataWrapperDto<ODataProductDto> parseProducts(URI productUri) {
         return webClient.get()
                 .uri(productUri)
-                .headers(httpHeaders -> httpHeaders.setBasicAuth("test", "test"))
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(login, password))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataProductDto>>() {
                 })

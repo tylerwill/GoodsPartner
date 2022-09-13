@@ -1,5 +1,6 @@
 package com.goodspartner.service.impl;
 
+import com.goodspartner.configuration.properties.GrandeDolce1CProperties;
 import com.goodspartner.mapper.ProductMapper;
 import com.goodspartner.mapper.ProductMapperImpl;
 import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
@@ -21,12 +22,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
-
 class GrandeDolceOrderServiceTest {
 
+    private final GrandeDolce1CProperties properties = new GrandeDolce1CProperties();
     private final ProductMapper productMapper = new ProductMapperImpl();
     private final GrandeDolceOrderService orderService = new GrandeDolceOrderService(
-            null, null, null, productMapper, null);
+            properties, null, null, productMapper, null);
 
     private final List<ODataOrderDto> orderList = List.of(
             ODataOrderDto.builder().refKey("ecdc9069-84f4-11ec-b3ce-00155dd72305").build(),
@@ -112,8 +113,8 @@ class GrandeDolceOrderServiceTest {
         var productsFilter = orderService.createProductsFilter(keyList);
         var expectedProductFilter =
                 "Ref_Key eq guid'ecdc9069-84f4-11ec-b3ce-00155dd72305' or " +
-                        "Ref_Key eq guid'5c7c3687-84f2-11ec-b3ce-00155dd72305' or " +
-                        "Ref_Key eq guid'e1759d35-84cd-11ec-b3ce-00155dd72305'";
+                "Ref_Key eq guid'5c7c3687-84f2-11ec-b3ce-00155dd72305' or " +
+                "Ref_Key eq guid'e1759d35-84cd-11ec-b3ce-00155dd72305'";
 
         assertEquals(expectedProductFilter, productsFilter);
     }

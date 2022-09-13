@@ -18,8 +18,8 @@ google:
   api:
     key: ${GOOGLE_API_KEY}
 
-grandeDolce:
-  1c:
+grandedolce:
+  accounting-app:
     url: ${GRANDE_DOLCE_1C_URL}
     login: ${GRANDE_DOLCE_1C_LOGIN}
     password: ${GRANDE_DOLCE_1C_PASSWORD}

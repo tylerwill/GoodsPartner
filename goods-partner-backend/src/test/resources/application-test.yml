@@ -22,9 +22,11 @@ google:
   api:
     key: some-test-key
 
-grandeDolce:
-  1c:
+grandedolce:
+  accounting-app:
     url: some-test-url
+    login: some-test-login
+    password: some-test-password
 
 reports:
   destination: reports
