@@ -281,5 +281,20 @@ export const carsApi = {
     getAll() {
         console.log("envs", process.env);
         return axiosWithSetting.get(`api/v1/cars`);
+    },
+
+    add(car) {
+        console.log("envs", process.env);
+        return axiosWithSetting.post(`api/v1/cars`);
+    },
+
+    delete(id) {
+        console.log("envs", process.env);
+        return axiosWithSetting.delete(`api/v1/cars?id=` + id);
+    },
+
+    update(id, car) {
+        console.log("envs", process.env);
+        return axiosWithSetting.put(`api/v1/cars?id=` + id);
     }
 }

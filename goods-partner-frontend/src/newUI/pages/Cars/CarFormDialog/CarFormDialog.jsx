@@ -60,8 +60,8 @@ export default function CarFormDialog({closeDialog, open}) {
 
                         <Grid item xs={12} sx={{mt: 2}}>
                             <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
-                                <Button sx={{mr:2}} variant="outlined" onClick={closeDialog}>Скасувати</Button>
-                                <Button variant="contained" disabled> Зберегти </Button>
+                                <Button sx={{mr: 2}} variant="outlined" onClick={closeDialog}>Скасувати</Button>
+                                <Button variant="outlined" disabled> Зберегти </Button>
                             </Box>
                         </Grid>
                     </Grid>

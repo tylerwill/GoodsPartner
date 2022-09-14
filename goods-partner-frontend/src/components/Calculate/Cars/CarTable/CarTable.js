@@ -8,8 +8,15 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
+import {deleteCar} from "../../../../redux/thunks/calculate-thunk";
+import {useDispatch} from "react-redux";
 
 const label = {inputProps: {'aria-label': 'Checkbox'}};
+
+const handleDelete = (id) => {
+    const dispatch = useDispatch();
+    dispatch(deleteCar(id));
+}
 
 function CarTable({cars}) {
     let isCarPrinted = false;
@@ -92,7 +99,9 @@ function CarTable({cars}) {
                                             камери</TableCell>
                                         <TableCell sx={{padding: '7px'}} align="center">Доступність
                                             автомобіля</TableCell>
-                                        <TableCell sx={{padding: '7px'}} align="center">Видалити авто</TableCell>
+                                        <TableCell sx={{padding: '7px'}} align="center"
+                                                   onClick={() => handleDelete(id)}>Видалити
+                                            авто</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>

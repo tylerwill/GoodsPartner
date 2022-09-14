@@ -1,4 +1,6 @@
 import {CLOSE_CAR_DIALOG, GET_ALL_CARS, OPEN_CAR_DIALOG} from "../actions/car-actions";
+import * as actionTypes from "../../redux/actions/action-types";
+import cars from "../pages/Cars/Cars";
 
 let initialCars = {
         cars: [
@@ -59,6 +61,47 @@ const carsReducer = (state = initialCars, action) => {
             return {...state, carDialogOpened: true};
         case CLOSE_CAR_DIALOG:
             return {...state, carDialogOpened: false};
+
+        case actionTypes.ADD_CAR:
+            return {
+                ...state,
+                cars: [...state.cars, action.payload],
+            };
+
+        // case actionTypes.ADD_CAR:
+        // let newCar = {
+        //     id: cars.length === 0 ? 1 : cars[cars.length - 1].id + 1,
+        //     name: "",
+        //     licence_plate: "",
+        //     driver: "",
+        //     weight_capacity: "",
+        //     cooler: "",
+        //     available: "",
+        //     travel_cost: ""
+        // };
+        // state.cars.push(newCar);
+
+        case actionTypes.DELETE_CAR:
+            return {
+                ...state,
+                cars: state.cars.filter((car) => car.id !== action.payload),
+            };
+
+        case actionTypes.UPDATE_CAR:
+            const updatedCar = action.payload;
+
+            const updatedCars = state.cars.map((car) => {
+                if (car.id === updatedCar.id) {
+                    return updatedCar;
+                }
+                return cars;
+            });
+
+            return {
+                ...state,
+                cars: updatedCars,
+            };
+
         default:
             return state;
     }

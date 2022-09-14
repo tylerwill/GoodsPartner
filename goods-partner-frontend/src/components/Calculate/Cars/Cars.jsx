@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
-import {compose} from "redux";
-import {getCars} from "../../../redux/thunks/calculate-thunk";
+import {bindActionCreators, compose} from "redux";
+import {addCar, deleteCar, getCars, updateCar} from "../../../redux/thunks/calculate-thunk";
 import Grid from "@mui/material/Grid";
 import CarTable from "./CarTable/CarTable";
 
@@ -28,6 +28,14 @@ let mapStateToProps = (state) => {
     return {
         cars: state.cars
     }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({
+        addCar: addCar,
+        deleteCar: deleteCar,
+        updateCar: updateCar
+    }, dispatch);
 }
 
 export default compose(connect(mapStateToProps, {getCars}))(Cars);

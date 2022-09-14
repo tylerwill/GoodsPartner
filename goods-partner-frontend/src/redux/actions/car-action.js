@@ -6,3 +6,25 @@ export const setCars = (cars) => {
         payload: cars
     }
 }
+
+export const addCarAction = (car) => {
+    return {
+        type: actionTypes.ADD_CAR,
+        payload: car
+    }
+}
+
+export const updateCarAction = (id, car) => {
+    return {
+        type: actionTypes.UPDATE_CAR,
+        payload: id, car
+    }
+}
+
+export const deleteCarAction = (id) => {
+    return {
+        type: actionTypes.DELETE_CAR,
+        payload: {id}
+    }
+}
+
