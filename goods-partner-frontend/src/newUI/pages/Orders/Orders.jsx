@@ -4,7 +4,7 @@ import OrdersContent from "./OrdersContent/OrdersContent";
 
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-const Orders = ({validOrders, invalidOrders, loaded, date, getOrders}) => {
+const Orders = ({orders, loaded, date, getOrders}) => {
     const tomorrow = new Date(date);
     tomorrow.setDate(tomorrow.getDate() + 1);
     const defaultDate = tomorrow.toJSON().slice(0, 10).replace(/-/g, '-');
@@ -52,7 +52,7 @@ const Orders = ({validOrders, invalidOrders, loaded, date, getOrders}) => {
                         </Box>)}
                     <Box sx={{marginTop: '-56px'}}>
                         {loaded ?
-                            <OrdersContent validOrders={validOrders} invalidOrders={invalidOrders}/> : notLoadedYet()}
+                            <OrdersContent orders={orders}/> : notLoadedYet()}
                     </Box>
                 </Card>
             </Box>

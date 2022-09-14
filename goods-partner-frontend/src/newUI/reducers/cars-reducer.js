@@ -1,62 +1,19 @@
-import {CLOSE_CAR_DIALOG, GET_ALL_CARS, OPEN_CAR_DIALOG} from "../actions/car-actions";
+import {CLOSE_CAR_DIALOG, GET_ALL_CARS, OPEN_CAR_DIALOG, SET_CARS, setCars} from "../actions/car-actions";
 import * as actionTypes from "../../redux/actions/action-types";
 import cars from "../pages/Cars/Cars";
+import {carsApi} from "../api/api";
 
 let initialCars = {
-        cars: [
-            {
-                "id": 51,
-                "name": "Mercedes Sprinter",
-                "licencePlate": "AA 1111 CT",
-                "driver": "Oleg Dudka",
-                "weightCapacity": 2000,
-                "cooler": false,
-                "available": true,
-                "loadSize": 0.0,
-                "travelCost": 12
-            },
-            {
-                "id": 101,
-                "name": "Mercedes Vito",
-                "licencePlate": "AA 2222 CT",
-                "driver": "Ivan Piddubny",
-                "weightCapacity": 1000,
-                "cooler": false,
-                "available": true,
-                "loadSize": 0.0,
-                "travelCost": 10
-            },
-            {
-                "id": 151,
-                "name": "Mercedes Sprinter",
-                "licencePlate": "AA 3333 CT",
-                "driver": "Anton Geraschenko",
-                "weightCapacity": 2500,
-                "cooler": true,
-                "available": true,
-                "loadSize": 0.0,
-                "travelCost": 15
-            },
-            {
-                "id": 201,
-                "name": "Mercedes 818",
-                "licencePlate": "AA 4444 CT",
-                "driver": "Serhiy Kotovich",
-                "weightCapacity": 4000,
-                "cooler": false,
-                "available": true,
-                "loadSize": 0.0,
-                "travelCost": 20
-            }
-        ],
+        cars: [],
         carDialogOpened: false
     }
 ;
 
 const carsReducer = (state = initialCars, action) => {
+    debugger;
     switch (action.type) {
-        case GET_ALL_CARS:
-            return initialCars;
+        case SET_CARS:
+            return {...state, cars: action.payload};
         case OPEN_CAR_DIALOG:
             return {...state, carDialogOpened: true};
         case CLOSE_CAR_DIALOG:
@@ -67,19 +24,6 @@ const carsReducer = (state = initialCars, action) => {
                 ...state,
                 cars: [...state.cars, action.payload],
             };
-
-        // case actionTypes.ADD_CAR:
-        // let newCar = {
-        //     id: cars.length === 0 ? 1 : cars[cars.length - 1].id + 1,
-        //     name: "",
-        //     licence_plate: "",
-        //     driver: "",
-        //     weight_capacity: "",
-        //     cooler: "",
-        //     available: "",
-        //     travel_cost: ""
-        // };
-        // state.cars.push(newCar);
 
         case actionTypes.DELETE_CAR:
             return {
@@ -106,5 +50,14 @@ const carsReducer = (state = initialCars, action) => {
             return state;
     }
 }
+
+export const getCarsThunkCreator = () => (dispatch) => {
+    carsApi.getCars().then(response => {
+        if (response.status === 200) {
+            dispatch(setCars(response.data));
+        }
+    })
+}
+
 
 export default carsReducer;

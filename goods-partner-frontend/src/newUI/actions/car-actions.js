@@ -1,8 +1,17 @@
 import * as actionTypes from "../../redux/actions/action-types";
 
 export const GET_ALL_CARS = "GET_ALL_CARS";
+export const SET_CARS = "SET_CARS";
 export const OPEN_CAR_DIALOG = "OPEN_CAR_DIALOG";
 export const CLOSE_CAR_DIALOG = "CLOSE_CAR_DIALOG";
+
+
+export const setCars = (cars) => {
+    return {
+        type: SET_CARS,
+        payload: cars
+    }
+}
 
 
 export const getAllCarsActionCreator = () => {

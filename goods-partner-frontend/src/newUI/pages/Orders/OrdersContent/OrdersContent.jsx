@@ -17,13 +17,17 @@ import {Edit} from "@mui/icons-material";
 import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
 
-const OrdersContent = ({validOrders, invalidOrders}) => {
-    const tabLabels = [`Всі замовлення (${validOrders.length + invalidOrders.length})`,
+const OrdersContent = ({orders}) => {
+    const invalidOrders = orders
+        .filter(order => order.mapPoint.status === "UNKNOWN");
+
+    const tabLabels = [`Всі замовлення (${orders.length})`,
         `потребують уточнення (${invalidOrders.length})`]
+
 
     return <CardContent>
         <BasicTabs labels={tabLabels}>
-            {createTable([...validOrders, ...invalidOrders], "valid")}
+            {createTable([...orders], "all")}
             {createTable(invalidOrders, "invalid")}
         </BasicTabs>
     </CardContent>
@@ -57,6 +61,7 @@ const createTable = (orders, keyPrefix) => {
 
 const Row = ({order, keyPrefix}) => {
     const [open, setOpen] = React.useState(false);
+    const isInvalid = order.mapPoint.status === "UNKNOWN";
     return (
         <>
             <TableRow sx={{'& > *': {borderBottom: 'unset'}}}>
@@ -78,7 +83,7 @@ const Row = ({order, keyPrefix}) => {
                         display: 'flex',
                         alignItems: 'center',
                     }}>
-                        {!order.validAddress && <InfoIcon sx={{color: '#FFC107', marginRight: '5px'}}>
+                        {isInvalid && <InfoIcon sx={{color: '#FFC107', marginRight: '5px'}}>
                             <Edit fontSize="medium"/>
                         </InfoIcon>}
                         <span>{order.address}</span>

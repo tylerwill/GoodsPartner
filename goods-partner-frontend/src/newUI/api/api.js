@@ -16,3 +16,9 @@ export const ordersApi = {
         });
     }
 }
+
+export const carsApi = {
+    getCars() {
+        return axiosWithSetting.get('api/v1/cars');
+    }
+}

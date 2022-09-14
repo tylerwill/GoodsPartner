@@ -5,8 +5,7 @@ import {getOrders} from "../../reducers/orders-reducer";
 
 const mapStateToProps = (state) => {
     return {
-        validOrders: state.ordersPage.validOrders,
-        invalidOrders: state.ordersPage.invalidOrders,
+        orders: state.ordersPage.orders,
         loaded: state.ordersPage.loaded,
         date: state.ordersPage.date
     }

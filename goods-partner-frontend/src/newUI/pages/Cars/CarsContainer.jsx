@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from "react-redux";
 import Cars from "./Cars";
 import {closeCarDialogActionCreator, openCarDialogActionCreator} from "../../actions/car-actions";
+import {getCarsThunkCreator} from "../../reducers/cars-reducer";
 
 const mapStateToProps = (state) => {
     return {
@@ -10,13 +11,14 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        openDialog:() => dispatch(openCarDialogActionCreator()),
-        closeDialog:() => dispatch(closeCarDialogActionCreator()),
-    }
-}
+// const mapDispatchToProps = (dispatch) => {
+//     return
+// }
 
-const CarsContainer = connect(mapStateToProps, mapDispatchToProps)(Cars);
+const CarsContainer = connect(mapStateToProps, {
+    openCarDialogActionCreator,
+    closeCarDialogActionCreator,
+    getCarsThunkCreator
+})(Cars);
 
 export default CarsContainer;
