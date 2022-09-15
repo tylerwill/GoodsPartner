@@ -1,5 +1,8 @@
-package com.goodspartner.security;
+package com.goodspartner.service.impl;
 
+import com.goodspartner.entity.User;
+import com.goodspartner.repository.UserRepository;
+import com.goodspartner.service.dto.CustomOAuth2User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,4 +1,4 @@
-package com.goodspartner.security;
+package com.goodspartner.service.dto;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;

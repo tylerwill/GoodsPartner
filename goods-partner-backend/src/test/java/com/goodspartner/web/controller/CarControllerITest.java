@@ -1,6 +1,5 @@
 package com.goodspartner.web.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
@@ -24,8 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 @Import({TestSecurityDisableConfig.class})
 public class CarControllerITest extends AbstractWebITest {
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DataSet("common/car/dataset_cars.yml")

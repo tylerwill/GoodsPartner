@@ -1,4 +1,4 @@
-package com.goodspartner.exceptions;
+package com.goodspartner.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

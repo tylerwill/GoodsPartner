@@ -1,9 +1,9 @@
 package com.goodspartner;
 
-import com.goodspartner.config.TestContextConfiguration;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -19,10 +19,12 @@ import java.nio.charset.StandardCharsets;
 @SpringBootTest
 @Testcontainers
 @ActiveProfiles("test")
-@Import({TestContextConfiguration.class})
 public class AbstractBaseITest {
 
     private static final PostgreSQLContainer<?> POSTGRES_SQL_CONTAINER;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
 
     static {
         POSTGRES_SQL_CONTAINER =

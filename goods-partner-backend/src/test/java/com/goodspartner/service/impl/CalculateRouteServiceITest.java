@@ -2,7 +2,6 @@ package com.goodspartner.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractBaseITest;
@@ -41,12 +40,6 @@ class CalculateRouteServiceITest extends AbstractBaseITest {
 
     @Autowired
     private MockedStoreService mockedStoreService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-//    @Autowired
-//    private ExternalOrderService orderService;
 
     @MockBean
     private OrderService orderService;

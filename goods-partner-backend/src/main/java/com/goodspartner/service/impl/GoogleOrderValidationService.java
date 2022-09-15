@@ -3,7 +3,7 @@ package com.goodspartner.service.impl;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal;
-import com.goodspartner.entity.util.OrderAddressId;
+import com.goodspartner.entity.AddressExternal.OrderAddressId;
 import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.service.GoogleApiService;
 import com.goodspartner.service.OrderValidationService;
@@ -13,9 +13,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.goodspartner.entity.AddressStatus.AUTOVALIDATED;
-import static com.goodspartner.entity.AddressStatus.KNOWN;
-import static com.goodspartner.entity.AddressStatus.UNKNOWN;
+import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
+import static com.goodspartner.dto.MapPoint.AddressStatus.UNKNOWN;
+import static com.goodspartner.dto.MapPoint.AddressStatus.AUTOVALIDATED;
+
 
 @Service
 @RequiredArgsConstructor

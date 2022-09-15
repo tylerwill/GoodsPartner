@@ -1,7 +1,6 @@
 package com.goodspartner.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodspartner.AbstractBaseITest;
 import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.OrderDto;
@@ -34,9 +33,6 @@ class GrandeDolceOrderServiceITest extends AbstractBaseITest {
 
     @Autowired
     private GrandeDolceOrderService grandeDolceOrderService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @BeforeAll
     public void setup() {

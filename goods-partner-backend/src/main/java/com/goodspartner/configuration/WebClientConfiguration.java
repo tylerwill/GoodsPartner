@@ -1,6 +1,7 @@
-package com.goodspartner.web.config;
+package com.goodspartner.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,24 +36,29 @@ public class WebClientConfiguration {
     private int port;
 
     @Bean
-    public WebClient webClient() {
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
+
+    @Bean
+    public WebClient webClient(ObjectMapper objectMapper) {
         try (Stream<Path> walk = Files.walk(ResourceUtils.getFile(MOCKED1C_DATA_RESOURCE_LOCATION).toPath())) {
             List<String> mocked1cData = walk.filter(Files::isRegularFile)
                     .map(x -> x.getFileName().toString()).collect(Collectors.toList());
             return WebClient.builder()
-                    .exchangeStrategies(getExchangeStrategies())
+                    .exchangeStrategies(getExchangeStrategies(objectMapper))
                     .filter(urlModifyingFilter(mocked1cData))
                     .build();
         } catch (Exception e) {
             return WebClient.builder()
-                    .exchangeStrategies(getExchangeStrategies())
+                    .exchangeStrategies(getExchangeStrategies(objectMapper))
                     .build();
         }
     }
 
-    private ExchangeStrategies getExchangeStrategies() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
+    private ExchangeStrategies getExchangeStrategies(ObjectMapper objectMapper) {
         return ExchangeStrategies
                 .builder()
                 .codecs(configurer -> configurer.defaultCodecs().jackson2JsonDecoder(
