@@ -1,6 +1,5 @@
 package com.goodspartner.dto;
 
-import com.goodspartner.entity.AddressStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,4 +18,13 @@ public class MapPoint {
     private double longitude;
     private AddressStatus status;
 
+    @AllArgsConstructor
+    public enum AddressStatus {
+        KNOWN("KNOWN"),
+        UNKNOWN("UNKNOWN"),
+        AUTOVALIDATED("AUTOVALIDATED");
+
+        @Getter
+        private final String status;
+    }
 }

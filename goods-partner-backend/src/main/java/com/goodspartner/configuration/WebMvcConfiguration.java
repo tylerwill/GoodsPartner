@@ -1,4 +1,4 @@
-package com.goodspartner.web.config;
+package com.goodspartner.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

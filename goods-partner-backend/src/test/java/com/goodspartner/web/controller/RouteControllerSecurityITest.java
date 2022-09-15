@@ -2,7 +2,6 @@ package com.goodspartner.web.controller;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
@@ -42,26 +41,24 @@ public class RouteControllerSecurityITest extends AbstractWebITest {
     public static final String URL_PARAM_MANE = "date";
     private static final String EMPTY_DISTANCE_MATRIX = "datasets/route/emptyDistanceMatrix.json";
 
-    private final ObjectMapper mapper = new ObjectMapper();
-
     @MockBean
     private GoogleApiService googleApiService;
 
     @BeforeEach
     public void setUp() throws IOException {
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         DirectionsRoute directionsRoute =
-                mapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), DirectionsRoute.class);
+                objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), DirectionsRoute.class);
 
-        JsonNode jsonNode = mapper.readTree(getClass().getClassLoader().getResource(DISTANCE_MATRIX));
+        JsonNode jsonNode = objectMapper.readTree(getClass().getClassLoader().getResource(DISTANCE_MATRIX));
         JsonNode originAddresses = jsonNode.get(ORIGIN_ADDR);
         JsonNode destinationAddresses = jsonNode.get(DEST_ADDR);
         JsonNode rows = jsonNode.get(DISTANCE_MATRIX_ROWS);
 
-        String[] origin = mapper.readValue(originAddresses.traverse(), String[].class);
-        String[] dest = mapper.readValue(destinationAddresses.traverse(), String[].class);
-        DistanceMatrixRow[] distanceMatrixRows = mapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
+        String[] origin = objectMapper.readValue(originAddresses.traverse(), String[].class);
+        String[] dest = objectMapper.readValue(destinationAddresses.traverse(), String[].class);
+        DistanceMatrixRow[] distanceMatrixRows = objectMapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
         DistanceMatrix distanceMatrix = new DistanceMatrix(origin, dest, distanceMatrixRows);
 
         when(googleApiService.getDirectionRoute(anyString(), anyList())).thenReturn(directionsRoute);

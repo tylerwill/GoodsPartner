@@ -1,7 +1,7 @@
 package com.goodspartner.web.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.database.rider.core.api.dataset.CompareOperation;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
@@ -29,10 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class DeliveryControllerITest extends AbstractWebITest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     @Test
-    @DataSet("common/dataset.yml")
+    @DataSet("common/delivery/dataset_delivery.yml")
     @DisplayName("when Get Delivery then OK status returned")
     void whenGetDeliveryById_thenJsonReturned() throws Exception {
 
@@ -42,7 +40,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/dataset.yml")
+    @DataSet("common/delivery/dataset_delivery.yml")
     @DisplayName("when Get Deliveries then OK status returned")
     void whenGetDeliveries_thenJsonReturned() throws Exception {
 
@@ -53,7 +51,8 @@ class DeliveryControllerITest extends AbstractWebITest {
 
     @Test
     @DataSet("common/delivery/dataset_delivery.yml")
-    @ExpectedDataSet(value = "common/delivery/dataset_add_delivery.yml", ignoreCols = "id")
+    @ExpectedDataSet(value = "common/delivery/dataset_add_delivery.yml",
+            ignoreCols = "id", compareOperation = CompareOperation.CONTAINS)
     @DisplayName("when Add Delivery then then OK status returned")
     void whenAddDelivery_thenOkStatusReturned() throws Exception {
         objectMapper.registerModule(new JavaTimeModule());
@@ -71,7 +70,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/dataset.yml")
+    @DataSet("common/delivery/dataset_delivery.yml")
     @ExpectedDataSet("common/delivery/dataset_updated_delivery.yml")
     @DisplayName("when Update Delivery then Ok Status Returned")
     void whenUpdateDelivery_thenOkStatusReturned() throws Exception {

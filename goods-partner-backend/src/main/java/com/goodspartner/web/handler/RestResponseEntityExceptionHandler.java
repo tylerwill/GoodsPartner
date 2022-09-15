@@ -1,7 +1,7 @@
-package com.goodspartner.web;
+package com.goodspartner.web.handler;
 
 import com.goodspartner.exceptions.CarNotFoundException;
-import com.goodspartner.exceptions.ErrorMessage;
+import com.goodspartner.web.dto.ErrorMessage;
 import com.goodspartner.exceptions.GoogleApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

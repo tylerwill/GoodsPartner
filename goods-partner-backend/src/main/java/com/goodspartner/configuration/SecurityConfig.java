@@ -1,4 +1,4 @@
-package com.goodspartner.security;
+package com.goodspartner.configuration;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;

@@ -1,6 +1,8 @@
 package com.goodspartner;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -20,6 +22,9 @@ import java.nio.charset.StandardCharsets;
 public class AbstractBaseITest {
 
     private static final PostgreSQLContainer<?> POSTGRES_SQL_CONTAINER;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
 
     static {
         POSTGRES_SQL_CONTAINER =
