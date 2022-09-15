@@ -14,7 +14,6 @@ import {useDispatch} from "react-redux";
 const label = {inputProps: {'aria-label': 'Checkbox'}};
 
 const handleDelete = (id) => {
-    const dispatch = useDispatch();
     dispatch(deleteCar(id));
 }
 

@@ -15,6 +15,7 @@ import {Collapse} from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import RouteIcon from "@mui/icons-material/Route";
 import LogoutIcon from "@mui/icons-material/Logout";
+import GrandeDolceLogo from "../Logo/GrandeDolceLogo";
 
 const ListButton = (icon, name, paddingLeft) => {
     return (<>
@@ -76,11 +77,9 @@ const Sidebar = () => {
                 <List sx={{overflow: 'auto', paddingTop: 0}}>
 
                     <ListItem sx={{padding: ' 16px 24px'}}>
-                        {/*TODO: [Nastya] Move into 'processed company' logo component*/}
-                        <img src="/logo.jpg" alt={"Grande Dolce logo"} width='180px' height='30px'/>
+                        <GrandeDolceLogo/>
                     </ListItem>
                     <Divider/>
-
 
                     <ListItem disablePadding component={Link} to={"/new/cars"}>
                         {ListButton(<LocalShippingIcon/>, 'Автомобілі')}

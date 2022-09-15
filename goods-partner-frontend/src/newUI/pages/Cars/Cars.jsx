@@ -15,6 +15,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import CarFormDialog from "./CarFormDialog/CarFormDialog";
+import * as dispatch from "../../reducers/cars-reducer";
 
 class Cars extends React.Component {
     constructor(props) {
@@ -134,7 +135,12 @@ function BasicMenu() {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
+    const handleDelete = () => {
+        if (window.confirm("Are you sure wanted to delete car?")) {
+            debugger
+            dispatch.deleteCar(id);
+        }
+    }
     return (
         <div>
             <IconButton
@@ -166,7 +172,7 @@ function BasicMenu() {
                     <ListItemIcon>
                         <DeleteForeverOutlinedIcon sx={{color: '#D32F2F'}}/>
                     </ListItemIcon>
-                    <ListItemText sx={{color: '#D32F2F'}}>Видалити</ListItemText>
+                    <ListItemText sx={{color: '#D32F2F'}} onClick={() => handleDelete(id)}>Видалити</ListItemText>
                 </MenuItem>
             </Menu>
         </div>

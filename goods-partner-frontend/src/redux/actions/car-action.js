@@ -7,6 +7,13 @@ export const setCars = (cars) => {
     }
 }
 
+export const getCarsAction = (cars) => {
+    return {
+        type: actionTypes.ALL_CARS,
+        payload: cars
+    }
+}
+
 export const addCarAction = (car) => {
     return {
         type: actionTypes.ADD_CAR,
