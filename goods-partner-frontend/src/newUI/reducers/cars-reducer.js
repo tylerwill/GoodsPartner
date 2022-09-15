@@ -18,7 +18,6 @@ let initialCars = {
 ;
 
 const carsReducer = (state = initialCars, action) => {
-    debugger;
     switch (action.type) {
         case SET_CARS:
             return {...state, cars: action.payload};
@@ -69,7 +68,6 @@ export const getCarsThunkCreator = () => (dispatch) => {
 }
 
 export const deleteCarThunkCreator = (id) => (dispatch) => {
-    debugger
     carsApi.delete(id).then(response => {
         console.log("response", response);
         dispatch(deleteCarAction());
@@ -79,7 +77,6 @@ export const deleteCarThunkCreator = (id) => (dispatch) => {
 }
 
 export const addCarThunkCreator = (car) => (dispatch) => {
-    debugger
     carsApi.add(car).then(response => {
         console.log("response", response);
         dispatch(addCarAction(car));
@@ -89,7 +86,6 @@ export const addCarThunkCreator = (car) => (dispatch) => {
 }
 
 export const updateCarThunkCreator = (id, car) => (dispatch) => {
-    debugger
     carsApi.update(id, car).then(response => {
         console.log("response", response);
         dispatch(updateCarAction(id, car))

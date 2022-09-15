@@ -65,7 +65,7 @@ class Cars extends React.Component {
                                     <TableCell align="center">{car.travelCost}</TableCell>
                                     <TableCell align="center">{car.cooler ? <CheckIcon/> : <CloseIcon/>}</TableCell>
                                     <TableCell align="center">{car.available ? <CheckIcon/> : <CloseIcon/>}</TableCell>
-                                    <TableCell><BasicMenu/></TableCell>
+                                    <TableCell><BasicMenu id={car.id}/></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -77,56 +77,8 @@ class Cars extends React.Component {
     }
 }
 
-//
-// const Cars = ({getCarsThunkCreator, cars, openDialog, closeDialog, isDialogOpened}) => {
-//
-//     return <section>
-//         <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
-//             <Typography variant="h6" component="h2">
-//                 Автомобілі
-//             </Typography>
-//
-//             <Button onClick={openDialog} variant="contained">Додати авто</Button>
-//
-//         </Box>
-//         <Box mt={2}>
-//             <TableContainer component={Paper}>
-//                 <Table sx={{minWidth: 650}} aria-label="simple table">
-//                     <TableHead sx={{fontWeight: 'bold'}}>
-//                         <TableRow>
-//                             <TableCell>Модель авто</TableCell>
-//                             <TableCell align="center">Номер авто</TableCell>
-//                             <TableCell align="left">Водій</TableCell>
-//                             <TableCell align="center">Вантажопідйомність, т</TableCell>
-//                             <TableCell align="center">Витрати палива, л/100км</TableCell>
-//                             <TableCell align="center">Морозильна камера</TableCell>
-//                             <TableCell align="center">Доступність</TableCell>
-//                             <TableCell/>
-//                         </TableRow>
-//                     </TableHead>
-//                     <TableBody>
-//                         {/*// TODO: [Tolik] Fix key*/}
-//                         {cars.map((car) => (
-//                             <TableRow key={"tableCarId " + car.id}>
-//                                 <TableCell>{car.name}</TableCell>
-//                                 <TableCell align="center">{car.licencePlate}</TableCell>
-//                                 <TableCell>{car.driver}</TableCell>
-//                                 <TableCell align="center">{car.weightCapacity}</TableCell>
-//                                 <TableCell align="center">{car.travelCost}</TableCell>
-//                                 <TableCell align="center">{car.cooler ? <CheckIcon/> : <CloseIcon/>}</TableCell>
-//                                 <TableCell align="center">{car.available ? <CheckIcon/> : <CloseIcon/>}</TableCell>
-//                                 <TableCell><BasicMenu/></TableCell>
-//                             </TableRow>
-//                         ))}
-//                     </TableBody>
-//                 </Table>
-//             </TableContainer>
-//         </Box>
-//         <CarFormDialog closeDialog={closeDialog} open={isDialogOpened}/>
-//     </section>
-// }
 
-function BasicMenu() {
+function BasicMenu({id}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -136,8 +88,9 @@ function BasicMenu() {
         setAnchorEl(null);
     };
     const handleDelete = () => {
+
         if (window.confirm("Are you sure wanted to delete car?")) {
-            debugger
+            console.log("remove car with id", id);
             dispatch.deleteCar(id);
         }
     }
@@ -172,7 +125,7 @@ function BasicMenu() {
                     <ListItemIcon>
                         <DeleteForeverOutlinedIcon sx={{color: '#D32F2F'}}/>
                     </ListItemIcon>
-                    <ListItemText sx={{color: '#D32F2F'}} onClick={() => handleDelete(id)}>Видалити</ListItemText>
+                    <ListItemText sx={{color: '#D32F2F'}} onClick={() => handleDelete()}>Видалити</ListItemText>
                 </MenuItem>
             </Menu>
         </div>
