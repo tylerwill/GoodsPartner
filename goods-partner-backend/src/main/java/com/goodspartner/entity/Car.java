@@ -23,4 +23,5 @@ public class Car {
     private String licencePlate;
     private int weightCapacity;
     private int travelCost;
+
 }

@@ -43,4 +43,8 @@ public class Route {
     @Type(type = "json")
     @Column(columnDefinition = "jsonb")
     private List<RoutePointDto> routePoints;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "delivery_id", referencedColumnName = "id")
+    private Delivery delivery;
 }

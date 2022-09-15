@@ -2,7 +2,6 @@ package com.goodspartner.web.config;
 
 import com.goodspartner.AbstractBaseITest;
 import com.goodspartner.config.TestSecurityDisableConfig;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
 import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
 import com.goodspartner.service.dto.external.grandedolce.ODataWrapperDto;

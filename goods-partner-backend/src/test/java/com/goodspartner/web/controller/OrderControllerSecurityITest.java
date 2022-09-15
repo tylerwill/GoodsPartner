@@ -2,9 +2,10 @@ package com.goodspartner.web.controller;
 
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestSecurityEnableConfig;
+import com.goodspartner.service.OrderService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -13,8 +14,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Import({TestSecurityEnableConfig.class})
-@AutoConfigureMockMvc
 class OrderControllerSecurityITest extends AbstractWebITest {
+
+    @MockBean
+    private OrderService orderService;
 
     @Test
     @DisplayName("When try to reach endpoint without authentication then expect to get a 302 Redirect to google login.")

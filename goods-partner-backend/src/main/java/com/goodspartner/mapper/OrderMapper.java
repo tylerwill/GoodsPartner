@@ -45,4 +45,5 @@ public abstract class OrderMapper {
     List<ProductDto> mapProducts(List<OrderedProduct> orderedProducts) {
         return productMapper.mapProducts(orderedProducts);
     }
+
 }

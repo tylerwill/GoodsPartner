@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OrderExternalMapperTest {
 
@@ -43,7 +42,7 @@ class OrderExternalMapperTest {
 
         assertEquals(1, orderExternal.getId());
         assertEquals("45678", orderExternal.getOrderNumber());
-        assertEquals(LocalDate.of(2022, 02, 17), orderExternal.getCreatedDate());
+        assertEquals(LocalDate.of(2022, 2, 17), orderExternal.getCreatedDate());
         assertEquals("Домашня випічка", orderExternal.getClientName());
         assertEquals("Бровари, Марії Лагунової, 11", orderExternal.getAddress());
         assertEquals("Балашова Лариса", orderExternal.getManagerFullName());
