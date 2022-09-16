@@ -28,15 +28,16 @@ public class CarControllerITest extends AbstractWebITest {
     @DataSet("common/car/dataset_cars.yml")
     @DisplayName("when Add Car then Ok Status Returned")
     void whenAddTheFirstCar_thenOkStatusReturned() throws Exception {
-        CarDto carDto = CarDto.builder()
-                .name("MAN")
-                .licencePlate("AA 2455 CT")
-                .driver("Ivan Kornienko")
-                .weightCapacity(4000)
-                .cooler(true)
-                .available(false)
-                .travelCost(10)
-                .build();
+        CarDto carDto = new CarDto(
+                0,
+                "MAN",
+                "AA 2455 CT",
+                "Ivan Kornienko",
+                4000,
+                false,
+                true,
+                0,
+                10);
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/cars")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(carDto)))

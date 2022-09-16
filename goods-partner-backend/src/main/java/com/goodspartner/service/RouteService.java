@@ -16,7 +16,6 @@ public interface RouteService {
 
     void updatePoint(int routeId, String routePointId, RoutePointDto routePoint);
 
-    RoutesCalculation calculateRoutes(LocalDate date);
-
+    RoutesCalculation calculateRoutesByDate(LocalDate deliveryDate);
 }
 

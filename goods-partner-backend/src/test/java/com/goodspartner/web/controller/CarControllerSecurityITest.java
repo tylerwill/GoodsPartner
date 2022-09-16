@@ -27,15 +27,16 @@ class CarControllerSecurityITest extends AbstractWebITest {
 
     @BeforeEach
     public void setUp() {
-        carDto = CarDto.builder()
-                .name("MAN")
-                .licencePlate("AA 2455 CT")
-                .driver("Ivan Kornienko")
-                .weightCapacity(4000)
-                .cooler(true)
-                .available(false)
-                .travelCost(10)
-                .build();
+        carDto = new CarDto(
+                0,
+                "MAN",
+                "AA 2455 CT",
+                "Ivan Kornienko",
+                4000,
+                false,
+                true,
+                0,
+                10);
     }
 
     @Test

@@ -23,7 +23,6 @@ public class RoutesCalculation {
 
     @Getter
     @Setter
-    @Builder
     @AllArgsConstructor
     @NoArgsConstructor
     @EqualsAndHashCode
@@ -47,7 +46,6 @@ public class RoutesCalculation {
 
     @Getter
     @Setter
-    @Builder
     @AllArgsConstructor
     @NoArgsConstructor
     @EqualsAndHashCode

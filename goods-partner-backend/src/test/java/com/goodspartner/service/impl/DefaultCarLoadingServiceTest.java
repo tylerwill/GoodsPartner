@@ -63,18 +63,16 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
         DistanceMatrixRow[] distanceMatrixRows = mapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
 
         distanceMatrix = new DistanceMatrix(origin, dest, distanceMatrixRows);
-
-        carDto = CarDto.builder()
-                .id(44)
-                .name("Mercedes Sprinter")
-                .driver("Вальдемар Кипарисович")
-                .licencePlate("AA 1111 CT")
-                .weightCapacity(2000)
-                .cooler(true)
-                .available(true)
-                .loadSize(1148.78)
-                .travelCost(12)
-                .build();
+        CarDto carDto = new CarDto(
+                44,
+                "Mercedes Sprinter",
+                "AA 1111 CT",
+                "Вальдемар Кипарисович",
+                2000,
+                true,
+                true,
+                1148.78,
+                12);
 
         RoutePointDto.AddressOrderDto addressOrderDtoFirst = RoutePointDto.AddressOrderDto.builder()
                 .id(12)
@@ -194,17 +192,6 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
         Assertions.assertNotNull(actualDemands);
         Assertions.assertArrayEquals(expectedDemands, actualDemands);
     }
-
-//    @Test
-//    @DisplayName("Test testCalculateDistance Checks Whether It Is Correctly Calculate Distance Matrix")
-//    void testCalculateDistanceMatrix() {
-//
-//        long[][] actualDistanceMatrix = defaultCarLoadingService.calculateDistanceMatrix(distanceMatrix);
-//        long[][] expectedDistanceMatrix = new long[][]{{0, 18149, 27074}, {18229, 0, 16523}, {24525, 16401, 0}};
-//
-//        Assertions.assertNotNull(actualDistanceMatrix);
-//        Assertions.assertArrayEquals(expectedDistanceMatrix, actualDistanceMatrix);
-//    }
 
     @Test
     @DisplayName("Test getCarLoading Checks Whether It Is Correctly Load Size And Create CarRoutesDto Object")

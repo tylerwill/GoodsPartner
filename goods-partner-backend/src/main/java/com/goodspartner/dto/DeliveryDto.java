@@ -2,11 +2,7 @@ package com.goodspartner.dto;
 
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.web.controller.response.RoutesCalculation;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,8 +19,8 @@ public class DeliveryDto {
     private LocalDate deliveryDate;
     private DeliveryStatus status;
 
-    // References
     private List<RoutesCalculation.RouteDto> routes;
     private List<OrderDto> orders;
     private List<RoutesCalculation.CarLoadDto> carLoads;
+
 }

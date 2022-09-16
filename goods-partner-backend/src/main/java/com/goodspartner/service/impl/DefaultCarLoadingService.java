@@ -3,8 +3,8 @@ package com.goodspartner.service.impl;
 import com.goodspartner.dto.*;
 import com.goodspartner.service.CarLoadingService;
 import com.goodspartner.service.CarService;
-import com.google.common.annotations.VisibleForTesting;
 import com.goodspartner.service.GraphhopperService;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.ortools.Loader;
 import com.google.ortools.constraintsolver.*;
 import com.google.protobuf.Duration;
@@ -38,8 +38,8 @@ public class DefaultCarLoadingService implements CarLoadingService {
 
 //        TODO: REMOVE!
         List<RoutePointDto> kievPoints = routePoints.stream().filter(routePointDto ->
-                routePointDto.getMapPoint().getAddress().contains("Київська область")
-                        || routePointDto.getMapPoint().getAddress().contains("Київ,")).toList();
+                routePointDto.getMapPoint().getAddress().contains("Київська обл")
+                        || routePointDto.getMapPoint().getAddress().contains("Київ")).toList();
 
         List<MapPoint> mapPoints = new ArrayList<>();
         mapPoints.add(storeDto.getMapPoint());
@@ -52,8 +52,8 @@ public class DefaultCarLoadingService implements CarLoadingService {
 
     @VisibleForTesting
     List<CarRoutesDto> load(List<CarDto> cars,
-                                    List<RoutePointDto> routePoints,
-                                    DistanceMatrix routePointsMatrix) {
+                            List<RoutePointDto> routePoints,
+                            DistanceMatrix routePointsMatrix) {
         Long[][] distanceMatrix = routePointsMatrix.getDistance();
         long[] demands = calculateDemands(routePoints);
         long[] vehicleCapacities = cars.stream()
@@ -101,7 +101,7 @@ public class DefaultCarLoadingService implements CarLoadingService {
                         .build();
         return routing.solveWithParameters(searchParameters);
     }
-    
+
     @VisibleForTesting
     RoutingModel configureRoutingModel(RoutingIndexManager manager, Long[][] distanceMatrix, long[] demands, long[] vehicleCapacities, long[] vehicleCosts, int carsAmount) {
         RoutingModel routing = new RoutingModel(manager);

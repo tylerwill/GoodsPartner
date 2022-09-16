@@ -19,8 +19,8 @@ public class RouteController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
     @GetMapping("/calculate")
-    public RoutesCalculation calculateRoutes(@RequestParam String date) {
-        return routeService.calculateRoutes(LocalDate.parse(date));
+    public RoutesCalculation previewCalculateRoutes(@RequestParam String date) {
+        return routeService.calculateRoutesByDate(LocalDate.parse(date));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")

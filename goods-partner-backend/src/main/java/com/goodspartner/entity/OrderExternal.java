@@ -28,15 +28,21 @@ public class OrderExternal {
     @Column(name = "order_number")
     private String orderNumber;
 
+    @Column(name = "ref_key")
+    private String refKey;
+
+    @Column(name = "comment")
+    private String comment;
+
     @Column(name = "created_date")
     private LocalDate createdDate;
 
-    // TODO check if we could map to external address
-    @Column(name = "client_name")
-    private String clientName;
-
-    @Column(name = "address")
-    private String address;
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "address", referencedColumnName = "orderAddress"),
+            @JoinColumn(name = "client_Name", referencedColumnName = "clientName"),
+    })
+    private AddressExternal addressExternal;
 
     @Column(name = "manager")
     private String managerFullName;

@@ -26,7 +26,7 @@ public class CarsLoadReportGenerator implements ReportGenerator {
     @SneakyThrows
     @Override
     public ReportResult generateReport(LocalDate date) {
-        RoutesCalculation routesCalculation = routeService.calculateRoutes(date);
+        RoutesCalculation routesCalculation = routeService.calculateRoutesByDate(date);
         String reportName = ReportUtils.generateReportName(REPORT_NAME, date);
 
         try (InputStream template = ReportUtils.getTemplate(TEMPLATE_PATH);

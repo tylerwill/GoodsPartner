@@ -1,0 +1,74 @@
+{
+
+  "status": "DRAFT",
+  "totalWeight": 2499.0,
+  "totalPoints": 2,
+  "totalOrders": 2,
+  "distance": 80.0,
+  "estimatedTime": 80,
+  "startTime": null,
+  "finishTime": null,
+  "spentTime": 0,
+  "storeName": "Склад №1",
+  "storeAddress": "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
+  "optimization": false,
+  "routePoints": [
+    {
+      "id": "1a3f567f-ed97-43b5-be8e-cc644172aad1",
+      "status": "PENDING",
+      "completedAt": null,
+      "clientId": 0,
+      "clientName": "Новус Україна ТОВ",
+      "address": "м.Київ, пр. Академіка Палладіна, 7-А",
+      "addressTotalWeight": 1500.0,
+      "routePointDistantTime": 0,
+      "mapPoint": {
+        "address": "м.Київ, пр. Академіка Палладіна, 7-А",
+        "latitude": 50.4618259,
+        "longitude": 30.3553835,
+        "status": "KNOWN"
+      },
+      "orders": [
+        {
+          "id": 201,
+          "orderNumber": "00000003639",
+          "comment": null
+        }
+      ]
+    },
+    {
+      "id": "8acc3bd5-3d98-48f9-82f9-24360659dcb8",
+      "status": "PENDING",
+      "completedAt": null,
+      "clientId": 0,
+      "clientName": "Новус Україна ТОВ",
+      "address": "м.Київ провулок Політехнічний 1/33",
+      "addressTotalWeight": 999.0,
+      "routePointDistantTime": 0,
+      "mapPoint": {
+        "address": "м.Київ провулок Політехнічний 1/33",
+        "latitude": 50.4504636,
+        "longitude": 30.4667037,
+        "status": "KNOWN"
+      },
+      "orders": [
+        {
+          "id": 151,
+          "orderNumber": "00000003433",
+          "comment": null
+        }
+      ]
+    }
+  ],
+  "car": {
+    "id": 151,
+    "name": "Mercedes Sprinter",
+    "licencePlate": "AA 3333 CT",
+    "driver": "Anton Geraschenko",
+    "weightCapacity": 2500,
+    "cooler": true,
+    "available": true,
+    "loadSize": 2499.0,
+    "travelCost": 15
+  }
+}

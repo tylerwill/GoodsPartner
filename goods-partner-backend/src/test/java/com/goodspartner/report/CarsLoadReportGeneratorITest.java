@@ -32,17 +32,16 @@ class CarsLoadReportGeneratorITest {
     @Test
     @DisplayName("Generate Report Of Loading Car With One Order")
     void testGenerateReport_ofLoadingCarWithOneOrder() {
-        CarDto carDto = CarDto.builder()
-                .id(1)
-                .name("Mercedes Vito")
-                .driver("Ivan Piddubny")
-                .licencePlate("AA 2222 CT")
-                .travelCost(10)
-                .available(true)
-                .cooler(false)
-                .weightCapacity(1000)
-                .loadSize(59.32)
-                .build();
+        CarDto carDto = new CarDto(
+                1,
+                "Mercedes Vito",
+                "AA 2222 CT",
+                "Ivan Piddubny",
+                1000,
+                true,
+                false,
+                59.32,
+                10);
 
         ProductDto product = ProductDto.builder()
                 .productName("678968 Суміш для випікання Мрія Маффіни з апельсиновою цедрою")
@@ -58,10 +57,8 @@ class CarsLoadReportGeneratorITest {
                 .id(6)
                 .build();
 
-        RoutesCalculation.CarLoadDto carLoadDto = RoutesCalculation.CarLoadDto.builder()
-                .car(carDto)
-                .orders(List.of(order))
-                .build();
+        RoutesCalculation.CarLoadDto carLoadDto =
+                new RoutesCalculation.CarLoadDto(carDto, List.of(order));
 
         RoutesCalculation routesCalculation = RoutesCalculation.builder()
                 .carLoadDetails(List.of(carLoadDto))
@@ -72,9 +69,8 @@ class CarsLoadReportGeneratorITest {
         RouteService routeService = Mockito.mock(RouteService.class);
         CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(routeService, carLoadSheetGenerator);
 
-        Mockito.when(routeService.calculateRoutes(LocalDate.of(2022, 7, 12)))
+        Mockito.when(routeService.calculateRoutesByDate(LocalDate.of(2022, 7, 12)))
                 .thenReturn(routesCalculation);
-
 
         // when
         LocalDate date = LocalDate.of(2022, 7, 12);
@@ -95,17 +91,17 @@ class CarsLoadReportGeneratorITest {
     @Test
     @DisplayName("Generate Report Of Loading Car With Three Orders")
     void testGenerateReport_ofLoadingCarWithThreeOrders() {
-        CarDto carDto = CarDto.builder()
-                .id(1)
-                .name("Mercedes Vito")
-                .driver("Ivan Piddubny")
-                .licencePlate("AA 2222 CT")
-                .travelCost(10)
-                .available(true)
-                .cooler(false)
-                .weightCapacity(1000)
-                .loadSize(59.32)
-                .build();
+        CarDto carDto = new CarDto(
+                1,
+                "Mercedes Vito",
+                "AA 2222 CT",
+                "Ivan Piddubny",
+                1000,
+                true,
+                false,
+                59.32,
+                10);
+
 
         ProductDto productFirst = ProductDto.builder()
                 .productName("3434 Паста шоколадна")
@@ -147,10 +143,9 @@ class CarsLoadReportGeneratorITest {
                 .id(3)
                 .build();
 
-        RoutesCalculation.CarLoadDto carLoadDto = RoutesCalculation.CarLoadDto.builder()
-                .car(carDto)
-                .orders(List.of(orderFirst, orderSecond, orderThird))
-                .build();
+        RoutesCalculation.CarLoadDto carLoadDto =
+                new RoutesCalculation.CarLoadDto(carDto, List.of(orderFirst, orderSecond, orderThird));
+
 
         RoutesCalculation routesCalculation = RoutesCalculation.builder()
                 .carLoadDetails(List.of(carLoadDto))
@@ -160,7 +155,7 @@ class CarsLoadReportGeneratorITest {
         RouteService routeService = Mockito.mock(RouteService.class);
         CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(routeService, carLoadSheetGenerator);
 
-        Mockito.when(routeService.calculateRoutes(LocalDate.of(2022, 7, 12)))
+        Mockito.when(routeService.calculateRoutesByDate(LocalDate.of(2022, 7, 12)))
                 .thenReturn(routesCalculation);
 
 

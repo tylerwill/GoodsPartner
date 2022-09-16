@@ -72,8 +72,8 @@ public class CalculationRoutePointMapper {
     @VisibleForTesting
     double getOrderTotalWeight(List<ProductDto> orderedProducts) {
         return BigDecimal.valueOf(orderedProducts.stream()
-                        .map(orderedProduct -> orderedProduct.getAmount() * orderedProduct.getUnitWeight())
-                        .collect(Collectors.summarizingDouble(amount -> amount)).getSum())
+                        .map(ProductDto::getTotalProductWeight)
+                        .collect(Collectors.summarizingDouble(weight -> weight)).getSum())
                 .setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 }

@@ -6,14 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +17,24 @@ import java.util.UUID;
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PostMapping("/{id}/calculate")
+    @ApiOperation(value = "Calculate routes by Delivery ID",
+            notes = "Return DeliveryDto",
+            response = DeliveryDto.class)
+    public DeliveryDto calculateRoutes(@PathVariable("id") UUID id) {
+        return deliveryService.calculateDelivery(id);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PostMapping("/{id}/recalculate")
+    @ApiOperation(value = "Recalculate routes by Delivery ID",
+            notes = "Return DeliveryDto",
+            response = DeliveryDto.class)
+    public DeliveryDto reCalculateRoutes(@PathVariable("id") UUID id) {
+        return deliveryService.reCalculateDelivery(id);
+    }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
     @GetMapping
