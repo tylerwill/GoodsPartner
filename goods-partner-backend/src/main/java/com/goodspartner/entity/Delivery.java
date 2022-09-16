@@ -40,7 +40,7 @@ public class Delivery {
     private List<CarLoad> carLoads;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(length = 8)
+    @Column(length = 9)
     private DeliveryStatus status;
 
 }
