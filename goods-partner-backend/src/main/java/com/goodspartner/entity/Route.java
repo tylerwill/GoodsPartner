@@ -47,4 +47,7 @@ public class Route {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id", referencedColumnName = "id")
     private Delivery delivery;
+
+    @OneToOne
+    private Car car;
 }

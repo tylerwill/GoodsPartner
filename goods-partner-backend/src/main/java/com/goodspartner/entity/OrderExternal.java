@@ -54,4 +54,9 @@ public class OrderExternal {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id", referencedColumnName = "id")
     private Delivery delivery;
+
+    @ManyToOne
+    @JoinColumn(name = "car_load_id", referencedColumnName = "id")
+    private CarLoad carLoad;
 }
+
