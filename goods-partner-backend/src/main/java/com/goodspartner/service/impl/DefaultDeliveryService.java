@@ -30,10 +30,12 @@ public class DefaultDeliveryService implements DeliveryService {
     }
 
     @Override
-    public void delete(UUID id) {
-        deliveryRepository.findById(id)
+    public DeliveryDto delete(UUID id) {
+        Delivery deliveryToDelete = deliveryRepository.findById(id)
                 .orElseThrow(() -> new DeliveryNotFoundException("There is no delivery with id: " + id));
         deliveryRepository.deleteById(id);
+
+        return deliveryMapper.toDeliveryDtoResult(new DeliveryDto(), deliveryToDelete);
     }
 
     @Override
@@ -54,23 +56,26 @@ public class DefaultDeliveryService implements DeliveryService {
 
     @Override
     @Transactional
-    public void add(DeliveryDto deliveryDto) {
+    public DeliveryDto add(DeliveryDto deliveryDto) {
         Optional<Delivery> optionalDelivery = deliveryRepository.findByDeliveryDate(deliveryDto.getDeliveryDate());
         if (optionalDelivery.isPresent()) {
             throw new IllegalArgumentException("There is already delivery on date: " + deliveryDto.getDeliveryDate());
         }
 
-        deliveryRepository.save(deliveryMapper.deliveryDtoToDelivery(deliveryDto));
+        Delivery addedDelivery = deliveryRepository.save(deliveryMapper.deliveryDtoToDelivery(deliveryDto));
+
+        return deliveryMapper.toDeliveryDtoResult(new DeliveryDto(), addedDelivery);
     }
 
     @Override
     @Transactional
-    public void update(UUID id, DeliveryDto deliveryDto) {
-        Delivery updatedDelivery = deliveryRepository.findById(id)
+    public DeliveryDto update(UUID id, DeliveryDto deliveryDto) {
+        Delivery deliveryToUpdate = deliveryRepository.findById(id)
                 .map(delivery -> deliveryMapper.update(delivery, deliveryDto))
                 .orElseThrow(() -> new DeliveryNotFoundException("Delivery not found"));
 
-        deliveryRepository.save(updatedDelivery);
+        Delivery updatedDelivery = deliveryRepository.save(deliveryToUpdate);
+        return deliveryMapper.toDeliveryDtoResult(new DeliveryDto(), updatedDelivery);
     }
 
 }

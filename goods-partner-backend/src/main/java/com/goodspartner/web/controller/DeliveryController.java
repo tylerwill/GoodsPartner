@@ -44,33 +44,30 @@ public class DeliveryController {
         return deliveryService.findById(id);
     }
 
-    // TODO response with created DeliveryDto
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PostMapping()
     @ApiOperation(value = "Add Delivery")
-    public void add(@ApiParam(value = "DeliveryDto that you want to add", type = "DeliveryDto", required = true)
-                    @RequestBody DeliveryDto deliveryDto) {
-        deliveryService.add(deliveryDto);
+    public DeliveryDto add(@ApiParam(value = "DeliveryDto that you want to add", type = "DeliveryDto", required = true)
+                           @RequestBody DeliveryDto deliveryDto) {
+        return deliveryService.add(deliveryDto);
     }
 
-    // TODO response with created DeliveryDto
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PutMapping("/{id}")
     @ApiOperation(value = "Edit Delivery", notes = "Provide an id to edit up specific delivery")
-    public void update(@ApiParam(value = "ID of edited Delivery", required = true)
-                       @PathVariable UUID id,
-                       @ApiParam(value = "Edited DeliveryDto", type = "DeliveryDto", required = true)
-                       @RequestBody DeliveryDto deliveryDto) {
-        deliveryService.update(id, deliveryDto);
+    public DeliveryDto update(@ApiParam(value = "ID of edited Delivery", required = true)
+                              @PathVariable UUID id,
+                              @ApiParam(value = "Edited DeliveryDto", type = "DeliveryDto", required = true)
+                              @RequestBody DeliveryDto deliveryDto) {
+        return deliveryService.update(id, deliveryDto);
     }
 
-    // TODO response with created DeliveryDto
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Remove Delivery by id", notes = "Provide an id to remove up specific delivery")
-    public void delete(@ApiParam(value = "ID value for the delivery you need to retrieve", required = true)
-                       @PathVariable("id") UUID id) {
-        deliveryService.delete(id);
+    public DeliveryDto delete(@ApiParam(value = "ID value for the delivery you need to retrieve", required = true)
+                              @PathVariable("id") UUID id) {
+        return deliveryService.delete(id);
     }
 
 }

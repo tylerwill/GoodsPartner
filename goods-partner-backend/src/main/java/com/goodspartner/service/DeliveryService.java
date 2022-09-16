@@ -8,9 +8,9 @@ import java.util.UUID;
 
 public interface DeliveryService {
 
-    void add(DeliveryDto deliveryDto);
+    DeliveryDto add(DeliveryDto deliveryDto);
 
-    void update(UUID id, DeliveryDto deliveryDto);
+    DeliveryDto update(UUID id, DeliveryDto deliveryDto);
 
     DeliveryDto findById(UUID id);
 
@@ -18,5 +18,5 @@ public interface DeliveryService {
 
     List<DeliveryDto> findAll();
 
-    void delete(UUID id);
+    DeliveryDto delete(UUID id);
 }
