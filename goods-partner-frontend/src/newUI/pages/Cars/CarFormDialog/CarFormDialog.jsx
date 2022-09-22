@@ -17,7 +17,7 @@ const style = {
     padding: '16px 24px',
 };
 
-export default function CarFormDialog({closeDialog, open}) {
+export default function CarFormDialog({closeDialog, open, addCar}) {
 
     let carName = React.createRef();
     let carLicencePlate = React.createRef();
@@ -27,7 +27,7 @@ export default function CarFormDialog({closeDialog, open}) {
     let carCooler = React.createRef();
     let carAvailable = React.createRef();
 
-    let addCar = () => {
+    let addCarHandler = () => {
         debugger;
         let name = carName.current.value;
         let licencePlate = carLicencePlate.current.value;
@@ -38,7 +38,9 @@ export default function CarFormDialog({closeDialog, open}) {
         let available = carAvailable.current.value;
 
         let car = {name, licencePlate, driver, weightCapacity, travelCost, cooler, available};
-        addCarThunkCreator(car)
+        const result = addCar(car)
+        console.log("function", result);
+
     }
 
     return (
@@ -88,7 +90,7 @@ export default function CarFormDialog({closeDialog, open}) {
                         <Grid item xs={12} sx={{mt: 2}}>
                             <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
                                 <Button sx={{mr: 2}} variant="outlined" onClick={closeDialog}>Скасувати</Button>
-                                <Button variant="outlined" onClick={addCar}> Зберегти </Button>
+                                <Button variant="outlined" onClick={addCarHandler}> Зберегти </Button>
                             </Box>
                         </Grid>
                     </Grid>

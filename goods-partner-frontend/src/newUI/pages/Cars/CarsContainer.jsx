@@ -8,7 +8,6 @@ import {
     getCarsThunkCreator,
     updateCarThunkCreator
 } from "../../reducers/cars-reducer";
-import CarFormDialog from "./CarFormDialog/CarFormDialog";
 
 const mapStateToProps = (state) => {
     return {
@@ -24,6 +23,6 @@ const CarsContainer = connect(mapStateToProps, {
     deleteCarThunkCreator,
     addCarThunkCreator,
     updateCarThunkCreator,
-})(Cars, CarFormDialog);
+})(Cars);
 
 export default CarsContainer;

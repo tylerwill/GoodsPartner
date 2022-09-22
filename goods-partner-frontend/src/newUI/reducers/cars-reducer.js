@@ -13,12 +13,12 @@ import {deleteCarAction, getCarsAction} from "../../redux/actions/car-action";
 
 let initialCars = {
     cars: [],
-    carDialogOpened: true,
+    carDialogOpened: false,
 
     name: "",
     licencePlate: "",
     cooler: "",
-    available: "",
+    available: true,
     weightCapacity: "",
     travelCost: ""
 };
@@ -83,6 +83,7 @@ export const getCarsThunkCreator = () => (dispatch) => {
 }
 
 export const deleteCarThunkCreator = (id) => (dispatch) => {
+    debugger;
     carsApi.deleteCar(id).then(response => {
         console.log("response", response);
         dispatch(deleteCarAction(id));
@@ -91,6 +92,7 @@ export const deleteCarThunkCreator = (id) => (dispatch) => {
     });
 }
 export const addCarThunkCreator = (car) => (dispatch) => {
+    debugger;
     carsApi.add(car).then(response => {
         if (response.status === 200) {
             console.log("response", response);

@@ -20,6 +20,7 @@ import {deleteCarThunkCreator} from "../../reducers/cars-reducer";
 class Cars extends React.Component {
     constructor(props) {
         super(props);
+        console.log(props);
     }
 
 
@@ -65,20 +66,21 @@ class Cars extends React.Component {
                                     <TableCell align="center">{car.travelCost}</TableCell>
                                     <TableCell align="center">{car.cooler ? <CheckIcon/> : <CloseIcon/>}</TableCell>
                                     <TableCell align="center">{car.available ? <CheckIcon/> : <CloseIcon/>}</TableCell>
-                                    <TableCell><BasicMenu id={car.id}/></TableCell>
+                                    <TableCell><BasicMenu id={car.id} deleteCar={this.props.deleteCarThunkCreator}/></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
             </Box>
-            <CarFormDialog closeDialog={this.props.closeDialog} open={this.props.isDialogOpened}/>
+            <CarFormDialog closeDialog={this.props.closeDialog} open={this.props.isDialogOpened}
+                           addCar={this.props.addCarThunkCreator} />
         </section>
     }
 }
 
 
-function BasicMenu({id}) {
+function BasicMenu({id, deleteCar}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -90,8 +92,9 @@ function BasicMenu({id}) {
     const handleDelete = () => {
 
         if (window.confirm("Are you sure wanted to delete car?")) {
+            debugger;
             console.log("remove car with id", id);
-            deleteCarThunkCreator(id)
+            deleteCar(id);
         }
     }
     return (

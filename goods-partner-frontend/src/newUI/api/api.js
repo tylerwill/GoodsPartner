@@ -24,7 +24,7 @@ export const carsApi = {
 
     add(car) {
         console.log("envs", process.env);
-        return axiosWithSetting.post(`api/v1/cars`, {car});
+        return axiosWithSetting.post(`api/v1/cars`, {...car});
     },
 
     deleteCar(id) {
