@@ -43,8 +43,8 @@ class OrderExternalMapperTest {
         assertEquals(1, orderExternal.getId());
         assertEquals("45678", orderExternal.getOrderNumber());
         assertEquals(LocalDate.of(2022, 2, 17), orderExternal.getCreatedDate());
-        assertEquals("Домашня випічка", orderExternal.getClientName());
-        assertEquals("Бровари, Марії Лагунової, 11", orderExternal.getAddress());
+        assertEquals("Домашня випічка", orderExternal.getAddressExternal().getOrderAddressId().getClientName());
+        assertEquals("Бровари, Марії Лагунової, 11", orderExternal.getAddressExternal().getOrderAddressId().getOrderAddress());
         assertEquals("Балашова Лариса", orderExternal.getManagerFullName());
         assertEquals(List.of(productDto), orderExternal.getProducts());
         assertEquals(12.00, orderExternal.getOrderWeight());

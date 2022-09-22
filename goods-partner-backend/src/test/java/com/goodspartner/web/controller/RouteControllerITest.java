@@ -6,6 +6,8 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestSecurityDisableConfig;
+import com.goodspartner.dto.DeliveryDto;
+import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.service.GoogleApiService;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DistanceMatrix;
@@ -18,10 +20,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 
+import java.time.LocalDate;
+import java.util.UUID;
+
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -96,6 +102,32 @@ public class RouteControllerITest extends AbstractWebITest {
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .json("""  
+                                {
+                                  "date": "7777-07-07",
+                                  "routes": [],
+                                  "carLoadDetails": []
+                                }"""));
+    }
+
+
+    @Test
+    @DataSet(value = "route/grandedolce_orders.json", disableConstraints = true)
+    @DisplayName("delivery")
+    void delivery() throws Exception {
+        DeliveryDto deliveryDto = DeliveryDto.builder()
+                .id(UUID.fromString("70574dfd-48a3-40c7-8b0c-3e5defe7d080"))
+                .deliveryDate(LocalDate.of(2022,2,17))
+                .status(DeliveryStatus.DRAFT)
+                .build();
+
+        System.out.println(objectMapper.writeValueAsString(deliveryDto));
+
+        mockMvc.perform(post("/api/v1/routes/calculate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(deliveryDto)))
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .json("""
                                 {
                                   "date": "7777-07-07",
                                   "routes": [],

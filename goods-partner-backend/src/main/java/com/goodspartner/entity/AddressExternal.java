@@ -31,6 +31,8 @@ public class AddressExternal { // TODO think about naming
     @NoArgsConstructor
     @AllArgsConstructor
     @Embeddable
+    @Getter
+    @Setter
     public static class OrderAddressId implements Serializable {
         private String orderAddress;
         private String clientName;

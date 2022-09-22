@@ -105,17 +105,16 @@ class DefaultCalculateRouteServiceTest {
                 .thenReturn(fakeDirectionRoute);
         when(googleApiHelperMock.getRouteTotalDistance(fakeDirectionRoute)).thenReturn(150.05);
 
-        CarDto carDto = CarDto.builder()
-                .id(44)
-                .name("Mercedes Sprinter")
-                .driver("Вальдемар Кипарисович")
-                .licencePlate("AA 1111 CT")
-                .weightCapacity(2000)
-                .cooler(true)
-                .available(true)
-                .loadSize(1148.78)
-                .travelCost(12)
-                .build();
+        CarDto carDto = new CarDto(
+                44,
+                "Mercedes Sprinter",
+                "AA 1111 CT",
+                "Вальдемар Кипарисович",
+                2000,
+                true,
+                true,
+                1148.78,
+                12);
 
         routePoints = List.of(firstRoutePointDto);
 
@@ -154,34 +153,22 @@ class DefaultCalculateRouteServiceTest {
         List<RoutePointDto> fakeRoutePointDtoList = List.of(fakeRoutePointDto);
 
         // --------- expected object ----------
-
-        RoutesCalculation.RouteDto expectedRouteDto = RoutesCalculation.RouteDto.builder()
-                .id(44)
-                .status(RouteStatus.DRAFT)
-                .totalWeight(5.3)
-                .totalPoints(1)
-                .totalOrders(2)
-                .distance(150.05)
-                .estimatedTime(0)
-                .startTime(null)
-                .finishTime(null)
-                .spentTime(0)
-                .storeName("Склад №1")
-                .storeAddress("м. Київ, вул. Металістів, 8, оф. 4-24")
-                .optimization(false)
-                .routePoints(fakeRoutePointDtoList)
-                .car(CarDto.builder()
-                        .id(44)
-                        .name("Mercedes Sprinter")
-                        .licencePlate("AA 1111 CT")
-                        .driver("Вальдемар Кипарисович")
-                        .weightCapacity(2000)
-                        .cooler(true)
-                        .available(true)
-                        .loadSize(1148.78)
-                        .travelCost(12)
-                        .build())
-                .build();
+        RoutesCalculation.RouteDto expectedRouteDto =new  RoutesCalculation.RouteDto(
+                44,
+                RouteStatus.DRAFT,
+                5.3,
+               1,
+               2,
+                150.05,
+                0,
+                null,
+                null,
+                0,
+                "Склад №1",
+                "м. Київ, вул. Металістів, 8, оф. 4-24",
+                false,
+               fakeRoutePointDtoList,
+               carDto);
 
         //when
         RoutesCalculation.RouteDto actualRouteDto = routeService.calculateRoute(carRoutesDto, storeDto);

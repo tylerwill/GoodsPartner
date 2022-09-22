@@ -1,19 +1,16 @@
 package com.goodspartner.service.impl;
 
+import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.dto.StoreDto;
-import com.goodspartner.entity.Route;
+import com.goodspartner.entity.*;
+import com.goodspartner.exceptions.DeliveryModifyException;
 import com.goodspartner.exceptions.RouteNotFoundException;
-import com.goodspartner.mapper.CarDetailsMapper;
-import com.goodspartner.mapper.RouteMapper;
-import com.goodspartner.mapper.RoutePointMapper;
+import com.goodspartner.mapper.*;
+import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.RouteRepository;
-import com.goodspartner.service.CalculateRouteService;
-import com.goodspartner.service.OrderService;
-import com.goodspartner.service.OrderValidationService;
-import com.goodspartner.service.RouteService;
-import com.goodspartner.service.StoreService;
+import com.goodspartner.service.*;
 import com.goodspartner.web.controller.response.RoutesCalculation;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,24 +18,20 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Service
 public class DefaultRouteService implements RouteService {
 
-    // Mappers
     private final CarDetailsMapper carDetailsMapper;
     private final RoutePointMapper routePointMapper;
     private final RouteMapper routeMapper;
-    // Services
     private final CalculateRouteService calculateRouteService;
     private final RouteRepository routeRepository;
     private final OrderService orderService;
-
     private final StoreService storeFactory;
-
     private final OrderValidationService orderValidationService;
-
 
     @Override
     @Transactional
@@ -84,7 +77,7 @@ public class DefaultRouteService implements RouteService {
      */
     @Override
     @Transactional
-    public RoutesCalculation calculateRoutes(LocalDate date) {
+    public RoutesCalculation calculateRoutesByDate(LocalDate date) {
 
         List<OrderDto> orders = orderService.findAllByShippingDate(date);
         // TODO: do we need to again validate the orders when we build the Route
@@ -92,7 +85,6 @@ public class DefaultRouteService implements RouteService {
 
         StoreDto store = storeFactory.getMainStore();
         List<RoutesCalculation.RouteDto> routes = calculateRouteService.calculateRoutes(orders, store);
-
         List<RoutesCalculation.CarLoadDto> carsDetailsList = carDetailsMapper.map(routes, orders);
 
         RoutesCalculation routesCalculation = new RoutesCalculation();

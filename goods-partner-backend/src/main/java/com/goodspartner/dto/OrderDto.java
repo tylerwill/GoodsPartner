@@ -1,14 +1,12 @@
 package com.goodspartner.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -17,8 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDto {
 
-    // TODO add refKey property
     private int id;
+    @JsonIgnore
+    private UUID deliveryID;
     @ApiModelProperty(notes = "The unique uuid of order from 1C")
     private String refKey;
     private String orderNumber;

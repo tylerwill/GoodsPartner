@@ -1,6 +1,7 @@
 package com.goodspartner.service;
 
 import com.goodspartner.dto.DeliveryDto;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,4 +20,8 @@ public interface DeliveryService {
     List<DeliveryDto> findAll();
 
     DeliveryDto delete(UUID id);
+
+    DeliveryDto calculateDelivery(UUID deliveryID);
+
+    DeliveryDto reCalculateDelivery(UUID deliveryID);
 }

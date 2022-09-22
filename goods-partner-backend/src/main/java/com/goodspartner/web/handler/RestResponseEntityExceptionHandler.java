@@ -1,8 +1,10 @@
 package com.goodspartner.web.handler;
 
 import com.goodspartner.exceptions.CarNotFoundException;
-import com.goodspartner.web.dto.ErrorMessage;
+import com.goodspartner.exceptions.DeliveryNotFoundException;
 import com.goodspartner.exceptions.GoogleApiException;
+import com.goodspartner.exceptions.RouteNotFoundException;
+import com.goodspartner.web.dto.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,6 +23,18 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(CarNotFoundException.class)
     public ResponseEntity<ErrorMessage> carNotFoundException(CarNotFoundException exception) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+
+    @ExceptionHandler(DeliveryNotFoundException.class)
+    public ResponseEntity<ErrorMessage> deliveryNotFoundException(DeliveryNotFoundException exception) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+
+    @ExceptionHandler(RouteNotFoundException.class)
+    public ResponseEntity<ErrorMessage> routeNotFoundException(RouteNotFoundException exception) {
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }

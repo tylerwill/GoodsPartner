@@ -69,7 +69,8 @@ public class DefaultGoogleApiService implements GoogleApiService {
     @Override
     public GeocodingResult[] getGeocodingResults(String address) {
         try {
-            return GeocodingApi.geocode(context, address).await();
+            return GeocodingApi.geocode(context, address)
+                    .language(DEFAULT_LANGUAGE).await();
         } catch (InterruptedException e) {
             log.warn("Interrupted!", e);
             Thread.currentThread().interrupt();

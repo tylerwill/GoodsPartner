@@ -35,9 +35,6 @@ public class CarDetailsMapper {
                 .collect(Collectors.toList());
 
         Collections.reverse(ordersInfo);
-        return RoutesCalculation.CarLoadDto.builder()
-                .car(route.getCar())
-                .orders(ordersInfo)
-                .build();
+        return new RoutesCalculation.CarLoadDto(route.getCar(), ordersInfo);
     }
 }

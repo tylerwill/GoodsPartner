@@ -50,20 +50,20 @@ public class DefaultCalculateRouteService implements CalculateRouteService {
 
         ResponsePath route = graphhopperService.getRoute(mapPoints);
 
-        //TODO: RoutePointDistantTime ?
-        return RoutesCalculation.RouteDto.builder()
-                .id(carLoad.getCar().getId())
-                .status(RouteStatus.DRAFT)
-                .totalWeight(getRouteOrdersTotalWeight(routePoints))
-                .totalPoints(routePoints.size())
-                .totalOrders(getTotalOrders(routePoints))
-                .distance(route.getDistance() / 1000)
-                .estimatedTime(Duration.ofMillis(route.getTime()).toMinutes())
-                .storeName(storeDto.getName())
-                .storeAddress(storeDto.getMapPoint().getAddress())
-                .routePoints(routePoints)
-                .car(carLoad.getCar())
-                .build();
+        // TODO: RoutePointDistantTime ?
+        RoutesCalculation.RouteDto routeDto = new RoutesCalculation.RouteDto();
+        routeDto.setStatus(RouteStatus.DRAFT);
+        routeDto.setTotalWeight(getRouteOrdersTotalWeight(routePoints));
+        routeDto.setTotalPoints(routePoints.size());
+        routeDto.setTotalOrders(getTotalOrders(routePoints));
+        routeDto.setDistance(BigDecimal.valueOf(route.getDistance() / 1000)
+                .setScale(2, RoundingMode.HALF_UP).doubleValue());
+        routeDto.setEstimatedTime(Duration.ofMillis(route.getTime()).toMinutes());
+        routeDto.setStoreName(storeDto.getName());
+        routeDto.setStoreAddress(storeDto.getMapPoint().getAddress());
+        routeDto.setRoutePoints(routePoints);
+        routeDto.setCar(carLoad.getCar());
+        return routeDto;
     }
 
     @VisibleForTesting

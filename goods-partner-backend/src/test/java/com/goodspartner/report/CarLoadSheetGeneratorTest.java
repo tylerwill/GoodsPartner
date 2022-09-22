@@ -25,17 +25,16 @@ class CarLoadSheetGeneratorTest {
 
     @BeforeEach
     public void setUp() {
-        CarDto carDto = CarDto.builder()
-                .id(1)
-                .name("Mercedes Vito")
-                .driver("Ivan Piddubny")
-                .licencePlate("AA 2222 CT")
-                .travelCost(10)
-                .available(true)
-                .cooler(false)
-                .weightCapacity(1000)
-                .loadSize(59.32)
-                .build();
+        CarDto carDto = new CarDto(
+                1,
+                "Mercedes Vito",
+                "AA 2222 CT",
+                "Ivan Piddubny",
+                1000,
+                true,
+                false,
+                59.32,
+                 10);
 
         ProductDto productFirst = ProductDto.builder()
                 .productName("3434 Паста шоколадна")
@@ -71,10 +70,8 @@ class CarLoadSheetGeneratorTest {
                 .id(2)
                 .build();
 
-        carLoadDto = RoutesCalculation.CarLoadDto.builder()
-                .car(carDto)
-                .orders(List.of(orderFirst, orderSecond))
-                .build();
+         carLoadDto = new RoutesCalculation.CarLoadDto(carDto, List.of(orderFirst, orderSecond));
+
     }
 
     @Test
