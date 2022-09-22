@@ -34,8 +34,8 @@ export default function CarFormDialog({closeDialog, open}) {
         let driver = carDriver.current.value;
         let weightCapacity = carWeighCapacity.current.value;
         let travelCost = carTravelCost.current.value;
-        let cooler = carCooler.current;
-        let available = carAvailable.current;
+        let cooler = carCooler.current.value;
+        let available = carAvailable.current.value;
 
         let car = {name, licencePlate, driver, weightCapacity, travelCost, cooler, available};
         addCarThunkCreator(car)
@@ -57,29 +57,30 @@ export default function CarFormDialog({closeDialog, open}) {
                             </Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" ref={carName} label="Модель авто" variant="outlined"/>
+                            <TextField id="outlined-basic" inputRef={carName} label="Модель авто" variant="outlined"/>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" ref={carLicencePlate} label="Номер авто" variant="outlined"/>
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <TextField id="outlined-basic" ref={carDriver} label="Водій" variant="outlined"/>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField id="outlined-basic" ref={carWeighCapacity} label="Вантажопідйомність, т"
+                            <TextField id="outlined-basic" inputRef={carLicencePlate} label="Номер авто"
                                        variant="outlined"/>
                         </Grid>
 
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" ref={carTravelCost} label="Витрати палива, л/100км"
+                            <TextField id="outlined-basic" inputRef={carDriver} label="Водій" variant="outlined"/>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField id="outlined-basic" inputRef={carWeighCapacity} label="Вантажопідйомність, т"
+                                       variant="outlined"/>
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            <TextField id="outlined-basic" inputRef={carTravelCost} label="Витрати палива, л/100км"
                                        variant="outlined"/>
                         </Grid>
 
                         <Grid item xs={12} sx={{mt: 2}}>
                             <FormGroup>
-                                <FormControlLabel control={<Checkbox/>} ref={carCooler} label="Морозильна камера"/>
-                                <FormControlLabel control={<Checkbox defaultChecked/>} ref={carAvailable}
+                                <FormControlLabel control={<Checkbox/>} inputRef={carCooler} label="Морозильна камера"/>
+                                <FormControlLabel control={<Checkbox defaultChecked/>} inputRef={carAvailable}
                                                   label="Доступність автомобіля"/>
                             </FormGroup>
                         </Grid>
