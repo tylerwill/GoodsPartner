@@ -8,6 +8,7 @@ import {
     getCarsThunkCreator,
     updateCarThunkCreator
 } from "../../reducers/cars-reducer";
+import CarFormDialog from "./CarFormDialog/CarFormDialog";
 
 const mapStateToProps = (state) => {
     return {
@@ -16,17 +17,13 @@ const mapStateToProps = (state) => {
     }
 }
 
-// const mapDispatchToProps = (dispatch) => {
-//     return
-// }
-
 const CarsContainer = connect(mapStateToProps, {
     openCarDialogActionCreator,
     closeCarDialogActionCreator,
     getCarsThunkCreator,
     deleteCarThunkCreator,
     addCarThunkCreator,
-    updateCarThunkCreator
-})(Cars);
+    updateCarThunkCreator,
+})(Cars, CarFormDialog);
 
 export default CarsContainer;

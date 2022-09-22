@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Grid from '@mui/material/Grid';
 import {Button, Checkbox, FormControlLabel, FormGroup, TextField, Typography} from '@mui/material';
+import {addCarThunkCreator} from "../../../reducers/cars-reducer";
 
 const style = {
     position: 'absolute',
@@ -17,6 +18,28 @@ const style = {
 };
 
 export default function CarFormDialog({closeDialog, open}) {
+
+    let carName = React.createRef();
+    let carLicencePlate = React.createRef();
+    let carDriver = React.createRef();
+    let carWeighCapacity = React.createRef();
+    let carTravelCost = React.createRef();
+    let carCooler = React.createRef();
+    let carAvailable = React.createRef();
+
+    let addCar = () => {
+        debugger;
+        let name = carName.current.value;
+        let licencePlate = carLicencePlate.current.value;
+        let driver = carDriver.current.value;
+        let weightCapacity = carWeighCapacity.current.value;
+        let travelCost = carTravelCost.current.value;
+        let cooler = carCooler.current;
+        let available = carAvailable.current;
+
+        let car = {name, licencePlate, driver, weightCapacity, travelCost, cooler, available};
+        addCarThunkCreator(car)
+    }
 
     return (
         <div>
@@ -34,34 +57,37 @@ export default function CarFormDialog({closeDialog, open}) {
                             </Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" label="Модель авто" variant="outlined"/>
+                            <TextField id="outlined-basic" ref={carName} label="Модель авто" variant="outlined"/>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" label="Номер авто" variant="outlined"/>
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <TextField id="outlined-basic" label="Водій" variant="outlined"/>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField id="outlined-basic" label="Вантажопідйомність, т" variant="outlined"/>
+                            <TextField id="outlined-basic" ref={carLicencePlate} label="Номер авто" variant="outlined"/>
                         </Grid>
 
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" label="Витрати палива, л/100км" variant="outlined"/>
+                            <TextField id="outlined-basic" ref={carDriver} label="Водій" variant="outlined"/>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField id="outlined-basic" ref={carWeighCapacity} label="Вантажопідйомність, т"
+                                       variant="outlined"/>
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            <TextField id="outlined-basic" ref={carTravelCost} label="Витрати палива, л/100км"
+                                       variant="outlined"/>
                         </Grid>
 
                         <Grid item xs={12} sx={{mt: 2}}>
                             <FormGroup>
-                                <FormControlLabel control={<Checkbox/>} label="Морозильна камера"/>
-                                <FormControlLabel control={<Checkbox defaultChecked/>} label="Доступність автомобіля"/>
+                                <FormControlLabel control={<Checkbox/>} ref={carCooler} label="Морозильна камера"/>
+                                <FormControlLabel control={<Checkbox defaultChecked/>} ref={carAvailable}
+                                                  label="Доступність автомобіля"/>
                             </FormGroup>
                         </Grid>
 
                         <Grid item xs={12} sx={{mt: 2}}>
                             <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
                                 <Button sx={{mr: 2}} variant="outlined" onClick={closeDialog}>Скасувати</Button>
-                                <Button variant="outlined" disabled> Зберегти </Button>
+                                <Button variant="outlined" onClick={addCar}> Зберегти </Button>
                             </Box>
                         </Grid>
                     </Grid>

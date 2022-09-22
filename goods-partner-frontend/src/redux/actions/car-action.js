@@ -14,7 +14,7 @@ export const getCarsAction = (cars) => {
     }
 }
 
-export const addCarAction = (car) => {
+export const addCarActionCreator = (car) => {
     return {
         type: actionTypes.ADD_CAR,
         payload: car
@@ -31,7 +31,7 @@ export const updateCarAction = (id, car) => {
 export const deleteCarAction = (id) => {
     return {
         type: actionTypes.DELETE_CAR,
-        payload: {id}
+        payload: id
     }
 }
 

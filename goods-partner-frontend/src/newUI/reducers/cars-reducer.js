@@ -1,5 +1,5 @@
 import {
-    addCarAction,
+    addCarActionCreator,
     CLOSE_CAR_DIALOG,
     OPEN_CAR_DIALOG,
     SET_CARS,
@@ -12,10 +12,16 @@ import {carsApi} from "../api/api";
 import {deleteCarAction, getCarsAction} from "../../redux/actions/car-action";
 
 let initialCars = {
-        cars: [],
-        carDialogOpened: false
-    }
-;
+    cars: [],
+    carDialogOpened: true,
+
+    name: "",
+    licencePlate: "",
+    cooler: "",
+    available: "",
+    weightCapacity: "",
+    travelCost: ""
+};
 
 const carsReducer = (state = initialCars, action) => {
     switch (action.type) {
@@ -26,17 +32,26 @@ const carsReducer = (state = initialCars, action) => {
         case CLOSE_CAR_DIALOG:
             return {...state, carDialogOpened: false};
 
-        case actionTypes.ADD_CAR:
+        case actionTypes.ADD_CAR: {
+            let newCar = {
+                name: state.name,
+                licencePlate: state.licencePlate,
+                cooler: state.cooler,
+                available: state.available,
+                weightCapacity: state.weightCapacity,
+                travelCost: state.travelCost
+            };
             return {
                 ...state,
-                cars: [...state.cars, action.payload],
-            };
+                cars: [...state.cars, newCar]
+            }
+        }
 
         case actionTypes.DELETE_CAR:
             return {
                 ...state,
                 cars: state.cars.filter((car) => car.id !== action.id),
-                id: state.findIndex(state => state.id === action.payload)
+                // id: state.findIndex(state => state.id === action.payload)
             };
 
         case actionTypes.UPDATE_CAR:
@@ -68,23 +83,23 @@ export const getCarsThunkCreator = () => (dispatch) => {
 }
 
 export const deleteCarThunkCreator = (id) => (dispatch) => {
-    carsApi.delete(id).then(response => {
+    carsApi.deleteCar(id).then(response => {
         console.log("response", response);
-        dispatch(deleteCarAction());
+        dispatch(deleteCarAction(id));
         dispatch(getCarsAction())
             .catch((error) => console.log(error));
-    })
+    });
 }
-
 export const addCarThunkCreator = (car) => (dispatch) => {
     carsApi.add(car).then(response => {
-        console.log("response", response);
-        dispatch(addCarAction(car));
-        dispatch(getCarsAction())
-            .catch((error) => console.log(error));
+        if (response.status === 200) {
+            console.log("response", response);
+            dispatch(addCarActionCreator(car));
+            dispatch(getCarsThunkCreator)
+                .catch((error) => console.log(error));
+        }
     })
 }
-
 export const updateCarThunkCreator = (id, car) => (dispatch) => {
     carsApi.update(id, car).then(response => {
         console.log("response", response);
@@ -94,15 +109,3 @@ export const updateCarThunkCreator = (id, car) => (dispatch) => {
 }
 
 export default carsReducer;
-
-export const deleteCar = (id) => {
-    return function (dispatch) {
-        carsApi.delete(id).then((response) => {
-            console.log("response", response);
-            dispatch(deleteCarAction());
-            dispatch(getCarsAction())
-                .catch((error) => console.log(error));
-
-        });
-    }
-}

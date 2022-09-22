@@ -32,7 +32,7 @@ export const closeCarDialogActionCreator = () => {
     }
 }
 
-export const addCarAction = (car) => {
+export const addCarActionCreator = (car) => {
     return {
         type: actionTypes.ADD_CAR,
         payload: car
