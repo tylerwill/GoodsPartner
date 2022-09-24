@@ -1,15 +1,15 @@
 import {
+    ADD_CAR,
     addCarActionCreator,
-    CLOSE_CAR_DIALOG,
+    CLOSE_CAR_DIALOG, DELETE_CAR,
     OPEN_CAR_DIALOG,
     SET_CARS,
-    setCars,
+    setCars, UPDATE_CAR,
     updateCarAction
 } from "../actions/car-actions";
-import * as actionTypes from "../../redux/actions/action-types";
 import cars from "../pages/Cars/Cars";
 import {carsApi} from "../api/api";
-import {deleteCarAction, getCarsAction} from "../../redux/actions/car-action";
+import {deleteCarAction, getCarsAction} from "../actions/car-actions";
 
 let initialCars = {
     cars: [],
@@ -32,7 +32,7 @@ const carsReducer = (state = initialCars, action) => {
         case CLOSE_CAR_DIALOG:
             return {...state, carDialogOpened: false};
 
-        case actionTypes.ADD_CAR: {
+        case ADD_CAR: {
             let newCar = {
                 name: state.name,
                 licencePlate: state.licencePlate,
@@ -47,14 +47,14 @@ const carsReducer = (state = initialCars, action) => {
             }
         }
 
-        case actionTypes.DELETE_CAR:
+        case DELETE_CAR:
             return {
                 ...state,
                 cars: state.cars.filter((car) => car.id !== action.id),
                 // id: state.findIndex(state => state.id === action.payload)
             };
 
-        case actionTypes.UPDATE_CAR:
+        case UPDATE_CAR:
             const updatedCar = action.payload;
 
             const updatedCars = state.cars.map((car) => {
@@ -83,7 +83,6 @@ export const getCarsThunkCreator = () => (dispatch) => {
 }
 
 export const deleteCarThunkCreator = (id) => (dispatch) => {
-    debugger;
     carsApi.deleteCar(id).then(response => {
         console.log("response", response);
         dispatch(deleteCarAction(id));
@@ -92,7 +91,6 @@ export const deleteCarThunkCreator = (id) => (dispatch) => {
     });
 }
 export const addCarThunkCreator = (car) => (dispatch) => {
-    debugger;
     carsApi.add(car).then(response => {
         if (response.status === 200) {
             console.log("response", response);

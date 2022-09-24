@@ -15,7 +15,6 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import CarFormDialog from "./CarFormDialog/CarFormDialog";
-import {deleteCarThunkCreator} from "../../reducers/cars-reducer";
 
 class Cars extends React.Component {
     constructor(props) {

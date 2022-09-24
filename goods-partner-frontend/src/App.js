@@ -1,10 +1,10 @@
 import './App.css';
-import Layout from "./newUI/components/Layout/Layout";
+import Layout from "./components/Layout/Layout";
 import CssBaseline from "@mui/material/CssBaseline";
 import * as React from "react";
-import CarsContainer from "./newUI/pages/Cars/CarsContainer";
+import CarsContainer from "./pages/Cars/CarsContainer";
 import {Route, Routes} from "react-router-dom";
-import OrdersContainer from "./newUI/pages/Orders/OrdersContainer";
+import OrdersContainer from "./pages/Orders/OrdersContainer";
 
 
 function App() {

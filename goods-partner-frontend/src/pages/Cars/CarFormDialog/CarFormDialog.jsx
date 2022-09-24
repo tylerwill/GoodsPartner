@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Grid from '@mui/material/Grid';
 import {Button, Checkbox, FormControlLabel, FormGroup, TextField, Typography} from '@mui/material';
-import {addCarThunkCreator} from "../../../reducers/cars-reducer";
 
 const style = {
     position: 'absolute',
@@ -28,7 +27,6 @@ export default function CarFormDialog({closeDialog, open, addCar}) {
     let carAvailable = React.createRef();
 
     let addCarHandler = () => {
-        debugger;
         let name = carName.current.value;
         let licencePlate = carLicencePlate.current.value;
         let driver = carDriver.current.value;

@@ -1,13 +1,9 @@
 import {applyMiddleware, combineReducers, compose, legacy_createStore} from "redux";
 import thunkMiddleware from "redux-thunk";
-import orderReducer from "./reducers/order-reducer";
-import routeReducer from "./reducers/route-reducer";
-import carsReducer from "./../newUI/reducers/cars-reducer";
-import newOrdersReducer from "./../newUI/reducers/orders-reducer";
+import carsReducer from "../reducers/cars-reducer";
+import newOrdersReducer from "../reducers/orders-reducer";
 
 let reducers = combineReducers({
-    orders: orderReducer,
-    routes: routeReducer,
     carsPage: carsReducer,
     ordersPage: newOrdersReducer
 });
