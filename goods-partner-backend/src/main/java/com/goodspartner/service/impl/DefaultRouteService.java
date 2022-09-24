@@ -1,16 +1,19 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.dto.StoreDto;
-import com.goodspartner.entity.*;
-import com.goodspartner.exceptions.DeliveryModifyException;
+import com.goodspartner.entity.Route;
 import com.goodspartner.exceptions.RouteNotFoundException;
-import com.goodspartner.mapper.*;
-import com.goodspartner.repository.DeliveryRepository;
+import com.goodspartner.mapper.RouteMapper;
+import com.goodspartner.mapper.RoutePointMapper;
 import com.goodspartner.repository.RouteRepository;
-import com.goodspartner.service.*;
+import com.goodspartner.service.CalculateRouteService;
+import com.goodspartner.service.CarLoadService;
+import com.goodspartner.service.OrderService;
+import com.goodspartner.service.OrderValidationService;
+import com.goodspartner.service.RouteService;
+import com.goodspartner.service.StoreService;
 import com.goodspartner.web.controller.response.RoutesCalculation;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,13 +21,12 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @AllArgsConstructor
 @Service
 public class DefaultRouteService implements RouteService {
 
-    private final CarDetailsMapper carDetailsMapper;
+    private final CarLoadService carLoadService;
     private final RoutePointMapper routePointMapper;
     private final RouteMapper routeMapper;
     private final CalculateRouteService calculateRouteService;
@@ -85,7 +87,7 @@ public class DefaultRouteService implements RouteService {
 
         StoreDto store = storeFactory.getMainStore();
         List<RoutesCalculation.RouteDto> routes = calculateRouteService.calculateRoutes(orders, store);
-        List<RoutesCalculation.CarLoadDto> carsDetailsList = carDetailsMapper.map(routes, orders);
+        List<RoutesCalculation.CarLoadDto> carsDetailsList = carLoadService.map(routes, orders);
 
         RoutesCalculation routesCalculation = new RoutesCalculation();
         routesCalculation.setDate(date);

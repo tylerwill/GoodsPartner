@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.service.CarLoadService;
+import com.goodspartner.service.impl.DefaultCarLoadService;
 import com.goodspartner.web.controller.response.RoutesCalculation;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
@@ -17,9 +19,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class CarDetailsMapperTest {
-    private final CarDetailsMapper carDetailsMapper = new CarDetailsMapper();
+class CarLoadServiceTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private final CarLoadService carLoadService = new DefaultCarLoadService();
 
     @Test
     void mapOrdersTCar() throws JsonProcessingException {
@@ -32,7 +35,7 @@ class CarDetailsMapperTest {
         });
 
 
-        RoutesCalculation.CarLoadDto carLoadDto = carDetailsMapper.routeToCarDetails(route, orders);
+        RoutesCalculation.CarLoadDto carLoadDto = carLoadService.routeToCarDetails(route, orders);
 
 
         assertEquals(route.getTotalWeight(), carLoadDto.getCar().getLoadSize());

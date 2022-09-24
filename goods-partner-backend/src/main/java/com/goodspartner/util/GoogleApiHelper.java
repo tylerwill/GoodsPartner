@@ -1,8 +1,8 @@
-package com.goodspartner.service.impl.util;
+package com.goodspartner.util;
 
 import com.goodspartner.dto.RoutePointDto;
 import com.google.maps.model.DirectionsRoute;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 public class GoogleApiHelper {
 
     public double getRouteTotalDistance(DirectionsRoute route) {

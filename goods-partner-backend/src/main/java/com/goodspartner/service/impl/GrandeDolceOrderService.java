@@ -2,17 +2,16 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.configuration.properties.GrandeDolce1CProperties;
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.mapper.OrderMapper;
+import com.goodspartner.mapper.ODataOrderMapper;
 import com.goodspartner.mapper.ProductMapper;
 import com.goodspartner.service.OrderService;
 import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
 import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
 import com.goodspartner.service.dto.external.grandedolce.ODataWrapperDto;
-import com.goodspartner.util.DtoCalculationHelper;
+import com.goodspartner.util.ExternalOrderDataEnricher;
 import com.goodspartner.util.ODataUrlBuilder;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -42,34 +41,23 @@ public class GrandeDolceOrderService implements OrderService {
     private static final String PRODUCT_SELECT_FIELDS = "Ref_Key,Количество,КоличествоМест,Коэффициент,ЕдиницаИзмерения/Description,Номенклатура/Description";
     private static final String PRODUCT_EXPAND_FIELDS = "Номенклатура,ЕдиницаИзмерения";
 
-    private final String serverOdataUrl;
-    private final String login;
-    private final String password;
+    private final GrandeDolce1CProperties properties;
+
     private final WebClient webClient;
-    private final OrderMapper orderMapper;
+    private final ODataOrderMapper odataOrderMapper;
     private final ProductMapper productMapper;
-    private final DtoCalculationHelper dtoHelper;
+    private final ExternalOrderDataEnricher enricher;
 
-    private GrandeDolce1CProperties properties;
-
-    @Autowired
-    public void setProperties(GrandeDolce1CProperties properties) {
-        this.properties = properties;
-    }
-
-    // TODO Refactor to reduce the number of dependencies in the service
     public GrandeDolceOrderService(GrandeDolce1CProperties properties,
                                    WebClient webClient,
-                                   OrderMapper orderMapper,
+                                   ODataOrderMapper odataOrderMapper,
                                    ProductMapper productMapper,
-                                   DtoCalculationHelper dtoHelper) {
-        this.serverOdataUrl = properties.getUrl();
-        this.login = properties.getLogin();
-        this.password = properties.getPassword();
+                                   ExternalOrderDataEnricher enricher) {
+        this.properties = properties;
         this.webClient = webClient;
-        this.orderMapper = orderMapper;
+        this.odataOrderMapper = odataOrderMapper;
         this.productMapper = productMapper;
-        this.dtoHelper = dtoHelper;
+        this.enricher = enricher;
     }
 
     @Override
@@ -88,7 +76,7 @@ public class GrandeDolceOrderService implements OrderService {
 
         enrichOrders(oDataOrderDtosList, allProducts);
 
-        List<OrderDto> orderDtosList = orderMapper.toOrderDtosList(oDataOrderDtosList);
+        List<OrderDto> orderDtosList = odataOrderMapper.toOrderDtosList(oDataOrderDtosList);
 
         log.info("Orders has been fetched from 1C for date: {} in {}", date, System.currentTimeMillis() - startTime);
 
@@ -112,7 +100,7 @@ public class GrandeDolceOrderService implements OrderService {
     private ODataWrapperDto<ODataOrderDto> getOrders(URI orderUri) {
         return webClient.get()
                 .uri(orderUri)
-                .headers(httpHeaders -> httpHeaders.setBasicAuth(login, password))
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
                 })
@@ -128,7 +116,7 @@ public class GrandeDolceOrderService implements OrderService {
     private ODataWrapperDto<ODataProductDto> parseProducts(URI productUri) {
         return webClient.get()
                 .uri(productUri)
-                .headers(httpHeaders -> httpHeaders.setBasicAuth(login, password))
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataProductDto>>() {
                 })
@@ -138,7 +126,7 @@ public class GrandeDolceOrderService implements OrderService {
     /*URI*/
     private URI buildOrderUri(String filter) {
         return new ODataUrlBuilder()
-                .baseUrl(serverOdataUrl)
+                .baseUrl(properties.getUrl())
                 .hostPrefix(HOST_PREFIX)
                 .appendEntitySetSegment(ORDER_ENTRY_SET_NAME)
                 .filter(filter)
@@ -151,7 +139,7 @@ public class GrandeDolceOrderService implements OrderService {
 
     private URI buildProductUri(String filter) {
         return new ODataUrlBuilder()
-                .baseUrl(serverOdataUrl)
+                .baseUrl(properties.getUrl())
                 .hostPrefix(HOST_PREFIX)
                 .appendEntitySetSegment(PRODUCT_ENTRY_SET_NAME)
                 .filter(filter)
@@ -191,7 +179,7 @@ public class GrandeDolceOrderService implements OrderService {
                 .map(this::parseProducts)
                 .map(ODataWrapperDto::getValue)
                 .flatMap(Collection::stream)
-                .peek(dtoHelper::enrichODataProduct)
+                .peek(enricher::enrichODataProduct)
                 .collect(Collectors.groupingBy(ODataProductDto::getRefKey, Collectors.toList()));
     }
 

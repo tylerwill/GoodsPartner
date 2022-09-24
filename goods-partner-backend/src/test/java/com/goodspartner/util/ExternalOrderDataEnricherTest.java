@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class DtoCalculationHelperTest {
+class ExternalOrderDataEnricherTest {
 
     private final MockedStoreService mockedStoreService = new MockedStoreService();
-    private final DtoCalculationHelper dtoHelper = new DtoCalculationHelper(mockedStoreService);
+    private final ExternalOrderDataEnricher dtoHelper = new ExternalOrderDataEnricher(mockedStoreService);
 
     private ODataProductDto oDataProductInKg;
     private ODataProductDto oDataProductInL;

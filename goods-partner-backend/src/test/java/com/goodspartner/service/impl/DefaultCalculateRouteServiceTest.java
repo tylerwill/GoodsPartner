@@ -1,16 +1,21 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.CarDto;
+import com.goodspartner.dto.CarRouteDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.entity.RouteStatus;
-import com.goodspartner.service.CarLoadingService;
 import com.goodspartner.service.GoogleApiService;
-import com.goodspartner.service.impl.util.GoogleApiHelper;
+import com.goodspartner.util.GoogleApiHelper;
 import com.goodspartner.web.controller.response.RoutesCalculation;
 import com.google.maps.model.DirectionsRoute;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 
 import java.util.List;
@@ -118,7 +123,7 @@ class DefaultCalculateRouteServiceTest {
 
         routePoints = List.of(firstRoutePointDto);
 
-        CarLoadingService.CarRoutesDto carRoutesDto = new CarLoadingService.CarRoutesDto();
+        CarRouteDto carRoutesDto = new CarRouteDto();
         carRoutesDto.setRoutePoints(routePoints);
         carRoutesDto.setCar(carDto);
 

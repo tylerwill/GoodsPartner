@@ -1,12 +1,23 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.*;
+import com.goodspartner.dto.CarDto;
+import com.goodspartner.dto.CarRouteDto;
+import com.goodspartner.dto.DistanceMatrix;
+import com.goodspartner.dto.MapPoint;
+import com.goodspartner.dto.RoutePointDto;
+import com.goodspartner.dto.StoreDto;
 import com.goodspartner.service.CarLoadingService;
 import com.goodspartner.service.CarService;
 import com.goodspartner.service.GraphhopperService;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.ortools.Loader;
-import com.google.ortools.constraintsolver.*;
+import com.google.ortools.constraintsolver.Assignment;
+import com.google.ortools.constraintsolver.FirstSolutionStrategy;
+import com.google.ortools.constraintsolver.LocalSearchMetaheuristic;
+import com.google.ortools.constraintsolver.RoutingIndexManager;
+import com.google.ortools.constraintsolver.RoutingModel;
+import com.google.ortools.constraintsolver.RoutingSearchParameters;
+import com.google.ortools.constraintsolver.main;
 import com.google.protobuf.Duration;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +44,7 @@ public class DefaultCarLoadingService implements CarLoadingService {
         Loader.loadNativeLibraries();
     }
 
-    public List<CarRoutesDto> loadCars(StoreDto storeDto, List<RoutePointDto> routePoints) {
+    public List<CarRouteDto> loadCars(StoreDto storeDto, List<RoutePointDto> routePoints) {
         List<CarDto> cars = carService.findByAvailableCars();
 
 //        TODO: REMOVE!
@@ -51,7 +62,7 @@ public class DefaultCarLoadingService implements CarLoadingService {
     }
 
     @VisibleForTesting
-    List<CarRoutesDto> load(List<CarDto> cars,
+    List<CarRouteDto> load(List<CarDto> cars,
                             List<RoutePointDto> routePoints,
                             DistanceMatrix routePointsMatrix) {
         Long[][] distanceMatrix = routePointsMatrix.getDistance();
@@ -71,9 +82,9 @@ public class DefaultCarLoadingService implements CarLoadingService {
     }
 
     @VisibleForTesting
-    List<CarRoutesDto> getCarLoadDtos(List<CarDto> cars, List<RoutePointDto> routePoints, RoutingIndexManager manager, RoutingModel routing) {
+    List<CarRouteDto> getCarLoadDtos(List<CarDto> cars, List<RoutePointDto> routePoints, RoutingIndexManager manager, RoutingModel routing) {
         Assignment solution = getSolution(routing);
-        List<CarRoutesDto> loadCars = new ArrayList<>(1);
+        List<CarRouteDto> loadCars = new ArrayList<>(1);
         for (int i = 0; i < cars.size(); ++i) {
             List<RoutePointDto> carRoutePoints = new ArrayList<>(1);
             long index = routing.start(i);
@@ -141,14 +152,14 @@ public class DefaultCarLoadingService implements CarLoadingService {
     }
 
     @VisibleForTesting
-    CarRoutesDto getCarLoad(CarDto car, List<RoutePointDto> routePoints) {
+    CarRouteDto getCarLoad(CarDto car, List<RoutePointDto> routePoints) {
         double loadSize = BigDecimal.valueOf(routePoints.stream()
                         .map(RoutePointDto::getAddressTotalWeight)
                         .collect(Collectors.summarizingDouble(count -> count)).getSum())
                 .setScale(2, RoundingMode.HALF_UP).doubleValue();
 
         car.setLoadSize(loadSize);
-        return CarRoutesDto.builder()
+        return CarRouteDto.builder()
                 .car(car)
                 .routePoints(routePoints)
                 .build();

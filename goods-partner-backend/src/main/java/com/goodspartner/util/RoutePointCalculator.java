@@ -1,25 +1,28 @@
-package com.goodspartner.mapper;
+package com.goodspartner.util;
 
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.RoutePointStatus;
-import com.google.common.annotations.VisibleForTesting;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
-public class CalculationRoutePointMapper {
+public class RoutePointCalculator {
 
     /**
      * TODO refactor Pair<Address, Client> by introducing separate AddressDto which will encapsulates the data
-     *      and will be included in OrderDto
+     * and will be included in OrderDto
      */
     public List<RoutePointDto> mapOrders(List<OrderDto> orders) {
         Map<Pair<MapPoint, String>, List<OrderDto>> addressOrderMap = orders.stream()
@@ -47,15 +50,13 @@ public class CalculationRoutePointMapper {
         return routePointDtoList;
     }
 
-    @VisibleForTesting
-    List<RoutePointDto.AddressOrderDto> mapOrdersAddress(List<OrderDto> orders) {
+    private List<RoutePointDto.AddressOrderDto> mapOrdersAddress(List<OrderDto> orders) {
         return orders.stream()
                 .map(this::mapOrderAddress)
                 .collect(Collectors.toList());
     }
 
-    @VisibleForTesting
-    RoutePointDto.AddressOrderDto mapOrderAddress(OrderDto order) {
+    private RoutePointDto.AddressOrderDto mapOrderAddress(OrderDto order) {
         List<ProductDto> products = order.getProducts();
         double orderTotalWeight = getOrderTotalWeight(products);
 
@@ -68,12 +69,10 @@ public class CalculationRoutePointMapper {
         return addressOrderDto;
     }
 
-    // TODO: I think this is not mapper class, but class for calculations
-    @VisibleForTesting
-    double getOrderTotalWeight(List<ProductDto> orderedProducts) {
+    private double getOrderTotalWeight(List<ProductDto> orderedProducts) {
         return BigDecimal.valueOf(orderedProducts.stream()
-                        .map(ProductDto::getTotalProductWeight)
-                        .collect(Collectors.summarizingDouble(weight -> weight)).getSum())
+                .map(ProductDto::getTotalProductWeight)
+                .collect(Collectors.summarizingDouble(weight -> weight)).getSum())
                 .setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 }

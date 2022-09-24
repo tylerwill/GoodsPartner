@@ -1,18 +1,17 @@
 package com.goodspartner.util;
 
-import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.ProductDto;
 import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
 import com.goodspartner.service.impl.MockedStoreService;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-@Service
-public class DtoCalculationHelper {
+@Component
+public class ExternalOrderDataEnricher {
 
     private final MockedStoreService storeService;
 
@@ -25,12 +24,6 @@ public class DtoCalculationHelper {
     public void enrichProduct(ProductDto product) {
         product.setTotalProductWeight(getTotalProductWeight(product));
         product.setStoreName(storeService.getMainStore().getName());
-    }
-
-    public double calculateTotalOrderWeight(OrderDto order) {
-        return order.getProducts().stream()
-                .mapToDouble(ProductDto::getTotalProductWeight)
-                .sum();
     }
 
     @VisibleForTesting

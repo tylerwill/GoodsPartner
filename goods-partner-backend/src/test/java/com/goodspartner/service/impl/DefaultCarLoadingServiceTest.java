@@ -4,15 +4,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.dto.CarDto;
+import com.goodspartner.dto.CarRouteDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.RoutePointStatus;
-import com.goodspartner.service.CarLoadingService;
 import com.goodspartner.service.CarService;
 import com.goodspartner.service.GoogleApiService;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixRow;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -44,7 +49,7 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     @Autowired
     private DefaultCarLoadingService defaultCarLoadingService;
 
-    private CarLoadingService.CarRoutesDto carRoutesDto;
+    private CarRouteDto carRoutesDto;
     private List<RoutePointDto> routePointDtoList;
     private DistanceMatrix distanceMatrix;
     private StoreDto storeDto;
@@ -112,7 +117,7 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
 
         routePointDtoList = List.of(routePointFirst, routePointSecond);
 
-        carRoutesDto = CarLoadingService.CarRoutesDto.builder()
+        carRoutesDto = CarRouteDto.builder()
                 .car(carDto)
                 .routePoints(routePointDtoList)
                 .build();
@@ -197,7 +202,7 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     @DisplayName("Test getCarLoading Checks Whether It Is Correctly Load Size And Create CarRoutesDto Object")
     void testGetCarLoad() {
 
-        CarLoadingService.CarRoutesDto actualCarRoutesDto = defaultCarLoadingService
+        CarRouteDto actualCarRoutesDto = defaultCarLoadingService
                 .getCarLoad(carDto, routePointDtoList);
 
         CarDto actualCarDto = actualCarRoutesDto.getCar();

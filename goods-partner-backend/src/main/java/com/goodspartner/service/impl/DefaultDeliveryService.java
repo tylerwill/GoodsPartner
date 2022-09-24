@@ -6,10 +6,10 @@ import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.exceptions.DeliveryModifyException;
 import com.goodspartner.exceptions.DeliveryNotFoundException;
-import com.goodspartner.mapper.CarDetailsMapper;
 import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.service.CalculateRouteService;
+import com.goodspartner.service.CarLoadService;
 import com.goodspartner.service.DeliveryService;
 import com.goodspartner.service.StoreService;
 import com.goodspartner.web.controller.response.RoutesCalculation;
@@ -30,7 +30,7 @@ public class DefaultDeliveryService implements DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final StoreService storeFactory;
     private final CalculateRouteService calculateRouteService;
-    private final CarDetailsMapper carDetailsMapper;
+    private final CarLoadService carLoadService;
 
 
     @Override
@@ -96,7 +96,7 @@ public class DefaultDeliveryService implements DeliveryService {
 
         StoreDto store = storeFactory.getMainStore();
         List<RoutesCalculation.RouteDto> routes = calculateRouteService.calculateRoutes(deliveryDto.getOrders(), store);
-        List<RoutesCalculation.CarLoadDto> carsDetails = carDetailsMapper.map(routes, deliveryDto.getOrders());
+        List<RoutesCalculation.CarLoadDto> carsDetails = carLoadService.map(routes, deliveryDto.getOrders());
 
         deliveryDto.setRoutes(routes);
         deliveryDto.setCarLoads(carsDetails);

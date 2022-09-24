@@ -34,6 +34,6 @@ public interface RouteMapper {
 
     List<RoutesCalculation.RouteDto> routesToRouteDtos(List<Route> routes);
 
-    List<Route> RouteDtosToRoutes(List<RoutesCalculation.RouteDto> routeDtos);
+    List<Route> routeDtosToRoutes(List<RoutesCalculation.RouteDto> routeDtos);
 
 }

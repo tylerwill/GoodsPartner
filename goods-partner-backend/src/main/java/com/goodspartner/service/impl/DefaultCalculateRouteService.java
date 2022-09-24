@@ -1,11 +1,12 @@
 package com.goodspartner.service.impl;
 
+import com.goodspartner.dto.CarRouteDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.RouteStatus;
-import com.goodspartner.mapper.CalculationRoutePointMapper;
+import com.goodspartner.util.RoutePointCalculator;
 import com.goodspartner.service.CalculateRouteService;
 import com.goodspartner.service.CarLoadingService;
 import com.goodspartner.service.GraphhopperService;
@@ -25,15 +26,15 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DefaultCalculateRouteService implements CalculateRouteService {
-    private final CalculationRoutePointMapper calculationRoutePointMapper;
+    private final RoutePointCalculator routePointCalculator;
     private final CarLoadingService carLoadingService;
     private final GraphhopperService graphhopperService;
 
 
     @Override
     public List<RoutesCalculation.RouteDto> calculateRoutes(List<OrderDto> orders, StoreDto storeDto) {
-        List<RoutePointDto> routePoints = calculationRoutePointMapper.mapOrders(orders);
-        List<CarLoadingService.CarRoutesDto> carRoutesDtos = carLoadingService.loadCars(storeDto, routePoints);
+        List<RoutePointDto> routePoints = routePointCalculator.mapOrders(orders);
+        List<CarRouteDto> carRoutesDtos = carLoadingService.loadCars(storeDto, routePoints);
 
         return carRoutesDtos.stream()
                 .map(car -> calculateRoute(car, storeDto))
@@ -41,7 +42,7 @@ public class DefaultCalculateRouteService implements CalculateRouteService {
     }
 
     @VisibleForTesting
-    RoutesCalculation.RouteDto calculateRoute(CarLoadingService.CarRoutesDto carLoad, StoreDto storeDto) {
+    RoutesCalculation.RouteDto calculateRoute(CarRouteDto carLoad, StoreDto storeDto) {
         List<RoutePointDto> routePoints = carLoad.getRoutePoints();
 
         List<MapPoint> mapPoints = new ArrayList<>();
