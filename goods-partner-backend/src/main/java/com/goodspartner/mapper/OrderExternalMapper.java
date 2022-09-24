@@ -18,23 +18,23 @@ public interface OrderExternalMapper {
     @Mapping(target = "addressExternal.validAddress", source = "mapPoint.address")
     @Mapping(target = "addressExternal.latitude", source = "mapPoint.latitude")
     @Mapping(target = "addressExternal.longitude", source = "mapPoint.longitude")
-    @Mapping(target = "delivery.id", source = "deliveryID")
+    @Mapping(target = "delivery.id", source = "deliveryId")
     OrderExternal mapOrderDtoToOrderExternal(OrderDto orderDto);
 
     @Mapping(target = "mapPoint", source = "addressExternal", qualifiedByName = "mapMapPoint")
     @Mapping(target = "address", source = "addressExternal.orderAddressId.orderAddress")
     @Mapping(target = "clientName", source = "addressExternal.orderAddressId.clientName")
-    @Mapping(target = "deliveryID", source = "delivery.id")
+    @Mapping(target = "deliveryId", source = "delivery.id")
     OrderDto mapOrderExternalToOrderDto(OrderExternal orderExternal);
 
-    List<OrderExternal> mapOrderDtosToOrderExternal(List<OrderDto> orderDtos);
-
     List<OrderDto> mapExternalOrdersToOrderDtos(List<OrderExternal> externalOrders);
+
+    List<OrderExternal> mapOrderDtosToOrdersExternal(List<OrderDto> orderDtos);
 
     @Named("mapMapPoint")
     default MapPoint mapMapPoint(AddressExternal addressExternal) {
         return MapPoint.builder()
-                .address(addressExternal.getOrderAddressId().getOrderAddress())
+                .address(addressExternal.getOrderAddressId().getOrderAddress()) // We are showing the client address variant
                 .latitude(addressExternal.getLatitude())
                 .longitude(addressExternal.getLongitude())
                 .status(MapPoint.AddressStatus.KNOWN)

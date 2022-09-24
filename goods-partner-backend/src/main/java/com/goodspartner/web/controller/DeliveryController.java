@@ -1,7 +1,9 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.DeliveryDto;
+import com.goodspartner.dto.OrderDto;
 import com.goodspartner.service.DeliveryService;
+import com.goodspartner.service.OrderExternalService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.UUID;
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
+    private final OrderExternalService orderExternalService;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PostMapping("/{id}/calculate")
@@ -81,4 +84,14 @@ public class DeliveryController {
         return deliveryService.delete(id);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PostMapping("/{id}/orders")
+    @ApiOperation(value = "Save valid orders with reference to delivery and fill known addresses cache",
+            notes = "Provide an id to save orders")
+    public void saveDeliveryOrders(@ApiParam(value = "delivery ID for orders to be referenced to", required = true)
+                                   @PathVariable("id") UUID id,
+                                   @RequestBody List<OrderDto> orderDtos) {
+
+        orderExternalService.saveValidOrdersAndEnrichKnownAddressesCache(id, orderDtos);
+    }
 }

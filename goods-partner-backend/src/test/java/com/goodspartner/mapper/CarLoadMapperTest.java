@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,6 +60,7 @@ public class CarLoadMapperTest {
                 .mapPoint(mapPoint)
                 .products(List.of(productDto))
                 .orderWeight(1340.0)
+                .deliveryId(UUID.fromString("237e9877-e79b-12d4-a765-321741963000"))
                 .build();
 
         CarDto carDto = new CarDto(
@@ -89,7 +91,7 @@ public class CarLoadMapperTest {
         assertTrue(mappedCar.isAvailable());
         assertEquals(26, mappedCar.getTravelCost());
 
-        List<OrderExternal> mappedOrderExternals = orderExternalMapper.mapOrderDtosToOrderExternal(carLoadDto.getOrders());
+        List<OrderExternal> mappedOrderExternals = orderExternalMapper.mapOrderDtosToOrdersExternal(carLoadDto.getOrders());
         assertEquals(2, mappedOrderExternals.get(0).getId());
         assertEquals("1232", mappedOrderExternals.get(0).getOrderNumber());
         assertEquals(LocalDate.of(2022, 2, 17), mappedOrderExternals.get(0).getCreatedDate());
@@ -97,9 +99,8 @@ public class CarLoadMapperTest {
         assertEquals("Бровари, Марії Лагунової, 11", mappedOrderExternals.get(0).getAddressExternal().getOrderAddressId().getOrderAddress());
         assertEquals("Georg", mappedOrderExternals.get(0).getManagerFullName());
         assertEquals(1340.0, mappedOrderExternals.get(0).getOrderWeight());
-        assertFalse(mappedOrderExternals.get(0).isValidAddress());
         assertEquals(List.of(productDto), mappedOrderExternals.get(0).getProducts());
-        assertNull(mappedOrderExternals.get(0).getDelivery().getId());
+        assertEquals(UUID.fromString("237e9877-e79b-12d4-a765-321741963000"), mappedOrderExternals.get(0).getDelivery().getId());
 
         Assertions.assertNull(carLoad.getDelivery());
     }

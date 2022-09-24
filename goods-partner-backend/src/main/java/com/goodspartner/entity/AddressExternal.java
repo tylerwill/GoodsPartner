@@ -6,26 +6,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
-
 
 @Getter
 @Setter
 @Entity
 @Table(name = "grandedolce_addresses")
-public class AddressExternal { // TODO think about naming
+public class AddressExternal {
 
     @EmbeddedId
     private OrderAddressId orderAddressId;
 
+    @Column(name = "valid_address")
     private String validAddress;
-    private double latitude;
-    private double longitude;
 
+    @Column(name = "latitude")
+    private double latitude;
+
+    @Column(name = "longitude")
+    private double longitude;
 
     @Builder
     @NoArgsConstructor
@@ -34,7 +34,11 @@ public class AddressExternal { // TODO think about naming
     @Getter
     @Setter
     public static class OrderAddressId implements Serializable {
+
+        @Column(name = "order_address")
         private String orderAddress;
+
+        @Column(name = "client_name")
         private String clientName;
     }
 }

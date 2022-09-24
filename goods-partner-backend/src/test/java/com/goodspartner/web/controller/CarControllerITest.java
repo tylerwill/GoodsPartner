@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CarControllerITest extends AbstractWebITest {
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "common/car/dataset_cars.yml", disableConstraints = true)
     @DisplayName("when Add Car then Ok Status Returned")
     void whenAddTheFirstCar_thenOkStatusReturned() throws Exception {
         CarDto carDto = new CarDto(
@@ -45,7 +45,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "common/car/dataset_cars.yml", disableConstraints = true)
     @ExpectedDataSet("common/car/dataset_update_car.yml")
     @DisplayName("when Update Car then Ok Status Returned")
     void whenUpdateCar_thenOkStatusReturned() throws Exception {
@@ -67,7 +67,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "common/car/dataset_cars.yml", disableConstraints = true)
     @DisplayName("when Delete Car With Incorrect Id then Bad Request Return")
     void whenDeleteCar_withIncorrectId_thenBadRequestReturn() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/cars/incorrectId")
@@ -76,7 +76,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_add_car.yml")
+    @DataSet(value = "common/car/dataset_add_car.yml", disableConstraints = true)
     @ExpectedDataSet("common/car/dataset_delete_cars.yml")
     @DisplayName("when Delete Car then Ok Status Returned")
     void whenDeleteCar_thenOkStatusReturned() throws Exception {
@@ -86,7 +86,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "common/car/dataset_cars.yml", disableConstraints = true)
     @ExpectedDataSet("common/car/dataset_cars.yml")
     @DisplayName("given Not Existing Id when Delete By Id then Exception Thrown")
     void givenNotExistingId_whenDeleteById_thenExceptionThrown() {
@@ -97,7 +97,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "common/car/dataset_cars.yml", disableConstraints = true)
     @ExpectedDataSet("common/car/dataset_cars.yml")
     @DisplayName("given Not Existing Id when Update Car Status By Id then Exception Thrown")
     void givenNotExistingId_whenUpdateCarStatusById_thenExceptionThrown() throws Exception {
@@ -110,7 +110,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_add_car.yml")
+    @DataSet(value = "common/car/dataset_add_car.yml", disableConstraints = true)
     @ExpectedDataSet("common/car/dataset_add_car.yml")
     @DisplayName("when Get All Cars then Ok Status Returned")
     void whenGetAllCars_thenOkStatusReturned() throws Exception {
@@ -141,7 +141,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_add_car.yml")
+    @DataSet(value = "common/car/dataset_add_car.yml", disableConstraints = true)
     @ExpectedDataSet("common/car/dataset_add_car.yml")
     @DisplayName("when Get Car By Id then Ok Status Returned")
     void whenGetCarById_thenOkStatusReturned() throws Exception {

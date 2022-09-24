@@ -7,7 +7,6 @@ import java.util.UUID;
 
 public interface OrderExternalService {
 
-    void save(List<OrderDto> orderValidationDto);
+    void saveValidOrdersAndEnrichKnownAddressesCache(UUID id, List<OrderDto> orderDtos);
 
-    List<OrderDto> findAllByDeliveryId(UUID id);
 }

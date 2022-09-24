@@ -17,7 +17,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -54,14 +53,6 @@ public class DefaultDeliveryService implements DeliveryService {
         return deliveryRepository.findById(id)
                 .map(deliveryMapper::deliveryToDeliveryDto)
                 .orElseThrow(() -> new DeliveryNotFoundException("There is no delivery with id: " + id));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public DeliveryDto findByDeliveryDate(LocalDate date) {
-        return deliveryRepository.findByDeliveryDate(date)
-                .map(deliveryMapper::deliveryToDeliveryDto)
-                .orElseThrow(() -> new DeliveryNotFoundException("There is no delivery on date: " + date));
     }
 
     @Override

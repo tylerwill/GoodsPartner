@@ -104,7 +104,9 @@ class OrdersControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/orders_external/dataset_address_external.yml")
+    @DataSet(value = "common/orders_external/dataset_address_external.yml",
+            cleanBefore = true,
+            skipCleaningFor = {"flyway_schema_history"})
     @DisplayName("given Order Dto and saved Address when Calculate Orders then Json with Different Address Status Returned")
     void givenOrderDto_and_savedAddress_whenCalculateOrders_then_jsonWithDifferentAddressStatus_Returned() throws Exception {
 
