@@ -18,7 +18,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         // TODO: Cors enabled for everything... Looks dangerous !
-        registry.addMapping("/**");
+        registry.addMapping("/**").allowedOrigins("http://localhost:3000", "https://goods-partner.herokuapp.com").allowedMethods("GET", "POST", "DELETE", "PUT");
     }
 
 
