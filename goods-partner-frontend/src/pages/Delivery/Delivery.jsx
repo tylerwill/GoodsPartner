@@ -3,6 +3,7 @@ import {Box, Breadcrumbs, Button,  Typography} from "@mui/material";
 import {ArrowForward} from "@mui/icons-material";
 import {Link, useParams} from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import OrdersContainer from "../Orders/OrdersContainer";
 
 const Delivery = ({currentDelivery, loadDelivery}) => {
     let {id} = useParams();
@@ -34,6 +35,7 @@ const Delivery = ({currentDelivery, loadDelivery}) => {
         </Breadcrumbs>
 
         <Box sx={{mt: 2}}>
+            <OrdersContainer/>
         </Box>
 
 

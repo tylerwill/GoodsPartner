@@ -16,7 +16,6 @@ function App() {
             <Layout>
                 <Routes>
                     <Route path="/cars" element={<CarsContainer/>}/>
-                    <Route path="/orders" element={<OrdersContainer/>}/>
                     <Route path="/deliveries" element={<DeliveriesContainer/>}/>
                     <Route path="/delivery/:id" element={<DeliveryContainer/>}/>
                 </Routes>

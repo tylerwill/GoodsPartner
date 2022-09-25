@@ -1,6 +1,6 @@
 export const GET_ORDERS_BY_DATE = "GET_ORDERS_BY_DATE";
 export const SET_ORDERS_DATA = "SET_ORDERS_DATA";
-export const SET_ORDERS_LOADED = "SET_ORDERS_LOADED";
+
 
 export const getOrdersByDate = (date) => {
     return {
@@ -16,9 +16,3 @@ export const setOrders = (orders) => {
     }
 }
 
-export const setOrdersLoaded = (loaded) => {
-    return {
-        type: SET_ORDERS_LOADED,
-        loaded
-    }
-}

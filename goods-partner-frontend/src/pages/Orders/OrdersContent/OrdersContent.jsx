@@ -39,12 +39,12 @@ const createTable = (orders, keyPrefix) => {
                 <TableHead>
                     <TableRow>
                         <TableCell/>
-                        <TableCell>№ замовлення</TableCell>
-                        <TableCell>Контрагент</TableCell>
+                        <TableCell  sx={{minWidth:'135px'}}>№ замовлення</TableCell>
+                        <TableCell>Вага</TableCell>
+                        <TableCell>Клієнт</TableCell>
                         <TableCell>Адреса</TableCell>
+                        <TableCell  sx={{minWidth:'135px'}}>Час доставки</TableCell>
                         <TableCell>Менеджер</TableCell>
-                        <TableCell>Вага замовлення</TableCell>
-                        <TableCell>Час доставки</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -77,6 +77,7 @@ const Row = ({order, keyPrefix}) => {
                 <TableCell component="th" scope="row">
                     {order.orderNumber}
                 </TableCell>
+                <TableCell>{order.orderWeight} кг</TableCell>
                 <TableCell>{order.clientName}</TableCell>
                 <TableCell>
                     <div style={{
@@ -84,15 +85,15 @@ const Row = ({order, keyPrefix}) => {
                         alignItems: 'center',
                     }}>
                         {isInvalid && <InfoIcon sx={{color: '#FFC107', marginRight: '5px'}}>
+
                             <Edit fontSize="medium"/>
                         </InfoIcon>}
                         <span>{order.address}</span>
                     </div>
 
                 </TableCell>
-                <TableCell>{order.managerFullName}</TableCell>
-                <TableCell>{order.orderWeight} кг</TableCell>
                 <TableCell>9:00 - 18:00</TableCell>
+                <TableCell>{order.managerFullName}</TableCell>
             </TableRow>
             <TableRow>
                 <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={7}>

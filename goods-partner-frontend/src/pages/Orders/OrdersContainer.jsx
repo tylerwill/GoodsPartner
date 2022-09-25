@@ -1,18 +1,14 @@
 import React from 'react';
 import {connect} from "react-redux";
 import Orders from "./Orders";
-import {getOrders} from "../../reducers/orders-reducer";
 
 const mapStateToProps = (state) => {
     return {
-        orders: state.ordersPage.orders,
-        loaded: state.ordersPage.loaded,
-        date: state.ordersPage.date
+        ordersPreview: state.deliveries.ordersPreview,
+        loading: state.deliveries.ordersPreviewLoading
     }
 }
 
-const OrdersContainer = connect(mapStateToProps, {
-    getOrders
-})(Orders);
+const OrdersContainer = connect(mapStateToProps, {})(Orders);
 
 export default OrdersContainer;
