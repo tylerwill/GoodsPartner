@@ -2,13 +2,23 @@ package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.dto.RouteDto;
+import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.service.DeliveryService;
 import com.goodspartner.service.OrderExternalService;
+import com.goodspartner.service.RouteService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,25 +29,8 @@ import java.util.UUID;
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
+    private final RouteService routeService;
     private final OrderExternalService orderExternalService;
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
-    @PostMapping("/{id}/calculate")
-    @ApiOperation(value = "Calculate routes by Delivery ID",
-            notes = "Return DeliveryDto",
-            response = DeliveryDto.class)
-    public DeliveryDto calculateRoutes(@PathVariable("id") UUID id) {
-        return deliveryService.calculateDelivery(id);
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
-    @PostMapping("/{id}/recalculate")
-    @ApiOperation(value = "Recalculate routes by Delivery ID",
-            notes = "Return DeliveryDto",
-            response = DeliveryDto.class)
-    public DeliveryDto reCalculateRoutes(@PathVariable("id") UUID id) {
-        return deliveryService.reCalculateDelivery(id);
-    }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
     @GetMapping
@@ -68,7 +61,8 @@ public class DeliveryController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PutMapping("/{id}")
-    @ApiOperation(value = "Edit Delivery", notes = "Provide an id to edit up specific delivery")
+    @ApiOperation(value = "Edit Delivery",
+            notes = "Provide an id to edit up specific delivery")
     public DeliveryDto update(@ApiParam(value = "ID of edited Delivery", required = true)
                               @PathVariable UUID id,
                               @ApiParam(value = "Edited DeliveryDto", type = "DeliveryDto", required = true)
@@ -84,6 +78,10 @@ public class DeliveryController {
         return deliveryService.delete(id);
     }
 
+    /**
+     * Delivery Order manipulation
+     */
+
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PostMapping("/{id}/orders")
     @ApiOperation(value = "Save valid orders with reference to delivery and fill known addresses cache",
@@ -93,5 +91,31 @@ public class DeliveryController {
                                    @RequestBody List<OrderDto> orderDtos) {
 
         orderExternalService.saveValidOrdersAndEnrichKnownAddressesCache(id, orderDtos);
+    }
+
+    /**
+     * Delivery Routes manipulation TODO align
+     */
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PostMapping("/{id}/calculate")
+    @ApiOperation(value = "Calculate routes by Delivery ID",
+            notes = "Return DeliveryDto",
+            response = DeliveryDto.class)
+    public DeliveryDto calculateRoutes(@PathVariable("id") UUID deliveryId) {
+        return deliveryService.calculateDelivery(deliveryId);
+    }
+
+    // TODO Question - do we want to keep them under the delivery endpoint??
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PutMapping("/{id}/routes/{routeId}")
+    public void updateRoute(@PathVariable int routeId, @RequestBody RouteDto routeDto) {
+        routeService.update(routeId, routeDto);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PutMapping("/{id}/routes/{routeId}/route-points/{routePointId}")
+    public void updateRoutePoint(@PathVariable int routeId, @PathVariable String routePointId, @RequestBody RoutePoint routePoint) {
+        routeService.updatePoint(routeId, routePointId, routePoint);
     }
 }

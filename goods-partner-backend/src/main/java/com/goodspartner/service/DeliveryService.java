@@ -18,6 +18,4 @@ public interface DeliveryService {
     DeliveryDto delete(UUID id);
 
     DeliveryDto calculateDelivery(UUID deliveryID);
-
-    DeliveryDto reCalculateDelivery(UUID deliveryID);
 }

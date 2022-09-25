@@ -28,49 +28,39 @@ public class Delivery {
     private LocalDate deliveryDate;
 
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Route> routes = new ArrayList<>(1);
+    private List<Route> routes = new ArrayList<>();
 
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderExternal> orders = new ArrayList<>(1);
+    private List<OrderExternal> orders = new ArrayList<>();
 
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CarLoad> carLoads = new ArrayList<>(1);
+    private List<CarLoad> carLoads = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)
     @Column(length = 9)
     private DeliveryStatus status;
 
     public void setRoutes(List<Route> routes) {
-        this.routes = Optional.ofNullable(routes)
-                .orElseGet(Collections::emptyList);
+        List<Route> requiredRoutes = Optional.ofNullable(routes)
+                .orElse(Collections.emptyList());
+        this.routes.clear();
+        this.routes.addAll(requiredRoutes);
         this.routes.forEach(route -> route.setDelivery(this));
     }
 
     public void setOrders(List<OrderExternal> ordersExternal) {
-        this.orders = Optional.ofNullable(ordersExternal)
-                .orElseGet(Collections::emptyList);
+        List<OrderExternal> requiredOrderExternals = Optional.ofNullable(ordersExternal)
+                .orElse(Collections.emptyList());
+        this.orders.clear();
+        this.orders.addAll(requiredOrderExternals);
         this.orders.forEach(order -> order.setDelivery(this));
     }
 
     public void setCarLoads(List<CarLoad> carLoads) {
-        this.carLoads = Optional.ofNullable(carLoads)
-                .orElseGet(Collections::emptyList);
-        this.carLoads.forEach(carLoad -> carLoad.setDelivery(this));
-    }
-
-    public void removeRoutes() {
-        routes.forEach(route -> route.setDelivery(null));
-        this.routes.clear();
-    }
-
-    public void removeOrders() {
-        this.orders.forEach(order -> order.setDelivery(null));
-        this.orders.clear();
-    }
-
-    public void removeCarLoads() {
-        this.carLoads.forEach(carLoad -> carLoad.setDelivery(null));
+        List<CarLoad> requiredCarLoads = Optional.ofNullable(carLoads)
+                .orElse(Collections.emptyList());
         this.carLoads.clear();
-        this.orders.forEach(orderExternal -> orderExternal.setCarLoad(null));
+        this.carLoads.addAll(requiredCarLoads);
+        this.carLoads.forEach(carLoad -> carLoad.setDelivery(this));
     }
 }

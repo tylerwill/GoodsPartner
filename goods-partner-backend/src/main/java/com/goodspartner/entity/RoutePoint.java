@@ -1,7 +1,7 @@
-package com.goodspartner.dto;
+package com.goodspartner.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.goodspartner.entity.RoutePointStatus;
+import com.goodspartner.dto.MapPoint;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class RoutePointDto {
+public class RoutePoint {
     private UUID id;
     private RoutePointStatus status;
     private LocalDateTime completedAt;
@@ -26,7 +26,7 @@ public class RoutePointDto {
     private MapPoint mapPoint;
 
     @JsonIgnoreProperties(value = {"orderTotalWeight"})
-    private List<AddressOrderDto> orders;
+    private List<AddressOrder> orders;
 
     @Getter
     @Setter
@@ -34,7 +34,7 @@ public class RoutePointDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @EqualsAndHashCode
-    public static class AddressOrderDto {
+    public static class AddressOrder {
         private int id;
         private String orderNumber;
         private String comment;

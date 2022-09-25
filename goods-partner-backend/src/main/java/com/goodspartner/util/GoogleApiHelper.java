@@ -1,6 +1,6 @@
 package com.goodspartner.util;
 
-import com.goodspartner.dto.RoutePointDto;
+import com.goodspartner.entity.RoutePoint;
 import com.google.maps.model.DirectionsRoute;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +25,7 @@ public class GoogleApiHelper {
                 .collect(Collectors.summarizingLong(leg -> leg.duration.inSeconds)).getSum();
     }
 
-    public void addRoutPointDistantTime(List<RoutePointDto> routePoints, DirectionsRoute route) {
+    public void addRoutPointDistantTime(List<RoutePoint> routePoints, DirectionsRoute route) {
         //TODO: Rework on stream
         for (int i = 0; i < routePoints.size(); i++) {
             long duration = route.legs[i].duration.inSeconds;

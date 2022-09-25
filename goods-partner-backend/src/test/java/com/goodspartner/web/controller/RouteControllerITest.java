@@ -23,9 +23,6 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -68,12 +65,9 @@ public class RouteControllerITest extends AbstractWebITest {
         DistanceMatrixRow[] distanceMatrixRows = objectMapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
         DistanceMatrix distanceMatrix = new DistanceMatrix(origin, dest, distanceMatrixRows);
 
-        when(googleApiService.getDirectionRoute(anyString(), anyList())).thenReturn(directionsRoute);
-        when(googleApiService.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
-
         mockMvc.perform(get(URL_TEMPLATE)
-                        .param(URL_PARAM_MANE, "2022-02-04")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .param(URL_PARAM_MANE, "2022-02-04")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .json(getResponseAsString("response/route-controller-calculate.json")));
@@ -93,12 +87,9 @@ public class RouteControllerITest extends AbstractWebITest {
         DistanceMatrixRow[] distanceMatrixRows = objectMapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
         DistanceMatrix distanceMatrix = new DistanceMatrix(origin, dest, distanceMatrixRows);
 
-        when(googleApiService.getDirectionRoute(anyString(), anyList())).thenReturn(null);
-        when(googleApiService.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
-
         mockMvc.perform(get(URL_TEMPLATE)
-                        .param(URL_PARAM_MANE, "7777-07-07")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .param(URL_PARAM_MANE, "7777-07-07")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .json("""  
@@ -116,15 +107,15 @@ public class RouteControllerITest extends AbstractWebITest {
     void delivery() throws Exception {
         DeliveryDto deliveryDto = DeliveryDto.builder()
                 .id(UUID.fromString("70574dfd-48a3-40c7-8b0c-3e5defe7d080"))
-                .deliveryDate(LocalDate.of(2022,2,17))
+                .deliveryDate(LocalDate.of(2022, 2, 17))
                 .status(DeliveryStatus.DRAFT)
                 .build();
 
         System.out.println(objectMapper.writeValueAsString(deliveryDto));
 
         mockMvc.perform(post("/api/v1/routes/calculate")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(deliveryDto)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(deliveryDto)))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .json("""

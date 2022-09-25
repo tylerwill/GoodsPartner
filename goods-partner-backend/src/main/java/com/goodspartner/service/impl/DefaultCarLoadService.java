@@ -1,9 +1,10 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.OrderDto;
-import com.goodspartner.dto.RoutePointDto;
+import com.goodspartner.entity.CarLoad;
+import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.entity.Route;
+import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.service.CarLoadService;
-import com.goodspartner.web.controller.response.RoutesCalculation;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -14,18 +15,18 @@ import java.util.stream.Collectors;
 public class DefaultCarLoadService implements CarLoadService {
 
     @Override
-    public List<RoutesCalculation.CarLoadDto> map(List<RoutesCalculation.RouteDto> routes, List<OrderDto> orders) {
+    public List<CarLoad> map(List<Route> routes, List<OrderExternal> orders){
         return routes.stream().map(route -> routeToCarDetails(route, orders)).toList();
     }
 
     @Override
-    public RoutesCalculation.CarLoadDto routeToCarDetails(RoutesCalculation.RouteDto route, List<OrderDto> orders) {
-        List<OrderDto> ordersInfo = route.getRoutePoints()
+    public CarLoad routeToCarDetails(Route route, List<OrderExternal> orders) {
+        List<OrderExternal> carLoadOrders = route.getRoutePoints()
                 .stream()
                 .map(routePoint -> {
                     List<String> routeOrderNumbers = routePoint.getOrders()
                             .stream()
-                            .map(RoutePointDto.AddressOrderDto::getOrderNumber)
+                            .map(RoutePoint.AddressOrder::getOrderNumber)
                             .toList();
                     return orders
                             .stream()
@@ -34,7 +35,12 @@ public class DefaultCarLoadService implements CarLoadService {
                 }).flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        Collections.reverse(ordersInfo);
-        return new RoutesCalculation.CarLoadDto(route.getCar(), ordersInfo);
+        Collections.reverse(carLoadOrders); // TODO does it really make sense now?
+
+        CarLoad carLoad = new CarLoad();
+        carLoad.setCar(route.getCar());
+        carLoad.setOrders(carLoadOrders);
+
+        return carLoad;
     }
 }

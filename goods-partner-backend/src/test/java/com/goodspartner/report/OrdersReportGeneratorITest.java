@@ -2,12 +2,19 @@ package com.goodspartner.report;
 
 import com.goodspartner.AbstractBaseITest;
 import com.goodspartner.config.TestSecurityDisableConfig;
+import com.goodspartner.dto.Product;
+import com.goodspartner.entity.Car;
+import com.goodspartner.entity.CarLoad;
+import com.goodspartner.entity.Delivery;
+import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.repository.DeliveryRepository;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +28,10 @@ import org.springframework.web.context.request.ServletWebRequest;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
-import java.util.function.Consumer;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -34,9 +44,6 @@ class OrdersReportGeneratorITest extends AbstractBaseITest {
 
     @LocalServerPort
     private int port;
-
-    @Autowired
-    private OrdersReportGenerator ordersReportGenerator;
 
     @Value("${reports.destination}")
     private String reportsDestination;
@@ -59,20 +66,69 @@ class OrdersReportGeneratorITest extends AbstractBaseITest {
     @DisplayName("Test for generate orders report with three orders")
     @Test
     void testGenerateOrderReportWithThreeOrders() {
-        LocalDate date = LocalDate.of(2022, 2, 4);
+
+        // Prepare data
+        Delivery delivery = prepareDeliveryWithOneOrder();
+
+        // given
+        DeliveryRepository deliveryRepository = Mockito.mock(DeliveryRepository.class);
+        OrdersReportGenerator ordersReportGenerator = new OrdersReportGenerator(deliveryRepository);
+
+        Mockito.when(deliveryRepository.findById(delivery.getId())).thenReturn(Optional.of(delivery));
+
+        // when
+        ReportResult reportResult = ordersReportGenerator.generateReport(delivery.getId());// TODO This is testing nothing
 
         new File(reportsDestination).mkdirs();
 
-        Consumer<ReportResult> reportResultConsumer = r -> {
-            File destinationFile = new File(reportsDestination, r.name());
-            writeReportToFile(r, destinationFile);
+        File destinationFile = new File(reportsDestination, reportResult.name());
+        writeReportToFile(reportResult, destinationFile);
 
-            assertTrue(destinationFile.exists());
-            assertTrue(destinationFile.length() > 0);
-        };
-
-        ordersReportGenerator.generateReport(date, reportResultConsumer);
+        assertTrue(destinationFile.exists());
+        assertTrue(destinationFile.length() > 0);
     }
 
+    @NotNull
+    private Delivery prepareDeliveryWithOneOrder() {
+        Delivery delivery = new Delivery();
+        delivery.setId(UUID.randomUUID());
+        delivery.setDeliveryDate(LocalDate.now());
+
+        Car car = getCar();
+
+        Product product = Product.builder()
+                .productName("678968 Суміш для випікання Мрія Маффіни з апельсиновою цедрою")
+                .amount(1)
+                .unitWeight(1.52)
+                .totalProductWeight(1.52)
+                .build();
+
+        OrderExternal orderFirst = new OrderExternal();
+        orderFirst.setProducts(List.of(product));
+        orderFirst.setOrderNumber(String.valueOf(35665));
+        orderFirst.setOrderWeight(579.52);
+        orderFirst.setId(1);
+
+        CarLoad carLoad = new CarLoad();
+        carLoad.setCar(car);
+        carLoad.setOrders(Arrays.asList(orderFirst));
+        carLoad.setDelivery(delivery);
+
+        delivery.setCarLoads(List.of(carLoad));
+        return delivery;
+    }
+
+    @NotNull
+    private Car getCar() {
+        return new Car(
+                1,
+                "Mercedes Vito",
+                "Ivan Piddubny",
+                true,
+                false,
+                "AA 2222 CT",
+                1000,
+                10);
+    }
 
 }

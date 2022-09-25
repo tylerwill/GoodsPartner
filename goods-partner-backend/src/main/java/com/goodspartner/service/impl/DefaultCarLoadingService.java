@@ -1,13 +1,13 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.CarDto;
-import com.goodspartner.dto.CarRouteDto;
+import com.goodspartner.dto.CarRouteComposition;
 import com.goodspartner.dto.DistanceMatrix;
 import com.goodspartner.dto.MapPoint;
-import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.dto.StoreDto;
+import com.goodspartner.entity.Car;
+import com.goodspartner.entity.RoutePoint;
+import com.goodspartner.repository.CarRepository;
 import com.goodspartner.service.CarLoadingService;
-import com.goodspartner.service.CarService;
 import com.goodspartner.service.GraphhopperService;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.ortools.Loader;
@@ -19,42 +19,44 @@ import com.google.ortools.constraintsolver.RoutingModel;
 import com.google.ortools.constraintsolver.RoutingSearchParameters;
 import com.google.ortools.constraintsolver.main;
 import com.google.protobuf.Duration;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
+@AllArgsConstructor
 public class DefaultCarLoadingService implements CarLoadingService {
     private static final int ROUTE_START_INDEX = 0;
     private static final int SOLUTION_PROCESSING_TIME_SEC = 3;
     private static final int SLACK_UPPER_BOUND = 0;
     private static final String VEHICLE_CAPACITY_DIMENSION_NAME = "Capacity";
     private static final boolean START_CUMUL_TO_ZERO = true;
-    private final CarService carService;
 
+    private final CarRepository carRepository;
     private final GraphhopperService graphhopperService;
 
-    public DefaultCarLoadingService(CarService carService, GraphhopperService graphhopperService) {
-        this.carService = carService;
-        this.graphhopperService = graphhopperService;
+    @PostConstruct
+    public void init() {
+        log.info("Initializing OR-Tools Native libraries");
         Loader.loadNativeLibraries();
     }
 
-    public List<CarRouteDto> loadCars(StoreDto storeDto, List<RoutePointDto> routePoints) {
-        List<CarDto> cars = carService.findByAvailableCars();
+    public List<CarRouteComposition> loadCars(StoreDto storeDto, List<RoutePoint> routePoints) {
+        List<Car> cars = carRepository.findByAvailableTrue();
 
 //        TODO: REMOVE!
-        List<RoutePointDto> kievPoints = routePoints.stream().filter(routePointDto ->
+        List<RoutePoint> kievPoints = routePoints.stream().filter(routePointDto ->
                 routePointDto.getMapPoint().getAddress().contains("Київська обл")
                         || routePointDto.getMapPoint().getAddress().contains("Київ")).toList();
 
         List<MapPoint> mapPoints = new ArrayList<>();
         mapPoints.add(storeDto.getMapPoint());
-        mapPoints.addAll(kievPoints.stream().map(RoutePointDto::getMapPoint).toList());
+        mapPoints.addAll(kievPoints.stream().map(RoutePoint::getMapPoint).toList());
 
         DistanceMatrix matrix = graphhopperService.getMatrix(mapPoints);
 
@@ -62,15 +64,15 @@ public class DefaultCarLoadingService implements CarLoadingService {
     }
 
     @VisibleForTesting
-    List<CarRouteDto> load(List<CarDto> cars,
-                            List<RoutePointDto> routePoints,
-                            DistanceMatrix routePointsMatrix) {
+    List<CarRouteComposition> load(List<Car> cars,
+                                   List<RoutePoint> routePoints,
+                                   DistanceMatrix routePointsMatrix) {
         Long[][] distanceMatrix = routePointsMatrix.getDistance();
         long[] demands = calculateDemands(routePoints);
         long[] vehicleCapacities = cars.stream()
-                .mapToLong(CarDto::getWeightCapacity).toArray();
+                .mapToLong(Car::getWeightCapacity).toArray();
         long[] vehicleCosts = cars.stream()
-                .mapToLong(CarDto::getTravelCost).toArray();
+                .mapToLong(Car::getTravelCost).toArray();
         int carsAmount = cars.size();
 
         RoutingIndexManager manager =
@@ -78,15 +80,14 @@ public class DefaultCarLoadingService implements CarLoadingService {
         RoutingModel routing =
                 configureRoutingModel(manager, distanceMatrix, demands, vehicleCapacities, vehicleCosts, carsAmount);
 
-        return getCarLoadDtos(cars, routePoints, manager, routing);
+        return getCarLoad(cars, routePoints, manager, routing);
     }
 
-    @VisibleForTesting
-    List<CarRouteDto> getCarLoadDtos(List<CarDto> cars, List<RoutePointDto> routePoints, RoutingIndexManager manager, RoutingModel routing) {
+    private List<CarRouteComposition> getCarLoad(List<Car> cars, List<RoutePoint> routePoints, RoutingIndexManager manager, RoutingModel routing) {
         Assignment solution = getSolution(routing);
-        List<CarRouteDto> loadCars = new ArrayList<>(1);
+        List<CarRouteComposition> loadCars = new ArrayList<>(1);
         for (int i = 0; i < cars.size(); ++i) {
-            List<RoutePointDto> carRoutePoints = new ArrayList<>(1);
+            List<RoutePoint> carRoutePoints = new ArrayList<>(1);
             long index = routing.start(i);
             if (routing.isVehicleUsed(solution, i)) {
                 while (!routing.isEnd(index)) {
@@ -113,8 +114,7 @@ public class DefaultCarLoadingService implements CarLoadingService {
         return routing.solveWithParameters(searchParameters);
     }
 
-    @VisibleForTesting
-    RoutingModel configureRoutingModel(RoutingIndexManager manager, Long[][] distanceMatrix, long[] demands, long[] vehicleCapacities, long[] vehicleCosts, int carsAmount) {
+    private RoutingModel configureRoutingModel(RoutingIndexManager manager, Long[][] distanceMatrix, long[] demands, long[] vehicleCapacities, long[] vehicleCosts, int carsAmount) {
         RoutingModel routing = new RoutingModel(manager);
         int transitCallbackIndex =
                 routing.registerTransitCallback((long fromIndex, long toIndex) -> {
@@ -141,7 +141,7 @@ public class DefaultCarLoadingService implements CarLoadingService {
     }
 
     @VisibleForTesting
-    long[] calculateDemands(List<RoutePointDto> routePoints) {
+    long[] calculateDemands(List<RoutePoint> routePoints) {
         long[] demands = new long[routePoints.size() + 1];
         List<Long> collect = routePoints.stream()
                 .map(point -> Math.round(point.getAddressTotalWeight())).toList();
@@ -152,14 +152,8 @@ public class DefaultCarLoadingService implements CarLoadingService {
     }
 
     @VisibleForTesting
-    CarRouteDto getCarLoad(CarDto car, List<RoutePointDto> routePoints) {
-        double loadSize = BigDecimal.valueOf(routePoints.stream()
-                        .map(RoutePointDto::getAddressTotalWeight)
-                        .collect(Collectors.summarizingDouble(count -> count)).getSum())
-                .setScale(2, RoundingMode.HALF_UP).doubleValue();
-
-        car.setLoadSize(loadSize);
-        return CarRouteDto.builder()
+    CarRouteComposition getCarLoad(Car car, List<RoutePoint> routePoints) {
+        return CarRouteComposition.builder()
                 .car(car)
                 .routePoints(routePoints)
                 .build();

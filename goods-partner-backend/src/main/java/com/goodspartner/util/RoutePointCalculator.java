@@ -1,11 +1,12 @@
 package com.goodspartner.util;
 
 import com.goodspartner.dto.MapPoint;
-import com.goodspartner.dto.OrderDto;
-import com.goodspartner.dto.ProductDto;
-import com.goodspartner.dto.RoutePointDto;
+import com.goodspartner.dto.Product;
+import com.goodspartner.entity.AddressExternal;
+import com.goodspartner.entity.AddressExternal.OrderAddressId;
+import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RoutePointStatus;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -20,58 +21,69 @@ import java.util.stream.Collectors;
 @Component
 public class RoutePointCalculator {
 
-    /**
-     * TODO refactor Pair<Address, Client> by introducing separate AddressDto which will encapsulates the data
-     * and will be included in OrderDto
-     */
-    public List<RoutePointDto> mapOrders(List<OrderDto> orders) {
-        Map<Pair<MapPoint, String>, List<OrderDto>> addressOrderMap = orders.stream()
-                .collect(Collectors.groupingBy(orderDto ->
-                                Pair.of(orderDto.getMapPoint(), orderDto.getClientName()),
-                        LinkedHashMap::new, Collectors.toList()));
+    public List<RoutePoint> mapOrders(List<OrderExternal> orders) {
+        List<RoutePoint> routePointList = new ArrayList<>();
 
-        List<RoutePointDto> routePointDtoList = new ArrayList<>(1);
-        addressOrderMap.forEach((addressClientPair, orderList) -> {
-            List<RoutePointDto.AddressOrderDto> addressOrderDtos = mapOrdersAddress(orderList);
-            double addRessTotalWeight = addressOrderDtos.stream()
-                    .map(RoutePointDto.AddressOrderDto::getOrderTotalWeight)
+        Map<AddressExternal, List<OrderExternal>> addressOrderMap = orders
+                .stream()
+                .collect(Collectors.groupingBy(
+                        OrderExternal::getAddressExternal,
+                        LinkedHashMap::new,
+                        Collectors.toList()));
+
+        addressOrderMap.forEach((addressExternal, orderList) -> {
+            List<RoutePoint.AddressOrder> addressOrders = mapOrdersAddress(orderList);
+
+            double addressTotalWeight = addressOrders.stream()
+                    .map(RoutePoint.AddressOrder::getOrderTotalWeight)
                     .collect(Collectors.summarizingDouble(amount -> amount)).getSum();
 
-            RoutePointDto routePointDto = new RoutePointDto();
-            routePointDto.setId(UUID.randomUUID());
-            routePointDto.setStatus(RoutePointStatus.PENDING);
-            routePointDto.setAddress(addressClientPair.getFirst().getAddress());
-            routePointDto.setClientName(addressClientPair.getSecond());
-            routePointDto.setOrders(addressOrderDtos);
-            routePointDto.setAddressTotalWeight(addRessTotalWeight);
-            routePointDto.setMapPoint(addressClientPair.getFirst());
-            routePointDtoList.add(routePointDto);
+            OrderAddressId orderAddressId = addressExternal.getOrderAddressId();
+
+            RoutePoint routePoint = new RoutePoint();
+            routePoint.setId(UUID.randomUUID());
+            routePoint.setStatus(RoutePointStatus.PENDING);
+            routePoint.setAddress(orderAddressId.getOrderAddress());
+            routePoint.setClientName(orderAddressId.getClientName());
+            routePoint.setOrders(addressOrders);
+            routePoint.setAddressTotalWeight(addressTotalWeight);
+            routePoint.setMapPoint(getMapPoint(addressExternal));
+            routePointList.add(routePoint);
         });
-        return routePointDtoList;
+        return routePointList;
     }
 
-    private List<RoutePointDto.AddressOrderDto> mapOrdersAddress(List<OrderDto> orders) {
+    private MapPoint getMapPoint(AddressExternal addressExternal) {
+        return MapPoint.builder()
+                .status(MapPoint.AddressStatus.KNOWN)
+                .address(addressExternal.getValidAddress())
+                .longitude(addressExternal.getLongitude())
+                .latitude(addressExternal.getLatitude())
+                .build();
+    }
+
+    private List<RoutePoint.AddressOrder> mapOrdersAddress(List<OrderExternal> orders) {
         return orders.stream()
                 .map(this::mapOrderAddress)
                 .collect(Collectors.toList());
     }
 
-    private RoutePointDto.AddressOrderDto mapOrderAddress(OrderDto order) {
-        List<ProductDto> products = order.getProducts();
+    private RoutePoint.AddressOrder mapOrderAddress(OrderExternal order) {
+        List<Product> products = order.getProducts();
         double orderTotalWeight = getOrderTotalWeight(products);
 
-        RoutePointDto.AddressOrderDto addressOrderDto = new RoutePointDto.AddressOrderDto();
-        addressOrderDto.setId(order.getId());
-        addressOrderDto.setOrderNumber(String.valueOf(order.getOrderNumber()));
-        addressOrderDto.setComment(order.getComment());
-        addressOrderDto.setOrderTotalWeight(orderTotalWeight);
+        RoutePoint.AddressOrder addressOrder = new RoutePoint.AddressOrder();
+        addressOrder.setId(order.getId());
+        addressOrder.setOrderNumber(String.valueOf(order.getOrderNumber()));
+        addressOrder.setComment(order.getComment());
+        addressOrder.setOrderTotalWeight(orderTotalWeight);
 
-        return addressOrderDto;
+        return addressOrder;
     }
 
-    private double getOrderTotalWeight(List<ProductDto> orderedProducts) {
+    private double getOrderTotalWeight(List<Product> orderedProducts) {
         return BigDecimal.valueOf(orderedProducts.stream()
-                .map(ProductDto::getTotalProductWeight)
+                .map(Product::getTotalProductWeight)
                 .collect(Collectors.summarizingDouble(weight -> weight)).getSum())
                 .setScale(2, RoundingMode.HALF_UP).doubleValue();
     }

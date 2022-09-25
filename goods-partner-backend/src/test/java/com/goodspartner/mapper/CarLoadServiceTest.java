@@ -3,10 +3,11 @@ package com.goodspartner.mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.goodspartner.dto.OrderDto;
+import com.goodspartner.entity.CarLoad;
+import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.entity.Route;
 import com.goodspartner.service.CarLoadService;
 import com.goodspartner.service.impl.DefaultCarLoadService;
-import com.goodspartner.web.controller.response.RoutesCalculation;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
@@ -27,19 +28,19 @@ class CarLoadServiceTest {
     @Test
     void mapOrdersTCar() throws JsonProcessingException {
         String responseAsString = getResponseAsString("datasets/common/mapper/car/details/dataset_orders.json");
-        List<OrderDto> orders = objectMapper.readValue(responseAsString, new TypeReference<List<OrderDto>>() {
+        List<OrderExternal> orders = objectMapper.readValue(responseAsString, new TypeReference<>() {
         });
 
         responseAsString = getResponseAsString("datasets/common/mapper/car/details/dataset_route.json");
-        RoutesCalculation.RouteDto route = objectMapper.readValue(responseAsString, new TypeReference<>() {
+        Route route = objectMapper.readValue(responseAsString, new TypeReference<>() {
         });
 
 
-        RoutesCalculation.CarLoadDto carLoadDto = carLoadService.routeToCarDetails(route, orders);
+        CarLoad carLoad = carLoadService.routeToCarDetails(route, orders);
 
 
-        assertEquals(route.getTotalWeight(), carLoadDto.getCar().getLoadSize());
-        assertEquals(orders.size(), carLoadDto.getOrders().size());
+//       TODO more assertions require
+        assertEquals(orders.size(), carLoad.getOrders().size());
     }
 
     protected String getResponseAsString(String jsonPath) {

@@ -1,13 +1,9 @@
 package com.goodspartner.report;
 
-import java.time.LocalDate;
-import java.util.function.Consumer;
+import java.util.UUID;
 
 public interface ReportGenerator {
-    default void generateReport(LocalDate date, Consumer<ReportResult> reportResultConsumer) {
-        ReportResult reportResult = generateReport(date);
-        reportResultConsumer.accept(reportResult);
-    }
 
-    ReportResult generateReport(LocalDate date);
+    ReportResult generateReport(UUID deliveryId);
+
 }

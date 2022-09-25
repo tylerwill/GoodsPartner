@@ -11,4 +11,5 @@ public class DistanceMatrix {
 
     private Long[][] distance;
     private Long[][] duration;
+
 }

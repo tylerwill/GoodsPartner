@@ -7,7 +7,7 @@ import com.graphhopper.ResponsePath;
 import java.util.List;
 
 public interface GraphhopperService {
-    public DistanceMatrix getMatrix(List<MapPoint> mapPoints);
+    DistanceMatrix getMatrix(List<MapPoint> mapPoints);
 
-    public ResponsePath getRoute(List<MapPoint> mapPoints);
+    ResponsePath getRoute(List<MapPoint> mapPoints);
 }

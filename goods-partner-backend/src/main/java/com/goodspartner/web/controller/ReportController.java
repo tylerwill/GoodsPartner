@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/reports")
@@ -29,15 +30,15 @@ public class ReportController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @GetMapping("/orders")
-    public HttpEntity<byte[]> generateOrdersReport(@RequestParam LocalDate date) {
-        ReportResult reportResult = ordersReportGenerator.generateReport(date);
+    public HttpEntity<byte[]> generateOrdersReport(@RequestParam UUID deliveryId) {
+        ReportResult reportResult = ordersReportGenerator.generateReport(deliveryId);
         return toHttpEntity(reportResult);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
     @GetMapping("/carsload")
-    public HttpEntity<byte[]> generateCarsLoadReport(@RequestParam LocalDate date) {
-        ReportResult reportResult = carsLoadReportGenerator.generateReport(date);
+    public HttpEntity<byte[]> generateCarsLoadReport(@RequestParam UUID deliveryId) {
+        ReportResult reportResult = carsLoadReportGenerator.generateReport(deliveryId);
         return toHttpEntity(reportResult);
     }
 

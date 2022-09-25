@@ -1,6 +1,6 @@
 [
     {
-      "id": 0,
+      "id": 1,
       "refKey": "01grande-0000-0000-0000-000000000000",
       "orderNumber": "45463",
       "products": [
@@ -19,14 +19,18 @@
           "totalProductWeight": 2.75
         }
       ],
-      "clientName": "ТОВ \"Пекарня\"",
-      "address": "м. Київ, вул. Металістів, 8, оф. 4-24",
+      "addressExternal": {
+        "orderAddressId": {
+          "orderAddress": "м. Київ, вул. Металістів, 8, оф. 4-24",
+          "clientName": "ТОВ \"Пекарня\""
+        }
+      },
       "comment": "бн",
       "managerFullName": "Андрій Бублик",
       "orderWeight": 5.5
     },
     {
-      "id": 0,
+      "id": 2,
       "refKey": "02grande-0000-0000-0000-000000000000",
       "orderNumber": "432565",
       "products": [
@@ -45,8 +49,12 @@
           "totalProductWeight": 309.96
         }
       ],
-      "clientName": "ТОВ \"Пекарня\"",
-      "address": "м. Київ, вул. Хрещатик, 1",
+      "addressExternal": {
+        "orderAddressId": {
+          "orderAddress": "м. Київ, вул. Хрещатик, 1",
+          "clientName": "ТОВ \"Пекарня\""
+        }
+      },
       "comment": "нал",
       "managerFullName": "Андрій Бублик",
       "orderWeight": 338.28
@@ -71,8 +79,12 @@
           "totalProductWeight": 28.32
         }
       ],
-      "clientName": "ТОВ \"Пекарня\"",
-      "address": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
+      "addressExternal": {
+        "orderAddressId": {
+          "orderAddress": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
+          "clientName": "ТОВ \"Пекарня\""
+        }
+      },
       "comment": "бн",
       "managerFullName": "Іван Шугай",
       "orderWeight": 60.870000000000005
@@ -97,8 +109,12 @@
           "totalProductWeight": 741.36
         }
       ],
-      "clientName": "ТОВ \"Пекарня\"",
-      "address": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
+      "addressExternal": {
+        "orderAddressId": {
+          "orderAddress": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
+          "clientName": "ТОВ \"Пекарня\""
+        }
+      },
       "comment": "нал",
       "managerFullName": "Петро Коваленко",
       "orderWeight": 744.11

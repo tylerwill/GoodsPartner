@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Import({TestSecurityEnableConfig.class})
-class OrderControllerSecurityITest extends AbstractWebITest {
+class ExternalOrderControllerSecurityITest extends AbstractWebITest {
 
     @MockBean
     private OrderService orderService;
@@ -23,8 +23,8 @@ class OrderControllerSecurityITest extends AbstractWebITest {
     @DisplayName("When try to reach endpoint without authentication then expect to get a 302 Redirect to google login.")
     void whenUserNotAuthenticatedThenStatusIsRedirection() throws Exception {
         mockMvc.perform(get("/api/v1/orders")
-                        .param("date", "2022-07-10")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .param("date", "2022-07-10")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is3xxRedirection());
     }
 
@@ -33,8 +33,8 @@ class OrderControllerSecurityITest extends AbstractWebITest {
     @WithMockUser(username = "mary", roles = "USER")
     void whenUserAuthenticatedButNotAuthorizedThenStatusIsForbidden() throws Exception {
         mockMvc.perform(get("/api/v1/orders")
-                        .param("date", "2022-07-10")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .param("date", "2022-07-10")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
 
@@ -43,8 +43,8 @@ class OrderControllerSecurityITest extends AbstractWebITest {
     @WithMockUser(username = "mary", roles = "ADMIN")
     void whenUserAuthenticatedAndAuthorizedThenStatusIsOk() throws Exception {
         mockMvc.perform(get("/api/v1/orders")
-                        .param("date", "2022-07-10")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .param("date", "2022-07-10")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 }

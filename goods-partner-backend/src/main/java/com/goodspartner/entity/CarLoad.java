@@ -28,14 +28,14 @@ public class CarLoad {
     private Car car;
 
     @OneToMany(mappedBy = "carLoad", cascade = CascadeType.ALL)
-    private List<OrderExternal> orders = new ArrayList<>(1);
+    private List<OrderExternal> orders = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "delivery_id", referencedColumnName = "id")
     private Delivery delivery;
 
     public void setOrders(List<OrderExternal> orders) {
-        this.orders =Optional.ofNullable(orders)
+        this.orders = Optional.ofNullable(orders)
                 .orElseGet(Collections::emptyList);
         this.orders.forEach(order -> order.setCarLoad(this));
 

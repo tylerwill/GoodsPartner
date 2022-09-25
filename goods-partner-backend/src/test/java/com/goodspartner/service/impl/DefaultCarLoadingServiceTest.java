@@ -1,23 +1,22 @@
 package com.goodspartner.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.dto.CarDto;
-import com.goodspartner.dto.CarRouteDto;
-import com.goodspartner.dto.RoutePointDto;
+import com.goodspartner.dto.CarRouteComposition;
+import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.StoreDto;
+import com.goodspartner.entity.Car;
+import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RoutePointStatus;
-import com.goodspartner.service.CarService;
-import com.goodspartner.service.GoogleApiService;
-import com.google.maps.model.DistanceMatrix;
-import com.google.maps.model.DistanceMatrixRow;
+import com.goodspartner.repository.CarRepository;
+import com.graphhopper.GHResponse;
+import com.graphhopper.GraphHopper;
+import com.graphhopper.ResponsePath;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -26,72 +25,57 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Disabled
 @TestInstance(PER_CLASS)
 public class DefaultCarLoadingServiceTest extends AbstractWebITest {
 
-    private static final String DISTANCE_MATRIX_FOR_LOAD_CARS = "datasets/route/distanceMatrix_for_loadCars.json";
-    private static final String DESTINATION_ADDRESSES = "destinationAddresses";
-    private static final String ORIGIN_ADDRESSES = "originAddresses";
-    private static final String DISTANCE_MATRIX_ROWS = "rows";
-
-    private final ObjectMapper mapper = new ObjectMapper();
-
     @MockBean
-    private GoogleApiService googleApiServiceMock;
+    private CarRepository carRepository;
     @MockBean
-    private CarService carServiceMock;
+    private GraphHopper hopper;
+
+    @Mock
+    private ResponsePath responsePath;
+    @Mock
+    private GHResponse ghResponse;
 
     @Autowired
     private DefaultCarLoadingService defaultCarLoadingService;
 
-    private CarRouteDto carRoutesDto;
-    private List<RoutePointDto> routePointDtoList;
-    private DistanceMatrix distanceMatrix;
+    private CarRouteComposition carRoutesDto;
+    private List<RoutePoint> routePointList;
     private StoreDto storeDto;
-    private CarDto carDto;
+    private Car car;
 
     @BeforeAll
     void setUp() throws IOException {
 
-        JsonNode jsonNode = mapper.readTree(getClass().getClassLoader().getResource(DISTANCE_MATRIX_FOR_LOAD_CARS));
-        JsonNode originAddresses = jsonNode.get(ORIGIN_ADDRESSES);
-        JsonNode destinationAddresses = jsonNode.get(DESTINATION_ADDRESSES);
-        JsonNode rows = jsonNode.get(DISTANCE_MATRIX_ROWS);
-
-        String[] origin = mapper.readValue(originAddresses.traverse(), String[].class);
-        String[] dest = mapper.readValue(destinationAddresses.traverse(), String[].class);
-        DistanceMatrixRow[] distanceMatrixRows = mapper.readValue(rows.traverse(), DistanceMatrixRow[].class);
-
-        distanceMatrix = new DistanceMatrix(origin, dest, distanceMatrixRows);
-        CarDto carDto = new CarDto(
-                44,
-                "Mercedes Sprinter",
-                "AA 1111 CT",
-                "Вальдемар Кипарисович",
-                2000,
+        car = new Car(
+                1,
+                "Mercedes Vito",
+                "Ivan Piddubny",
                 true,
-                true,
-                1148.78,
-                12);
+                false,
+                "AA 2222 CT",
+                1000,
+                10);
 
-        RoutePointDto.AddressOrderDto addressOrderDtoFirst = RoutePointDto.AddressOrderDto.builder()
+        RoutePoint.AddressOrder addressOrderFirst = RoutePoint.AddressOrder.builder()
                 .id(12)
                 .orderNumber("111")
                 .orderTotalWeight(20.20)
                 .build();
 
-        RoutePointDto.AddressOrderDto addressOrderDtoSecond = RoutePointDto.AddressOrderDto.builder()
+        RoutePoint.AddressOrder addressOrderSecond = RoutePoint.AddressOrder.builder()
                 .id(2)
                 .orderNumber("222")
                 .orderTotalWeight(13.90)
                 .build();
 
-        RoutePointDto routePointFirst = RoutePointDto.builder()
+        RoutePoint routePointFirst = RoutePoint.builder()
                 .id(new UUID(1, 1))
                 .status(RoutePointStatus.PENDING)
                 .completedAt(null)
@@ -100,10 +84,16 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
                 .address("м. Київ, вул. Металістів, 8, оф. 4-24")
                 .addressTotalWeight(5.30)
                 .routePointDistantTime(55)
-                .orders(List.of(addressOrderDtoFirst))
+                .orders(List.of(addressOrderFirst))
+                .mapPoint(MapPoint.builder()
+                        .status(MapPoint.AddressStatus.KNOWN)
+                        .address("м.Київ, вул. Металістів, 8, оф. 4-24")
+                        .latitude(32.32)
+                        .longitude(35.35)
+                        .build())
                 .build();
 
-        RoutePointDto routePointSecond = RoutePointDto.builder()
+        RoutePoint routePointSecond = RoutePoint.builder()
                 .id(new UUID(2, 2))
                 .status(RoutePointStatus.PENDING)
                 .completedAt(null)
@@ -112,19 +102,31 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
                 .address("м. Київ, вул. Пирогівський шлях 138")
                 .addressTotalWeight(10.90)
                 .routePointDistantTime(55)
-                .orders(List.of(addressOrderDtoSecond))
+                .orders(List.of(addressOrderSecond))
+                .mapPoint(MapPoint.builder()
+                        .status(MapPoint.AddressStatus.KNOWN)
+                        .address("м. Київ, вул. Пирогівський шлях 138")
+                        .latitude(12.12)
+                        .longitude(15.15)
+                        .build())
                 .build();
 
-        routePointDtoList = List.of(routePointFirst, routePointSecond);
+        routePointList = List.of(routePointFirst, routePointSecond);
 
-        carRoutesDto = CarRouteDto.builder()
-                .car(carDto)
-                .routePoints(routePointDtoList)
+        carRoutesDto = CarRouteComposition.builder()
+                .car(car)
+                .routePoints(routePointList)
                 .build();
 
         storeDto = StoreDto.builder()
                 .name("Склад 1")
                 .address("м. Київ, вул. Некрасова 138")
+                .mapPoint(MapPoint.builder()
+                        .status(MapPoint.AddressStatus.KNOWN)
+                        .address("м. Київ, вул. Некрасова 138")
+                        .latitude(72.12)
+                        .longitude(85.15)
+                        .build())
                 .build();
     }
 
@@ -132,66 +134,23 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     @DisplayName("Test loadCars Verify Correctly Invocation Of Methods findByAvailableCars And getDistanceMatrix")
     void testLoadCars() {
 
-        when(carServiceMock.findByAvailableCars()).thenReturn(List.of(carDto));
-        when(googleApiServiceMock.getDistanceMatrix(anyList())).thenReturn(distanceMatrix);
+        when(carRepository.findByAvailableTrue()).thenReturn(List.of(car));
+        when(hopper.route(any())).thenReturn(ghResponse);
+        when(ghResponse.hasErrors()).thenReturn(false);
+        when(ghResponse.getBest()).thenReturn(responsePath);
+        when(responsePath.getDistance()).thenReturn(20.2);
+        when(responsePath.getTime()).thenReturn(20L);
 
-        defaultCarLoadingService.loadCars(storeDto, routePointDtoList);
+        defaultCarLoadingService.loadCars(storeDto, routePointList);
 
-        verify(carServiceMock).findByAvailableCars();
-        verify(googleApiServiceMock).getDistanceMatrix(anyList());
+        // TODO invalid test - nothing is verified
     }
-
-//    @Test
-//    @DisplayName("Test load Checks Whether It Is Correctly Loads And Create List Of CarRoutesDto Object")
-//    void testLoad() {
-//
-//        List<CarLoadingService.CarRoutesDto> actualCarRoutesDtos = defaultCarLoadingService
-//                .load(List.of(carDto), routePointDtoList, distanceMatrix);
-//
-//        CarDto actualCarDto = actualCarRoutesDtos.get(0).getCar();
-//
-//        List<RoutePointDto> actualRoutePoints = actualCarRoutesDtos.get(0).getRoutePoints();
-//        List<RoutePointDto> expectedRoutePoints = routePointDtoList;
-//
-//        Assertions.assertFalse(actualCarRoutesDtos.isEmpty());
-//        Assertions.assertEquals(expectedRoutePoints, actualRoutePoints);
-//        Assertions.assertEquals(carDto, actualCarDto);
-//    }
-
-//    @Test
-//    @DisplayName("Test getCarloadDtos Checks Whether It Is Correctly Create List Of CarRoutesDto Objects")
-//    void testGetCarLoadDtos() {
-//
-//        long[][] distanceMatrixArray = defaultCarLoadingService.calculateDistanceMatrix(distanceMatrix);
-//        long[] demands = defaultCarLoadingService.calculateDemands(routePointDtoList);
-//
-//        long[] vehicleCapacities = Stream.of(carDto).mapToLong(CarDto::getWeightCapacity).toArray();
-//        long[] vehicleCosts = Stream.of(carDto).mapToLong(CarDto::getTravelCost).toArray();
-//
-//        int carsAmount = List.of(carDto).size();
-//
-//        RoutingIndexManager manager = new RoutingIndexManager(distanceMatrixArray.length, carsAmount, 0);
-//
-//        RoutingModel routing = defaultCarLoadingService
-//                .configureRoutingModel(manager, distanceMatrixArray, demands, vehicleCapacities, vehicleCosts, carsAmount);
-//
-//        List<CarLoadingService.CarRoutesDto> actualCarRoutesDtos = defaultCarLoadingService
-//                .getCarLoadDtos(List.of(carDto), routePointDtoList, manager, routing);
-//
-//        CarDto actualCarDto = actualCarRoutesDtos.get(0).getCar();
-//        List<RoutePointDto> actualRoutePoints = actualCarRoutesDtos.get(0).getRoutePoints();
-//        List<RoutePointDto> expectedRoutePoints = routePointDtoList;
-//
-//        Assertions.assertFalse(actualCarRoutesDtos.isEmpty());
-//        Assertions.assertEquals(expectedRoutePoints, actualRoutePoints);
-//        Assertions.assertEquals(carDto, actualCarDto);
-//    }
 
     @Test
     @DisplayName("Test testCalculateDemands Checks Whether It Is Correctly Calculate Demands")
     void testCalculateDemands() {
 
-        long[] actualDemands = defaultCarLoadingService.calculateDemands(routePointDtoList);
+        long[] actualDemands = defaultCarLoadingService.calculateDemands(routePointList);
         long[] expectedDemands = new long[]{0, 5, 11};
 
         Assertions.assertNotNull(actualDemands);
@@ -202,17 +161,16 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     @DisplayName("Test getCarLoading Checks Whether It Is Correctly Load Size And Create CarRoutesDto Object")
     void testGetCarLoad() {
 
-        CarRouteDto actualCarRoutesDto = defaultCarLoadingService
-                .getCarLoad(carDto, routePointDtoList);
+        CarRouteComposition actualCarRoutesDto = defaultCarLoadingService.getCarLoad(car, routePointList);
 
-        CarDto actualCarDto = actualCarRoutesDto.getCar();
-        List<RoutePointDto> actualRoutePoints = actualCarRoutesDto.getRoutePoints();
+        Car actualCar = actualCarRoutesDto.getCar();
+        List<RoutePoint> actualRoutePoints = actualCarRoutesDto.getRoutePoints();
 
-        CarDto expectedCarDto = carRoutesDto.getCar();
-        List<RoutePointDto> expectedRoutePoints = carRoutesDto.getRoutePoints();
+        Car expectedCar = carRoutesDto.getCar();
+        List<RoutePoint> expectedRoutePoints = carRoutesDto.getRoutePoints();
 
-        Assertions.assertEquals(expectedCarDto, actualCarDto);
+        Assertions.assertEquals(expectedCar, actualCar);
         Assertions.assertEquals(expectedRoutePoints, actualRoutePoints);
-        Assertions.assertEquals(16.2, actualCarDto.getLoadSize());
+
     }
 }

@@ -2,7 +2,7 @@ package com.goodspartner.mapper;
 
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.dto.ProductDto;
+import com.goodspartner.dto.Product;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.OrderExternal;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,7 @@ class OrderExternalMapperTest {
                 .status(MapPoint.AddressStatus.AUTOVALIDATED)
                 .build();
 
-        ProductDto productDto = ProductDto.builder()
+        Product product = Product.builder()
                 .amount(1)
                 .storeName("Склад №1")
                 .unitWeight(12.00)
@@ -53,7 +53,7 @@ class OrderExternalMapperTest {
                 .clientName("Домашня випічка")
                 .address("Бровари, Марії Лагунової, 11")
                 .mapPoint(mapPoint)
-                .products(List.of(productDto))
+                .products(List.of(product))
                 .orderWeight(12.00)
                 .deliveryId(UUID.fromString("237e9877-e79b-12d4-a765-321741963000"))
                 .build();
@@ -76,7 +76,7 @@ class OrderExternalMapperTest {
         assertEquals("м.Київ", addressExternal.getValidAddress());
         assertEquals(30.0, addressExternal.getLatitude());
         assertEquals(50.0, addressExternal.getLongitude());
-        assertEquals(List.of(productDto), orderExternal.getProducts());
+        assertEquals(List.of(product), orderExternal.getProducts());
         assertEquals(12.00, orderExternal.getOrderWeight());
         assertEquals(UUID.fromString("237e9877-e79b-12d4-a765-321741963000"), orderExternal.getDelivery().getId());
     }

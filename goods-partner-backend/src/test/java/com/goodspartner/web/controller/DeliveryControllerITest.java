@@ -9,10 +9,10 @@ import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.dto.ProductDto;
+import com.goodspartner.dto.Product;
 import com.goodspartner.entity.DeliveryStatus;
+import com.goodspartner.entity.Route;
 import com.goodspartner.service.CalculateRouteService;
-import com.goodspartner.web.controller.response.RoutesCalculation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,13 +24,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.time.LocalTime;
+import java.util.List;
 
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -73,7 +73,7 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .status(MapPoint.AddressStatus.UNKNOWN)
                 .build();
 
-        ProductDto productDto = ProductDto.builder()
+        Product product = Product.builder()
                 .amount(1)
                 .storeName("Склад №1")
                 .unitWeight(12.00)
@@ -93,7 +93,7 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .deliveryFinish(LocalTime.of(14, 0))
                 .clientName("Ексклюзив Кейк")
                 .address("м. Київ, Княжий затон 16 б")
-                .products(List.of(productDto))
+                .products(List.of(product))
                 .orderWeight(12.00)
                 .build();
     }
@@ -104,7 +104,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     void whenGetDeliveryById_thenOkStatusReturned() throws Exception {
 
         mockMvc.perform(get("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -114,7 +114,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     void whenGetDeliveries_thenOkStatusReturned() throws Exception {
 
         mockMvc.perform(get("/api/v1/deliveries")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -131,8 +131,8 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .build();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(deliveryDto)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(deliveryDto)))
                 .andExpect(status().isOk());
     }
 
@@ -150,8 +150,8 @@ class DeliveryControllerITest extends AbstractWebITest {
         System.out.println(objectMapper.writeValueAsString(deliveryDto));
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(deliveryDto)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(deliveryDto)))
                 .andExpect(status().isOk());
     }
 
@@ -161,8 +161,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     @DisplayName("when Delete Delivery then Ok Status Returned")
     void whenDeleteDelivery_thenOkStatusReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/api/v1/deliveries/f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .delete("/api/v1/deliveries/f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -172,8 +172,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     void whenDeleteDelivery_byNonExistingId_thenNotFoundReturned() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/api/v1/deliveries/237e9877-e79b-12d4-a765-321741963012")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .delete("/api/v1/deliveries/237e9877-e79b-12d4-a765-321741963012")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
@@ -188,9 +188,9 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .build();
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/v1/deliveries/237e9877-e79b-12d4-a765-321741963012")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(deliveryDto)))
+                .put("/api/v1/deliveries/237e9877-e79b-12d4-a765-321741963012")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(deliveryDto)))
                 .andExpect(status().isNotFound());
     }
 
@@ -201,16 +201,15 @@ class DeliveryControllerITest extends AbstractWebITest {
     @DisplayName("when Calculate Delivery With Correct Id then DeliveryDto Return")
     void whenCalculateDelivery_withCorrectId_thenDeliveryDtoReturn() throws Exception {
 
-        RoutesCalculation.RouteDto routeDto =
-                objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), RoutesCalculation.RouteDto.class);
-        List<RoutesCalculation.RouteDto> routes = List.of(routeDto);
+        Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), Route.class);
+        List<Route> routes = List.of(route);
         when(calculateRouteService.calculateRoutes(anyList(), any())).thenReturn(routes);
 
         DeliveryDto deliveryDto =
                 objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_DELIVERY_DTO), DeliveryDto.class);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries/70574dfd-48a3-40c7-8b0c-3e5defe7d080/calculate")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(deliveryDto)));
     }
@@ -222,16 +221,15 @@ class DeliveryControllerITest extends AbstractWebITest {
     @DisplayName("when RECalculate Delivery With Correct Id then DeliveryDto Return")
     void whenRECalculateDelivery_withCorrectId_thenDeliveryDtoReturn() throws Exception {
 
-        RoutesCalculation.RouteDto routeDto =
-                objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), RoutesCalculation.RouteDto.class);
-        List<RoutesCalculation.RouteDto> routes = List.of(routeDto);
+        Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), Route.class);
+        List<Route> routes = List.of(route);
         when(calculateRouteService.calculateRoutes(anyList(), any())).thenReturn(routes);
 
         DeliveryDto deliveryDto =
                 objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_DELIVERY_DTO), DeliveryDto.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries/70574dfd-48a3-40c7-8b0c-3e5defe7d080/recalculate")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries/70574dfd-48a3-40c7-8b0c-3e5defe7d080/calculate")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(deliveryDto)));
     }
@@ -242,11 +240,11 @@ class DeliveryControllerITest extends AbstractWebITest {
             cleanAfter = true, cleanBefore = true,
             executeStatementsBefore = "ALTER SEQUENCE routes_sequence RESTART WITH 1")
     @DisplayName("when Calculate Delivery With empty orders then Not Found Return")
-    void whenCalculateDelivery_withIncorrectId_thenNotFoundReturn() throws Exception {
+    void whenCalculateDelivery_withIncorrectId_thenBadRequestReturn() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries/70574dfd-48a3-40c7-8b0c-3e5defe7d081/calculate")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -258,9 +256,9 @@ class DeliveryControllerITest extends AbstractWebITest {
         orderDto.setMapPoint(mapPointAutovalidated);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(orderDto))))
+                .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(List.of(orderDto))))
                 .andExpect(status().isOk());
     }
 
@@ -273,9 +271,9 @@ class DeliveryControllerITest extends AbstractWebITest {
         orderDto.setMapPoint(mapPointKnown);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(orderDto))))
+                .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(List.of(orderDto))))
                 .andExpect(status().isOk());
     }
 
@@ -288,9 +286,9 @@ class DeliveryControllerITest extends AbstractWebITest {
         orderDto.setMapPoint(mapPointAutovalidated);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440005/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(orderDto))))
+                .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440005/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(List.of(orderDto))))
                 .andExpect(status().isNotFound());
     }
 
@@ -303,9 +301,9 @@ class DeliveryControllerITest extends AbstractWebITest {
         orderDto.setMapPoint(mapPointUnknown);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(orderDto))))
+                .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(List.of(orderDto))))
                 .andExpect(status().isNotFound());
     }
 }

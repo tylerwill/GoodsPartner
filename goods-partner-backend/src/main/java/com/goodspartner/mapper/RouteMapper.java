@@ -1,8 +1,8 @@
 package com.goodspartner.mapper;
 
-import com.goodspartner.dto.RoutePointDto;
+import com.goodspartner.dto.RouteDto;
+import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.Route;
-import com.goodspartner.web.controller.response.RoutesCalculation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -15,25 +15,25 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface RouteMapper {
-    Route routeDtoToRoute(RoutesCalculation.RouteDto routeDto);
+    Route routeDtoToRoute(RouteDto routeDto);
 
     @Mapping(target = "car", source = "car")
     @Mapping(target = "car.loadSize", source = "routePoints", qualifiedByName = "mapCarLoadSize")
-    RoutesCalculation.RouteDto routeToRouteDto(Route routeDto);
+    RouteDto routeToRouteDto(Route routeDto);
 
     @Named("mapCarLoadSize")
-    default double mapCarLoadSize(List<RoutePointDto> routePoints) {
+    default double mapCarLoadSize(List<RoutePoint> routePoints) {
         return BigDecimal.valueOf(routePoints.stream()
-                        .map(RoutePointDto::getAddressTotalWeight)
-                        .collect(Collectors.summarizingDouble(w -> w)).getSum())
+                .map(RoutePoint::getAddressTotalWeight)
+                .collect(Collectors.summarizingDouble(w -> w)).getSum())
                 .setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     @Mapping(target = "id", ignore = true)
-    Route update(@MappingTarget Route route, RoutesCalculation.RouteDto routeDto);
+    Route update(@MappingTarget Route route, RouteDto routeDto);
 
-    List<RoutesCalculation.RouteDto> routesToRouteDtos(List<Route> routes);
+    List<RouteDto> routesToRouteDtos(List<Route> routes);
 
-    List<Route> routeDtosToRoutes(List<RoutesCalculation.RouteDto> routeDtos);
+    List<Route> routeDtosToRoutes(List<RouteDto> routeDtos);
 
 }

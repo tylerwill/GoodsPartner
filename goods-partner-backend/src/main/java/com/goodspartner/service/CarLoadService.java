@@ -1,14 +1,15 @@
 package com.goodspartner.service;
 
-import com.goodspartner.dto.OrderDto;
-import com.goodspartner.web.controller.response.RoutesCalculation;
+import com.goodspartner.entity.CarLoad;
+import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.entity.Route;
 
 import java.util.List;
 
 public interface CarLoadService {
 
-    List<RoutesCalculation.CarLoadDto> map(List<RoutesCalculation.RouteDto> routes, List<OrderDto> orders);
+    List<CarLoad> map(List<Route> routes, List<OrderExternal> orders);
 
-    RoutesCalculation.CarLoadDto routeToCarDetails(RoutesCalculation.RouteDto route, List<OrderDto> orders);
+    CarLoad routeToCarDetails(Route route, List<OrderExternal> orders);
 
 }

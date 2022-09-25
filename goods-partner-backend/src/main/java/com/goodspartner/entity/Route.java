@@ -1,6 +1,5 @@
 package com.goodspartner.entity;
 
-import com.goodspartner.dto.RoutePointDto;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,19 @@ import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,10 +50,9 @@ public class Route {
     private String storeAddress;
     private boolean optimization = true;
 
-    // TODO DTO in model??
     @Type(type = "json")
     @Column(columnDefinition = "jsonb")
-    private List<RoutePointDto> routePoints;
+    private List<RoutePoint> routePoints;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id", referencedColumnName = "id")

@@ -1,6 +1,6 @@
 package com.goodspartner.util;
 
-import com.goodspartner.dto.ProductDto;
+import com.goodspartner.dto.Product;
 import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
 import com.goodspartner.service.impl.MockedStoreService;
 import com.google.common.annotations.VisibleForTesting;
@@ -21,7 +21,7 @@ public class ExternalOrderDataEnricher {
         product.setStoreName(storeService.getMainStore().getName());
     }
 
-    public void enrichProduct(ProductDto product) {
+    public void enrichProduct(Product product) {
         product.setTotalProductWeight(getTotalProductWeight(product));
         product.setStoreName(storeService.getMainStore().getName());
     }
@@ -40,7 +40,7 @@ public class ExternalOrderDataEnricher {
     }
 
     @VisibleForTesting
-    double getTotalProductWeight(ProductDto productDto) {
-        return productDto.getAmount() * productDto.getUnitWeight();
+    double getTotalProductWeight(Product product) {
+        return product.getAmount() * product.getUnitWeight();
     }
 }

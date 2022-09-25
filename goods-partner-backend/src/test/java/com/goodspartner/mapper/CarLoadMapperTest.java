@@ -1,13 +1,13 @@
 package com.goodspartner.mapper;
 
 import com.goodspartner.dto.CarDto;
+import com.goodspartner.dto.CarLoadDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.dto.ProductDto;
+import com.goodspartner.dto.Product;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.OrderExternal;
-import com.goodspartner.web.controller.response.RoutesCalculation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = {CarLoadMapperImpl.class, OrderExternalMapperImpl.class, CarMapperImpl.class, OrderExternalMapperImpl.class})
 public class CarLoadMapperTest {
@@ -40,7 +42,7 @@ public class CarLoadMapperTest {
                 .latitude(35.0099)
                 .build();
 
-        ProductDto productDto = ProductDto.builder()
+        Product product = Product.builder()
                 .amount(1)
                 .storeName("Склад №1")
                 .unitWeight(12.00)
@@ -58,7 +60,7 @@ public class CarLoadMapperTest {
                 .clientName("ABS")
                 .address("Бровари, Марії Лагунової, 11")
                 .mapPoint(mapPoint)
-                .products(List.of(productDto))
+                .products(List.of(product))
                 .orderWeight(1340.0)
                 .deliveryId(UUID.fromString("237e9877-e79b-12d4-a765-321741963000"))
                 .build();
@@ -75,7 +77,7 @@ public class CarLoadMapperTest {
                 26
         );
 
-        RoutesCalculation.CarLoadDto carLoadDto = new RoutesCalculation.CarLoadDto(carDto, List.of(orderDto));
+        CarLoadDto carLoadDto = new CarLoadDto(carDto, List.of(orderDto));
 
         CarLoad carLoad = carLoadMapper.carLoadDtoToCarLoad(carLoadDto);
 
@@ -99,7 +101,7 @@ public class CarLoadMapperTest {
         assertEquals("Бровари, Марії Лагунової, 11", mappedOrderExternals.get(0).getAddressExternal().getOrderAddressId().getOrderAddress());
         assertEquals("Georg", mappedOrderExternals.get(0).getManagerFullName());
         assertEquals(1340.0, mappedOrderExternals.get(0).getOrderWeight());
-        assertEquals(List.of(productDto), mappedOrderExternals.get(0).getProducts());
+        assertEquals(List.of(product), mappedOrderExternals.get(0).getProducts());
         assertEquals(UUID.fromString("237e9877-e79b-12d4-a765-321741963000"), mappedOrderExternals.get(0).getDelivery().getId());
 
         Assertions.assertNull(carLoad.getDelivery());

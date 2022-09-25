@@ -1,6 +1,6 @@
 package com.goodspartner.service.impl.util;
 
-import com.goodspartner.dto.RoutePointDto;
+import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.util.GoogleApiHelper;
 import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.DirectionsRoute;
@@ -73,7 +73,7 @@ class GoogleApiHelperTest {
     void testAddDurationTORoutingPointDto() {
 
         //prepare
-        List<RoutePointDto> routePoints = new ArrayList<>(3);
+        List<RoutePoint> routePoints = new ArrayList<>(3);
 
         for (int i = 0; i < legs.length; i++) {
             DirectionsLeg directionsLeg = new DirectionsLeg();
@@ -84,7 +84,7 @@ class GoogleApiHelperTest {
         route.legs = legs;
 
         for (int i = 0; i < legs.length - 1; i++) {
-            routePoints.add(RoutePointDto.builder().clientId(i + 1).build());
+            routePoints.add(RoutePoint.builder().clientId(i + 1).build());
         }
 
         //when

@@ -1,11 +1,13 @@
 package com.goodspartner.report;
 
-import com.goodspartner.dto.CarDto;
-import com.goodspartner.dto.OrderDto;
-import com.goodspartner.dto.ProductDto;
-import com.goodspartner.service.RouteService;
-import com.goodspartner.web.controller.response.RoutesCalculation;
+import com.goodspartner.dto.Product;
+import com.goodspartner.entity.Car;
+import com.goodspartner.entity.CarLoad;
+import com.goodspartner.entity.Delivery;
+import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.repository.DeliveryRepository;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -13,8 +15,10 @@ import org.mockito.Mockito;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -32,146 +36,151 @@ class CarsLoadReportGeneratorITest {
     @Test
     @DisplayName("Generate Report Of Loading Car With One Order")
     void testGenerateReport_ofLoadingCarWithOneOrder() {
-        CarDto carDto = new CarDto(
-                1,
-                "Mercedes Vito",
-                "AA 2222 CT",
-                "Ivan Piddubny",
-                1000,
-                true,
-                false,
-                59.32,
-                10);
 
-        ProductDto product = ProductDto.builder()
+        // Data prep
+
+        Delivery delivery = prepareDeliveryWithOneOrder();
+
+        // given
+        DeliveryRepository deliveryRepository = Mockito.mock(DeliveryRepository.class);
+        CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(deliveryRepository, carLoadSheetGenerator);
+
+        Mockito.when(deliveryRepository.findById(delivery.getId())).thenReturn(Optional.of(delivery));
+
+        // when
+        ReportResult reportResult = carsLoadReportGenerator.generateReport(delivery.getId());
+
+        // then
+        new File(REPORTS_DESTINATION).mkdirs();
+        File destinationFile = new File(REPORTS_DESTINATION, reportResult.name());
+        writeReportToFile(reportResult, destinationFile);
+
+        assertTrue(destinationFile.exists());
+        assertTrue(destinationFile.length() > 0);
+    }
+
+    @NotNull
+    private Delivery prepareDeliveryWithOneOrder() {
+        Delivery delivery = new Delivery();
+        delivery.setId(UUID.randomUUID());
+        delivery.setDeliveryDate(LocalDate.now());
+
+        Car car = getCar();
+
+        Product product = Product.builder()
                 .productName("678968 Суміш для випікання Мрія Маффіни з апельсиновою цедрою")
                 .amount(1)
                 .unitWeight(1.52)
                 .totalProductWeight(1.52)
                 .build();
 
-        OrderDto order = OrderDto.builder()
-                .products(List.of(product))
-                .orderNumber(String.valueOf(35635))
-                .orderWeight(1.52)
-                .id(6)
-                .build();
+        OrderExternal orderFirst = new OrderExternal();
+        orderFirst.setProducts(List.of(product));
+        orderFirst.setOrderNumber(String.valueOf(35665));
+        orderFirst.setOrderWeight(579.52);
+        orderFirst.setId(1);
 
-        RoutesCalculation.CarLoadDto carLoadDto =
-                new RoutesCalculation.CarLoadDto(carDto, List.of(order));
+        CarLoad carLoad = new CarLoad();
+        carLoad.setCar(car);
+        carLoad.setOrders(Arrays.asList(orderFirst));
+        carLoad.setDelivery(delivery);
 
-        RoutesCalculation routesCalculation = RoutesCalculation.builder()
-                .carLoadDetails(List.of(carLoadDto))
-                .date(LocalDate.of(2022, 7, 12))
-                .build();
+        delivery.setCarLoads(List.of(carLoad));
+        return delivery;
+    }
 
+    @NotNull
+    private Car getCar() {
+        return new Car(
+                1,
+                "Mercedes Vito",
+                "Ivan Piddubny",
+                true,
+                false,
+                "AA 2222 CT",
+                1000,
+                10);
+    }
 
-        RouteService routeService = Mockito.mock(RouteService.class);
-        CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(routeService, carLoadSheetGenerator);
+    @Test
+    @DisplayName("Generate Report Of Loading Car With Three Orders")
+    void testGenerateReport_ofLoadingCarWithThreeOrders() {
+        // Data prep
+        Delivery delivery = prepareDeliveryWithThreeOrders();
 
-        Mockito.when(routeService.calculateRoutesByDate(LocalDate.of(2022, 7, 12)))
-                .thenReturn(routesCalculation);
+        // given
+        DeliveryRepository deliveryRepository = Mockito.mock(DeliveryRepository.class);
+        CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(deliveryRepository, carLoadSheetGenerator);
+
+        Mockito.when(deliveryRepository.findById(delivery.getId())).thenReturn(Optional.of(delivery));
 
         // when
         LocalDate date = LocalDate.of(2022, 7, 12);
 
         new File(REPORTS_DESTINATION).mkdirs();
 
-        Consumer<ReportResult> reportResultConsumer = r -> {
-            File destinationFile = new File(REPORTS_DESTINATION, r.name());
-            writeReportToFile(r, destinationFile);
+        ReportResult reportResult = carsLoadReportGenerator.generateReport(delivery.getId());
 
-            assertTrue(destinationFile.exists());
-            assertTrue(destinationFile.length() > 0);
-        };
+        File destinationFile = new File(REPORTS_DESTINATION, reportResult.name());
+        writeReportToFile(reportResult, destinationFile);
 
-        carsLoadReportGenerator.generateReport(date, reportResultConsumer);
+        assertTrue(destinationFile.exists());
+        assertTrue(destinationFile.length() > 0);
     }
 
-    @Test
-    @DisplayName("Generate Report Of Loading Car With Three Orders")
-    void testGenerateReport_ofLoadingCarWithThreeOrders() {
-        CarDto carDto = new CarDto(
-                1,
-                "Mercedes Vito",
-                "AA 2222 CT",
-                "Ivan Piddubny",
-                1000,
-                true,
-                false,
-                59.32,
-                10);
+    @NotNull
+    private Delivery prepareDeliveryWithThreeOrders() {
+        Delivery delivery = new Delivery();
+        delivery.setId(UUID.randomUUID());
+        delivery.setDeliveryDate(LocalDate.now());
 
+        Car car = getCar();
 
-        ProductDto productFirst = ProductDto.builder()
+        Product productFirst = Product.builder()
                 .productName("3434 Паста шоколадна")
                 .amount(1)
                 .unitWeight(1.52)
                 .totalProductWeight(1.52)
                 .build();
 
-        ProductDto productSecond = ProductDto.builder()
+        Product productSecond = Product.builder()
                 .productName("46643 Фарба харчова синя натуральна")
                 .amount(10)
                 .unitWeight(57.8)
                 .totalProductWeight(578)
                 .build();
 
-        ProductDto productThird = ProductDto.builder()
+        Product productThird = Product.builder()
                 .productName("678968 Суміш для випікання Мрія Маффіни з апельсиновою цедрою")
                 .amount(10)
                 .unitWeight(47.8)
                 .totalProductWeight(478)
                 .build();
 
-        OrderDto orderFirst = OrderDto.builder()
-                .products(List.of(productSecond, productThird))
-                .orderNumber(String.valueOf(35665))
-                .orderWeight(579.52)
-                .id(1)
-                .build();
-        OrderDto orderSecond = OrderDto.builder()
-                .products(List.of(productThird))
-                .orderNumber(String.valueOf(36325))
-                .orderWeight(1.52)
-                .id(2)
-                .build();
-        OrderDto orderThird = OrderDto.builder()
-                .products(List.of(productFirst, productSecond))
-                .orderNumber(String.valueOf(353625))
-                .orderWeight(579.52)
-                .id(3)
-                .build();
+        OrderExternal orderFirst = new OrderExternal();
+        orderFirst.setProducts(List.of(productFirst, productSecond));
+        orderFirst.setOrderNumber(String.valueOf(35665));
+        orderFirst.setOrderWeight(579.52);
+        orderFirst.setId(1);
 
-        RoutesCalculation.CarLoadDto carLoadDto =
-                new RoutesCalculation.CarLoadDto(carDto, List.of(orderFirst, orderSecond, orderThird));
+        OrderExternal orderSecond = new OrderExternal();
+        orderSecond.setProducts(List.of(productThird));
+        orderSecond.setOrderNumber(String.valueOf(36325));
+        orderSecond.setOrderWeight(1.52);
+        orderSecond.setId(2);
 
+        OrderExternal orderThird = new OrderExternal();
+        orderThird.setProducts(List.of(productFirst, productSecond, productThird));
+        orderThird.setOrderNumber(String.valueOf(353625));
+        orderThird.setOrderWeight(579.52);
+        orderThird.setId(3);
 
-        RoutesCalculation routesCalculation = RoutesCalculation.builder()
-                .carLoadDetails(List.of(carLoadDto))
-                .date(LocalDate.of(2022, 7, 12))
-                .build();
+        CarLoad carLoad = new CarLoad();
+        carLoad.setCar(car);
+        carLoad.setOrders(Arrays.asList(orderFirst));
+        carLoad.setDelivery(delivery);
 
-        RouteService routeService = Mockito.mock(RouteService.class);
-        CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(routeService, carLoadSheetGenerator);
-
-        Mockito.when(routeService.calculateRoutesByDate(LocalDate.of(2022, 7, 12)))
-                .thenReturn(routesCalculation);
-
-
-        // when
-        LocalDate date = LocalDate.of(2022, 7, 12);
-
-        new File(REPORTS_DESTINATION).mkdirs();
-
-        Consumer<ReportResult> reportResultConsumer = r -> {
-            File destinationFile = new File(REPORTS_DESTINATION, r.name());
-            writeReportToFile(r, destinationFile);
-
-            assertTrue(destinationFile.exists());
-            assertTrue(destinationFile.length() > 0);
-        };
-
-        carsLoadReportGenerator.generateReport(date, reportResultConsumer);
+        delivery.setCarLoads(List.of(carLoad));
+        return delivery;
     }
 }

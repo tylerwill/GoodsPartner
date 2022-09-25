@@ -68,7 +68,6 @@
     "weightCapacity": 2500,
     "cooler": true,
     "available": true,
-    "loadSize": 2499.0,
     "travelCost": 15
   }
 }

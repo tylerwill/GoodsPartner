@@ -37,6 +37,6 @@ public class OrderDto {
     private MapPoint mapPoint;
 
     //Enrichment
-    private List<ProductDto> products;
+    private List<Product> products;
     private double orderWeight;
 }

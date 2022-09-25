@@ -1,5 +1,7 @@
 package com.goodspartner.dto;
 
+import com.goodspartner.entity.Car;
+import com.goodspartner.entity.RoutePoint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,10 +17,10 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-public class CarRouteDto {
+public class CarRouteComposition {
 
-    private CarDto car;
+    private Car car;
 
-    private List<RoutePointDto> routePoints;
+    private List<RoutePoint> routePoints;
 
 }

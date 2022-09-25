@@ -1,6 +1,6 @@
 package com.goodspartner.mapper;
 
-import com.goodspartner.dto.RoutePointDto;
+import com.goodspartner.entity.RoutePoint;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -9,6 +9,6 @@ import org.mapstruct.MappingTarget;
 public interface RoutePointMapper {
 
     @Mapping(target = "id", ignore = true)
-    RoutePointDto update(@MappingTarget RoutePointDto route, RoutePointDto routeDto);
+    RoutePoint update(@MappingTarget RoutePoint route, RoutePoint routeDto);
 
 }

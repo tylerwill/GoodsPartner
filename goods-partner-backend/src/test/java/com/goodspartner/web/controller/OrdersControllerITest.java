@@ -5,7 +5,7 @@ import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.dto.ProductDto;
+import com.goodspartner.dto.Product;
 import com.goodspartner.service.GoogleApiService;
 import com.goodspartner.service.OrderService;
 import com.google.maps.model.GeocodingResult;
@@ -47,7 +47,7 @@ class OrdersControllerITest extends AbstractWebITest {
     @DisplayName("given OrderDto when Calculate Orders then Json Returned")
     void givenOrderDto_whenCalculateOrders_JsonReturned() throws Exception {
 
-        ProductDto productDtoFirst = ProductDto.builder()
+        Product productFirst = Product.builder()
                 .amount(1)
                 .storeName("Склад №1")
                 .unitWeight(12.0)
@@ -63,11 +63,11 @@ class OrdersControllerITest extends AbstractWebITest {
                 .address("Бровари, Марії Лагунової, 11")
                 .comment("бн")
                 .managerFullName("Балашова Лариса")
-                .products(List.of(productDtoFirst))
+                .products(List.of(productFirst))
                 .orderWeight(12.00)
                 .build();
 
-        ProductDto productDtoSecond = ProductDto.builder()
+        Product productSecond = Product.builder()
                 .amount(1)
                 .storeName("Склад №2")
                 .unitWeight(20.0)
@@ -83,7 +83,7 @@ class OrdersControllerITest extends AbstractWebITest {
                 .address("вул. Невідома 8667")
                 .comment("бн")
                 .managerFullName("Шульженко Олег")
-                .products(List.of(productDtoSecond))
+                .products(List.of(productSecond))
                 .orderWeight(20.00)
                 .build();
 
@@ -96,8 +96,8 @@ class OrdersControllerITest extends AbstractWebITest {
                 .thenReturn(32.00);
 
         mockMvc.perform(get("/api/v1/orders")
-                        .param("date", "2022-07-10")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .param("date", "2022-07-10")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .json(getResponseAsString("response/order-controller.json")));
@@ -110,7 +110,7 @@ class OrdersControllerITest extends AbstractWebITest {
     @DisplayName("given Order Dto and saved Address when Calculate Orders then Json with Different Address Status Returned")
     void givenOrderDto_and_savedAddress_whenCalculateOrders_then_jsonWithDifferentAddressStatus_Returned() throws Exception {
 
-        ProductDto productDtoFirst = ProductDto.builder()
+        Product productFirst = Product.builder()
                 .amount(1)
                 .storeName("Склад №1")
                 .unitWeight(12.0)
@@ -126,11 +126,11 @@ class OrdersControllerITest extends AbstractWebITest {
                 .address("Бровари, Марії Лагунової, 11")
                 .comment("бн")
                 .managerFullName("Балашова Лариса")
-                .products(List.of(productDtoFirst))
+                .products(List.of(productFirst))
                 .orderWeight(12.00)
                 .build();
 
-        ProductDto productDtoSecond = ProductDto.builder()
+        Product productSecond = Product.builder()
                 .amount(1)
                 .storeName("Склад №2")
                 .unitWeight(20.0)
@@ -146,11 +146,11 @@ class OrdersControllerITest extends AbstractWebITest {
                 .address("вул. Невідома 8667")
                 .comment("бн")
                 .managerFullName("Шульженко Олег")
-                .products(List.of(productDtoSecond))
+                .products(List.of(productSecond))
                 .orderWeight(20.00)
                 .build();
 
-        ProductDto productDtoThird = ProductDto.builder()
+        Product productThird = Product.builder()
                 .amount(1)
                 .storeName("Склад №1")
                 .unitWeight(10.0)
@@ -166,7 +166,7 @@ class OrdersControllerITest extends AbstractWebITest {
                 .address("м.Львів, вулиця Незалежності 105")
                 .comment("бн")
                 .managerFullName("Кравченко Сергій")
-                .products(List.of(productDtoThird))
+                .products(List.of(productThird))
                 .orderWeight(10.00)
                 .build();
 
@@ -179,8 +179,8 @@ class OrdersControllerITest extends AbstractWebITest {
                 .thenReturn(42.00);
 
         mockMvc.perform(get("/api/v1/orders")
-                        .param("date", "2022-07-10")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .param("date", "2022-07-10")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .json(getResponseAsString("response/order-controller-with-known-address.json")));
@@ -190,9 +190,9 @@ class OrdersControllerITest extends AbstractWebITest {
     @DisplayName("given No Orders For Specified Date when Calculate Orders then Json With Empty Orders Field Returned")
     void givenNoOrdersForSpecifiedDate_whenCalculateOrders_thenJsonWithEmptyOrdersFieldReturned() throws Exception {
         mockMvc.perform(get("/api/v1/orders")
-                        .param("date", "2000-01-01")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+                .param("date", "2000-01-01")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
 
                 .andExpect(status().isOk())
                 .andExpect(content()

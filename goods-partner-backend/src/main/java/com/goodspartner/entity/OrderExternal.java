@@ -1,6 +1,6 @@
 package com.goodspartner.entity;
 
-import com.goodspartner.dto.ProductDto;
+import com.goodspartner.dto.Product;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -69,7 +69,7 @@ public class OrderExternal {
 
     @Type(type = "json")
     @Column(columnDefinition = "jsonb")
-    private List<ProductDto> products;
+    private List<Product> products;
 
     @Column(name = "order_weight")
     private double orderWeight;

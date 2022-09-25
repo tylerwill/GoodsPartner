@@ -1,8 +1,9 @@
 package com.goodspartner.report;
 
-import com.goodspartner.dto.CarDto;
-import com.goodspartner.dto.ProductDto;
-import com.goodspartner.web.controller.response.RoutesCalculation;
+import com.goodspartner.dto.Product;
+import com.goodspartner.entity.Car;
+import com.goodspartner.entity.CarLoad;
+import com.goodspartner.entity.Delivery;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.SneakyThrows;
 import org.apache.poi.ss.usermodel.Row;
@@ -12,14 +13,15 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Map;
 
 import static com.goodspartner.report.ReportUtils.copyCells;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class CarLoadSheetGenerator {
@@ -30,41 +32,45 @@ public class CarLoadSheetGenerator {
     private static final String IN_TOTAL = "Всього";
 
     @SneakyThrows
-    public ByteArrayOutputStream generateSheet(XSSFSheet sheet, RoutesCalculation routesCalculation, LocalDate date) {
+    public ByteArrayOutputStream generateSheet(XSSFSheet sheet, Delivery delivery) {
         ByteArrayOutputStream arrayStream = new ByteArrayOutputStream();
 
-        if (routesCalculation.getCarLoadDetails().isEmpty()) {
+        List<CarLoad> carLoads = delivery.getCarLoads();
+        if (carLoads.isEmpty()) {
             sheet.getRow(7).createCell(3).setCellValue(NO_ORDERS);
         }
-        for (RoutesCalculation.CarLoadDto carLoadDetail : routesCalculation.getCarLoadDetails()) {
-            int quantity = carLoadDetail.getOrders().size();
+
+        for (CarLoad carLoad : carLoads) {
+            int quantity = carLoad.getOrders().size();
 
             Row templateProductRow = sheet.getRow(3);
 
             addRows(sheet, templateProductRow, quantity);
-            addRowsForProductsAndFill(sheet, routesCalculation, templateProductRow, date);
+            addRowsForProductsAndFill(sheet, delivery, templateProductRow);
         }
 
         return arrayStream;
     }
 
-    private void addRowsForProductsAndFill(XSSFSheet sheet, RoutesCalculation routesCalculation, Row sourceProductRow, LocalDate date) {
+    private void addRowsForProductsAndFill(XSSFSheet sheet, Delivery delivery, Row sourceProductRow) {
         int rowNumber = 3;
         int orderCount = 1;
         Row currentRow = sheet.getRow(rowNumber);
         String sheetName = sheet.getSheetName();
 
-        for (RoutesCalculation.CarLoadDto carLoadDetail : routesCalculation.getCarLoadDetails()) {
-            CarDto car = carLoadDetail.getCar();
+        // TODO How does this work ?? in create n^2 report
+        for (CarLoad carLoad : delivery.getCarLoads()) {
+            Car car = carLoad.getCar();
             String tittle = String.format(TABLE_TITTLE, car.getName(), car.getLicencePlate());
             sheet.getRow(1).getCell(0).setCellValue(tittle);
 
-            Map<String, List<Pair<String, ProductDto>>> groupedProducts = sheetName.equals("products_in_car") ?
-                    groupByProducts(carLoadDetail) : groupByOrders(carLoadDetail);
+            Map<String, List<Pair<String, Product>>> groupedProducts = sheetName.equals("products_in_car")
+                    ? groupByProducts(carLoad)
+                    : groupByOrders(carLoad);
 
             double carLoadWeight = 0;
-            for (Map.Entry<String, List<Pair<String, ProductDto>>> groupedProduct : groupedProducts.entrySet()) {
-                List<Pair<String, ProductDto>> pairList = groupedProduct.getValue();
+            for (Map.Entry<String, List<Pair<String, Product>>> groupedProduct : groupedProducts.entrySet()) {
+                List<Pair<String, Product>> pairList = groupedProduct.getValue();
                 if (pairList.size() > 1) {
                     sheet.shiftRows(rowNumber + 1, sheet.getLastRowNum(), pairList.size() - 1);
                     sheet.addMergedRegion(new CellRangeAddress(rowNumber, rowNumber + pairList.size() - 1, 0, 0));
@@ -76,7 +82,7 @@ public class CarLoadSheetGenerator {
 
                 double productWeight = 0;
 
-                for (Pair<String, ProductDto> productPair : pairList) {
+                for (Pair<String, Product> productPair : pairList) {
                     if (currentRow == null) {
                         currentRow = sheet.createRow(rowNumber);
                         copyCells(sourceProductRow, currentRow);
@@ -108,7 +114,7 @@ public class CarLoadSheetGenerator {
         rowNumber++;
         currentRow = sheet.getRow(rowNumber);
 
-        String formattedDate = date.format(DateTimeFormatter
+        String formattedDate = delivery.getDeliveryDate().format(DateTimeFormatter
                 .ofLocalizedDate(FormatStyle.SHORT));
         currentRow.getCell(5).setCellValue(formattedDate);
     }
@@ -130,8 +136,8 @@ public class CarLoadSheetGenerator {
     }
 
     @VisibleForTesting
-    Map<String, List<Pair<String, ProductDto>>> groupByOrders(RoutesCalculation.CarLoadDto carLoadDetail) {
-        return carLoadDetail.getOrders().stream()
+    Map<String, List<Pair<String, Product>>> groupByOrders(CarLoad carLoad) {
+        return carLoad.getOrders().stream()
                 .flatMap(order -> order.getProducts().stream()
                         .map(product -> Pair.of(order.getOrderNumber(), Pair.of(product.getProductName(), product)))
                 )
@@ -139,8 +145,8 @@ public class CarLoadSheetGenerator {
     }
 
     @VisibleForTesting
-    Map<String, List<Pair<String, ProductDto>>> groupByProducts(RoutesCalculation.CarLoadDto carLoadDetail) {
-        return carLoadDetail.getOrders().stream()
+    Map<String, List<Pair<String, Product>>> groupByProducts(CarLoad carLoad) {
+        return carLoad.getOrders().stream()
                 .flatMap(order -> order.getProducts().stream()
                         .map(product -> Pair.of(product.getProductName(),
                                 Pair.of(order.getOrderNumber(), product)))
@@ -149,7 +155,7 @@ public class CarLoadSheetGenerator {
     }
 
     @VisibleForTesting
-    int getAllProductAmount(List<Pair<String, ProductDto>> groupedProducts) {
+    int getAllProductAmount(List<Pair<String, Product>> groupedProducts) {
         return groupedProducts.stream()
                 .mapToInt(product -> product.getSecond().getAmount())
                 .sum();

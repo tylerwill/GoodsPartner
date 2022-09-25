@@ -1,6 +1,6 @@
 package com.goodspartner.util;
 
-import com.goodspartner.dto.ProductDto;
+import com.goodspartner.dto.Product;
 import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
 import com.goodspartner.service.impl.MockedStoreService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +18,7 @@ class ExternalOrderDataEnricherTest {
     private ODataProductDto oDataProductInL;
     private ODataProductDto oDataProductInPack;
     private ODataProductDto oDataProductInPiece;
-    private ProductDto productDto;
+    private Product product;
 
     @BeforeEach
     public void setUp() {
@@ -27,7 +27,7 @@ class ExternalOrderDataEnricherTest {
         oDataProductInPack = ODataProductDto.builder().measure("пак").totalProductWeight(100.0).build();
         oDataProductInL = ODataProductDto.builder().measure("л").totalProductWeight(11.3).build();
 
-        productDto = ProductDto.builder().amount(4).unitWeight(0.5).build();
+        product = Product.builder().amount(4).unitWeight(0.5).build();
     }
 
 
@@ -55,7 +55,7 @@ class ExternalOrderDataEnricherTest {
     @Test
     @DisplayName("Test get total product weight as multiple of amount and unit weight")
     void testGetTotalProductWeight() {
-        double totalProductWeight = dtoHelper.getTotalProductWeight(productDto);
+        double totalProductWeight = dtoHelper.getTotalProductWeight(product);
 
         assertEquals(2.0, totalProductWeight);
     }
@@ -63,10 +63,10 @@ class ExternalOrderDataEnricherTest {
     @Test
     @DisplayName("Test set to product store name and calculated total weight")
     void testEnrichProduct() {
-        dtoHelper.enrichProduct(productDto);
+        dtoHelper.enrichProduct(product);
 
-        assertEquals(2.0, productDto.getTotalProductWeight());
-        assertEquals("Склад №1", productDto.getStoreName());
+        assertEquals(2.0, product.getTotalProductWeight());
+        assertEquals("Склад №1", product.getStoreName());
     }
 
     @Test

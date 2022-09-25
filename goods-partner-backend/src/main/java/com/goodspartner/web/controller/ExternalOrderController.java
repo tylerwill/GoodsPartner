@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/orders", produces = MediaType.APPLICATION_JSON_VALUE)
-public class OrderController {
+public class ExternalOrderController {
 
     private final OrderService orderService;
     private final OrderValidationService orderValidationService;

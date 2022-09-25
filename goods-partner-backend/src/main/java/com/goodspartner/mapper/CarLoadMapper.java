@@ -1,8 +1,8 @@
 package com.goodspartner.mapper;
 
+import com.goodspartner.dto.CarLoadDto;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.OrderExternal;
-import com.goodspartner.web.controller.response.RoutesCalculation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -15,15 +15,15 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", uses = OrderExternalMapper.class)
 public interface CarLoadMapper {
 
-    List<CarLoad> toCarLoads(List<RoutesCalculation.CarLoadDto> carLoadDtos);
+    List<CarLoad> toCarLoads(List<CarLoadDto> carLoadDtos);
 
-    List<RoutesCalculation.CarLoadDto> toCarLoadDtos(List<CarLoad> carLoads);
+    List<CarLoadDto> toCarLoadDtos(List<CarLoad> carLoads);
 
-    CarLoad carLoadDtoToCarLoad(RoutesCalculation.CarLoadDto carLoadDto);
+    CarLoad carLoadDtoToCarLoad(CarLoadDto carLoadDto);
 
     @Mapping(target = "car", source = "car")
     @Mapping(target = "car.loadSize", source = "orders", qualifiedByName = "mapCarLoadSize")
-    RoutesCalculation.CarLoadDto carLoadToCarLoadDto(CarLoad carLoad);
+    CarLoadDto carLoadToCarLoadDto(CarLoad carLoad);
 
     @Named("mapCarLoadSize")
     default double mapCarLoadSize(List<OrderExternal> orders) {

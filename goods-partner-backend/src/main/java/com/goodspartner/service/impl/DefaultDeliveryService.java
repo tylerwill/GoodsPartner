@@ -2,18 +2,20 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.StoreDto;
+import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.Delivery;
-import com.goodspartner.entity.DeliveryStatus;
-import com.goodspartner.exceptions.DeliveryModifyException;
+import com.goodspartner.entity.Route;
 import com.goodspartner.exceptions.DeliveryNotFoundException;
+import com.goodspartner.exceptions.IllegalDeliveryStatusForOperation;
+import com.goodspartner.exceptions.NoOrdersFoundForDelivery;
 import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.service.CalculateRouteService;
 import com.goodspartner.service.CarLoadService;
 import com.goodspartner.service.DeliveryService;
 import com.goodspartner.service.StoreService;
-import com.goodspartner.web.controller.response.RoutesCalculation;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.goodspartner.entity.DeliveryStatus.DRAFT;
+
+@Slf4j
 @AllArgsConstructor
 @Service
 public class DefaultDeliveryService implements DeliveryService {
@@ -31,7 +36,6 @@ public class DefaultDeliveryService implements DeliveryService {
     private final CalculateRouteService calculateRouteService;
     private final CarLoadService carLoadService;
 
-
     @Override
     @Transactional(readOnly = true)
     public List<DeliveryDto> findAll() {
@@ -39,20 +43,25 @@ public class DefaultDeliveryService implements DeliveryService {
     }
 
     @Override
-    public DeliveryDto delete(UUID id) {
-        Delivery deliveryToDelete = deliveryRepository.findById(id)
-                .orElseThrow(() -> new DeliveryNotFoundException("There is no delivery with id: " + id));
-        deliveryRepository.deleteById(id);
+    public DeliveryDto delete(UUID deliveryId) {
+        Delivery deliveryToDelete = deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
+
+        if (DRAFT != deliveryToDelete.getStatus()) {
+            throw new IllegalDeliveryStatusForOperation(deliveryToDelete, "delete");
+        }
+
+        deliveryRepository.deleteById(deliveryId);
 
         return deliveryMapper.toDeliveryDtoResult(new DeliveryDto(), deliveryToDelete);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public DeliveryDto findById(UUID id) {
-        return deliveryRepository.findById(id)
+    public DeliveryDto findById(UUID deliveryId) {
+        return deliveryRepository.findById(deliveryId)
                 .map(deliveryMapper::deliveryToDeliveryDto)
-                .orElseThrow(() -> new DeliveryNotFoundException("There is no delivery with id: " + id));
+                .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
     }
 
     @Override
@@ -70,10 +79,10 @@ public class DefaultDeliveryService implements DeliveryService {
 
     @Override
     @Transactional
-    public DeliveryDto update(UUID id, DeliveryDto deliveryDto) {
-        Delivery deliveryToUpdate = deliveryRepository.findById(id)
+    public DeliveryDto update(UUID deliveryId, DeliveryDto deliveryDto) {
+        Delivery deliveryToUpdate = deliveryRepository.findById(deliveryId)
                 .map(delivery -> deliveryMapper.update(delivery, deliveryDto))
-                .orElseThrow(() -> new DeliveryNotFoundException("Delivery not found"));
+                .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
 
         Delivery updatedDelivery = deliveryRepository.save(deliveryToUpdate);
         return deliveryMapper.toDeliveryDtoResult(new DeliveryDto(), updatedDelivery);
@@ -81,48 +90,31 @@ public class DefaultDeliveryService implements DeliveryService {
 
     @Override
     @Transactional
-    public DeliveryDto calculateDelivery(UUID deliveryID) {
-        DeliveryDto deliveryDto = this.findById(deliveryID);
-        checkBeforeCalculate(deliveryDto);
+    public DeliveryDto calculateDelivery(UUID deliveryId) {
+        Delivery delivery = deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
+
+        validateDelivery(delivery);
 
         StoreDto store = storeFactory.getMainStore();
-        List<RoutesCalculation.RouteDto> routes = calculateRouteService.calculateRoutes(deliveryDto.getOrders(), store);
-        List<RoutesCalculation.CarLoadDto> carsDetails = carLoadService.map(routes, deliveryDto.getOrders());
+        List<Route> routes = calculateRouteService.calculateRoutes(delivery.getOrders(), store);
+        List<CarLoad> carLoads = carLoadService.map(routes, delivery.getOrders());
 
-        deliveryDto.setRoutes(routes);
-        deliveryDto.setCarLoads(carsDetails);
+        delivery.setRoutes(routes);
+        delivery.setCarLoads(carLoads);
 
-        Delivery delivery = deliveryMapper.deliveryDtoToDelivery(deliveryDto);
-        delivery.setOrders(delivery.getCarLoads().stream()
-                .flatMap(carLoad -> carLoad.getOrders().stream()).toList());
         Delivery save = deliveryRepository.save(delivery);
 
         return deliveryMapper.deliveryToDeliveryDto(save);
     }
 
-    @Override
-    @Transactional
-    public DeliveryDto reCalculateDelivery(UUID deliveryID) {
-        DeliveryDto deliveryDto = this.findById(deliveryID);
-        Delivery delivery = deliveryMapper.deliveryDtoToDelivery(deliveryDto);
-        delivery.removeRoutes();
-        delivery.removeCarLoads();
-        deliveryRepository.save(delivery);
-
-        return this.calculateDelivery(deliveryID);
-    }
-
-    private void checkBeforeCalculate(DeliveryDto deliveryDto) {
-        if (deliveryDto.getStatus() != DeliveryStatus.DRAFT) {
-            throw new DeliveryModifyException("Delivery modification not allowed");
+    private void validateDelivery(Delivery delivery) {
+        if (delivery.getStatus() != DRAFT) {
+            throw new IllegalDeliveryStatusForOperation(delivery, "calculate");
         }
 
-        if (deliveryDto.getOrders().isEmpty()) {
-            throw new DeliveryNotFoundException("No orders for delivery ID: " + deliveryDto.getId());
-        }
-
-        if (!deliveryDto.getRoutes().isEmpty() || !deliveryDto.getCarLoads().isEmpty()) {
-            throw new DeliveryModifyException("Delivery already calculated ID: " + deliveryDto.getId());
+        if (delivery.getOrders().isEmpty()) {
+            throw new NoOrdersFoundForDelivery(delivery.getId());
         }
     }
 }
