@@ -37,3 +37,9 @@ export const carsApi = {
         return axiosWithSetting.put(`api/v1/cars/${id}`, {car});
     }
 }
+
+export const deliveriesApi = {
+    findAll() {
+        return axiosWithSetting.get('api/v1/deliveries');
+    }
+}

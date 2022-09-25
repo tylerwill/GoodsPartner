@@ -7,7 +7,7 @@ import {
     setCars, UPDATE_CAR,
     updateCarAction
 } from "../actions/car-actions";
-import cars from "../pages/Cars/Cars";
+import cars from "../pages/Deliveries/Deliveries";
 import {carsApi} from "../api/api";
 import {deleteCarAction, getCarsAction} from "../actions/car-actions";
 

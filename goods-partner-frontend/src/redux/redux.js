@@ -1,11 +1,13 @@
 import {applyMiddleware, combineReducers, compose, legacy_createStore} from "redux";
 import thunkMiddleware from "redux-thunk";
 import carsReducer from "../reducers/cars-reducer";
-import newOrdersReducer from "../reducers/orders-reducer";
+import ordersReducer from "../reducers/orders-reducer";
+import deliveriesReducer from "../reducers/deliveries-reducer";
 
 let reducers = combineReducers({
     carsPage: carsReducer,
-    ordersPage: newOrdersReducer
+    ordersPage: ordersReducer,
+    deliveriesPage: deliveriesReducer
 });
 
 const composeEnhancers = (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({

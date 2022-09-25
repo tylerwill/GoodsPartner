@@ -5,6 +5,7 @@ import * as React from "react";
 import CarsContainer from "./pages/Cars/CarsContainer";
 import {Route, Routes} from "react-router-dom";
 import OrdersContainer from "./pages/Orders/OrdersContainer";
+import DeliveriesContainer from "./pages/Deliveries/DeliveriesContainer";
 
 
 function App() {
@@ -13,8 +14,9 @@ function App() {
             <CssBaseline/>
             <Layout>
                 <Routes>
-                    <Route path="/new/cars" element={<CarsContainer/>}/>
-                    <Route path="/new/orders" element={<OrdersContainer/>}/>
+                    <Route path="/cars" element={<CarsContainer/>}/>
+                    <Route path="/orders" element={<OrdersContainer/>}/>
+                    <Route path="/deliveries" element={<DeliveriesContainer/>}/>
                 </Routes>
             </Layout>
         </>

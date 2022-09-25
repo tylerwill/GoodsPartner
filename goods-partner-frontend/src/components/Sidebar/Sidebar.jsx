@@ -81,8 +81,11 @@ const Sidebar = () => {
                     </ListItem>
                     <Divider/>
 
-                    <ListItem disablePadding component={Link} to={"/new/cars"}>
+                    <ListItem disablePadding component={Link} to={"/cars"}>
                         {ListButton(<LocalShippingIcon/>, 'Автомобілі')}
+                    </ListItem>
+                    <ListItem disablePadding component={Link} to={"/deliveries"}>
+                        {ListButton(<LocalShippingIcon/>, 'Deliveries')}
                     </ListItem>
                     <Divider/>
 
@@ -97,7 +100,7 @@ const Sidebar = () => {
 
                     <Collapse in={subMenuOpen} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
-                            {ListButtonWithLink(<ShoppingCartIcon/>, "Замовлення", 4, Link, "/new/orders")}
+                            {ListButtonWithLink(<ShoppingCartIcon/>, "Замовлення", 4, Link, "/orders")}
                             {ListButton(<RouteIcon/>, "Маршрути", 4)}
                             {ListButton(<Download/>, "Завантаження", 4)}
 

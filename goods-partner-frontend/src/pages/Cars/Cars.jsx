@@ -14,18 +14,16 @@ import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import CarFormDialog from "./CarFormDialog/CarFormDialog";
+import CarFormDialog from "../Cars/CarFormDialog/CarFormDialog";
 
 class Cars extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props);
     }
 
 
     componentDidMount() {
-        let test = this.props.getCarsThunkCreator();
-        console.log("test", test);
+        this.props.getCarsThunkCreator();
     }
 
     render() {
@@ -65,7 +63,8 @@ class Cars extends React.Component {
                                     <TableCell align="center">{car.travelCost}</TableCell>
                                     <TableCell align="center">{car.cooler ? <CheckIcon/> : <CloseIcon/>}</TableCell>
                                     <TableCell align="center">{car.available ? <CheckIcon/> : <CloseIcon/>}</TableCell>
-                                    <TableCell><BasicMenu id={car.id} deleteCar={this.props.deleteCarThunkCreator}/></TableCell>
+                                    <TableCell><BasicMenu id={car.id}
+                                                          deleteCar={this.props.deleteCarThunkCreator}/></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -73,7 +72,7 @@ class Cars extends React.Component {
                 </TableContainer>
             </Box>
             <CarFormDialog closeDialog={this.props.closeDialog} open={this.props.isDialogOpened}
-                           addCar={this.props.addCarThunkCreator} />
+                           addCar={this.props.addCarThunkCreator}/>
         </section>
     }
 }
