@@ -7,7 +7,7 @@ import deliveriesReducer from "../reducers/deliveries-reducer";
 let reducers = combineReducers({
     carsPage: carsReducer,
     ordersPage: ordersReducer,
-    deliveriesPage: deliveriesReducer
+    deliveries: deliveriesReducer
 });
 
 const composeEnhancers = (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({

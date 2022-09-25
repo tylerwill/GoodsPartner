@@ -7,6 +7,8 @@ const defaultOptions = {
 
 const axiosWithSetting = axios.create(defaultOptions);
 
+
+// TODO [UI Max]: Config axios to not duplicate prefix /api/v1
 export const ordersApi = {
     getOrdersByDate(date) {
         return axiosWithSetting.get('api/v1/orders', {
@@ -23,17 +25,14 @@ export const carsApi = {
     },
 
     add(car) {
-        console.log("envs", process.env);
         return axiosWithSetting.post(`api/v1/cars`, {...car});
     },
 
     deleteCar(id) {
-        console.log("envs", process.env);
         return axiosWithSetting.delete(`api/v1/cars/${id}`);
     },
 
     update(id, car) {
-        console.log("envs", process.env);
         return axiosWithSetting.put(`api/v1/cars/${id}`, {car});
     }
 }
@@ -41,5 +40,13 @@ export const carsApi = {
 export const deliveriesApi = {
     findAll() {
         return axiosWithSetting.get('api/v1/deliveries');
+    },
+
+    create(delivery) {
+        return axiosWithSetting.post('/api/v1/deliveries', delivery)
+    },
+
+    findById(id) {
+        return axiosWithSetting.get(`/api/v1/deliveries/${id}`);
     }
 }

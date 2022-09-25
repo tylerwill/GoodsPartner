@@ -6,6 +6,7 @@ import CarsContainer from "./pages/Cars/CarsContainer";
 import {Route, Routes} from "react-router-dom";
 import OrdersContainer from "./pages/Orders/OrdersContainer";
 import DeliveriesContainer from "./pages/Deliveries/DeliveriesContainer";
+import DeliveryContainer from "./pages/Delivery/DeliveryContainer";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
                     <Route path="/cars" element={<CarsContainer/>}/>
                     <Route path="/orders" element={<OrdersContainer/>}/>
                     <Route path="/deliveries" element={<DeliveriesContainer/>}/>
+                    <Route path="/delivery/:id" element={<DeliveryContainer/>}/>
                 </Routes>
             </Layout>
         </>

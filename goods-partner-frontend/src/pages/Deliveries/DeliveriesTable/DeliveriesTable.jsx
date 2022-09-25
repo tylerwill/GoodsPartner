@@ -11,6 +11,7 @@ import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TablePagination from "@mui/material/TablePagination";
+import {Link, useNavigate} from "react-router-dom";
 
 const DeliveriesTable = ({deliveries}) => {
     // TODO: [UI] Remove shadow
@@ -82,6 +83,10 @@ function EnhancedTableHead(props) {
 }
 
 function EnhancedTable({deliveries}) {
+    const navigate = useNavigate();
+    const handleRowClick = (deliveryId) => {
+        navigate(`/delivery/${deliveryId}`);
+    }
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
     const [page, setPage] = React.useState(0);
@@ -122,7 +127,7 @@ function EnhancedTable({deliveries}) {
                             rowCount={deliveries.length}
                         />
                         <TableBody>
-
+                            {/* TODO: [UI Max] Fix sorting by status column */}
                             {stableSort(deliveries, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((delivery, index) => {
@@ -131,14 +136,17 @@ function EnhancedTable({deliveries}) {
                                             hover
                                             role="checkbox"
                                             tabIndex={-1}
+                                            key={delivery.id}
+                                            onClick={() => handleRowClick(delivery.id)}
+                                            sx={{cursor:'pointer'}}
                                         >
                                             <TableCell component="th" scope="row" align="left">
                                                 {createStatusChip(delivery.status)}
 
                                             </TableCell>
                                             <TableCell align="left">{delivery.deliveryDate}</TableCell>
-                                            <TableCell align="left">{delivery.orders.length}</TableCell>
-                                            <TableCell align="left">{delivery.carLoads.length}</TableCell>
+                                            <TableCell align="left">{delivery.orders?.length }</TableCell>
+                                            <TableCell align="left">{delivery.carLoads?.length}</TableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -174,22 +182,28 @@ function createStatusChip(status) {
     let color;
     switch (status) {
         case 'APPROVED': {
-            text = 'Закінчена';
-            color = 'success';
-            break;
-        }
-
-        case 'DRAFT': {
             text = 'Підтверджена';
             color = 'primary';
             break;
         }
 
+        case 'DRAFT': {
+            text = 'Створена';
+            color = 'default';
+            break;
+        }
+
+        case 'COMPLETED': {
+            text = 'Закінчена';
+            color = 'success';
+            break;
+        }
+
     }
 
-    return  <Chip label={text}
-                  sx={{color: '#000', borderWidth: '2px'}}
-                  color={color} variant="outlined"/>
+    return <Chip label={text}
+                 sx={{color: '#000', borderWidth: '2px'}}
+                 color={color} variant="outlined"/>
 
 }
 
