@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CarLoadService {
 
-    List<CarLoad> map(List<Route> routes, List<OrderExternal> orders);
+    List<CarLoad> buildCarLoad(List<Route> routes, List<OrderExternal> orders);
 
     CarLoad routeToCarDetails(Route route, List<OrderExternal> orders);
 

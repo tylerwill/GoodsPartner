@@ -1,13 +1,12 @@
-package com.goodspartner.service.impl;
+package com.goodspartner.service.google;
 
-import com.goodspartner.dto.CarRouteComposition;
+import com.goodspartner.dto.VRPSolution;
 import com.goodspartner.dto.DistanceMatrix;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.RoutePoint;
-import com.goodspartner.repository.CarRepository;
-import com.goodspartner.service.CarLoadingService;
+import com.goodspartner.service.VRPSolver;
 import com.goodspartner.service.GraphhopperService;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.ortools.Loader;
@@ -30,14 +29,13 @@ import java.util.List;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class DefaultCarLoadingService implements CarLoadingService {
+public class GoogleVRPSolver implements VRPSolver {
     private static final int ROUTE_START_INDEX = 0;
     private static final int SOLUTION_PROCESSING_TIME_SEC = 3;
     private static final int SLACK_UPPER_BOUND = 0;
     private static final String VEHICLE_CAPACITY_DIMENSION_NAME = "Capacity";
     private static final boolean START_CUMUL_TO_ZERO = true;
 
-    private final CarRepository carRepository;
     private final GraphhopperService graphhopperService;
 
     @PostConstruct
@@ -46,27 +44,22 @@ public class DefaultCarLoadingService implements CarLoadingService {
         Loader.loadNativeLibraries();
     }
 
-    public List<CarRouteComposition> loadCars(StoreDto storeDto, List<RoutePoint> routePoints) {
-        List<Car> cars = carRepository.findByAvailableTrue();
-
-//        TODO: REMOVE!
-        List<RoutePoint> kievPoints = routePoints.stream().filter(routePointDto ->
-                routePointDto.getMapPoint().getAddress().contains("Київська обл")
-                        || routePointDto.getMapPoint().getAddress().contains("Київ")).toList();
+    @Override
+    public List<VRPSolution> optimize(List<Car> cars, StoreDto storeDto, List<RoutePoint> routePoints) {
 
         List<MapPoint> mapPoints = new ArrayList<>();
         mapPoints.add(storeDto.getMapPoint());
-        mapPoints.addAll(kievPoints.stream().map(RoutePoint::getMapPoint).toList());
+        mapPoints.addAll(routePoints.stream().map(RoutePoint::getMapPoint).toList());
 
         DistanceMatrix matrix = graphhopperService.getMatrix(mapPoints);
 
-        return load(cars, kievPoints, matrix);
+        return solve(cars, routePoints, matrix);
     }
 
     @VisibleForTesting
-    List<CarRouteComposition> load(List<Car> cars,
-                                   List<RoutePoint> routePoints,
-                                   DistanceMatrix routePointsMatrix) {
+    List<VRPSolution> solve(List<Car> cars,
+                            List<RoutePoint> routePoints,
+                            DistanceMatrix routePointsMatrix) {
         Long[][] distanceMatrix = routePointsMatrix.getDistance();
         long[] demands = calculateDemands(routePoints);
         long[] vehicleCapacities = cars.stream()
@@ -80,12 +73,12 @@ public class DefaultCarLoadingService implements CarLoadingService {
         RoutingModel routing =
                 configureRoutingModel(manager, distanceMatrix, demands, vehicleCapacities, vehicleCosts, carsAmount);
 
-        return getCarLoad(cars, routePoints, manager, routing);
+        return getVRPSolution(cars, routePoints, manager, routing);
     }
 
-    private List<CarRouteComposition> getCarLoad(List<Car> cars, List<RoutePoint> routePoints, RoutingIndexManager manager, RoutingModel routing) {
+    private List<VRPSolution> getVRPSolution(List<Car> cars, List<RoutePoint> routePoints, RoutingIndexManager manager, RoutingModel routing) {
         Assignment solution = getSolution(routing);
-        List<CarRouteComposition> loadCars = new ArrayList<>(1);
+        List<VRPSolution> vrpSolutions = new ArrayList<>(1);
         for (int i = 0; i < cars.size(); ++i) {
             List<RoutePoint> carRoutePoints = new ArrayList<>(1);
             long index = routing.start(i);
@@ -97,10 +90,13 @@ public class DefaultCarLoadingService implements CarLoadingService {
                     }
                     index = solution.value(routing.nextVar(index));
                 }
-                loadCars.add(getCarLoad(cars.get(i), carRoutePoints));
+                vrpSolutions.add(VRPSolution.builder()
+                        .car(cars.get(i))
+                        .routePoints(carRoutePoints)
+                        .build());
             }
         }
-        return loadCars;
+        return vrpSolutions;
     }
 
     private Assignment getSolution(RoutingModel routing) {
@@ -149,14 +145,6 @@ public class DefaultCarLoadingService implements CarLoadingService {
             demands[i + 1] = collect.get(i);
         }
         return demands;
-    }
-
-    @VisibleForTesting
-    CarRouteComposition getCarLoad(Car car, List<RoutePoint> routePoints) {
-        return CarRouteComposition.builder()
-                .car(car)
-                .routePoints(routePoints)
-                .build();
     }
 
 }

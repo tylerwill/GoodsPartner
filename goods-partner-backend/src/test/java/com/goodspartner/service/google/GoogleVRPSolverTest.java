@@ -1,7 +1,7 @@
-package com.goodspartner.service.impl;
+package com.goodspartner.service.google;
 
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.dto.CarRouteComposition;
+import com.goodspartner.dto.VRPSolution;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.Car;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @TestInstance(PER_CLASS)
-public class DefaultCarLoadingServiceTest extends AbstractWebITest {
+public class GoogleVRPSolverTest extends AbstractWebITest {
 
     @MockBean
     private CarRepository carRepository;
@@ -43,9 +43,9 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     private GHResponse ghResponse;
 
     @Autowired
-    private DefaultCarLoadingService defaultCarLoadingService;
+    private GoogleVRPSolver googleVRPSovler;
 
-    private CarRouteComposition carRoutesDto;
+    private VRPSolution carRoutesDto;
     private List<RoutePoint> routePointList;
     private StoreDto storeDto;
     private Car car;
@@ -63,13 +63,13 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
                 1000,
                 10);
 
-        RoutePoint.AddressOrder addressOrderFirst = RoutePoint.AddressOrder.builder()
+        RoutePoint.OrderReference orderReferenceFirst = RoutePoint.OrderReference.builder()
                 .id(12)
                 .orderNumber("111")
                 .orderTotalWeight(20.20)
                 .build();
 
-        RoutePoint.AddressOrder addressOrderSecond = RoutePoint.AddressOrder.builder()
+        RoutePoint.OrderReference orderReferenceSecond = RoutePoint.OrderReference.builder()
                 .id(2)
                 .orderNumber("222")
                 .orderTotalWeight(13.90)
@@ -84,7 +84,7 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
                 .address("м. Київ, вул. Металістів, 8, оф. 4-24")
                 .addressTotalWeight(5.30)
                 .routePointDistantTime(55)
-                .orders(List.of(addressOrderFirst))
+                .orders(List.of(orderReferenceFirst))
                 .mapPoint(MapPoint.builder()
                         .status(MapPoint.AddressStatus.KNOWN)
                         .address("м.Київ, вул. Металістів, 8, оф. 4-24")
@@ -102,7 +102,7 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
                 .address("м. Київ, вул. Пирогівський шлях 138")
                 .addressTotalWeight(10.90)
                 .routePointDistantTime(55)
-                .orders(List.of(addressOrderSecond))
+                .orders(List.of(orderReferenceSecond))
                 .mapPoint(MapPoint.builder()
                         .status(MapPoint.AddressStatus.KNOWN)
                         .address("м. Київ, вул. Пирогівський шлях 138")
@@ -113,7 +113,7 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
 
         routePointList = List.of(routePointFirst, routePointSecond);
 
-        carRoutesDto = CarRouteComposition.builder()
+        carRoutesDto = VRPSolution.builder()
                 .car(car)
                 .routePoints(routePointList)
                 .build();
@@ -134,43 +134,29 @@ public class DefaultCarLoadingServiceTest extends AbstractWebITest {
     @DisplayName("Test loadCars Verify Correctly Invocation Of Methods findByAvailableCars And getDistanceMatrix")
     void testLoadCars() {
 
-        when(carRepository.findByAvailableTrue()).thenReturn(List.of(car));
         when(hopper.route(any())).thenReturn(ghResponse);
         when(ghResponse.hasErrors()).thenReturn(false);
         when(ghResponse.getBest()).thenReturn(responsePath);
         when(responsePath.getDistance()).thenReturn(20.2);
         when(responsePath.getTime()).thenReturn(20L);
 
-        defaultCarLoadingService.loadCars(storeDto, routePointList);
+        List<VRPSolution> vrpOptimisation = googleVRPSovler.optimize(List.of(car), storeDto, routePointList);
 
-        // TODO invalid test - nothing is verified
+        Assertions.assertEquals(1, vrpOptimisation.size());
+        VRPSolution vrpSolution = vrpOptimisation.get(0);
+
+        Assertions.assertEquals(car, vrpSolution.getCar());
+        Assertions.assertEquals(2, vrpSolution.getRoutePoints().size());
     }
 
     @Test
     @DisplayName("Test testCalculateDemands Checks Whether It Is Correctly Calculate Demands")
     void testCalculateDemands() {
 
-        long[] actualDemands = defaultCarLoadingService.calculateDemands(routePointList);
+        long[] actualDemands = googleVRPSovler.calculateDemands(routePointList);
         long[] expectedDemands = new long[]{0, 5, 11};
 
         Assertions.assertNotNull(actualDemands);
         Assertions.assertArrayEquals(expectedDemands, actualDemands);
-    }
-
-    @Test
-    @DisplayName("Test getCarLoading Checks Whether It Is Correctly Load Size And Create CarRoutesDto Object")
-    void testGetCarLoad() {
-
-        CarRouteComposition actualCarRoutesDto = defaultCarLoadingService.getCarLoad(car, routePointList);
-
-        Car actualCar = actualCarRoutesDto.getCar();
-        List<RoutePoint> actualRoutePoints = actualCarRoutesDto.getRoutePoints();
-
-        Car expectedCar = carRoutesDto.getCar();
-        List<RoutePoint> expectedRoutePoints = carRoutesDto.getRoutePoints();
-
-        Assertions.assertEquals(expectedCar, actualCar);
-        Assertions.assertEquals(expectedRoutePoints, actualRoutePoints);
-
     }
 }

@@ -6,8 +6,8 @@ import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.Product;
-import com.goodspartner.service.GoogleApiService;
-import com.goodspartner.service.OrderService;
+import com.goodspartner.service.client.GoogleClient;
+import com.goodspartner.service.IntegrationService;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.Geometry;
 import com.google.maps.model.LatLng;
@@ -38,10 +38,10 @@ class OrdersControllerITest extends AbstractWebITest {
     private static final String FORMATTED_ADDRESS = "Marii Lahunovoi St, 11, Brovary, Kyivs'ka oblast, Ukraine, 07400";
 
     @MockBean
-    private OrderService orderService;
+    private IntegrationService integrationService;
 
     @MockBean
-    private GoogleApiService googleApiService;
+    private GoogleClient googleClient;
 
     @Test
     @DisplayName("given OrderDto when Calculate Orders then Json Returned")
@@ -87,12 +87,12 @@ class OrdersControllerITest extends AbstractWebITest {
                 .orderWeight(20.00)
                 .build();
 
-        when(orderService.findAllByShippingDate(LocalDate.parse("2022-07-10")))
+        when(integrationService.findAllByShippingDate(LocalDate.parse("2022-07-10")))
                 .thenReturn(List.of(orderDtoFirst, orderDtoSecond));
 
         mockGoogleGeocodeService(orderDtoFirst.getAddress());
 
-        when(orderService.calculateTotalOrdersWeight(List.of(orderDtoFirst, orderDtoSecond)))
+        when(integrationService.calculateTotalOrdersWeight(List.of(orderDtoFirst, orderDtoSecond)))
                 .thenReturn(32.00);
 
         mockMvc.perform(get("/api/v1/orders")
@@ -170,12 +170,12 @@ class OrdersControllerITest extends AbstractWebITest {
                 .orderWeight(10.00)
                 .build();
 
-        when(orderService.findAllByShippingDate(LocalDate.parse("2022-07-10")))
+        when(integrationService.findAllByShippingDate(LocalDate.parse("2022-07-10")))
                 .thenReturn(List.of(orderDtoFirst, orderDtoSecond, orderDtoThird));
 
         mockGoogleGeocodeService(orderDtoFirst.getAddress());
 
-        when(orderService.calculateTotalOrdersWeight(List.of(orderDtoFirst, orderDtoSecond, orderDtoThird)))
+        when(integrationService.calculateTotalOrdersWeight(List.of(orderDtoFirst, orderDtoSecond, orderDtoThird)))
                 .thenReturn(42.00);
 
         mockMvc.perform(get("/api/v1/orders")
@@ -217,10 +217,10 @@ class OrdersControllerITest extends AbstractWebITest {
 
         GeocodingResult[] mockedGeocodeResults = new GeocodingResult[]{geocodingResult};
 
-        when(googleApiService.getGeocodingResults(parsableAddress))
+        when(googleClient.getGeocodingResults(parsableAddress))
                 .thenReturn(mockedGeocodeResults);
 
-        when(googleApiService.getGeocodingResults(AdditionalMatchers.not(eq(parsableAddress))))
+        when(googleClient.getGeocodingResults(AdditionalMatchers.not(eq(parsableAddress))))
                 .thenReturn(new GeocodingResult[0]);
     }
 }

@@ -26,13 +26,13 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 @TestInstance(PER_CLASS)
 @Import({TestSecurityDisableConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
-class GrandeDolceOrderServiceITest extends AbstractBaseITest {
+class GrandeDolceIntegrationServiceITest extends AbstractBaseITest {
 
     @LocalServerPort
     private int port;
 
     @Autowired
-    private GrandeDolceOrderService grandeDolceOrderService;
+    private GrandeDolceIntegrationService grandeDolceOrderService;
 
     @BeforeAll
     public void setup() {

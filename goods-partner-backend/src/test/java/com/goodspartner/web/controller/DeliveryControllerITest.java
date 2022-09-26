@@ -10,13 +10,22 @@ import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.Product;
+import com.goodspartner.dto.StoreDto;
+import com.goodspartner.dto.VRPSolution;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
-import com.goodspartner.service.CalculateRouteService;
+import com.goodspartner.repository.CarRepository;
+import com.goodspartner.service.GraphhopperService;
+import com.goodspartner.service.StoreService;
+import com.goodspartner.service.VRPSolver;
+import com.graphhopper.ResponsePath;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.mockito.AdditionalMatchers;
+import org.mockito.ArgumentMatchers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -25,6 +34,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -44,8 +54,17 @@ class DeliveryControllerITest extends AbstractWebITest {
     private static final String MOCKED_DELIVERY_DTO = "datasets/common/delivery/calculate/deliveryDto.json";
     private static final String MOCKED_ROUTE = "datasets/common/delivery/calculate/RouteDto.json";
 
+    @Autowired
+    private StoreService storeService;
+
     @MockBean
-    private CalculateRouteService calculateRouteService;
+    private CarRepository carRepository;
+    @MockBean
+    private VRPSolver vrpSolver;
+    @MockBean
+    private GraphhopperService graphhopperService;
+    @MockBean
+    private ResponsePath graphhopperResponse;
 
     private MapPoint mapPointAutovalidated;
     private MapPoint mapPointKnown;
@@ -201,17 +220,30 @@ class DeliveryControllerITest extends AbstractWebITest {
     @DisplayName("when Calculate Delivery With Correct Id then DeliveryDto Return")
     void whenCalculateDelivery_withCorrectId_thenDeliveryDtoReturn() throws Exception {
 
-        Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), Route.class);
-        List<Route> routes = List.of(route);
-        when(calculateRouteService.calculateRoutes(anyList(), any())).thenReturn(routes);
+        StoreDto store = storeService.getMainStore();
 
-        DeliveryDto deliveryDto =
-                objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_DELIVERY_DTO), DeliveryDto.class);
+        Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), Route.class);
+
+        VRPSolution regularVrpSolution = new VRPSolution();
+        regularVrpSolution.setRoutePoints(route.getRoutePoints());
+        regularVrpSolution.setCar(route.getCar());
+        when(vrpSolver.optimize(Collections.emptyList(), store, Collections.emptyList())).thenReturn(Collections.emptyList());
+        when(vrpSolver.optimize(
+                AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList())),
+                any(),
+                AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList()))))
+                .thenReturn(List.of(regularVrpSolution));
+
+        when(graphhopperService.getRoute(anyList())).thenReturn(graphhopperResponse);
+        when(graphhopperResponse.getDistance()).thenReturn(80000.0);
+        when(graphhopperResponse.getTime()).thenReturn(4800000L);
+
+        when(carRepository.findByAvailableTrueAndCoolerIs(false)).thenReturn(List.of(route.getCar()));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries/70574dfd-48a3-40c7-8b0c-3e5defe7d080/calculate")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(deliveryDto)));
+                .andExpect(content().json(getResponseAsString(MOCKED_DELIVERY_DTO)));
     }
 
     @Test
@@ -221,17 +253,30 @@ class DeliveryControllerITest extends AbstractWebITest {
     @DisplayName("when RECalculate Delivery With Correct Id then DeliveryDto Return")
     void whenRECalculateDelivery_withCorrectId_thenDeliveryDtoReturn() throws Exception {
 
-        Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), Route.class);
-        List<Route> routes = List.of(route);
-        when(calculateRouteService.calculateRoutes(anyList(), any())).thenReturn(routes);
+        StoreDto store = storeService.getMainStore();
 
-        DeliveryDto deliveryDto =
-                objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_DELIVERY_DTO), DeliveryDto.class);
+        Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), Route.class);
+
+        VRPSolution regularVrpSolution = new VRPSolution();
+        regularVrpSolution.setRoutePoints(route.getRoutePoints());
+        regularVrpSolution.setCar(route.getCar());
+        when(vrpSolver.optimize(Collections.emptyList(), store, Collections.emptyList())).thenReturn(Collections.emptyList());
+        when(vrpSolver.optimize(
+                AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList())),
+                any(),
+                AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList()))))
+                .thenReturn(List.of(regularVrpSolution));
+
+        when(graphhopperService.getRoute(anyList())).thenReturn(graphhopperResponse);
+        when(graphhopperResponse.getDistance()).thenReturn(80000.0);
+        when(graphhopperResponse.getTime()).thenReturn(4800000L);
+
+        when(carRepository.findByAvailableTrueAndCoolerIs(false)).thenReturn(List.of(route.getCar()));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries/70574dfd-48a3-40c7-8b0c-3e5defe7d080/calculate")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(deliveryDto)));
+                .andExpect(content().json(getResponseAsString(MOCKED_DELIVERY_DTO)));
     }
 
 

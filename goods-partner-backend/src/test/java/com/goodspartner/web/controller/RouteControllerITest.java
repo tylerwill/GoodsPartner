@@ -8,7 +8,7 @@ import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.entity.DeliveryStatus;
-import com.goodspartner.service.GoogleApiService;
+import com.goodspartner.service.client.GoogleClient;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixRow;
@@ -44,7 +44,7 @@ public class RouteControllerITest extends AbstractWebITest {
     private static final String EMPTY_DISTANCE_MATRIX = "datasets/route/emptyDistanceMatrix.json";
 
     @MockBean
-    private GoogleApiService googleApiService;
+    private GoogleClient googleClient;
 
     @Test
     @DataSet(value = "route/sql_dump.json", disableConstraints = true)

@@ -5,7 +5,7 @@ import com.goodspartner.dto.OrderDto;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface OrderService {
+public interface IntegrationService {
 
     List<OrderDto> findAllByShippingDate(LocalDate date);
 

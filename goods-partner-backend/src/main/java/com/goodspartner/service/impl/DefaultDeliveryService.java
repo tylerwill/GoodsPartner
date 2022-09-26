@@ -1,21 +1,22 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.DeliveryDto;
-import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.Delivery;
+import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
 import com.goodspartner.exceptions.DeliveryNotFoundException;
 import com.goodspartner.exceptions.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exceptions.NoOrdersFoundForDelivery;
 import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.DeliveryRepository;
-import com.goodspartner.service.CalculateRouteService;
+import com.goodspartner.service.RouteCalculationService;
 import com.goodspartner.service.CarLoadService;
 import com.goodspartner.service.DeliveryService;
-import com.goodspartner.service.StoreService;
+import com.goodspartner.service.dto.RouteMode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,8 +33,7 @@ public class DefaultDeliveryService implements DeliveryService {
 
     private final DeliveryMapper deliveryMapper;
     private final DeliveryRepository deliveryRepository;
-    private final StoreService storeFactory;
-    private final CalculateRouteService calculateRouteService;
+    private final RouteCalculationService routeCalculationService;
     private final CarLoadService carLoadService;
 
     @Override
@@ -96,16 +96,21 @@ public class DefaultDeliveryService implements DeliveryService {
 
         validateDelivery(delivery);
 
-        StoreDto store = storeFactory.getMainStore();
-        List<Route> routes = calculateRouteService.calculateRoutes(delivery.getOrders(), store);
-        List<CarLoad> carLoads = carLoadService.map(routes, delivery.getOrders());
+        List<OrderExternal> orders = delivery.getOrders();
 
-        delivery.setRoutes(routes);
-        delivery.setCarLoads(carLoads);
+        // Frozen Orders
+        List<Route> coolerRoutes = routeCalculationService.calculateRoutes(orders, RouteMode.COOLER);
+        List<CarLoad> coolerCarLoad = carLoadService.buildCarLoad(coolerRoutes, orders);
 
-        Delivery save = deliveryRepository.save(delivery);
+        // Other orders
+        List<Route> regularRoutes = routeCalculationService.calculateRoutes(orders, RouteMode.REGULAR);
+        List<CarLoad> regularCarLoads = carLoadService.buildCarLoad(regularRoutes, orders);
 
-        return deliveryMapper.deliveryToDeliveryDto(save);
+        // Update Delivery
+        delivery.setRoutes(ListUtils.union(coolerRoutes, regularRoutes));
+        delivery.setCarLoads(ListUtils.union(coolerCarLoad, regularCarLoads));
+
+        return deliveryMapper.deliveryToDeliveryDto(deliveryRepository.save(delivery));
     }
 
     private void validateDelivery(Delivery delivery) {

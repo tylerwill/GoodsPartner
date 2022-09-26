@@ -1,8 +1,8 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.service.OrderValidationService;
-import com.goodspartner.service.OrderService;
+import com.goodspartner.service.GeocodeService;
+import com.goodspartner.service.IntegrationService;
 import com.goodspartner.web.controller.response.OrdersCalculation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -20,8 +20,8 @@ import java.util.List;
 @RequestMapping(value = "/api/v1/orders", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ExternalOrderController {
 
-    private final OrderService orderService;
-    private final OrderValidationService orderValidationService;
+    private final IntegrationService integrationService; // GrangeDolceIntegration
+    private final GeocodeService geocodeService;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @GetMapping
@@ -29,11 +29,11 @@ public class ExternalOrderController {
 
         LocalDate calculationDate = LocalDate.parse(date);
 
-        List<OrderDto> orders = orderService.findAllByShippingDate(calculationDate);
+        List<OrderDto> orders = integrationService.findAllByShippingDate(calculationDate);
 
-        orderValidationService.enrichValidAddress(orders);
+        geocodeService.enrichValidAddress(orders);
 
-        double totalOrdersWeight = orderService.calculateTotalOrdersWeight(orders);
+        double totalOrdersWeight = integrationService.calculateTotalOrdersWeight(orders);
 
         return OrdersCalculation.builder()
                 .date(calculationDate)

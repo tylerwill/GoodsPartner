@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class DefaultCarLoadService implements CarLoadService {
 
     @Override
-    public List<CarLoad> map(List<Route> routes, List<OrderExternal> orders){
+    public List<CarLoad> buildCarLoad(List<Route> routes, List<OrderExternal> orders){
         return routes.stream().map(route -> routeToCarDetails(route, orders)).toList();
     }
 
@@ -26,7 +26,7 @@ public class DefaultCarLoadService implements CarLoadService {
                 .map(routePoint -> {
                     List<String> routeOrderNumbers = routePoint.getOrders()
                             .stream()
-                            .map(RoutePoint.AddressOrder::getOrderNumber)
+                            .map(RoutePoint.OrderReference::getOrderNumber)
                             .toList();
                     return orders
                             .stream()
@@ -40,7 +40,6 @@ public class DefaultCarLoadService implements CarLoadService {
         CarLoad carLoad = new CarLoad();
         carLoad.setCar(route.getCar());
         carLoad.setOrders(carLoadOrders);
-
         return carLoad;
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-public class CarRouteComposition {
+public class VRPSolution {
 
     private Car car;
 

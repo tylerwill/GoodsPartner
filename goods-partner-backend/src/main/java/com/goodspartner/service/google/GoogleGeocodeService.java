@@ -1,14 +1,15 @@
-package com.goodspartner.service.impl;
+package com.goodspartner.service.google;
 
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.AddressExternal.OrderAddressId;
 import com.goodspartner.repository.AddressExternalRepository;
-import com.goodspartner.service.GoogleApiService;
-import com.goodspartner.service.OrderValidationService;
+import com.goodspartner.service.client.GoogleClient;
+import com.goodspartner.service.GeocodeService;
 import com.google.maps.model.GeocodingResult;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,12 +18,12 @@ import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
 import static com.goodspartner.dto.MapPoint.AddressStatus.UNKNOWN;
 import static com.goodspartner.dto.MapPoint.AddressStatus.AUTOVALIDATED;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class GoogleOrderValidationService implements OrderValidationService {
+public class GoogleGeocodeService implements GeocodeService {
 
-    private final GoogleApiService googleApiService;
+    private final GoogleClient googleClient;
     private final AddressExternalRepository addressExternalRepository;
 
     @Override
@@ -57,7 +58,7 @@ public class GoogleOrderValidationService implements OrderValidationService {
     }
 
     private MapPoint autovalidate(String orderAddress) {
-        GeocodingResult[] geocodingResults = googleApiService.getGeocodingResults(orderAddress);
+        GeocodingResult[] geocodingResults = googleClient.getGeocodingResults(orderAddress);
         if (geocodingResults.length == 0) { // Nothing found
             return MapPoint.builder()
                     .status(UNKNOWN)

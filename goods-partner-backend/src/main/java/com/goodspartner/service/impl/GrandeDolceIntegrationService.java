@@ -4,7 +4,7 @@ import com.goodspartner.configuration.properties.GrandeDolce1CProperties;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.mapper.ODataOrderMapper;
 import com.goodspartner.mapper.ProductMapper;
-import com.goodspartner.service.OrderService;
+import com.goodspartner.service.IntegrationService;
 import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
 import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
 import com.goodspartner.service.dto.external.grandedolce.ODataWrapperDto;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class GrandeDolceOrderService implements OrderService {
+public class GrandeDolceIntegrationService implements IntegrationService {
 
     private static final int PARTITION_SIZE = 100;
     private static final int ORDER_FETCH_LIMIT = Integer.MAX_VALUE; // API Key limit
@@ -48,11 +48,11 @@ public class GrandeDolceOrderService implements OrderService {
     private final ProductMapper productMapper;
     private final ExternalOrderDataEnricher enricher;
 
-    public GrandeDolceOrderService(GrandeDolce1CProperties properties,
-                                   WebClient webClient,
-                                   ODataOrderMapper odataOrderMapper,
-                                   ProductMapper productMapper,
-                                   ExternalOrderDataEnricher enricher) {
+    public GrandeDolceIntegrationService(GrandeDolce1CProperties properties,
+                                         WebClient webClient,
+                                         ODataOrderMapper odataOrderMapper,
+                                         ProductMapper productMapper,
+                                         ExternalOrderDataEnricher enricher) {
         this.properties = properties;
         this.webClient = webClient;
         this.odataOrderMapper = odataOrderMapper;
@@ -78,7 +78,8 @@ public class GrandeDolceOrderService implements OrderService {
 
         List<OrderDto> orderDtosList = odataOrderMapper.toOrderDtosList(oDataOrderDtosList);
 
-        log.info("Orders has been fetched from 1C for date: {} in {}", date, System.currentTimeMillis() - startTime);
+        log.info("{} Orders has been fetched from 1C for date: {} in {}",
+                orderDtosList.size(), date, System.currentTimeMillis() - startTime);
 
         return orderDtosList;
     }

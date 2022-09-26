@@ -1,5 +1,4 @@
 {
-
   "status": "DRAFT",
   "totalWeight": 2499.0,
   "totalPoints": 2,
@@ -32,7 +31,8 @@
         {
           "id": 201,
           "orderNumber": "00000003639",
-          "comment": null
+          "comment": null,
+          "orderTotalWeight": 1500.0
         }
       ]
     },
@@ -55,7 +55,8 @@
         {
           "id": 151,
           "orderNumber": "00000003433",
-          "comment": null
+          "comment": null,
+          "orderTotalWeight": 999.0
         }
       ]
     }

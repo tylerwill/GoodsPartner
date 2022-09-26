@@ -26,7 +26,7 @@ public class RoutePoint {
     private MapPoint mapPoint;
 
     @JsonIgnoreProperties(value = {"orderTotalWeight"})
-    private List<AddressOrder> orders;
+    private List<OrderReference> orders;
 
     @Getter
     @Setter
@@ -34,7 +34,7 @@ public class RoutePoint {
     @NoArgsConstructor
     @AllArgsConstructor
     @EqualsAndHashCode
-    public static class AddressOrder {
+    public static class OrderReference {
         private int id;
         private String orderNumber;
         private String comment;

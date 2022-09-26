@@ -48,7 +48,7 @@ public class Route {
     private long spentTime;
     private String storeName;
     private String storeAddress;
-    private boolean optimization = true;
+    private boolean optimization;
 
     @Type(type = "json")
     @Column(columnDefinition = "jsonb")

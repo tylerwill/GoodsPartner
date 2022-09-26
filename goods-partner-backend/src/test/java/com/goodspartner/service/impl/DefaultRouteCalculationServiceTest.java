@@ -1,22 +1,18 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.CarRouteComposition;
+import com.goodspartner.dto.VRPSolution;
 import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.entity.RouteStatus;
-import com.goodspartner.service.GoogleApiService;
-import com.goodspartner.util.GoogleApiHelper;
-import com.google.maps.model.DirectionsRoute;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.mockito.Mockito;
 
 import java.util.List;
 
@@ -25,9 +21,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @TestInstance(PER_CLASS)
-class DefaultCalculateRouteServiceTest {
-    private final DefaultCalculateRouteService routeService = new DefaultCalculateRouteService(null,
-            null, null);
+class DefaultRouteCalculationServiceTest {
+    private final DefaultRouteCalculationService routeService = new DefaultRouteCalculationService(
+            null, null, null, null);
     private List<RoutePoint> routePoints;
     private RoutePoint firstRoutePoint;
     private RoutePoint secondRoutePoint;
@@ -35,32 +31,32 @@ class DefaultCalculateRouteServiceTest {
     @BeforeAll
     void before() {
 
-        RoutePoint.AddressOrder addressOrderFirst = RoutePoint.AddressOrder.builder()
+        RoutePoint.OrderReference orderReferenceFirst = RoutePoint.OrderReference.builder()
                 .id(12)
                 .orderNumber("111")
                 .orderTotalWeight(20.20)
                 .build();
 
-        RoutePoint.AddressOrder addressOrderSecond = RoutePoint.AddressOrder.builder()
+        RoutePoint.OrderReference orderReferenceSecond = RoutePoint.OrderReference.builder()
                 .id(2)
                 .orderNumber("222")
                 .orderTotalWeight(13.90)
                 .build();
 
-        RoutePoint.AddressOrder addressOrderThird = RoutePoint.AddressOrder.builder()
+        RoutePoint.OrderReference orderReferenceThird = RoutePoint.OrderReference.builder()
                 .id(12)
                 .orderNumber("111")
                 .orderTotalWeight(20.20)
                 .build();
 
-        RoutePoint.AddressOrder addressOrderFour = RoutePoint.AddressOrder.builder()
+        RoutePoint.OrderReference orderReferenceFour = RoutePoint.OrderReference.builder()
                 .id(2)
                 .orderNumber("222")
                 .orderTotalWeight(13.90)
                 .build();
 
-        List<RoutePoint.AddressOrder> addressOrderListFirst = List.of(addressOrderFirst, addressOrderSecond);
-        List<RoutePoint.AddressOrder> addressOrderListSecond = List.of(addressOrderThird, addressOrderFour);
+        List<RoutePoint.OrderReference> orderReferenceListFirst = List.of(orderReferenceFirst, orderReferenceSecond);
+        List<RoutePoint.OrderReference> orderReferenceListSecond = List.of(orderReferenceThird, orderReferenceFour);
 
         firstRoutePoint = RoutePoint.builder()
                 .id(null)
@@ -71,7 +67,7 @@ class DefaultCalculateRouteServiceTest {
                 .address("м. Київ, вул. Металістів, 8, оф. 4-24")
                 .addressTotalWeight(5.30)
                 .routePointDistantTime(55)
-                .orders(addressOrderListFirst)
+                .orders(orderReferenceListFirst)
                 .build();
 
         secondRoutePoint = RoutePoint.builder()
@@ -83,7 +79,7 @@ class DefaultCalculateRouteServiceTest {
                 .address("м. Київ, вул. Хрещатик, 1")
                 .addressTotalWeight(8.45)
                 .routePointDistantTime(76)
-                .orders(addressOrderListSecond)
+                .orders(orderReferenceListSecond)
                 .build();
     }
 
@@ -93,19 +89,9 @@ class DefaultCalculateRouteServiceTest {
     void testCalculateRoute() {
 
         // prepare
-        // ------------  objects accepted by the method  ----------------
-        DirectionsRoute fakeDirectionRoute = new DirectionsRoute();
-        GoogleApiService googleApiServiceMock = Mockito.mock(GoogleApiService.class);
-        GoogleApiHelper googleApiHelperMock = Mockito.mock(GoogleApiHelper.class);
-        DefaultCalculateRouteService routeService = new DefaultCalculateRouteService(null,
-//                null, googleApiServiceMock, googleApiHelperMock);
-                null, null);
-
         StoreDto storeDto = mock(StoreDto.class);
         when(storeDto.getAddress()).thenReturn("м. Київ, вул. Металістів, 8, оф. 4-24");
         when(storeDto.getName()).thenReturn("Склад №1");
-
-        when(googleApiHelperMock.getRouteTotalDistance(fakeDirectionRoute)).thenReturn(150.05);
 
         Car car = new Car(
                 1,
@@ -119,25 +105,25 @@ class DefaultCalculateRouteServiceTest {
 
         routePoints = List.of(firstRoutePoint);
 
-        CarRouteComposition carRoutesDto = new CarRouteComposition();
-        carRoutesDto.setRoutePoints(routePoints);
-        carRoutesDto.setCar(car);
+        VRPSolution vrpSolution = new VRPSolution();
+        vrpSolution.setRoutePoints(routePoints);
+        vrpSolution.setCar(car);
 
         //    -----------------   fake objects for Assertion  ----------------
 
-        RoutePoint.AddressOrder fakeAddressOrderFirst = RoutePoint.AddressOrder.builder()
+        RoutePoint.OrderReference fakeOrderReferenceFirst = RoutePoint.OrderReference.builder()
                 .id(12)
                 .orderNumber("111")
                 .orderTotalWeight(20.20)
                 .build();
 
-        RoutePoint.AddressOrder fakeAddressOrderSecond = RoutePoint.AddressOrder.builder()
+        RoutePoint.OrderReference fakeOrderReferenceSecond = RoutePoint.OrderReference.builder()
                 .id(2)
                 .orderNumber("222")
                 .orderTotalWeight(13.90)
                 .build();
 
-        List<RoutePoint.AddressOrder> fakeAddressOrderList = List.of(fakeAddressOrderFirst, fakeAddressOrderSecond);
+        List<RoutePoint.OrderReference> fakeOrderReferenceList = List.of(fakeOrderReferenceFirst, fakeOrderReferenceSecond);
 
         RoutePoint fakeRoutePoint = RoutePoint.builder()
                 .id(null)
@@ -148,12 +134,13 @@ class DefaultCalculateRouteServiceTest {
                 .address("м. Київ, вул. Металістів, 8, оф. 4-24")
                 .addressTotalWeight(5.30)
                 .routePointDistantTime(55)
-                .orders(fakeAddressOrderList)
+                .orders(fakeOrderReferenceList)
                 .build();
 
         List<RoutePoint> fakeRoutePointList = List.of(fakeRoutePoint);
 
         // --------- expected object ----------
+
         Route expectedRoute = new Route();
         expectedRoute.setId(44);
         expectedRoute.setStatus(RouteStatus.DRAFT);
@@ -168,7 +155,7 @@ class DefaultCalculateRouteServiceTest {
         expectedRoute.setCar(car);
 
         //when
-        Route actualRoute = routeService.calculateRoute(carRoutesDto, storeDto);
+        Route actualRoute = routeService.mapToRoute(vrpSolution, storeDto);
 
         //then
         Assertions.assertEquals(expectedRoute, actualRoute);

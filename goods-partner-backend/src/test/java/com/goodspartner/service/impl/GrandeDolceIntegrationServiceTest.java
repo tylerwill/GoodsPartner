@@ -22,11 +22,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
-class GrandeDolceOrderServiceTest {
+class GrandeDolceIntegrationServiceTest {
 
     private final GrandeDolce1CProperties properties = new GrandeDolce1CProperties();
     private final ProductMapper productMapper = new ProductMapperImpl();
-    private final GrandeDolceOrderService orderService = new GrandeDolceOrderService(
+    private final GrandeDolceIntegrationService orderService = new GrandeDolceIntegrationService(
             properties, null, null, productMapper, null);
 
     private final List<ODataOrderDto> orderList = List.of(

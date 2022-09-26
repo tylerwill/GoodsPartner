@@ -94,7 +94,7 @@ public class DeliveryController {
     }
 
     /**
-     * Delivery Routes manipulation TODO align
+     * Delivery Routes manipulation
      */
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
@@ -106,7 +106,6 @@ public class DeliveryController {
         return deliveryService.calculateDelivery(deliveryId);
     }
 
-    // TODO Question - do we want to keep them under the delivery endpoint??
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
     @PutMapping("/{id}/routes/{routeId}")
     public void updateRoute(@PathVariable int routeId, @RequestBody RouteDto routeDto) {

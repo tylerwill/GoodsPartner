@@ -37,8 +37,6 @@ public class DefaultOrderExternalService implements OrderExternalService {
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
 
-        orderDtos.forEach(orderDto -> orderDto.setDeliveryId(deliveryId));
-
         List<OrderExternal> externalOrders = orderExternalMapper.mapOrderDtosToOrdersExternal(orderDtos);
         externalOrders.forEach(externalOrder -> externalOrder.setDelivery(delivery));
         orderExternalRepository.saveAll(externalOrders);

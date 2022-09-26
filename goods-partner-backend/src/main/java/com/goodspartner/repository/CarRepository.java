@@ -8,5 +8,9 @@ import java.util.List;
 
 @Repository
 public interface CarRepository extends JpaRepository<Car, Integer> {
+
     List<Car> findByAvailableTrue();
+
+    List<Car> findByAvailableTrueAndCoolerIs(boolean coolerRequired);
+
 }
