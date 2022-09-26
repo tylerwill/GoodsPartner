@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Grid from '@mui/material/Grid';
@@ -18,27 +18,26 @@ const style = {
 
 export default function CarFormDialog({closeDialog, open, addCar}) {
 
-    let carName = React.createRef();
-    let carLicencePlate = React.createRef();
-    let carDriver = React.createRef();
-    let carWeighCapacity = React.createRef();
-    let carTravelCost = React.createRef();
-    let carCooler = React.createRef();
-    let carAvailable = React.createRef();
+    const [name, setName] = useState('');
+    const [licencePlate, setLicencePlate] = useState('');
+    const [driver, setDriver] = useState('');
+    const [weightCapacity, setWeightCapacity] = useState('');
+    const [travelCost, setTravelCost] = useState('');
+    const [cooler, setCooler] = useState(true);
+    const [available, setAvailable] = useState(true);
+
+    function handleACooler(e) {
+        setCooler(e.target.checked);
+    };
+
+    function handleAvailable(e) {
+        setAvailable(e.target.checked);
+    }
 
     let addCarHandler = () => {
-        let name = carName.current.value;
-        let licencePlate = carLicencePlate.current.value;
-        let driver = carDriver.current.value;
-        let weightCapacity = carWeighCapacity.current.value;
-        let travelCost = carTravelCost.current.value;
-        let cooler = carCooler.current.value;
-        let available = carAvailable.current.value;
-
-        let car = {name, licencePlate, driver, weightCapacity, travelCost, cooler, available};
+        const car = {name, licencePlate, driver, weightCapacity, travelCost, cooler, available};
         const result = addCar(car)
         console.log("function", result);
-
     }
 
     return (
@@ -57,31 +56,34 @@ export default function CarFormDialog({closeDialog, open, addCar}) {
                             </Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" inputRef={carName} label="Модель авто" variant="outlined"/>
+                            <TextField id="outlined-basic" onChange={(e) => setName(e.target.value)} label="Модель авто"
+                                       variant="outlined"/>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" inputRef={carLicencePlate} label="Номер авто"
-                                       variant="outlined"/>
+                            <TextField id="outlined-basic" onChange={(e) => setLicencePlate(e.target.value)}
+                                       label="Номер авто" variant="outlined"/>
                         </Grid>
 
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" inputRef={carDriver} label="Водій" variant="outlined"/>
+                            <TextField id="outlined-basic" onChange={(e) => setDriver(e.target.value)} label="Водій"
+                                       variant="outlined"/>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" inputRef={carWeighCapacity} label="Вантажопідйомність, т"
-                                       variant="outlined"/>
+                            <TextField id="outlined-basic" onChange={(e) => setWeightCapacity(e.target.value)}
+                                       label="Вантажопідйомність, т" variant="outlined"/>
                         </Grid>
 
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" inputRef={carTravelCost} label="Витрати палива, л/100км"
-                                       variant="outlined"/>
+                            <TextField id="outlined-basic" onChange={(e) => setTravelCost(e.target.value)}
+                                       label="Витрати палива, л/100км" variant="outlined"/>
                         </Grid>
 
                         <Grid item xs={12} sx={{mt: 2}}>
                             <FormGroup>
-                                <FormControlLabel control={<Checkbox/>} inputRef={carCooler} label="Морозильна камера"/>
-                                <FormControlLabel control={<Checkbox defaultChecked/>} inputRef={carAvailable}
-                                                  label="Доступність автомобіля"/>
+                                <FormControlLabel control={<Checkbox/>} checked={cooler} onChange={handleACooler}
+                                                  label="Морозильна камера"/>
+                                <FormControlLabel control={<Checkbox defaultChecked/>} checked={available}
+                                                  onChange={handleAvailable} label="Доступність автомобіля"/>
                             </FormGroup>
                         </Grid>
 

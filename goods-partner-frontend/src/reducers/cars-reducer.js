@@ -17,7 +17,7 @@ let initialCars = {
 
     name: "",
     licencePlate: "",
-    cooler: "",
+    cooler: true,
     available: true,
     weightCapacity: "",
     travelCost: ""
