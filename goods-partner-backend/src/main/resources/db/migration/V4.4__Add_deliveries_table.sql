@@ -1,7 +1,7 @@
 CREATE TABLE "deliveries"(
     "id" UUID PRIMARY KEY,
     "delivery_date" DATE NOT NULL,
-    "status" VARCHAR(8) NOT NULL
+    "status" VARCHAR(9) NOT NULL
 );
 
 CREATE TABLE "car_loads"(
