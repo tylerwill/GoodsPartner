@@ -3,16 +3,19 @@ package com.goodspartner.service.impl;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.Delivery;
+import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
+import com.goodspartner.entity.RouteStatus;
+import com.goodspartner.exceptions.DeliveryModifyException;
 import com.goodspartner.exceptions.DeliveryNotFoundException;
 import com.goodspartner.exceptions.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exceptions.NoOrdersFoundForDelivery;
 import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.DeliveryRepository;
-import com.goodspartner.service.RouteCalculationService;
 import com.goodspartner.service.CarLoadService;
 import com.goodspartner.service.DeliveryService;
+import com.goodspartner.service.RouteCalculationService;
 import com.goodspartner.service.dto.RouteMode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -80,6 +83,8 @@ public class DefaultDeliveryService implements DeliveryService {
     @Override
     @Transactional
     public DeliveryDto update(UUID deliveryId, DeliveryDto deliveryDto) {
+        checkStatus(deliveryDto);
+
         Delivery deliveryToUpdate = deliveryRepository.findById(deliveryId)
                 .map(delivery -> deliveryMapper.update(delivery, deliveryDto))
                 .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
@@ -121,5 +126,20 @@ public class DefaultDeliveryService implements DeliveryService {
         if (delivery.getOrders().isEmpty()) {
             throw new NoOrdersFoundForDelivery(delivery.getId());
         }
+    }
+
+    private void checkStatus(DeliveryDto deliveryDto) {
+        if (deliveryDto.getStatus().equals(DeliveryStatus.COMPLETED)) {
+            if (!isAllRoutesCompleted(deliveryDto)) {
+                throw new DeliveryModifyException("Not possible to close the delivery due to not all routes have been completed");
+            }
+        }
+    }
+
+    private boolean isAllRoutesCompleted(DeliveryDto deliveryDto) {
+        return deliveryDto.getRoutes().stream()
+                .filter(route -> !route.getStatus().equals(RouteStatus.COMPLETED))
+                .findFirst()
+                .isEmpty();
     }
 }

@@ -111,8 +111,6 @@ public class RouteControllerITest extends AbstractWebITest {
                 .status(DeliveryStatus.DRAFT)
                 .build();
 
-        System.out.println(objectMapper.writeValueAsString(deliveryDto));
-
         mockMvc.perform(post("/api/v1/routes/calculate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(deliveryDto)))
