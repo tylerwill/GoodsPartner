@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -27,12 +29,15 @@ public class Delivery {
     @Column(name = "delivery_date")
     private LocalDate deliveryDate;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Route> routes = new ArrayList<>();
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderExternal> orders = new ArrayList<>();
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CarLoad> carLoads = new ArrayList<>();
 

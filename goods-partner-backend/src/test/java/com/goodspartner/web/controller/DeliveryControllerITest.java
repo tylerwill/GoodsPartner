@@ -118,7 +118,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "delivery/delivery.yml")
+    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
     @DisplayName("when Get Delivery then OK status returned")
     void whenGetDeliveryById_thenOkStatusReturned() throws Exception {
 
