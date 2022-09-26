@@ -34,6 +34,10 @@ export const carsApi = {
 
     update(id, car) {
         return axiosWithSetting.put(`api/v1/cars/${id}`, {car});
+    },
+
+    findById(id) {
+        return axiosWithSetting.get(`api/v1/cars/${id}`);
     }
 }
 

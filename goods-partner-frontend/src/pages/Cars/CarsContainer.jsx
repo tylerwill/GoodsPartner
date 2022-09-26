@@ -5,14 +5,16 @@ import {closeCarDialogActionCreator, openCarDialogActionCreator} from "../../act
 import {
     addCarThunkCreator,
     deleteCarThunkCreator,
-    getCarsThunkCreator,
+    getCarsThunkCreator, getCarThunkCreator,
     updateCarThunkCreator
 } from "../../reducers/cars-reducer";
 
 const mapStateToProps = (state) => {
     return {
         cars: state.carsPage.cars,
-        isDialogOpened: state.carsPage.carDialogOpened
+        car:state.carsPage.car,
+        isDialogOpened: state.carsPage.carDialogOpened,
+        isEditFormOpened: state.carsPage.carEditFormOpened,
     }
 }
 
@@ -23,6 +25,7 @@ const CarsContainer = connect(mapStateToProps, {
     deleteCarThunkCreator,
     addCarThunkCreator,
     updateCarThunkCreator,
+    getCarThunkCreator
 })(Cars);
 
 export default CarsContainer;

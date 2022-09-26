@@ -15,6 +15,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import CarFormDialog from "../Cars/CarFormDialog/CarFormDialog";
+import CarEditForm from "./CarFormDialog/CarEditForm";
 
 class Cars extends React.Component {
     constructor(props) {
@@ -24,6 +25,8 @@ class Cars extends React.Component {
 
     componentDidMount() {
         this.props.getCarsThunkCreator();
+        // let id = this.props.match.params.id;
+        // this.props.getCarThunkCreator(id);
     }
 
     render() {
@@ -73,6 +76,9 @@ class Cars extends React.Component {
             </Box>
             <CarFormDialog closeDialog={this.props.closeDialog} open={this.props.isDialogOpened}
                            addCar={this.props.addCarThunkCreator}/>
+            <CarEditForm open={this.props.isEditFormOpened} editCar={this.props.updateCarThunkCreator}
+                         car={this.props.getCarsThunkCreator(this.props.id)}
+            />
         </section>
     }
 }
@@ -95,6 +101,7 @@ function BasicMenu({id, deleteCar}) {
             deleteCar(id);
         }
     }
+
     return (
         <div>
             <IconButton

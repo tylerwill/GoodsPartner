@@ -1,4 +1,3 @@
-
 export const GET_ALL_CARS = "GET_ALL_CARS";
 export const SET_CARS = "SET_CARS";
 export const OPEN_CAR_DIALOG = "OPEN_CAR_DIALOG";
@@ -6,6 +5,9 @@ export const CLOSE_CAR_DIALOG = "CLOSE_CAR_DIALOG";
 export const ADD_CAR = "ADD_CAR";
 export const UPDATE_CAR = "UPDATE_CAR";
 export const DELETE_CAR = "DELETE_CAR";
+export const OPEN_CAR_EDIT_FORM = "OPEN_CAR_EDIT_FORM";
+export const CLOSE_CAR_EDIT_FORM = "CLOSE_CAR_EDIT_FORM";
+export const SET_CAR = "SET_CAR";
 
 
 export const setCars = (cars) => {
@@ -52,5 +54,12 @@ export const deleteCarAction = (id) => {
     return {
         type: DELETE_CAR,
         payload: {id}
+    }
+}
+
+export const setCarActionCreator = (car) => {
+    return {
+        type: SET_CAR,
+        payload: car
     }
 }
