@@ -16,7 +16,8 @@ const style = {
     padding: '16px 24px',
 };
 
-export default function CarEditForm({closeDialog, open, editCar, car}) {
+export default function CarEditForm({closeEditForm, isEditFormOpened, editCar, getCar, openEditForm}) {
+
     const [name, setName] = useState('');
     const [licencePlate, setLicencePlate] = useState('');
     const [driver, setDriver] = useState('');
@@ -33,19 +34,17 @@ export default function CarEditForm({closeDialog, open, editCar, car}) {
         setAvailable(e.target.checked);
     }
 
-    let editCarHandler = () => {
-        debugger;
+    let editCarHandle = () => {
         const car = {name, licencePlate, driver, weightCapacity, travelCost, cooler, available};
         const result = editCar(car)
-
         console.log("function", result);
     }
 
     return (
         <div>
             <Modal
-                open={open}
-                onClose={closeDialog}
+                open={isEditFormOpened}
+                onClose={closeEditForm}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -53,7 +52,7 @@ export default function CarEditForm({closeDialog, open, editCar, car}) {
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <Typography variant="h6" component="h3">
-                                Рудагувати авто
+                                Редагувати авто
                             </Typography>
                         </Grid>
                         <Grid item xs={6}>
@@ -91,8 +90,8 @@ export default function CarEditForm({closeDialog, open, editCar, car}) {
 
                         <Grid item xs={12} sx={{mt: 2}}>
                             <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
-                                <Button sx={{mr: 2}} variant="outlined" onClick={closeDialog}>Скасувати</Button>
-                                <Button variant="outlined" onClick={editCarHandler}> Зберегти </Button>
+                                <Button sx={{mr: 2}} variant="outlined" onClick={closeEditForm}>Скасувати</Button>
+                                <Button variant="outlined" onClick={editCarHandle}> Зберегти </Button>
                             </Box>
                         </Grid>
                     </Grid>

@@ -25,8 +25,6 @@ class Cars extends React.Component {
 
     componentDidMount() {
         this.props.getCarsThunkCreator();
-        // let id = this.props.match.params.id;
-        // this.props.getCarThunkCreator(id);
     }
 
     render() {
@@ -37,7 +35,7 @@ class Cars extends React.Component {
                     Автомобілі
                 </Typography>
 
-                <Button onClick={this.props.openDialog} variant="contained">Додати авто</Button>
+                <Button onClick={this.props.openAddForm} variant="contained">Додати авто</Button>
 
             </Box>
             <Box mt={2}>
@@ -67,7 +65,10 @@ class Cars extends React.Component {
                                     <TableCell align="center">{car.cooler ? <CheckIcon/> : <CloseIcon/>}</TableCell>
                                     <TableCell align="center">{car.available ? <CheckIcon/> : <CloseIcon/>}</TableCell>
                                     <TableCell><BasicMenu id={car.id}
-                                                          deleteCar={this.props.deleteCarThunkCreator}/></TableCell>
+                                                          isEditFormOpened={this.props.isEditFormOpened}
+                                                          openEditForm={this.props.openEditFormThunkCreator}
+                                                          deleteCar={this.props.deleteCarThunkCreator}
+                                                          getCar={this.props.getCarThunkCreator}/></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -75,16 +76,18 @@ class Cars extends React.Component {
                 </TableContainer>
             </Box>
             <CarFormDialog closeDialog={this.props.closeDialog} open={this.props.isDialogOpened}
+                           openAddForm={this.props.openDialogThunkCreator}
                            addCar={this.props.addCarThunkCreator}/>
-            <CarEditForm open={this.props.isEditFormOpened} editCar={this.props.updateCarThunkCreator}
-                         car={this.props.getCarsThunkCreator(this.props.id)}
+            <CarEditForm isEditFormOpened={this.props.isEditFormOpened}
+                         closeEditForm={this.props.closeEditFormThunkCreator} editCar={this.props.updateCarThunkCreator}
+                         getCar={this.props.getCarThunkCreator} openEditForm={this.props.openEditFormThunkCreator}
             />
         </section>
     }
 }
 
 
-function BasicMenu({id, deleteCar}) {
+function BasicMenu({id, deleteCar, openEditForm, getCar}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -100,6 +103,10 @@ function BasicMenu({id, deleteCar}) {
             console.log("remove car with id", id);
             deleteCar(id);
         }
+    }
+    const handleEdit = () => {
+        let car = getCar(id);
+        openEditForm(true);
     }
 
     return (
@@ -127,7 +134,7 @@ function BasicMenu({id, deleteCar}) {
                     <ListItemIcon>
                         <EditOutlinedIcon/>
                     </ListItemIcon>
-                    <ListItemText>Редагувати</ListItemText>
+                    <ListItemText onClick={handleEdit}>Редагувати</ListItemText>
                 </MenuItem>
                 <MenuItem onClick={handleClose}>
                     <ListItemIcon>

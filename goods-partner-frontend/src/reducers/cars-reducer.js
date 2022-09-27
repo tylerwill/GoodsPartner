@@ -3,11 +3,14 @@ import {
     addCarActionCreator,
     CLOSE_CAR_DIALOG,
     CLOSE_CAR_EDIT_FORM,
+    closeEditFormActionCreator,
     DELETE_CAR,
     deleteCarAction,
     getCarsAction,
     OPEN_CAR_DIALOG,
     OPEN_CAR_EDIT_FORM,
+    openCarDialogActionCreator,
+    openEditFormActionCreator,
     SET_CAR,
     SET_CARS,
     setCarActionCreator,
@@ -20,16 +23,17 @@ import {carsApi} from "../api/api";
 let initialCars = {
     cars: [],
     carDialogOpened: false,
-    carEditFormOpened: true,
+    carEditFormOpened: false,
 
-    name: "",
-    licencePlate: "",
-    cooler: true,
-    available: true,
-    weightCapacity: "",
-    travelCost: "",
-
-    car: ""
+    newCar: {
+        name: "",
+        licencePlate: "",
+        cooler: true,
+        available: true,
+        weightCapacity: "",
+        travelCost: "",
+    },
+    editedCar: {}
 };
 
 const carsReducer = (state = initialCars, action) => {
@@ -64,12 +68,11 @@ const carsReducer = (state = initialCars, action) => {
             return {
                 ...state,
                 cars: state.cars.filter((car) => car.id !== action.id),
-                // id: state.findIndex(state => state.id === action.payload)
             };
         case SET_CAR:
             return {
                 ...state,
-                car: action.car,
+                car: action.car
             };
         case UPDATE_CAR:
             const cars = [...state.cars];
@@ -80,19 +83,6 @@ const carsReducer = (state = initialCars, action) => {
                 ...state,
                 cars
             };
-        // const updatedCar = action.payload;
-        //
-        // const updatedCars = state.cars.map((car) => {
-        //     if (car.id === updatedCar.id) {
-        //         return updatedCar;
-        //     }
-        //     return cars;
-        // });
-        //
-        // return {
-        //     ...state,
-        //     cars: updatedCars,
-        // };
 
         default:
             return state;
@@ -125,21 +115,26 @@ export const addCarThunkCreator = (car) => (dispatch) => {
         }
     })
 }
-// export const updateCarThunkCreator = (id,car) => (dispatch) => {
-//     carsApi.update(id, car).then(response => {
-//         console.log("response", response);
-//         dispatch(updateCarAction(id, car))
-//             .catch((error) => console.log(error));
-//     })
-// }
 export const updateCarThunkCreator = (car) => (dispatch) => {
-    debugger;
-    carsApi.update(car).then(response => {
-        if (response.status === 200) {
-            dispatch(setCarActionCreator(car))
-                .catch((error) => console.log(error));
-        }
-    });
+    carsApi.update(car, car.id).then(response => {
+        console.log("response", response);
+        dispatch(updateCarAction(car))
+            .catch((error) => console.log(error));
+    })
+}
+
+export const openEditFormThunkCreator = () => (dispatch) => {
+    dispatch(openEditFormActionCreator())
+        .catch((error) => console.log(error));
+}
+
+export const closeEditFormThunkCreator = () => (dispatch) => {
+    dispatch(closeEditFormActionCreator())
+        .catch((error) => console.log(error));
+}
+export const openDialogThunkCreator = () => (dispatch) => {
+    dispatch(openCarDialogActionCreator())
+        .catch((error) => console.log(error));
 }
 export const getCarThunkCreator = (id) => (dispatch) => {
     carsApi.findById(id).then(response => {
