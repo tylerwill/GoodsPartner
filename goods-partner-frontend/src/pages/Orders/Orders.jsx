@@ -2,13 +2,13 @@ import React from "react";
 import {Backdrop, Box, Card, CircularProgress} from "@mui/material";
 import OrdersContent from "./OrdersContent/OrdersContent";
 
-const Orders = ({ordersPreview, loading}) => {
+const Orders = ({ordersPreview, loading, updatePreviewOrderAddress}) => {
     const showBackDrop = loading || !ordersPreview;
     return <section>
         <Card variant="outlined">
             <Box>
                 {showBackDrop ? notLoadedYet(showBackDrop)
-                    : <OrdersContent orders={ordersPreview.orders}/>}
+                    : <OrdersContent orders={ordersPreview.orders} updatePreviewOrderAddress={updatePreviewOrderAddress}/>}
             </Box>
         </Card>
     </section>

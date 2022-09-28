@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Box, Breadcrumbs, Button,  Typography} from "@mui/material";
+import {Box, Breadcrumbs, Button, Tooltip, Typography} from "@mui/material";
 import {ArrowForward} from "@mui/icons-material";
 import {Link, useParams} from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -7,12 +7,12 @@ import OrdersContainer from "../Orders/OrdersContainer";
 
 const Delivery = ({currentDelivery, loadDelivery}) => {
     let {id} = useParams();
-    console.log("currentDelivery", currentDelivery);
+
     useEffect(() => {
         if (currentDelivery.id !== id) {
             loadDelivery(id);
         }
-    }, []);
+    }, [currentDelivery.id]);
 
     return <section>
         <Box sx={{mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -20,11 +20,17 @@ const Delivery = ({currentDelivery, loadDelivery}) => {
                 {/*TODO: [UI Max] Format date to be same as in design*/}
                 Доставка на {currentDelivery.deliveryDate}
             </Typography>
-            <Button variant="contained" disabled>Розрахувати Маршрут <ArrowForward/></Button>
+            <Tooltip title="Для розрахунку маршруту відредагуйте адреси, що потребують уточнення" placement="top" arrow>
+                <span>
+                    <Button variant="contained" disabled>Розрахувати Маршрут <ArrowForward/></Button>
+                </span>
+            </Tooltip>
         </Box>
 
+
+        {/*TODO: [UI Max] Move to separate component */}
         <Breadcrumbs
-            sx={{mt:1}}
+            sx={{mt: 1}}
             separator={<NavigateNextIcon fontSize="small"/>}
             aria-label="breadcrumb">
             <Link color="inherit" to={"/deliveries"}>

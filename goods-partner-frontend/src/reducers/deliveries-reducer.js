@@ -8,7 +8,7 @@ import {
     setCurrentDelivery,
     setDeliveries,
     setOrdersPreview,
-    setOrdersPreviewLoading
+    setOrdersPreviewLoading, UPDATE_ADDRESS_FOR_ORDERS_PREVIEW
 } from "../actions/deliveries-actions";
 import {deliveriesApi, ordersApi} from "../api/api";
 import {push} from 'react-router-redux';
@@ -34,6 +34,7 @@ let initialOrders = {
         },
         ordersPreview: null,
         ordersPreviewLoading: false,
+        orderAddressDialogOpen: false
     }
 ;
 
@@ -52,10 +53,26 @@ const deliveriesReducer = (state = initialOrders, action) => {
             return {...state, ordersPreviewLoading: action.payload};
         case SET_ORDERS_PREVIEW:
             return {...state, ordersPreview: action.payload};
+        case UPDATE_ADDRESS_FOR_ORDERS_PREVIEW:
+            const newOrdersPreview = updateAddressForPreviewOrder(state.ordersPreview, action.payload);
+            return {...state, ordersPreview: newOrdersPreview};
         default:
             return state;
     }
 }
+
+const updateAddressForPreviewOrder =(oldOrdersPreview, newAddress)=> {
+    const updatedOrders =oldOrdersPreview.orders.map(order => {
+        if(newAddress.refKey !== order.refKey) {
+            return order;
+        }
+
+        return {...order, address:newAddress.address, mapPoint: newAddress.mapPoint};
+    })
+    return {...oldOrdersPreview, orders: updatedOrders};
+}
+
+// ----------------- THUNKS -------------------------
 
 export const loadDeliveries = () => (dispatch) => {
     deliveriesApi.findAll().then(response => {
@@ -107,5 +124,6 @@ const findPreviewOrdersForDelivery = (dispatch, date) => {
             }
         })
 }
+
 
 export default deliveriesReducer;
