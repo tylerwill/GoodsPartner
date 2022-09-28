@@ -1,10 +1,21 @@
 import './App.css';
-import CalculateContainer from "./components/Calculate/CalculateContainer";
+import Layout from "./newUI/components/Layout/Layout";
+import CssBaseline from "@mui/material/CssBaseline";
+import * as React from "react";
+import CarsContainer from "./newUI/pages/Cars/CarsContainer";
+import {Route, Routes} from "react-router-dom";
 
 
 function App() {
     return (
-        <CalculateContainer/>
+        <>
+            <CssBaseline/>
+            <Layout>
+                <Routes>
+                    <Route path="/new/cars" element={<CarsContainer/>}/>
+                </Routes>
+            </Layout>
+        </>
     );
 }
 
