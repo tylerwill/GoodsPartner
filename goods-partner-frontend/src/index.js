@@ -5,20 +5,33 @@ import './index.css';
 import App from './App';
 
 // TODO: [Tolik] What is web vitals?
-
 // import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
 import {Provider} from "react-redux";
 import store from './redux/redux';
+import {createTheme, ThemeProvider} from "@mui/material";
 
+const muiTheme = createTheme({
+    components: {
+        MuiCssBaseline: {
+            styleOverrides: `
+          .pac-container {
+            z-index: 1500 !important;
+          }
+        `,
+        },
+    },
+});
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <BrowserRouter>
-            <Provider store={store}>
-                <App/>
-            </Provider>
-        </BrowserRouter>
+        <ThemeProvider theme={muiTheme}>
+            <BrowserRouter>
+                <Provider store={store}>
+                    <App/>
+                </Provider>
+            </BrowserRouter>
+        </ThemeProvider>
     </React.StrictMode>
 );
 
