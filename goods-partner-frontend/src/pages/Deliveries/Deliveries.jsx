@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {
+    Backdrop,
     Box,
     Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -13,13 +15,23 @@ import {
 import {ArrowForward} from "@mui/icons-material";
 import DeliveriesTable from "./DeliveriesTable/DeliveriesTable";
 
-const Deliveries = ({deliveries, loadDeliveries, createDelivery}) => {
+const Deliveries = ({deliveries, loadDeliveries, createDelivery, deliveriesLoading}) => {
     const [openNewDeliveryDialog, setOpenNewDeliveryDialog] = React.useState(false);
 
     // TODO: [UI] check amount for back calls
     useEffect(() => {
         loadDeliveries();
     }, [])
+
+    // TODO: [UI] This logic is not working. NEed to think about two flags. Loaded and Loading
+    if (deliveriesLoading) {
+        // TODO: [UI Max] This component using in different places. Should be moved to hoc
+        return <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                         open={deliveriesLoading}
+        >
+            <CircularProgress color="inherit"/>
+        </Backdrop>
+    }
 
     return <section>
         <Box sx={{mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>

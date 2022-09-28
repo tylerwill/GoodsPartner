@@ -5,6 +5,7 @@ import {updateAddressOrdersPreview} from "../../actions/deliveries-actions";
 
 const mapStateToProps = (state) => {
     return {
+        currentDeliveryOrders: state.deliveries.currentDelivery.orders,
         ordersPreview: state.deliveries.ordersPreview,
         loading: state.deliveries.ordersPreviewLoading
     }

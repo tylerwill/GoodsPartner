@@ -52,5 +52,13 @@ export const deliveriesApi = {
 
     findById(id) {
         return axiosWithSetting.get(`/api/v1/deliveries/${id}`);
+    },
+
+    linkOrders (id, orders) {
+        return axiosWithSetting.post(`/api/v1/deliveries/${id}/orders`, orders);
+    },
+
+    calculate (id) {
+        return axiosWithSetting.post(`/api/v1/deliveries/${id}/calculate`);
     }
 }

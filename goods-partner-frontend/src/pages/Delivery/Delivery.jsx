@@ -5,7 +5,7 @@ import {Link, useParams} from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import OrdersContainer from "../Orders/OrdersContainer";
 
-const Delivery = ({currentDelivery, loadDelivery}) => {
+const Delivery = ({currentDelivery, loadDelivery, linkOrdersToDeliveryAndCalculate, ordersPreview}) => {
     let {id} = useParams();
 
     useEffect(() => {
@@ -13,6 +13,9 @@ const Delivery = ({currentDelivery, loadDelivery}) => {
             loadDelivery(id);
         }
     }, [currentDelivery.id]);
+
+    const hasInvalidOrders = ordersPreview?.orders
+        .some(order => order.mapPoint.status === "UNKNOWN");
 
     return <section>
         <Box sx={{mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -22,7 +25,9 @@ const Delivery = ({currentDelivery, loadDelivery}) => {
             </Typography>
             <Tooltip title="Для розрахунку маршруту відредагуйте адреси, що потребують уточнення" placement="top" arrow>
                 <span>
-                    <Button variant="contained" disabled>Розрахувати Маршрут <ArrowForward/></Button>
+                    <Button variant="contained"
+                            disabled={hasInvalidOrders}
+                            onClick={linkOrdersToDeliveryAndCalculate}>Розрахувати Маршрут <ArrowForward/></Button>
                 </span>
             </Tooltip>
         </Box>

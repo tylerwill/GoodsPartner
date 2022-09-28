@@ -5,6 +5,7 @@ export const ADD_DELIVERY_TO_LIST = "ADD_DELIVERY_TO_LIST";
 export const SET_ORDERS_PREVIEW_LOADING = "SET_ORDERS_PREVIEW_LOADING";
 export const SET_ORDERS_PREVIEW = "SET_ORDERS_PREVIEW";
 export const UPDATE_ADDRESS_FOR_ORDERS_PREVIEW = "UPDATE_ADDRESS_FOR_ORDERS_PREVIEW";
+export const SET_DELIVERY_LOADING = "SET_DELIVERY_LOADING";
 
 export const setDeliveries = (deliveries) => {
     return {
@@ -53,5 +54,12 @@ export const updateAddressOrdersPreview = (newAddress) => {
     return {
         type: UPDATE_ADDRESS_FOR_ORDERS_PREVIEW,
         payload: newAddress
+    }
+}
+
+export const setDeliveryLoading = (loading) => {
+    return {
+        type: SET_DELIVERY_LOADING,
+        payload: loading
     }
 }

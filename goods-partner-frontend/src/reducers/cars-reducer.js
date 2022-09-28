@@ -138,7 +138,6 @@ export const openDialogThunkCreator = () => (dispatch) => {
 }
 export const getCarThunkCreator = (id) => (dispatch) => {
     carsApi.findById(id).then(response => {
-        console.log("response", response);
         dispatch(setCarActionCreator(response.data))
             .catch((error) => console.log(error));
     })

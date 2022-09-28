@@ -31,16 +31,10 @@ const Main = styled('main', {shouldForwardProp: (prop) => prop !== 'open'})(
 );
 
 export default function Layout(props) {
+
     const [open, setOpen] = React.useState(true);
     const [subMenuOpen, setSubMenuOpen] = React.useState(true);
 
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
 
 
     const changeCollapsedSubmenu = () => {
@@ -49,8 +43,8 @@ export default function Layout(props) {
 
     return (
         <Box sx={{display: 'flex'}}>
-            <Header/>
-            <Sidebar/>
+            <Header open={open} setOpen={setOpen}/>
+            <Sidebar open={open}/>
             <Main open={open}>
                 <Toolbar/>
                 <Container disableGutters>

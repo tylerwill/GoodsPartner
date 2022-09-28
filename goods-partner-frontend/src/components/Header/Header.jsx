@@ -6,9 +6,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import Logo from "../Logo/Logo";
 
-const Header = () => {
-    const [open, setOpen] = React.useState(true);
-
+const Header = ({open, setOpen}) => {
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -22,26 +20,25 @@ const Header = () => {
             <AppBar position="fixed" open={open} sx={
                 {
                     zIndex: (theme) => theme.zIndex.drawer + 1,
-                    backgroundColor: '#536DFE',
-                    padding: '0 8px'
+                    backgroundColor: '#fff',
+                    padding: '0 8px',
+                    boxShadow: "0px 4px 12px  rgba(0, 0, 0, 0.05)"
                 }}>
                 <Toolbar>
                     <IconButton
-                        color="inherit"
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
                         edge="start"
-                        sx={{mr: 3, ...(open && {display: 'none'})}}
+                        sx={{mr: 3, color: "#000", ...(open && {display: 'none'})}}
                     >
                         <MenuIcon/>
                     </IconButton>
 
                     <IconButton
-                        color="inherit"
                         aria-label="close drawer"
                         onClick={handleDrawerClose}
                         edge="start"
-                        sx={{mr: 3, ...(!open && {display: 'none'})}}
+                        sx={{mr: 3, color: "#000" , ...(!open && {display: 'none'})}}
                     >
                         <CloseIcon/>
                     </IconButton>

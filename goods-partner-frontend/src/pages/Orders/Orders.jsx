@@ -2,13 +2,17 @@ import React from "react";
 import {Backdrop, Box, Card, CircularProgress} from "@mui/material";
 import OrdersContent from "./OrdersContent/OrdersContent";
 
-const Orders = ({ordersPreview, loading, updatePreviewOrderAddress}) => {
-    const showBackDrop = loading || !ordersPreview;
+const Orders = ({ordersPreview, loading, updatePreviewOrderAddress, currentDeliveryOrders}) => {
+
+    const hasLinkedOrders = currentDeliveryOrders.length!==0;
+    const showBackDrop = loading || (!ordersPreview && !hasLinkedOrders);
+
+    const ordersToShow = hasLinkedOrders ? currentDeliveryOrders : ordersPreview?.orders;
     return <section>
         <Card variant="outlined">
             <Box>
                 {showBackDrop ? notLoadedYet(showBackDrop)
-                    : <OrdersContent orders={ordersPreview.orders} updatePreviewOrderAddress={updatePreviewOrderAddress}/>}
+                    : <OrdersContent orders={ordersToShow} updatePreviewOrderAddress={updatePreviewOrderAddress}/>}
             </Box>
         </Card>
     </section>

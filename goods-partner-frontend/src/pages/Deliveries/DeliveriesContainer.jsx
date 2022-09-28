@@ -5,7 +5,8 @@ import {createDelivery, loadDeliveries} from "../../reducers/deliveries-reducer"
 
 const mapStateToProps = (state) => {
     return {
-        deliveries: state.deliveries.deliveriesPreview
+        deliveries: state.deliveries.deliveriesPreview,
+        deliveriesLoading: state.deliveries.deliveryLoading,
     }
 }
 
