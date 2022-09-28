@@ -1,6 +1,7 @@
 package com.goodspartner.repository;
 
 import com.goodspartner.entity.Delivery;
+import com.goodspartner.entity.DeliveryStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,8 @@ public interface DeliveryRepository extends JpaRepository<Delivery, UUID> {
 
     Optional<Delivery> findByDeliveryDate(LocalDate date);
 
-    List<Delivery> findByDeliveryDateBetween(LocalDate deliveryDate, LocalDate deliveryDate2);
+    Optional<Delivery> findByStatusAndDeliveryDate(DeliveryStatus status, LocalDate date);
+
+    List<Delivery> findByStatusAndDeliveryDateBetween(DeliveryStatus status, LocalDate dateFrom, LocalDate dateTo);
 
 }

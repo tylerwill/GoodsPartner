@@ -27,14 +27,12 @@ public class StatisticsController {
 
     public StatisticsCalculation getStatistics(
             @ApiParam(value = "date range start", required = true)
-            @RequestParam String rangeStartDate,
+            @RequestParam String dateFrom,
             @ApiParam(value = "date range finish", required = true)
-            @RequestParam String rangeFinishDate) {
+            @RequestParam String dateTo) {
 
-        LocalDate startDate = LocalDate.parse(rangeStartDate);
-        LocalDate finishDate = LocalDate.parse(rangeFinishDate);
-
-        return statisticsService.getStatistics(startDate, finishDate);
+        return statisticsService
+                .getStatistics(LocalDate.parse(dateFrom), LocalDate.parse(dateTo));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
@@ -46,14 +44,12 @@ public class StatisticsController {
             @ApiParam(value = "ID value for the car you need to calculate statistics", required = true)
             @PathVariable int id,
             @ApiParam(value = "Start date for the range you need to calculate statistics", required = true)
-            @RequestParam String rangeStartDate,
+            @RequestParam String dateFrom,
             @ApiParam(value = "Finish date for the range you need to calculate statistics", required = true)
-            @RequestParam String rangeFinishDate) {
+            @RequestParam String dateTo) {
 
-        LocalDate startDate = LocalDate.parse(rangeStartDate);
-        LocalDate finishDate = LocalDate.parse(rangeFinishDate);
-
-        return statisticsService.getCarStatistics(startDate, finishDate, id);
+        return statisticsService
+                .getCarStatistics(LocalDate.parse(dateFrom), LocalDate.parse(dateTo), id);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")

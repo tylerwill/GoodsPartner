@@ -35,9 +35,9 @@ public class DefaultStatisticsService implements StatisticsService {
     private final CarMapper carMapper;
 
     @Override
-    public StatisticsCalculation getStatistics(LocalDate startDate, LocalDate finishDate) {
+    public StatisticsCalculation getStatistics(LocalDate dateFrom, LocalDate dateTo) {
 
-        List<DeliveryDto> deliveries = getCompletedDeliveriesInRange(startDate, finishDate);
+        List<DeliveryDto> deliveries = getCompletedDeliveriesInRange(dateFrom, dateTo);
         long averageDeliveryDuration = getAverageDeliveryDuration(deliveries);
 
         List<RouteDto> routes = getRoutes(deliveries);
@@ -55,10 +55,10 @@ public class DefaultStatisticsService implements StatisticsService {
     }
 
     @Override
-    public CarStatisticsCalculation getCarStatistics(LocalDate startDate, LocalDate finishDate, int carId) {
+    public CarStatisticsCalculation getCarStatistics(LocalDate dateFrom, LocalDate dateTo, int carId) {
 
         CarDto car = getCar(carId);
-        List<DeliveryDto> deliveries = getCompletedDeliveriesInRange(startDate, finishDate);
+        List<DeliveryDto> deliveries = getCompletedDeliveriesInRange(dateFrom, dateTo);
 
         List<RouteDto> routes = getRoutes(deliveries)
                 .stream()
@@ -97,26 +97,24 @@ public class DefaultStatisticsService implements StatisticsService {
         return carMapper.carToCarDto(car);
     }
 
-    private List<DeliveryDto> getCompletedDeliveriesInRange(LocalDate rangeStartDate, LocalDate rangeFinishDate) {
-        List<Delivery> deliveries = deliveryRepository.findByDeliveryDateBetween(rangeStartDate, rangeFinishDate);
+    private List<DeliveryDto> getCompletedDeliveriesInRange(LocalDate dateFrom, LocalDate dateTo) {
 
-        deliveries.stream()
-                .filter(delivery -> delivery.getStatus() == COMPLETED)
-                .findFirst()
-                .orElseThrow(() -> new DeliveryNotFoundException(rangeStartDate, rangeFinishDate));
+        List<Delivery> deliveries = deliveryRepository.findByStatusAndDeliveryDateBetween(COMPLETED, dateFrom, dateTo);
+        if (deliveries.isEmpty()) {
+            throw new DeliveryNotFoundException(COMPLETED, dateFrom, dateTo);
+        }
 
         return deliveryMapper.deliveriesToDeliveryDtos(deliveries);
     }
 
     private DeliveryDto getCompletedDelivery(LocalDate date) {
-        Optional<Delivery> optionalDelivery = deliveryRepository.findByDeliveryDate(date);
+        Optional<Delivery> optionalDelivery = deliveryRepository.findByStatusAndDeliveryDate(COMPLETED, date);
 
-        Delivery delivery = optionalDelivery.stream()
-                .filter(d -> d.getStatus() == COMPLETED)
-                .findFirst()
-                .orElseThrow(() -> new DeliveryNotFoundException(date));
+        if (optionalDelivery.isEmpty()) {
+            throw new DeliveryNotFoundException(COMPLETED, date);
+        }
 
-        return deliveryMapper.deliveryToDeliveryDto(delivery);
+        return deliveryMapper.deliveryToDeliveryDto(optionalDelivery.get());
     }
 
     private long getAverageDeliveryDuration(List<DeliveryDto> deliveries) {
