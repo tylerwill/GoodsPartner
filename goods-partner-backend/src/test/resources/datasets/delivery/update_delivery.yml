@@ -11,7 +11,7 @@ GRANDEDOLCE_ORDERS:
     CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
     ADDRESS: "вул.Єлізавети Чавдар, буд.36"
     PRODUCTS: "[{\"amount\": 1, \"storeName\": \"Склад №1\", \"unitWeight\": 12.0, \"productName\": \"Наповнювач фруктово-ягідний (декоргель) (12 кг)\", \"totalProductWeight\": 12.0}]"
-    ORDER_WEIGHT: 23.00
+    ORDER_WEIGHT: 12.00
     DELIVERY_ID: 123e4567-e89b-12d3-a456-556642440000
 
 GRANDEDOLCE_ADDRESSES:

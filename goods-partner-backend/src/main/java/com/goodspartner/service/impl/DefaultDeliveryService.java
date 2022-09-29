@@ -1,6 +1,7 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.DeliveryDto;
+import com.goodspartner.dto.DeliveryShortDto;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
@@ -41,8 +42,11 @@ public class DefaultDeliveryService implements DeliveryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DeliveryDto> findAll() {
-        return deliveryMapper.deliveriesToDeliveryDtos(deliveryRepository.findAll());
+    public List<DeliveryShortDto> findAll() {
+        return deliveryRepository.findAll()
+                .stream()
+                .map(deliveryMapper::deliveryToDeliveryShortDto)
+                .toList();
     }
 
     @Override

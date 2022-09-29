@@ -1,6 +1,7 @@
 package com.goodspartner.service;
 
 import com.goodspartner.dto.DeliveryDto;
+import com.goodspartner.dto.DeliveryShortDto;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +14,7 @@ public interface DeliveryService {
 
     DeliveryDto findById(UUID id);
 
-    List<DeliveryDto> findAll();
+    List<DeliveryShortDto> findAll();
 
     DeliveryDto delete(UUID id);
 
