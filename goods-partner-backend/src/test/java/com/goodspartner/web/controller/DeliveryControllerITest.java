@@ -124,7 +124,9 @@ class DeliveryControllerITest extends AbstractWebITest {
 
         mockMvc.perform(get("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content()
+                .json(getResponseAsString("response/delivery-controller.json")));
     }
 
     @Test
@@ -134,7 +136,9 @@ class DeliveryControllerITest extends AbstractWebITest {
 
         mockMvc.perform(get("/api/v1/deliveries")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content()
+                .json(getResponseAsString("response/delivery-controller-with-delivery-short-dto.json")));
     }
 
     @Test
