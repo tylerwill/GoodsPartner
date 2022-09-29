@@ -126,7 +126,7 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
-                .json(getResponseAsString("response/delivery-controller.json")));
+                .json(getResponseAsString("datasets/delivery/delivery-dataset.json")));
     }
 
     @Test
@@ -138,7 +138,7 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
-                .json(getResponseAsString("response/delivery-controller-with-delivery-short-dto.json")));
+                .json(getResponseAsString("datasets/delivery/short-deliveries.json")));
     }
 
     @Test
