@@ -61,7 +61,8 @@ public class GoogleVRPSolverTest extends AbstractWebITest {
                 false,
                 "AA 2222 CT",
                 1000,
-                10);
+                10,
+                false);
 
         RoutePoint.OrderReference orderReferenceFirst = RoutePoint.OrderReference.builder()
                 .id(12)

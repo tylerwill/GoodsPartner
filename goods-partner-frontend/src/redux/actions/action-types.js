@@ -1,6 +1,0 @@
-export const ORDERS_BY_DATE = 'ORDERS_BY_DATE';
-export const CALCULATE_ROUTES_BY_DATE = 'ROUTES_BY_DATE';
-export const UPDATE_ROUTE = 'UPDATE_ROUTE';
-export const UPDATE_ROUTE_POINT = 'UPDATE_ROUTE_POINT';
-export const STORES_BY_DATE = 'STORES_BY_DATE';
-export const ALL_CARS = 'ALL_CARS';

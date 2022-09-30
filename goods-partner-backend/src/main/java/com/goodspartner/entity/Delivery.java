@@ -5,21 +5,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
+import javax.persistence.Column;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.OneToMany;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Enumerated;
+import javax.persistence.CascadeType;
+import javax.persistence.EnumType;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -28,6 +30,8 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "deliveries")
+@SQLDelete(sql = "UPDATE deliveries SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Delivery {
 
     @Id
@@ -51,6 +55,9 @@ public class Delivery {
     @Enumerated(value = EnumType.STRING)
     @Column(length = 9)
     private DeliveryStatus status;
+
+    @Column(name = "deleted")
+    private boolean deleted = false;
 
     public void setRoutes(List<Route> routes) {
         List<Route> requiredRoutes = Optional.ofNullable(routes)

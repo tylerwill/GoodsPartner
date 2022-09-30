@@ -1,6 +1,7 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.DeliveryDto;
+import com.goodspartner.dto.DeliveryShortDto;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.entity.RoutePoint;
@@ -37,7 +38,7 @@ public class DeliveryController {
     @ApiOperation(value = "Get all Deliveries",
             notes = "Return list of DeliveryDto",
             response = List.class)
-    public List<DeliveryDto> getAll() {
+    public List<DeliveryShortDto> getAll() {
         return deliveryService.findAll();
     }
 

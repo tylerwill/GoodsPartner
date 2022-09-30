@@ -1,6 +1,7 @@
 package com.goodspartner.mapper;
 
 import com.goodspartner.dto.DeliveryDto;
+import com.goodspartner.dto.DeliveryShortDto;
 import com.goodspartner.entity.Delivery;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -28,4 +29,8 @@ public interface DeliveryMapper {
     Delivery deliveryDtoToDelivery(DeliveryDto deliveryDto);
 
     List<DeliveryDto> deliveriesToDeliveryDtos(List<Delivery> deliveries);
+
+    @Mapping(target = "orderCount", expression = "java(delivery.getOrders().size())")
+    @Mapping(target = "routeCount", expression = "java(delivery.getRoutes().size())")
+    DeliveryShortDto deliveryToDeliveryShortDto(Delivery delivery);
 }
