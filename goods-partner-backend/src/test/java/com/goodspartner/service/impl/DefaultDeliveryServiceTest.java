@@ -36,7 +36,7 @@ class DefaultDeliveryServiceTest extends AbstractBaseITest {
 
     @Test
     @DataSet(value = "common/close_delivery/initial_routes_and_deliveries.yml",
-            cleanAfter = true, skipCleaningFor = "flyway_schema_history")
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("Updated delivery should throw DeliveryModifyException")
     public void testUpdateDelivery_shouldThrowDeliveryModifyException() {
         Assertions.assertThrows(DeliveryModifyException.class, () -> {

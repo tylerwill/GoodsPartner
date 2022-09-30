@@ -1,0 +1,17 @@
+{
+  "routeCount": 2,
+  "orderCount": 19,
+  "weight": 539.5,
+  "fuelConsumption": 30,
+  "car": {
+    "id": 101,
+    "name": "Mercedes Vito",
+    "licencePlate": "AA 2222 CT",
+    "driver": "Ivan Piddubny",
+    "weightCapacity": 1000,
+    "cooler": false,
+    "available": true,
+    "loadSize": 0.0,
+    "travelCost": 10
+  }
+}
