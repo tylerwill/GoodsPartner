@@ -14,32 +14,12 @@ GRANDEDOLCE_ORDERS:
     ORDER_WEIGHT: 12.00
     DELIVERY_ID: 123e4567-e89b-12d3-a456-556642440000
 
-  - ID: 1
-    REF_KEY: "f6bc11b6-8264-11ec-b3ce-00155dd72305"
-    ORDER_NUMBER: "00000002124"
-    CREATED_DATE: "2022-01-31"
-    COMMENT: "нал без оплати  0675438404 Світлана"
-    MANAGER: "Шевцова Галина"
-    IS_FROZEN: false
-    DELIVERY_START: "12:00:00"
-    DELIVERY_FINISH: "14:00:00"
-    CLIENT_NAME: "Ексклюзив Кейк"
-    ADDRESS: "м. Київ, Княжий затон 16 б"
-    PRODUCTS: "[{\"amount\": 1, \"storeName\": \"Склад №1\", \"unitWeight\": 12.0, \"productName\": \"Наповнювач фруктово-ягідний (декоргель) (12 кг)\", \"totalProductWeight\": 12.0}]"
-    ORDER_WEIGHT: 12.00
-    DELIVERY_ID: 123e4567-e89b-12d3-a456-556642440001
-
 GRANDEDOLCE_ADDRESSES:
   - ORDER_ADDRESS: "вул.Єлізавети Чавдар, буд.36"
     CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
     VALID_ADDRESS: "вулиця Єлизавети Чавдар, 36, Київ, Україна, 02000"
     LATITUDE: 50.3910679000000
     LONGITUDE: 30.6265536000000
-  - ORDER_ADDRESS: "м. Київ, Княжий затон 16 б"
-    CLIENT_NAME: "Ексклюзив Кейк"
-    VALID_ADDRESS: "16B, вулиця Княжий Затон, 16Б, Київ, Україна, 02000"
-    LATITUDE: 50.403193
-    LONGITUDE: 30.6163764
 
 DELIVERIES:
   - ID: 123e4567-e89b-12d3-a456-556642440000
@@ -50,3 +30,24 @@ DELIVERIES:
     DELIVERY_DATE: "2022-09-19"
     STATUS: DRAFT
     DELETED: FALSE
+  - ID: f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454
+    DELIVERY_DATE: "2022-07-10"
+    STATUS: DRAFT
+    DELETED: TRUE
+
+ROUTES:
+  - ID: 1
+    STATUS: DRAFT
+    DISTANCE: 167.71
+    START_TIME: "2022-08-21 11:00:00"
+    FINISH_TIME: "2022-08-21 13:00:00"
+    TOTAL_WEIGHT: 12.00
+    TOTAL_POINTS: 0
+    TOTAL_ORDERS: 1
+    ESTIMATED_TIME: 100
+    SPENT_TIME: 100
+    STORE_NAME: "Склад №1"
+    STORE_ADDRESS: "15, Калинова вулиця, Фастів"
+    OPTIMIZATION: TRUE
+    ROUTE_POINTS: []
+    DELIVERY_ID: 123e4567-e89b-12d3-a456-556642440000

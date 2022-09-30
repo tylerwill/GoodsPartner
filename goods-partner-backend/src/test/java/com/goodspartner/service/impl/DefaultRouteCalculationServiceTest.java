@@ -101,7 +101,8 @@ class DefaultRouteCalculationServiceTest {
                 false,
                 "AA 2222 CT",
                 1000,
-                10);
+                10,
+                false);
 
         routePoints = List.of(firstRoutePoint);
 
