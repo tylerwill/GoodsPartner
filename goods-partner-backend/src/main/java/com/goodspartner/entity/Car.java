@@ -38,5 +38,5 @@ public class Car {
     private int weightCapacity;
     private int travelCost;
 
-    private boolean deleted = Boolean.FALSE;
+    private boolean deleted = false;
 }

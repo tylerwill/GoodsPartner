@@ -57,7 +57,8 @@ public class Delivery {
     @Column(length = 9)
     private DeliveryStatus status;
 
-    private boolean deleted = Boolean.FALSE;
+    @Column(name = "deleted")
+    private boolean deleted = false;
 
     public void setRoutes(List<Route> routes) {
         List<Route> requiredRoutes = Optional.ofNullable(routes)
