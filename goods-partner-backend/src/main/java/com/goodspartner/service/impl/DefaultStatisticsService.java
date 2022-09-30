@@ -1,12 +1,15 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.*;
+import com.goodspartner.dto.CarDto;
+import com.goodspartner.dto.DeliveryDto;
+import com.goodspartner.dto.RouteDto;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.exceptions.CarNotFoundException;
 import com.goodspartner.exceptions.DeliveryNotFoundException;
 import com.goodspartner.mapper.CarMapper;
 import com.goodspartner.mapper.DeliveryMapper;
+import com.goodspartner.mapper.DeliveryRouteMapper;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.service.StatisticsService;
@@ -32,6 +35,7 @@ public class DefaultStatisticsService implements StatisticsService {
     private final DeliveryRepository deliveryRepository;
     private final CarRepository carRepository;
     private final DeliveryMapper deliveryMapper;
+    private final DeliveryRouteMapper deliveryRouteMapper;
     private final CarMapper carMapper;
 
     @Override
@@ -44,6 +48,11 @@ public class DefaultStatisticsService implements StatisticsService {
         int ordersCount = getOrdersCount(routes);
         double totalWeight = getWeight(routes);
         int fuelConsumption = getFuelConsumption(routes);
+
+//        For future
+//        Map<LocalDate, Integer> routesPerDayMap = deliveries.stream()
+//                .collect(Collectors.toMap(DeliveryDto::getDeliveryDate,
+//                        delivery -> delivery.getRoutes().size()));
 
         return StatisticsCalculation.builder()
                 .routeCount(routes.size())
@@ -83,11 +92,16 @@ public class DefaultStatisticsService implements StatisticsService {
 
         CarDto car = getCar(carId);
         DeliveryDto delivery = getCompletedDelivery(date);
-        List<OrderDto> orderDtos = delivery.getOrders();
+
+        RouteDto routeDto = delivery.getRoutes()
+                .stream()
+                .filter(route -> car.equals(route.getCar()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);// This car was not used at this date
 
         return DailyCarStatisticsCalculation.builder()
                 .car(car)
-                .orderCount(orderDtos.size())
+                .orderCount(routeDto.getTotalOrders())
                 .build();
     }
 
@@ -104,7 +118,7 @@ public class DefaultStatisticsService implements StatisticsService {
             throw new DeliveryNotFoundException(COMPLETED, dateFrom, dateTo);
         }
 
-        return deliveryMapper.deliveriesToDeliveryDtos(deliveries);
+        return deliveryRouteMapper.mapDeliveriesWithRoutes(deliveries);
     }
 
     private DeliveryDto getCompletedDelivery(LocalDate date) {
@@ -114,7 +128,7 @@ public class DefaultStatisticsService implements StatisticsService {
             throw new DeliveryNotFoundException(COMPLETED, date);
         }
 
-        return deliveryMapper.deliveryToDeliveryDto(optionalDelivery.get());
+        return deliveryRouteMapper.mapDeliveryWithRoute(optionalDelivery.get());
     }
 
     private long getAverageDeliveryDuration(List<DeliveryDto> deliveries) {
@@ -142,23 +156,23 @@ public class DefaultStatisticsService implements StatisticsService {
 
     private double getWeight(List<RouteDto> routes) {
         return BigDecimal.valueOf(routes.stream()
-                        .map(RouteDto::getTotalWeight)
-                        .collect(Collectors.summarizingDouble(weight -> weight)).getSum())
+                .map(RouteDto::getTotalWeight)
+                .collect(Collectors.summarizingDouble(weight -> weight)).getSum())
                 .setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     private int getFuelConsumption(List<RouteDto> routes) {
         return BigDecimal.valueOf(routes.stream()
-                        .map(route -> route.getCar().getTravelCost() * route.getDistance() / 100)
-                        .collect(Collectors.summarizingDouble(fuelCount -> fuelCount)).getSum())
+                .map(route -> route.getCar().getTravelCost() * route.getDistance() / 100)
+                .collect(Collectors.summarizingDouble(fuelCount -> fuelCount)).getSum())
                 .setScale(0, RoundingMode.HALF_UP).intValue();
     }
 
     private int getFuelConsumption(List<RouteDto> routes, CarDto car) {
         int travelCost = car.getTravelCost();
         return BigDecimal.valueOf(routes.stream()
-                        .map(routeDto -> travelCost * routeDto.getDistance() / 100)
-                        .collect(Collectors.summarizingDouble(fuelCount -> fuelCount)).getSum())
+                .map(routeDto -> travelCost * routeDto.getDistance() / 100)
+                .collect(Collectors.summarizingDouble(fuelCount -> fuelCount)).getSum())
                 .setScale(0, RoundingMode.HALF_UP).intValue();
     }
 

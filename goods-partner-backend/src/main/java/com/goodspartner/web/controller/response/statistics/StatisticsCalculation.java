@@ -14,4 +14,5 @@ public class StatisticsCalculation {
     private double weight;
     private int fuelConsumption;
     private long averageDeliveryDuration;
+
 }

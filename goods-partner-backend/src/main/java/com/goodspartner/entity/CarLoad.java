@@ -29,7 +29,6 @@ public class CarLoad {
     @JoinColumn(name = "car_id")
     private Car car;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "carLoad", cascade = CascadeType.ALL)
     private List<OrderExternal> orders = new ArrayList<>();
 
