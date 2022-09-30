@@ -178,7 +178,7 @@ class DeliveryControllerITest extends AbstractWebITest {
 
     @Test
     @DataSet(value = "delivery/add_delivery.yml")
-    @ExpectedDataSet(value = "delivery/delivery.yml")
+    @ExpectedDataSet(value = "delivery/delete_delivery.yml")
     @DisplayName("when Delete Delivery then Ok Status Returned")
     void whenDeleteDelivery_thenOkStatusReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders

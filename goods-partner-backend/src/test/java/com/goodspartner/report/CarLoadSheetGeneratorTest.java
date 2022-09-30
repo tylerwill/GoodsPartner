@@ -39,7 +39,8 @@ class CarLoadSheetGeneratorTest {
                 false,
                 "AA 2222 CT",
                 1000,
-                10);
+                10,
+                false);
 
         Product productFirst = Product.builder()
                 .productName("3434 Паста шоколадна")
