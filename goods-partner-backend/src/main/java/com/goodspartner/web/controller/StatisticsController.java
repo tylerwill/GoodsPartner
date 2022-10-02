@@ -7,13 +7,14 @@ import com.goodspartner.web.controller.response.statistics.StatisticsCalculation
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping(path = "/api/v1",  produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class StatisticsController {
 

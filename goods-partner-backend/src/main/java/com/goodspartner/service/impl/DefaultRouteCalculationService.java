@@ -44,7 +44,13 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     @Override
     public List<Route> calculateRoutes(List<OrderExternal> orders, RouteMode coolerRoute) {
 
-        List<OrderExternal> filteredOrders = orders
+        // TODO require clarification with client. We want to highlight orders outside of the Kyiv in response
+        List<OrderExternal> kyivOrders = orders.stream()
+                .filter(orderExternal -> orderExternal.getAddressExternal().getValidAddress().contains("Київська обл")
+                        || orderExternal.getAddressExternal().getValidAddress().contains("Київ"))
+                .toList();
+
+        List<OrderExternal> filteredOrders = kyivOrders
                 .stream()
                 .filter(orderExternal -> orderExternal.isFrozen() == coolerRoute.isCoolerNecessary())
                 .toList();
