@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from "react-redux";
 import Orders from "./Orders";
-import {updateAddressOrdersPreview} from "../../actions/deliveries-actions";
+import {updateAddressOrdersPreview} from "../../../actions/deliveries-actions";
 
 const mapStateToProps = (state) => {
     return {

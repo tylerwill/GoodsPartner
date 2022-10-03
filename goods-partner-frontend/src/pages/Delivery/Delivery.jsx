@@ -3,7 +3,10 @@ import {Box, Breadcrumbs, Button, Tooltip, Typography} from "@mui/material";
 import {ArrowForward} from "@mui/icons-material";
 import {Link, useParams} from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import OrdersContainer from "../Orders/OrdersContainer";
+import OrdersContainer from "./Orders/OrdersContainer";
+import BasicTabs from "../../hoc/BasicTabs/BasicTabs";
+import RoutesContainer from "./Routes/RoutesContainer";
+import CarLoadContainer from "./CarLoad/CarLoadContainer";
 
 const Delivery = ({currentDelivery, loadDelivery, linkOrdersToDeliveryAndCalculate, ordersPreview}) => {
     let {id} = useParams();
@@ -16,6 +19,8 @@ const Delivery = ({currentDelivery, loadDelivery, linkOrdersToDeliveryAndCalcula
 
     const hasInvalidOrders = ordersPreview?.orders
         .some(order => order.mapPoint.status === "UNKNOWN");
+
+    const tabLabels = ['Замовлення', 'Маршрути', 'Завантаження'];
 
     return <section>
         <Box sx={{mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -34,6 +39,7 @@ const Delivery = ({currentDelivery, loadDelivery, linkOrdersToDeliveryAndCalcula
 
 
         {/*TODO: [UI Max] Move to separate component */}
+        {/*TODO: [UI Max] If delivery exist we should place delivery date instead of 'new delivery' */}
         <Breadcrumbs
             sx={{mt: 1}}
             separator={<NavigateNextIcon fontSize="small"/>}
@@ -45,8 +51,17 @@ const Delivery = ({currentDelivery, loadDelivery, linkOrdersToDeliveryAndCalcula
 
         </Breadcrumbs>
 
-        <Box sx={{mt: 2}}>
-            <OrdersContainer/>
+
+
+        <Box sx={{marginTop:'16px'}}>
+            {/*TODO: [UI] Add icons */}
+            {/*TODO: [UI Max] disable some labels if route is not in calculated status */}
+            <BasicTabs labels={tabLabels} fullWidth={true}>
+                <OrdersContainer/>
+                <RoutesContainer/>
+                <CarLoadContainer/>
+            </BasicTabs>
+
         </Box>
 
 

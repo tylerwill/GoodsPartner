@@ -147,7 +147,7 @@ export const linkOrdersToDeliveryAndCalculate = () => (dispatch, getState) => {
         if (response.status === 200) {
             deliveriesApi.calculate(deliveryId).then(response => {
                 if (response.status === 200) {
-                    setCurrentDelivery(response.data);
+                    dispatch(setCurrentDelivery(response.data));
                     // TODO: [UI Max] Think about loading logic. If error happen we should set loading to false
                     dispatch(setDeliveryLoading(false));
                 }

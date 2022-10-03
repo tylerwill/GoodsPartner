@@ -1,14 +1,15 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
+import React from 'react';
+import Box from "@mui/material/Box";
+import AppBar from "@mui/material/AppBar";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
 
     return (
-        <div
+        <Box
+            sx={{padding: '24px 0 24px'}}
             role="tabpanel"
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
@@ -16,19 +17,13 @@ function TabPanel(props) {
             {...other}
         >
             {value === index && (
-                <Box sx={{p: 3}}>
+                <Box >
                     {children}
                 </Box>
             )}
-        </div>
+        </Box>
     );
 }
-
-TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
-};
 
 function a11yProps(index) {
     return {
@@ -37,7 +32,7 @@ function a11yProps(index) {
     };
 }
 
-export default function BasicTabs({children, labels}) {
+export default function BasicTabs({children, labels, fullWidth}) {
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
@@ -45,16 +40,8 @@ export default function BasicTabs({children, labels}) {
     };
 
     return (
-        <Box sx={{width: '100%'}}>
-            <Box >
-                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                    {
-                        children.map((element, index) => <Tab sx={{borderBottom: 1, borderColor: 'divider'}}
-                                                              key={"tab" + labels[index]}
-                                                              label={labels[index]} {...a11yProps(index)} />)
-                    }
-                </Tabs>
-            </Box>
+        <Box sx={{bgcolor: 'background.paper'}}>
+            {createTabsPanel(value, handleChange, labels, fullWidth)}
             {
                 children.map((element, index) => {
                     return (<TabPanel key={"tabPanel" + labels[index]} value={value} index={index}>
@@ -64,4 +51,17 @@ export default function BasicTabs({children, labels}) {
             }
         </Box>
     );
+}
+
+function createTabsPanel(value, handleChange, labels, fullWidth) {
+    const tabs = (<Tabs value={value} onChange={handleChange} variant={fullWidth ? "fullWidth" : "standard"}
+                        textColor={ fullWidth ? "inherit" : "primary"}>
+        {
+            labels.map((label, index) => <Tab sx={{borderBottom: 1, borderColor: 'divider'}}
+                                              key={"tab" + label}
+                                              label={label} {...a11yProps(index)}/>)
+        }
+    </Tabs>);
+
+    return fullWidth ? <AppBar sx={fullWidth && {padding: '0 250px'}} position={"static"}>{tabs}</AppBar> : <> {tabs} </>;
 }

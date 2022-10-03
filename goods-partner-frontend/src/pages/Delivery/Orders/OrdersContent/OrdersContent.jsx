@@ -1,6 +1,6 @@
 import React from "react";
 import {CardContent, Checkbox, FormControlLabel, MenuItem, Select, Stack, Typography} from "@mui/material";
-import BasicTabs from "../../../hoc/BasicTabs/BasicTabs";
+import BasicTabs from "../../../../hoc/BasicTabs/BasicTabs";
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -29,7 +29,7 @@ const OrdersContent = ({orders, updatePreviewOrderAddress}) => {
         `потребують уточнення (${invalidOrders.length})`]
 
 
-    return <CardContent>
+    return <Box>
         <BasicTabs labels={tabLabels}>
             {createTable(orders, "all", setOrderAddressDialogOpen, setEditedOrder)}
             {createTable(invalidOrders, "invalid", setOrderAddressDialogOpen, setEditedOrder)}
@@ -41,7 +41,7 @@ const OrdersContent = ({orders, updatePreviewOrderAddress}) => {
                                                            order={editedOrder}
                                                            updatePreviewOrderAddress={updatePreviewOrderAddress}/>
         }
-    </CardContent>
+    </Box>
 }
 
 const createTable = (orders, keyPrefix, setOrderAddressDialogOpen, setEditedOrder) => {

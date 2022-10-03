@@ -11,3 +11,10 @@ export const generateReportLink = (type, date) => {
     console.log("report link:", reportLink);
     return reportLink;
 }
+
+export const toHoursAndMinutes = (totalMinutes) => {
+    const minutes = totalMinutes % 60;
+    const hours = Math.floor(totalMinutes / 60);
+
+    return `${hours}год. ${minutes}хв.`;
+}
