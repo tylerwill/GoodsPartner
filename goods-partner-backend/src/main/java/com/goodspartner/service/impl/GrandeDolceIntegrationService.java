@@ -154,7 +154,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
      * If amount of orders would be huge, for possibility to send request for retrieving products -
      * split on partition of refKeys list for further creation filter for OData request
      *
-     * @param List<OrderDto> orders
+     * @param List<ODataOrderDto> orders
      * @return List<List < String>>
      */
     private List<List<String>> getPartitionOfProductKeys(List<ODataOrderDto> orders) {
