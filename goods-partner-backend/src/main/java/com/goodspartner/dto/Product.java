@@ -17,4 +17,6 @@ public class Product {
     private String storeName;
     private double unitWeight;
     private double totalProductWeight;
+    private double coefficient;
+    private String measure;
 }

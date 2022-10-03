@@ -98,6 +98,8 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .unitWeight(12.00)
                 .productName("Наповнювач фруктово-ягідний (декоргель) (12 кг)")
                 .totalProductWeight(12.00)
+                .coefficient(1.0)
+                .measure("кг")
                 .build();
 
         orderDto = OrderDto.builder()
