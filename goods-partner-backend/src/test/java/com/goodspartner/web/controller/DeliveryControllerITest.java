@@ -126,10 +126,10 @@ class DeliveryControllerITest extends AbstractWebITest {
     void whenGetDeliveryById_thenOkStatusReturned() throws Exception {
 
         mockMvc.perform(get("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
-                .json(getResponseAsString("datasets/delivery/delivery-dataset.json")));
+                        .json(getResponseAsString("datasets/delivery/delivery-dataset.json")));
     }
 
     @Test
@@ -138,10 +138,10 @@ class DeliveryControllerITest extends AbstractWebITest {
     void whenGetDeliveries_thenOkStatusReturned() throws Exception {
 
         mockMvc.perform(get("/api/v1/deliveries")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
-                .json(getResponseAsString("datasets/delivery/short-deliveries.json")));
+                        .json(getResponseAsString("datasets/delivery/short-deliveries.json")));
     }
 
     @Test
@@ -157,8 +157,8 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .build();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(deliveryDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(deliveryDto)))
                 .andExpect(status().isOk());
     }
 
@@ -174,9 +174,50 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .build();
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(deliveryDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(deliveryDto)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DataSet(value = "delivery/delivery.yml")
+    @ExpectedDataSet(value = "delivery/approve_delivery.yml")
+    @DisplayName("when Approve Delivery then Ok Status Returned")
+    void whenApproveDelivery_thenOkStatusReturned() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000/approve"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DataSet(value = "delivery/delivery.yml")
+    @DisplayName("when Approve Delivery By Non-Existing Id then Not Found Returned")
+    void whenApproveDeliveryByNonExistingId_thenNotFoundReturned() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/v1/deliveries/00000000-0000-0000-0000-000000000000/approve"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DataSet(value = "delivery/approve_delivery.yml")
+    @DisplayName("when Approve Delivery of Non-Draft Status then Exception Thrown")
+    void whenApproveDeliveryOfNonDraftStatus_thenExceptionThrown() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000/approve"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DataSet(value = "delivery/delivery.yml")
+    @DisplayName("when Approve Delivery without Routes then Exception Thrown")
+    void whenApproveDeliveryWithoutRoutes_thenExceptionThrown() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/approve"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -185,8 +226,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     @DisplayName("when Delete Delivery then Ok Status Returned")
     void whenDeleteDelivery_thenOkStatusReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                .delete("/api/v1/deliveries/f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .delete("/api/v1/deliveries/f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -196,8 +237,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     void whenDeleteDelivery_byNonExistingId_thenNotFoundReturned() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                .delete("/api/v1/deliveries/237e9877-e79b-12d4-a765-321741963012")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .delete("/api/v1/deliveries/237e9877-e79b-12d4-a765-321741963012")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
@@ -212,9 +253,9 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .build();
 
         mockMvc.perform(MockMvcRequestBuilders
-                .put("/api/v1/deliveries/237e9877-e79b-12d4-a765-321741963012")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(deliveryDto)))
+                        .put("/api/v1/deliveries/237e9877-e79b-12d4-a765-321741963012")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(deliveryDto)))
                 .andExpect(status().isNotFound());
     }
 
@@ -246,7 +287,7 @@ class DeliveryControllerITest extends AbstractWebITest {
         when(carRepository.findByAvailableTrueAndCoolerIs(false)).thenReturn(List.of(route.getCar()));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries/70574dfd-48a3-40c7-8b0c-3e5defe7d080/calculate")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString(MOCKED_DELIVERY_DTO)));
     }
@@ -279,7 +320,7 @@ class DeliveryControllerITest extends AbstractWebITest {
         when(carRepository.findByAvailableTrueAndCoolerIs(false)).thenReturn(List.of(route.getCar()));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries/70574dfd-48a3-40c7-8b0c-3e5defe7d080/calculate")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString(MOCKED_DELIVERY_DTO)));
     }
@@ -293,7 +334,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     void whenCalculateDelivery_withIncorrectId_thenBadRequestReturn() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries/70574dfd-48a3-40c7-8b0c-3e5defe7d081/calculate")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -306,9 +347,9 @@ class DeliveryControllerITest extends AbstractWebITest {
         orderDto.setMapPoint(mapPointAutovalidated);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(List.of(orderDto))))
+                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(List.of(orderDto))))
                 .andExpect(status().isOk());
     }
 
@@ -321,9 +362,9 @@ class DeliveryControllerITest extends AbstractWebITest {
         orderDto.setMapPoint(mapPointKnown);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(List.of(orderDto))))
+                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(List.of(orderDto))))
                 .andExpect(status().isOk());
     }
 
@@ -336,9 +377,9 @@ class DeliveryControllerITest extends AbstractWebITest {
         orderDto.setMapPoint(mapPointAutovalidated);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440005/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(List.of(orderDto))))
+                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440005/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(List.of(orderDto))))
                 .andExpect(status().isNotFound());
     }
 
@@ -351,9 +392,9 @@ class DeliveryControllerITest extends AbstractWebITest {
         orderDto.setMapPoint(mapPointUnknown);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(List.of(orderDto))))
+                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(List.of(orderDto))))
                 .andExpect(status().isNotFound());
     }
 }

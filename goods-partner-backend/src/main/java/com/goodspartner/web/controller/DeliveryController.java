@@ -73,6 +73,15 @@ public class DeliveryController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PutMapping("/{id}/approve")
+    @ApiOperation(value = "Approve Delivery",
+            notes = "Provide an id to approve delivery")
+    public void approve(@ApiParam(value = "ID of Delivery to be approved", required = true)
+                               @PathVariable UUID id) {
+        deliveryService.approve(id);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Remove Delivery by id", notes = "Provide an id to remove up specific delivery")
     public DeliveryDto delete(@ApiParam(value = "ID value for the delivery you need to retrieve", required = true)

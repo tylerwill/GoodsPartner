@@ -19,4 +19,6 @@ public interface DeliveryService {
     DeliveryDto delete(UUID id);
 
     DeliveryDto calculateDelivery(UUID deliveryID);
+
+    void approve(UUID id);
 }

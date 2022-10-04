@@ -28,7 +28,7 @@ public class GenericControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(RouteNotFoundException.class)
-    public ResponseEntity<ErrorMessage> unknownAddressExceptio(RouteNotFoundException exception) {
+    public ResponseEntity<ErrorMessage> routeNotFoundException(RouteNotFoundException exception) {
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
