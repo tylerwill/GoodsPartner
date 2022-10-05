@@ -1,5 +1,5 @@
 import React from "react";
-import {CardContent, Checkbox, FormControlLabel, MenuItem, Select, Stack, Typography} from "@mui/material";
+import {Checkbox, FormControlLabel, MenuItem, Select, Stack, Typography} from "@mui/material";
 import BasicTabs from "../../../../hoc/BasicTabs/BasicTabs";
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
@@ -21,13 +21,11 @@ const OrdersContent = ({orders, updatePreviewOrderAddress}) => {
     const [orderAddressDialogOpen, setOrderAddressDialogOpen] = React.useState(false);
     const [editedOrder, setEditedOrder] = React.useState(null);
 
-
     const invalidOrders = orders
         .filter(order => order.mapPoint.status === "UNKNOWN");
 
     const tabLabels = [`Всі замовлення (${orders.length})`,
         `потребують уточнення (${invalidOrders.length})`]
-
 
     return <Box>
         <BasicTabs labels={tabLabels}>
@@ -157,11 +155,14 @@ const Row = ({order, keyPrefix, setOrderAddressDialogOpen, setEditedOrder}) => {
     );
 }
 
-// TODO: [Max UI] display actual order information
 // TODO: [Max UI] Move into separate file
-const AdditionalInfo = (order) => {
-    const [from, setFrom] = React.useState("9:00");
-    const [to, setTo] = React.useState("18:00");
+const AdditionalInfo = ({order}) => {
+
+    const defaultFrom = React.useState("9:00");
+    const defaultTo = React.useState("18:00");
+
+    const [from, setFrom] = order.deliveryStart == null ? defaultFrom : order.deliveryStart;
+    const [to, setTo] = order.deliveryFinish == null ? defaultTo : order.deliveryFinish;
 
     const handleChangeFrom = (event) => {
         setFrom(event.target.value);
@@ -177,7 +178,7 @@ const AdditionalInfo = (order) => {
                     Коментар
                 </Typography>
                 <Typography variant="caption" display="block" gutterBottom>
-                    До 12:00, м. Київ, пр-т Бандери, 21, тел. 050-383-01-91, ЗАМОРОЗКА
+                    {order.comment}
                 </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -191,10 +192,16 @@ const AdditionalInfo = (order) => {
                         onChange={handleChangeFrom}
                         sx={{minWidth: "140px", height: "40px", mr: 1}}
                     >
-                        {/*TODO: [UI Max] Fill with all needed range*/}
                         <MenuItem value={"9:00"}>9:00</MenuItem>
                         <MenuItem value={"10:00"}>10:00</MenuItem>
                         <MenuItem value={"11:00"}>11:00</MenuItem>
+                        <MenuItem value={"12:00"}>12:00</MenuItem>
+                        <MenuItem value={"13:00"}>13:00</MenuItem>
+                        <MenuItem value={"14:00"}>14:00</MenuItem>
+                        <MenuItem value={"15:00"}>15:00</MenuItem>
+                        <MenuItem value={"16:00"}>16:00</MenuItem>
+                        <MenuItem value={"17:00"}>17:00</MenuItem>
+                        <MenuItem value={"18:00"}>18:00</MenuItem>
                     </Select>
                     {/*TODO: [UI Max] Move select creation into different component*/}
                     <Select
@@ -203,10 +210,16 @@ const AdditionalInfo = (order) => {
                         onChange={handleChangeTo}
                         sx={{minWidth: "140px", height: "40px"}}
                     >
-                        {/*TODO: [UI Max] Fill with all needed range*/}
-                        <MenuItem value={"9:00"}>9:00</MenuItem>
+                        <MenuItem value={"10:00"}>10:00</MenuItem>
+                        <MenuItem value={"11:00"}>11:00</MenuItem>
+                        <MenuItem value={"12:00"}>12:00</MenuItem>
+                        <MenuItem value={"13:00"}>13:00</MenuItem>
+                        <MenuItem value={"14:00"}>14:00</MenuItem>
+                        <MenuItem value={"15:00"}>15:00</MenuItem>
+                        <MenuItem value={"16:00"}>16:00</MenuItem>
                         <MenuItem value={"17:00"}>17:00</MenuItem>
                         <MenuItem value={"18:00"}>18:00</MenuItem>
+                        <MenuItem value={"19:00"}>19:00</MenuItem>
                     </Select>
                 </Box>
             </Grid>
@@ -215,11 +228,10 @@ const AdditionalInfo = (order) => {
                     Заморозка
                 </Typography>
                 <Box>
-                    <FormControlLabel control={<Checkbox/>} label="Потребує заморозки"/>
+                    <FormControlLabel checked={order.isFrozen} control={<Checkbox/>} label="Потребує заморозки"/>
                 </Box>
             </Grid>
         </Grid>)
 }
-
 
 export default OrdersContent;
