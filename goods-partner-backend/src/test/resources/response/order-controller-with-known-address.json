@@ -10,7 +10,7 @@
       "clientName": "Домашня випічка",
       "address": "Бровари, Марії Лагунової, 11",
       "mapPoint": {
-        "address": "Marii Lahunovoi St, 11, Brovary, Kyivs'ka oblast, Ukraine, 07400",
+        "address": "вулиця Марії Лагунової, 11, Бровари, Київська обл., Україна, 07400",
         "latitude": 50.51,
         "longitude": 30.79,
         "status": "AUTOVALIDATED"
@@ -66,7 +66,29 @@
           "storeName": "Склад №2"
         }
       ]
+    },
+    {
+      "orderNumber": "45789",
+      "refKey": "04grande-0000-0000-0000-000000000000",
+      "createdDate": "2022-02-17",
+      "comment": "бн",
+      "managerFullName": "Кравченко Сергій",
+      "clientName": "Тераса ТОВ (Іль Моліно)",
+      "address": "м. Житомир, вул Корольова, 1",
+      "mapPoint": {
+        "address": null,
+        "latitude": 0.0,
+        "longitude": 0.0,
+        "status": "UNKNOWN"
+      },
+      "products": [
+        {
+          "productName": "Гурме Голд  (AV23AB) 12л",
+          "amount": 1,
+          "storeName": "Склад №1"
+        }
+      ]
     }
   ],
-  "totalOrdersWeight": 42.00
+  "totalOrdersWeight": 43.00
 }
