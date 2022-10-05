@@ -12,6 +12,7 @@ import com.goodspartner.exceptions.DeliveryModifyException;
 import com.goodspartner.exceptions.DeliveryNotFoundException;
 import com.goodspartner.exceptions.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exceptions.NoOrdersFoundForDelivery;
+import com.goodspartner.exceptions.NoRoutesFoundForDelivery;
 import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.service.CarLoadService;
@@ -120,6 +121,27 @@ public class DefaultDeliveryService implements DeliveryService {
         delivery.setCarLoads(ListUtils.union(coolerCarLoad, regularCarLoads));
 
         return deliveryMapper.deliveryToDeliveryDto(deliveryRepository.save(delivery));
+    }
+
+    @Override
+    @Transactional
+    public void approve(UUID deliveryId) {
+
+        Delivery delivery = deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
+
+        if (delivery.getStatus() != DRAFT) {
+            throw new IllegalDeliveryStatusForOperation(delivery, "approve");
+        }
+
+        List<Route> routes = delivery.getRoutes();
+        if (routes.isEmpty()) {
+            throw new NoRoutesFoundForDelivery(deliveryId);
+        }
+
+        delivery.setStatus(DeliveryStatus.APPROVED);
+        routes.forEach(route -> route.setStatus(RouteStatus.APPROVED));
+        deliveryRepository.save(delivery);
     }
 
     private void validateDelivery(Delivery delivery) {
