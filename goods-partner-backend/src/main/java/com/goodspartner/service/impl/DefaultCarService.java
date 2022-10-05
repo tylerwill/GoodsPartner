@@ -1,7 +1,9 @@
 package com.goodspartner.service.impl;
 
+import com.goodspartner.cache.CarLocationCache;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.entity.Car;
+import com.goodspartner.dto.Location;
 import com.goodspartner.exceptions.CarNotFoundException;
 import com.goodspartner.mapper.CarMapper;
 import com.goodspartner.repository.CarRepository;
@@ -17,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class DefaultCarService implements CarService {
+    private final CarLocationCache carLocationCache;
     private final CarRepository carRepository;
     private final CarMapper carMapper;
 
@@ -56,5 +59,15 @@ public class DefaultCarService implements CarService {
     @Override
     public void delete(int id) {
         carRepository.deleteById(id);
+    }
+
+    @Override
+    public void saveCarLocation(int id, Location location) {
+        carLocationCache.saveLocation(id, location);
+    }
+
+    @Override
+    public Location getCarLocation(int id) {
+        return carLocationCache.getLocation(id);
     }
 }

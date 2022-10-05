@@ -1,6 +1,7 @@
 package com.goodspartner.service;
 
 import com.goodspartner.dto.CarDto;
+import com.goodspartner.dto.Location;
 
 import java.util.List;
 
@@ -17,4 +18,8 @@ public interface CarService {
     List<CarDto> findAll();
 
     List<CarDto> findByAvailableCars();
+
+    void saveCarLocation(int id, Location location);
+
+    Location getCarLocation(int id);
 }

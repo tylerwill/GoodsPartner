@@ -1,6 +1,7 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.CarDto;
+import com.goodspartner.dto.Location;
 import com.goodspartner.service.CarService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -63,5 +64,25 @@ public class CarController {
     public CarDto getById(@ApiParam(value = "ID value for the car you need to retrieve", required = true)
                           @PathVariable("id") int id) {
         return carService.getById(id);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PutMapping("/{id}/location")
+    @ApiOperation(value = "Save car location",
+            notes = "Provide an id to save the location of the car")
+    public void saveLocation(@ApiParam(value = "ID value for the car you need to save", required = true)
+                             @PathVariable int id,
+                             @ApiParam(value = "Car Location", type = "Location", required = true)
+                             @RequestBody Location location) {
+        carService.saveCarLocation(id, location);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @GetMapping("/{id}/location")
+    @ApiOperation(value = "Get car location",
+            notes = "Provide an id to determine the location of the car")
+    public Location getLocation(@ApiParam(value = "ID value for the car you need to determine", required = true)
+                                @PathVariable int id) {
+        return carService.getCarLocation(id);
     }
 }
