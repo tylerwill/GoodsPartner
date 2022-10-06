@@ -23,6 +23,11 @@ import static com.goodspartner.dto.MapPoint.AddressStatus.AUTOVALIDATED;
 @RequiredArgsConstructor
 public class GoogleGeocodeService implements GeocodeService {
 
+    private static final double NORTH_REGION_BORDER = 51.53115;
+    private static final double SOUTH_REGION_BORDER = 49.179171;
+    private static final double EAST_REGION_BORDER = 32.160730;
+    private static final double WEST_REGION_BORDER = 29.266897;
+
     private final GoogleClient googleClient;
     private final AddressExternalRepository addressExternalRepository;
 
@@ -69,6 +74,17 @@ public class GoogleGeocodeService implements GeocodeService {
         String geocodedAddress = geocodingResult.formattedAddress;
         double latitude = geocodingResult.geometry.location.lat;
         double longitude = geocodingResult.geometry.location.lng;
+
+        //address outside defined area
+        if (latitude > NORTH_REGION_BORDER
+            || latitude < SOUTH_REGION_BORDER
+            || longitude > EAST_REGION_BORDER
+            || longitude < WEST_REGION_BORDER) {
+            return MapPoint.builder()
+                    .status(UNKNOWN)
+                    .build();
+        }
+
         return MapPoint.builder()
                 .address(geocodedAddress)
                 .longitude(longitude)
