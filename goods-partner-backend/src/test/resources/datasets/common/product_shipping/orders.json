@@ -1,0 +1,85 @@
+[
+  {
+    "id": 1,
+    "refKey": "02grande-0000-0000-0000-000000000000",
+    "orderNumber": "432565",
+    "products": [
+      {
+        "productName": "4695 Фарба харчова зелена",
+        "amount": 5,
+        "storeName": "Склад №1",
+        "unitWeight": 10.00,
+        "totalProductWeight": 50.00
+      },
+      {
+        "productName": "8452 Масло 1й гатунок",
+        "amount": 10,
+        "storeName": "Склад №1",
+        "unitWeight": 25.00,
+        "totalProductWeight": 250.00
+      }
+    ],
+    "addressExternal": {
+      "orderAddressId": {
+        "orderAddress": "м. Київ, вул. Хрещатик, 1",
+        "clientName": "ТОВ \"Пекарня\""
+      }
+    },
+    "comment": "нал",
+    "managerFullName": "Андрій Бублик",
+    "orderWeight": 300.00
+  },
+  {
+    "id": 2,
+    "refKey": "03grande-0000-0000-0000-000000000000",
+    "orderNumber": "426457",
+    "products": [
+      {
+        "productName": "4695 Фарба харчова зелена",
+        "amount": 10,
+        "storeName": "Склад №1",
+        "unitWeight": 10.0,
+        "totalProductWeight": 100.00
+      }
+    ],
+    "addressExternal": {
+      "orderAddressId": {
+        "orderAddress": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
+        "clientName": "ТОВ \"Пекарня\""
+      }
+    },
+    "comment": "бн",
+    "managerFullName": "Іван Шугай",
+    "orderWeight": 100.00
+  },
+  {
+    "id": 3,
+    "refKey": "04grande-0000-0000-0000-000000000000",
+    "orderNumber": "986453",
+    "products": [
+      {
+        "productName": "8452 Масло 1й гатунок",
+        "amount": 1,
+        "storeName": "Склад №1",
+        "unitWeight": 25.00,
+        "totalProductWeight": 25.00
+      },
+      {
+        "productName": "8795 Мука екстра",
+        "amount": 9,
+        "storeName": "Склад №1",
+        "unitWeight": 50,
+        "totalProductWeight": 450.00
+      }
+    ],
+    "addressExternal": {
+      "orderAddressId": {
+        "orderAddress": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
+        "clientName": "ТОВ \"Пекарня\""
+      }
+    },
+    "comment": "нал",
+    "managerFullName": "Петро Коваленко",
+    "orderWeight": 475.00
+  }
+]

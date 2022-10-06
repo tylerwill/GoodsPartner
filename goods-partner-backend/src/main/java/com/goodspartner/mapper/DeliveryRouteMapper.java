@@ -15,7 +15,7 @@ public interface DeliveryRouteMapper {
     List<DeliveryDto> mapDeliveriesWithRoutes(List<Delivery> deliveries);
 
     @Mapping(target = "orders", ignore = true)
-    @Mapping(target = "carLoads", ignore = true)
+    @Mapping(target = "productsShipping", ignore = true)
     DeliveryDto mapDeliveryWithRoute(Delivery delivery);
 
 }
