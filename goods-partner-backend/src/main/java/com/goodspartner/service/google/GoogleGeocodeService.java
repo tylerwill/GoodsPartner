@@ -23,10 +23,10 @@ import static com.goodspartner.dto.MapPoint.AddressStatus.AUTOVALIDATED;
 @RequiredArgsConstructor
 public class GoogleGeocodeService implements GeocodeService {
 
-    public static final double NORTH_REGION_BORDER = 51.53115;
-    public static final double SOUTH_REGION_BORDER = 49.179171;
-    public static final double EAST_REGION_BORDER = 32.160730;
-    public static final double WEST_REGION_BORDER = 29.266897;
+    private static final double NORTH_REGION_BORDER = 51.53115;
+    private static final double SOUTH_REGION_BORDER = 49.179171;
+    private static final double EAST_REGION_BORDER = 32.160730;
+    private static final double WEST_REGION_BORDER = 29.266897;
 
     private final GoogleClient googleClient;
     private final AddressExternalRepository addressExternalRepository;
