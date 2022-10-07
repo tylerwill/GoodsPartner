@@ -66,15 +66,24 @@ class DeliveryControllerITest extends AbstractWebITest {
     @MockBean
     private ResponsePath graphhopperResponse;
 
-    private MapPoint mapPointAutovalidated;
+    private MapPoint mapPointAutovalidatedFirst;
+    private MapPoint mapPointAutovalidatedSecond;
     private MapPoint mapPointKnown;
     private MapPoint mapPointUnknown;
-    private OrderDto orderDto;
+    private OrderDto orderDtoFirst;
+    private OrderDto orderDtoSecond;
 
     @BeforeAll
     void before() {
 
-        mapPointAutovalidated = MapPoint.builder()
+        mapPointAutovalidatedFirst = MapPoint.builder()
+                .address("вулиця Єлизавети Чавдар, 36, Київ, Україна, 02000")
+                .latitude(50.3910679)
+                .longitude(30.6265536)
+                .status(MapPoint.AddressStatus.AUTOVALIDATED)
+                .build();
+
+        mapPointAutovalidatedSecond = MapPoint.builder()
                 .address("16B, вулиця Княжий Затон, 16Б, Київ, Україна, 02000")
                 .latitude(50.403193)
                 .longitude(30.6163764)
@@ -102,7 +111,23 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .measure("кг")
                 .build();
 
-        orderDto = OrderDto.builder()
+        orderDtoFirst = OrderDto.builder()
+                .id(0)
+                .refKey("43cd2b8a-84c0-11ec-b3ce-00155dd72305")
+                .orderNumber("00000002535")
+                .createdDate(LocalDate.of(2022, 2, 3))
+                .comment("comment")
+                .managerFullName("Шевцова Галина")
+                .isFrozen(false)
+                .deliveryStart(null)
+                .deliveryFinish(null)
+                .clientName("Кух Плюс ТОВ (Кухмайстер) бн")
+                .address("вул.Єлізавети Чавдар, буд.36")
+                .products(List.of(product))
+                .orderWeight(12.00)
+                .build();
+
+        orderDtoSecond = OrderDto.builder()
                 .id(0)
                 .refKey("f6bc11b6-8264-11ec-b3ce-00155dd72305")
                 .orderNumber("00000002124")
@@ -341,30 +366,34 @@ class DeliveryControllerITest extends AbstractWebITest {
     @Test
     @DataSet(value = "delivery/delivery.yml")
     @ExpectedDataSet(value = "delivery/save_orders.yml")
-    @DisplayName("when save orders with autovalidated map point status then Ok status returned")
-    void whenSaveOrdersWithAutovalidatedMapPointStatus_thenOkStatusReturned() throws Exception {
+    @DisplayName("when save orders with autovalidated map point status " +
+                 "and one of them with already existing address in cache " +
+                 "then Ok status returned")
+    void whenSaveOrdersWithAutovalidatedMapPointStatus_andOneOfThemWithAlreadyExistingAddressInCache_thenOkStatusReturned() throws Exception {
 
-        orderDto.setMapPoint(mapPointAutovalidated);
+        orderDtoFirst.setMapPoint(mapPointAutovalidatedFirst);
+        orderDtoSecond.setMapPoint(mapPointAutovalidatedSecond);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(orderDto))))
+                        .content(objectMapper.writeValueAsString(List.of(orderDtoFirst, orderDtoSecond))))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @DataSet(value = "delivery/delivery.yml")
-    @ExpectedDataSet(value = "delivery/save_orders.yml", ignoreCols = {"id"})
+    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
+    @ExpectedDataSet(value = "delivery/save_orders_map_point_has_known_status.yml", ignoreCols = {"id"})
     @DisplayName("when save orders with known map point status then Ok status returned")
     void whenSaveOrdersWithKnownMapPointStatus_thenOkStatusReturned() throws Exception {
 
-        orderDto.setMapPoint(mapPointKnown);
+        orderDtoSecond.setMapPoint(mapPointKnown);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(orderDto))))
+                        .content(objectMapper.writeValueAsString(List.of(orderDtoSecond))))
                 .andExpect(status().isOk());
     }
 
@@ -374,12 +403,12 @@ class DeliveryControllerITest extends AbstractWebITest {
     @DisplayName("when save orders and non-existing delivery id is passed then not found status returned")
     void whenSaveOrdersAndNonExistingDeliveryIdIsPassed_thenNotFoundReturned() throws Exception {
 
-        orderDto.setMapPoint(mapPointAutovalidated);
+        orderDtoSecond.setMapPoint(mapPointAutovalidatedSecond);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440005/orders")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(orderDto))))
+                        .content(objectMapper.writeValueAsString(List.of(orderDtoSecond))))
                 .andExpect(status().isNotFound());
     }
 
@@ -389,12 +418,12 @@ class DeliveryControllerITest extends AbstractWebITest {
     @DisplayName("when save orders with at least one unknown address provided then not found status returned")
     void whenSaveOrdersWithAtLeastOneUnknownAddressProvided_thenNotFoundReturned() throws Exception {
 
-        orderDto.setMapPoint(mapPointUnknown);
+        orderDtoSecond.setMapPoint(mapPointUnknown);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(orderDto))))
+                        .content(objectMapper.writeValueAsString(List.of(orderDtoSecond))))
                 .andExpect(status().isNotFound());
     }
 }

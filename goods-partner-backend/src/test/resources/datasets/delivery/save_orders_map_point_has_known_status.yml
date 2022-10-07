@@ -15,19 +15,6 @@ GRANDEDOLCE_ORDERS:
     DELIVERY_ID: 123e4567-e89b-12d3-a456-556642440000
 
   - ID: 1
-    REF_KEY: "43cd2b8a-84c0-11ec-b3ce-00155dd72305"
-    ORDER_NUMBER: "00000002535"
-    CREATED_DATE: "2022-02-03"
-    COMMENT: "comment"
-    MANAGER: "Шевцова Галина"
-    IS_FROZEN: false
-    CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
-    ADDRESS: "вул.Єлізавети Чавдар, буд.36"
-    PRODUCTS: "[{\"amount\": 1, \"measure\": \"кг\", \"storeName\": \"Склад №1\", \"unitWeight\": 12.0, \"coefficient\": 1.0, \"productName\": \"Наповнювач фруктово-ягідний (декоргель) (12 кг)\", \"totalProductWeight\": 12.0}]"
-    ORDER_WEIGHT: 12.00
-    DELIVERY_ID: 123e4567-e89b-12d3-a456-556642440001
-
-  - ID: 2
     REF_KEY: "f6bc11b6-8264-11ec-b3ce-00155dd72305"
     ORDER_NUMBER: "00000002124"
     CREATED_DATE: "2022-01-31"
