@@ -145,7 +145,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
+    @DataSet(value = "delivery/get_delivery.yml", skipCleaningFor = "flyway_schema_history",
             cleanAfter = true, cleanBefore = true)
     @DisplayName("when Get Delivery then OK status returned")
     void whenGetDeliveryById_thenOkStatusReturned() throws Exception {
@@ -158,7 +158,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "delivery/delivery.yml")
+    @DataSet(value = "delivery/get_delivery.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
     @DisplayName("when Get Deliveries then OK status returned")
     void whenGetDeliveries_thenOkStatusReturned() throws Exception {
 
@@ -170,7 +171,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "delivery/delivery.yml")
+    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
     @ExpectedDataSet(value = "delivery/add_delivery.yml",
             ignoreCols = "id", compareOperation = CompareOperation.CONTAINS)
     @DisplayName("when Add Delivery then then OK status returned")
@@ -188,7 +190,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "delivery/delivery.yml")
+    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
     @ExpectedDataSet(value = "delivery/update_delivery.yml")
     @DisplayName("when Update Delivery then Ok Status Returned")
     void whenUpdateDelivery_thenOkStatusReturned() throws Exception {
@@ -205,7 +208,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "delivery/delivery.yml")
+    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
     @ExpectedDataSet(value = "delivery/approve_delivery.yml")
     @DisplayName("when Approve Delivery then Ok Status Returned")
     void whenApproveDelivery_thenOkStatusReturned() throws Exception {
@@ -216,7 +220,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "delivery/delivery.yml")
+    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
     @DisplayName("when Approve Delivery By Non-Existing Id then Not Found Returned")
     void whenApproveDeliveryByNonExistingId_thenNotFoundReturned() throws Exception {
 
@@ -246,7 +251,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "delivery/add_delivery.yml")
+    @DataSet(value = "delivery/add_delivery.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
     @ExpectedDataSet(value = "delivery/delete_delivery.yml")
     @DisplayName("when Delete Delivery then Ok Status Returned")
     void whenDeleteDelivery_thenOkStatusReturned() throws Exception {
@@ -257,7 +263,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "delivery/delivery.yml")
+    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
     @DisplayName("when Delete Delivery By Non-Existing Id then Not Found Returned")
     void whenDeleteDelivery_byNonExistingId_thenNotFoundReturned() throws Exception {
 
@@ -268,7 +275,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "delivery/delivery.yml")
+    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
     @DisplayName("when Update Delivery By Non-Existing Id then Not Found Returned")
     void whenUpdateDelivery_byNonExistingId_thenNotFoundReturned() throws Exception {
 
@@ -364,11 +372,12 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "delivery/delivery.yml")
+    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
     @ExpectedDataSet(value = "delivery/save_orders.yml")
     @DisplayName("when save orders with autovalidated map point status " +
-                 "and one of them with already existing address in cache " +
-                 "then Ok status returned")
+            "and one of them with already existing address in cache " +
+            "then Ok status returned")
     void whenSaveOrdersWithAutovalidatedMapPointStatus_andOneOfThemWithAlreadyExistingAddressInCache_thenOkStatusReturned() throws Exception {
 
         orderDtoFirst.setMapPoint(mapPointAutovalidatedFirst);
@@ -398,7 +407,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "delivery/delivery.yml")
+    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
     @ExpectedDataSet(value = "delivery/delivery.yml")
     @DisplayName("when save orders and non-existing delivery id is passed then not found status returned")
     void whenSaveOrdersAndNonExistingDeliveryIdIsPassed_thenNotFoundReturned() throws Exception {
@@ -413,7 +423,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "delivery/delivery.yml")
+    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
     @ExpectedDataSet(value = "delivery/delivery.yml")
     @DisplayName("when save orders with at least one unknown address provided then not found status returned")
     void whenSaveOrdersWithAtLeastOneUnknownAddressProvided_thenNotFoundReturned() throws Exception {

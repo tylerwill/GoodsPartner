@@ -5,6 +5,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractBaseITest;
+import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RouteStatus;
@@ -40,7 +41,18 @@ class DefaultRouteServiceITest extends AbstractBaseITest {
         var anotherRoutePointString = "{\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}";
         anotherRoutePoint = objectMapper.readValue(anotherRoutePointString, RoutePoint.class);
 
+        CarDto carDto = CarDto.builder()
+                .id(1)
+                .name("Mercedes Sprinter")
+                .licencePlate("AA 1111 CT")
+                .available(Boolean.TRUE)
+                .driver("Oleg Dudka")
+                .weightCapacity(2500)
+                .cooler(Boolean.TRUE)
+                .build();
+
         routeDto = new RouteDto();
+        routeDto.setCar(carDto);
         routeDto.setStatus(RouteStatus.COMPLETED);
         routeDto.setDistance(0.0);
         routeDto.setStoreName(storeService.getMainStore().getName());
@@ -49,7 +61,7 @@ class DefaultRouteServiceITest extends AbstractBaseITest {
 
     @Test
     @DataSet(value = "common/close_delivery/initial_routes_and_deliveries.yml",
-            cleanAfter = true, skipCleaningFor = "flyway_schema_history")
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/close_delivery/route_and_delivery_automatically_closed.yml")
     @DisplayName("When update routePoint then Route and Delivery should be automatically closed")
     public void testUpdatePoint_thenRouteAndDeliveryShouldBeAutomaticallyClosed() {
@@ -58,7 +70,7 @@ class DefaultRouteServiceITest extends AbstractBaseITest {
 
     @Test
     @DataSet(value = "common/close_delivery/initial_routes_and_deliveries.yml",
-            cleanAfter = true, skipCleaningFor = "flyway_schema_history")
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/close_delivery/route_automatically_closed.yml")
     @DisplayName("When update routePoint then Route should be automatically closed")
     public void testUpdatePoint_thenRouteShouldBeAutomaticallyClosed() {
@@ -67,7 +79,7 @@ class DefaultRouteServiceITest extends AbstractBaseITest {
 
     @Test
     @DataSet(value = "common/close_delivery/initial_routes_and_deliveries.yml",
-            cleanAfter = true, skipCleaningFor = "flyway_schema_history")
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/close_delivery/route_point_closed_only.yml")
     @DisplayName("When update routePoint then routePoint should be in status Done")
     public void testUpdatePoint_thenRoutePointShouldBeDone() {
@@ -76,7 +88,7 @@ class DefaultRouteServiceITest extends AbstractBaseITest {
 
     @Test
     @DataSet(value = "common/close_delivery/initial_routes_and_deliveries.yml",
-            cleanAfter = true, skipCleaningFor = "flyway_schema_history")
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/close_delivery/update_and_close_route.yml")
     @DisplayName("Update route with status completed")
     public void testUpdateRoute_thenRouteShouldBeClosed() {
@@ -88,7 +100,7 @@ class DefaultRouteServiceITest extends AbstractBaseITest {
 
     @Test
     @DataSet(value = "common/close_delivery/initial_routes_and_deliveries.yml",
-            cleanAfter = true, skipCleaningFor = "flyway_schema_history")
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/close_delivery/delivery_automatically_closed.yml")
     @DisplayName("When update route with status completed then delivery should be automatically closed")
     public void testUpdateRoute_thenDeliveryAutomaticallyShouldBeClosed() {

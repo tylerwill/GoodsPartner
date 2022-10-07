@@ -4,6 +4,7 @@ import com.goodspartner.entity.User;
 import com.goodspartner.repository.UserRepository;
 import com.goodspartner.service.dto.CustomOAuth2User;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

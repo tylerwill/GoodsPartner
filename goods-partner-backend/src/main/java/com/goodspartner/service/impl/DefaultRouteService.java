@@ -30,16 +30,22 @@ public class DefaultRouteService implements RouteService {
     private final RouteMapper routeMapper;
     private final RouteRepository routeRepository;
     private final DeliveryRepository deliveryRepository;
+    private final DefaultDeliveryHistoryService deliveryHistoryService;
 
     @Override
     @Transactional
     public void update(int id, RouteDto routeDto) {
-        Route updateRoute = routeRepository.findById(id)
-                .map(route -> routeMapper.update(route, routeDto))
+        RouteStatus oldRouteStatus = routeRepository.findById(id).map(Route::getStatus)
                 .orElseThrow(() -> new RouteNotFoundException("Route not found"));
 
-        processDeliveryStatus(updateRoute);
+        Route oldRoute = routeRepository.findById(id)
+                .orElseThrow(() -> new RouteNotFoundException("Route not found"));
 
+        Route updateRoute = routeMapper.update(oldRoute, routeDto);
+
+        deliveryHistoryService.publishIfRouteUpdated(routeDto, oldRouteStatus, updateRoute);
+
+        processDeliveryStatus(updateRoute);
         routeRepository.save(updateRoute);
     }
 
@@ -50,17 +56,25 @@ public class DefaultRouteService implements RouteService {
                 .orElseThrow(() -> new RouteNotFoundException("Route not found"));
 
         List<RoutePoint> routePoints = route.getRoutePoints();
-        routePoints.forEach(point -> {
-            if (point.getId().toString().equals(routePointId)) {
-                routePointMapper.update(point, routePoint);
-            }
-        });
+
+        RoutePoint point = routePoints.stream()
+                .filter(r -> r.getId().toString().equals(routePointId))
+                .findFirst().orElse(null);
+        if(point != null){
+            RoutePointStatus oldRoutePointStatus = point.getStatus();
+            routePointMapper.update(point, routePoint);
+
+            deliveryHistoryService.publishIfPointUpdated(routePoint, oldRoutePointStatus, route);
+        }
 
         route.setRoutePoints(routePoints);
 
         if (isAllRoutePointsDone(routePoints)) {
             route.setStatus(RouteStatus.COMPLETED);
             route.setFinishTime(LocalDateTime.now());
+
+            deliveryHistoryService.publishRouteStatusChangeAuto(RouteStatus.COMPLETED, route);
+
             log.info("Route ID {} was automatically close due to all RoutePoints are DONE", route.getId());
 
             processDeliveryStatus(route);
@@ -87,6 +101,8 @@ public class DefaultRouteService implements RouteService {
         Delivery delivery = route.getDelivery();
         if (isAllRoutesCompleted(delivery)) {
             delivery.setStatus(DeliveryStatus.COMPLETED);
+
+            deliveryHistoryService.publishDeliveryCompleted(delivery);
 
             deliveryRepository.save(delivery);
             log.info("Delivery ID {} was automatically close due to all Routes are COMPLETED", route.getId());

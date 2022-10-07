@@ -1,10 +1,12 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.DeliveryDto;
+import com.goodspartner.dto.DeliveryHistoryDto;
 import com.goodspartner.dto.DeliveryShortDto;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.entity.RoutePoint;
+import com.goodspartner.service.DeliveryHistoryService;
 import com.goodspartner.service.DeliveryService;
 import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.service.RouteService;
@@ -33,6 +35,7 @@ public class DeliveryController {
     private final DeliveryService deliveryService;
     private final RouteService routeService;
     private final OrderExternalService orderExternalService;
+    private final DeliveryHistoryService deliveryHistoryService;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
     @GetMapping
@@ -128,4 +131,19 @@ public class DeliveryController {
     public void updateRoutePoint(@PathVariable int routeId, @PathVariable String routePointId, @RequestBody RoutePoint routePoint) {
         routeService.updatePoint(routeId, routePointId, routePoint);
     }
+
+    /**
+     * Delivery Histories manipulation
+     */
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @GetMapping("/{id}/histories")
+    @ApiOperation(value = "Find Delivery History by Delivery id",
+            notes = "Provide an id to look up specific delivery history",
+            response = DeliveryHistoryDto.class)
+    public List<DeliveryHistoryDto> getHistoriesByDeliveryId(@ApiParam(value = "ID value for the delivery which histories you need to retrieve", required = true)
+                                                             @PathVariable("id") UUID id) {
+        return deliveryHistoryService.findByDelivery(id);
+    }
+
 }

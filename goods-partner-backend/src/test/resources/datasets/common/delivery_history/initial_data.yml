@@ -1,0 +1,57 @@
+DELIVERIES_HISTORY:
+  - ID: 123e4567-e89b-12d3-a456-556642440001
+    DELIVERY_ID: 123e4567-e89b-12d3-a456-556642440000
+    ACTION: "SECURITY OFF створив(ла) доставку"
+    ROLE: "SECURITY"
+    USER_EMAIL: "OFF"
+    CREATED_AT: "2022-08-08 19:38:19"
+
+GRANDEDOLCE_ORDERS:
+  - ID: 0
+    REF_KEY: "f6f73d76-8005-11ec-b3ce-00155dd72305"
+    ORDER_NUMBER: "00000002055"
+    CREATED_DATE: "2022-01-28"
+    COMMENT: "бн"
+    MANAGER: "Наталія Рябченко"
+    IS_FROZEN: false
+    DELIVERY_START: "11:00:00"
+    DELIVERY_FINISH: "13:00:00"
+    CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
+    ADDRESS: "вул.Єлізавети Чавдар, буд.36"
+    PRODUCTS: "[{\"amount\": 1, \"storeName\": \"Склад №1\", \"unitWeight\": 12.0, \"productName\": \"Наповнювач фруктово-ягідний (декоргель) (12 кг)\", \"totalProductWeight\": 12.0}]"
+    ORDER_WEIGHT: 12.00
+    DELIVERY_ID: 123e4567-e89b-12d3-a456-556642440000
+
+GRANDEDOLCE_ADDRESSES:
+  - ORDER_ADDRESS: "вул.Єлізавети Чавдар, буд.36"
+    CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
+    VALID_ADDRESS: "вулиця Єлизавети Чавдар, 36, Київ, Україна, 02000"
+    LATITUDE: 50.3910679000000
+    LONGITUDE: 30.6265536000000
+
+DELIVERIES:
+  - ID: 123e4567-e89b-12d3-a456-556642440000
+    DELIVERY_DATE: "2022-08-21"
+    STATUS: DRAFT
+    DELETED: FALSE
+  - ID: 123e4567-e89b-12d3-a456-556642440001
+    DELIVERY_DATE: "2022-09-19"
+    STATUS: DRAFT
+    DELETED: FALSE
+
+ROUTES:
+  - ID: 1
+    STATUS: DRAFT
+    DISTANCE: 167.71
+    START_TIME: "2022-08-21 11:00:00"
+    FINISH_TIME: "2022-08-21 13:00:00"
+    TOTAL_WEIGHT: 12.00
+    TOTAL_POINTS: 0
+    TOTAL_ORDERS: 1
+    ESTIMATED_TIME: 100
+    SPENT_TIME: 100
+    STORE_NAME: "Склад №1"
+    STORE_ADDRESS: "15, Калинова вулиця, Фастів"
+    OPTIMIZATION: TRUE
+    ROUTE_POINTS: "[{\"id\":\"741a37c1-8f13-4335-95f6-a5b14aaf7fbd\",\"orders\":[{\"id\":9,\"orderNumber\":\"986453\",\"comment\":\"бн\"},{\"id\":10,\"orderNumber\":\"426457\",\"comment\":\"бн\"},{\"id\":12,\"orderNumber\":\"586126\",\"comment\":\"бн\"}],\"status\":\"DONE\",\"address\":\"м. Київ, вул. Молодогвардійська, 22, оф. 35\",\"clientId\":1,\"clientName\":\"ТОВ Пекарня\",\"completedAt\":[2022,8,8,12,23,23],\"addressTotalWeight\":804.98,\"routePointDistantTime\":60},{\"id\":\"93e632fa-18a6-11ed-861d-0242ac120002\",\"orders\":[{\"id\":3,\"orderNumber\":\"45463\",\"comment\":\"бн\"}],\"status\":\"DONE\",\"address\":\"м. Київ, вул. Глибочицька, 12Б, оф. 3\",\"clientId\":2,\"clientName\":\"ТОВ Кондитерська\",\"completedAt\":[2022,8,8,15,45,12],\"addressTotalWeight\":5.5,\"routePointDistantTime\":180},{\"id\":\"148b44a8-3fce-45fd-91f2-fccabbb52525\",\"orders\":[{\"id\":5,\"orderNumber\":\"432565\",\"comment\":\"бн\"}],\"status\":\"DONE\",\"address\":\"м. Київ, вул. Хрещатик, 1\",\"clientId\":3,\"clientName\":\"ТОВ Хлібзавод\",\"completedAt\":[2022,8,8,19,38,19],\"addressTotalWeight\":338.28,\"routePointDistantTime\":240}]"
+    DELIVERY_ID: 123e4567-e89b-12d3-a456-556642440000

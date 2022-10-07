@@ -17,18 +17,21 @@ ROUTES:
     DELIVERY_ID: d0000000-0000-0000-0000-000000000001
     STATUS: "DRAFT"
     DISTANCE: 0.0
+    CAR_ID: 1
     ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
 
   - ID: 2
     DELIVERY_ID: d0000000-0000-0000-0000-000000000002
     STATUS: "APPROVED"
     DISTANCE: 0.0
+    CAR_ID: 2
     ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
 
   - ID: 3
     DELIVERY_ID: d0000000-0000-0000-0000-000000000002
     STATUS: "DRAFT"
     DISTANCE: 0.0
+    CAR_ID: 3
     ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
 
   - ID: 4
@@ -48,3 +51,34 @@ ROUTES:
     STATUS: "DRAFT"
     DISTANCE: 0.0
     ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+
+CARS:
+  - ID: 1
+    NAME: "Mercedes Sprinter"
+    LICENCE_PLATE: "AA 1111 CT"
+    DRIVER: "Oleg Dudka"
+    WEIGHT_CAPACITY: 3000
+    COOLER: FALSE
+    AVAILABLE: TRUE
+    TRAVEL_COST: 10
+    DELETED: FALSE
+
+  - ID: 2
+    NAME: "MAN"
+    LICENCE_PLATE: "AA 2455 CT"
+    DRIVER: "Ivan Kornienko"
+    WEIGHT_CAPACITY: 4000
+    COOLER: TRUE
+    AVAILABLE: FALSE
+    TRAVEL_COST: 10
+    DELETED: FALSE
+
+  - ID: 3
+    NAME: "MAN"
+    LICENCE_PLATE: "AA 7777 CT"
+    DRIVER: "Anton Kornienko"
+    WEIGHT_CAPACITY: 3000
+    COOLER: TRUE
+    AVAILABLE: FALSE
+    TRAVEL_COST: 20
+    DELETED: FALSE

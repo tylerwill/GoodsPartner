@@ -4,7 +4,6 @@
   "status": "DRAFT",
   "routes": [
     {
-      "id": 1,
       "status": "DRAFT",
       "totalWeight": 2499.0,
       "totalPoints": 2,
