@@ -24,5 +24,5 @@ public class DeliveryDto {
 
     private List<RouteDto> routes;
     private List<OrderDto> orders;
-    private List<CarLoadDto> carLoads;
+    private List<ProductShippingDto> productsShipping;
 }

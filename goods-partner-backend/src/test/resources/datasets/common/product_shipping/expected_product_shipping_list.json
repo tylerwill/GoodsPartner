@@ -1,0 +1,93 @@
+[
+  {
+    "article": "8795 Мука екстра",
+    "totalAmount": 18,
+    "totalWeight": 900.0,
+    "productLoadDtos": [
+      {
+        "orderNumber": "986453",
+        "car": "Mercedes Vito (AA 2222 CT)",
+        "amount": 9,
+        "weight": 50.0,
+        "totalWeight": 450.0
+      },
+      {
+        "orderNumber": "986453",
+        "car": "Mercedes Sprinter (AA 3333 CT)",
+        "amount": 9,
+        "weight": 50.0,
+        "totalWeight": 450.0
+      }
+    ]
+  },
+  {
+    "article": "4695 Фарба харчова зелена",
+    "totalAmount": 30,
+    "totalWeight": 300.0,
+    "productLoadDtos": [
+      {
+        "orderNumber": "432565",
+        "car": "Mercedes Vito (AA 2222 CT)",
+        "amount": 5,
+        "weight": 10.0,
+        "totalWeight": 50.0
+      },
+      {
+        "orderNumber": "426457",
+        "car": "Mercedes Vito (AA 2222 CT)",
+        "amount": 10,
+        "weight": 10.0,
+        "totalWeight": 100.0
+      },
+      {
+        "orderNumber": "432565",
+        "car": "Mercedes Sprinter (AA 3333 CT)",
+        "amount": 5,
+        "weight": 10.0,
+        "totalWeight": 50.0
+      },
+      {
+        "orderNumber": "426457",
+        "car": "Mercedes Sprinter (AA 3333 CT)",
+        "amount": 10,
+        "weight": 10.0,
+        "totalWeight": 100.0
+      }
+    ]
+  },
+  {
+    "article": "8452 Масло 1й гатунок",
+    "totalAmount": 22,
+    "totalWeight": 550.0,
+    "productLoadDtos": [
+      {
+        "orderNumber": "432565",
+        "car": "Mercedes Vito (AA 2222 CT)",
+        "amount": 10,
+        "weight": 25.0,
+        "totalWeight": 250.0
+      },
+      {
+        "orderNumber": "986453",
+        "car": "Mercedes Vito (AA 2222 CT)",
+        "amount": 1,
+        "weight": 25.0,
+        "totalWeight": 25.0
+      },
+      {
+        "orderNumber": "432565",
+        "car": "Mercedes Sprinter (AA 3333 CT)",
+        "amount": 10,
+        "weight": 25.0,
+        "totalWeight": 250.0
+      },
+      {
+        "orderNumber": "986453",
+        "car": "Mercedes Sprinter (AA 3333 CT)",
+        "amount": 1,
+        "weight": 25.0,
+        "totalWeight": 25.0
+      }
+    ]
+  }
+]
