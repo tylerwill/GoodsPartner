@@ -25,7 +25,7 @@ export const carsApi = {
     },
 
     add(car) {
-        return axiosWithSetting.post(`api/v1/cars`, {...car});
+        return axiosWithSetting.post(`api/v1/cars`, car);
     },
 
     deleteCar(id) {
@@ -33,7 +33,7 @@ export const carsApi = {
     },
 
     update(car) {
-        return axiosWithSetting.put(`api/v1/cars/${car.id}`, {car});
+        return axiosWithSetting.put(`api/v1/cars/${car.id}`, car);
     },
 
     findById(id) {

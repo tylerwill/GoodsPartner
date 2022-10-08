@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Grid from '@mui/material/Grid';
@@ -16,28 +16,19 @@ const style = {
     padding: '16px 24px',
 };
 
-export default function CarFormDialog({closeDialog, open, addCar}) {
-
-    const [name, setName] = useState('');
-    const [licencePlate, setLicencePlate] = useState('');
-    const [driver, setDriver] = useState('');
-    const [weightCapacity, setWeightCapacity] = useState('');
-    const [travelCost, setTravelCost] = useState('');
-    const [cooler, setCooler] = useState(true);
-    const [available, setAvailable] = useState(true);
-
+export default function CarFormDialog({closeDialog, open, actionHandler, car, setCar}) {
     function handleACooler(e) {
-        setCooler(e.target.checked);
-    };
-
-    function handleAvailable(e) {
-        setAvailable(e.target.checked);
+        setCar({...car, cooler: e.target.checked});
     }
 
-    let addCarHandler = () => {
-        const car = {name, licencePlate, driver, weightCapacity, travelCost, cooler, available};
-        const result = addCar(car)
-        console.log("function", result);
+    function handleAvailable(e) {
+        setCar({...car, available: e.target.checked});
+    }
+
+    const saveHandler = () => {
+        console.log("Handler car: ", car);
+        actionHandler(car);
+        closeDialog();
     }
 
     return (
@@ -56,33 +47,47 @@ export default function CarFormDialog({closeDialog, open, addCar}) {
                             </Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" onChange={(e) => setName(e.target.value)} label="Модель авто"
+                            <TextField id="outlined-basic"
+                                       value={car.name}
+                                       required
+                                       onChange={(e) => setCar({...car, name: e.target.value})}
+                                       label="Модель авто"
                                        variant="outlined"/>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" onChange={(e) => setLicencePlate(e.target.value)}
-                                       label="Номер авто" variant="outlined"/>
+                            <TextField id="outlined-basic"
+                                       value={car.licencePlate}
+                                       onChange={(e) => setCar({...car, licencePlate: e.target.value})}
+                                       required label="Номер авто" variant="outlined"/>
                         </Grid>
 
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" onChange={(e) => setDriver(e.target.value)} label="Водій"
-                                       variant="outlined"/>
+                            <TextField id="outlined-basic"
+                                       value={car.driver}
+                                       onChange={(e) => setCar({...car,driver: e.target.value})} label="Водій"
+                                       required variant="outlined"/>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" onChange={(e) => setWeightCapacity(e.target.value)}
-                                       label="Вантажопідйомність, т" variant="outlined"/>
+                            <TextField id="outlined-basic"
+                                       value={car.weightCapacity}
+                                       onChange={(e) => setCar({...car, weightCapacity: e.target.value})}
+                                       required label="Вантажопідйомність, т" variant="outlined"/>
                         </Grid>
 
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic" onChange={(e) => setTravelCost(e.target.value)}
-                                       label="Витрати палива, л/100км" variant="outlined"/>
+                            <TextField id="outlined-basic"
+                                       value={car.travelCost}
+                                       onChange={(e) => setCar({...car, travelCost: e.target.value})}
+                                       required label="Витрати палива, л/100км" variant="outlined"/>
                         </Grid>
 
                         <Grid item xs={12} sx={{mt: 2}}>
                             <FormGroup>
-                                <FormControlLabel control={<Checkbox/>} checked={cooler} onChange={handleACooler}
+                                <FormControlLabel control={<Checkbox/>} checked={car.cooler}
+                                                  onChange={handleACooler}
                                                   label="Морозильна камера"/>
-                                <FormControlLabel control={<Checkbox defaultChecked/>} checked={available}
+
+                                <FormControlLabel control={<Checkbox/>} checked={car.available}
                                                   onChange={handleAvailable} label="Доступність автомобіля"/>
                             </FormGroup>
                         </Grid>
@@ -90,7 +95,7 @@ export default function CarFormDialog({closeDialog, open, addCar}) {
                         <Grid item xs={12} sx={{mt: 2}}>
                             <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
                                 <Button sx={{mr: 2}} variant="outlined" onClick={closeDialog}>Скасувати</Button>
-                                <Button variant="outlined" onClick={addCarHandler}> Зберегти </Button>
+                                <Button variant="outlined" onClick={saveHandler}> Зберегти </Button>
                             </Box>
                         </Grid>
                     </Grid>

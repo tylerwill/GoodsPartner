@@ -28,6 +28,7 @@ public class CarController {
         return carService.findAll();
     }
 
+    // TODO: Controller should return updated entity
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PutMapping("/{id}")
     @ApiOperation(value = "Edit Car",
@@ -39,6 +40,7 @@ public class CarController {
         carService.update(id, car);
     }
 
+    // TODO: Controller should return created entity
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PostMapping()
     @ApiOperation(value = "Add car")
