@@ -4,6 +4,7 @@ import Grid from "@mui/material/Grid";
 import {Button, Typography} from "@mui/material";
 import {toHoursAndMinutes} from "../../../../../util/util";
 import InfoTableItem from "../../../../../components/InfoTableItem/InfoTableItem";
+import RouteMapDialog from "../RouteMapDialog/RouteMapDialog";
 
 const RouteDetails = ({route}) => {
     return (<Box sx={{
@@ -21,14 +22,17 @@ const RouteDetails = ({route}) => {
 export default RouteDetails;
 
 const RouteDetailsHeader = ({route}) => {
+    const [routeMapOpen, setRouteMapOpen] = React.useState(true);
+
     return (<Box sx={{width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <Typography sx={{fontWeight: "bold"}} variant="body2" component="h2">
             {/*TODO: replace with real date*/}
             Маршрут №{route.id} від 2022-02-04
         </Typography>
         <Box>
-            <Button sx={{mr: 2}} variant="text">Показати на мапі</Button>
+            <Button sx={{mr: 2}} onClick={() => setRouteMapOpen(true)} variant="text">Показати на мапі</Button>
             <Button variant="contained" disabled>Створений</Button>
+            <RouteMapDialog route={route} open={routeMapOpen} closeDialog={() => setRouteMapOpen(false)}/>
         </Box>
     </Box>);
 }
