@@ -17,18 +17,9 @@ import {deliveriesApi, ordersApi} from "../api/api";
 import {push} from 'react-router-redux';
 
 let initialOrders = {
-        deliveriesPreview: [
-            {
-                "carLoads": [],
-                "deliveryDate": null,
-                "id": null,
-                "orders": [],
-                "routes": [],
-                "status": null
-            }
-        ],
+        deliveriesPreview: [],
         currentDelivery: {
-            "carLoads": [],
+            "productsShipping": [],
             "deliveryDate": null,
             "id": null,
             "orders": [],

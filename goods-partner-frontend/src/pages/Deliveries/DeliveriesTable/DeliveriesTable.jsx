@@ -145,8 +145,8 @@ function EnhancedTable({deliveries}) {
 
                                             </TableCell>
                                             <TableCell align="left">{delivery.deliveryDate}</TableCell>
-                                            <TableCell align="left">{delivery.orders?.length }</TableCell>
-                                            <TableCell align="left">{delivery.carLoads?.length}</TableCell>
+                                            <TableCell align="left">{delivery.orderCount ?? "-" }</TableCell>
+                                            <TableCell align="left">{delivery.routeCount ?? "-"}</TableCell>
                                         </TableRow>
                                     );
                                 })}

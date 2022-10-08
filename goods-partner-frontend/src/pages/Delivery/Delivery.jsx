@@ -6,7 +6,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import OrdersContainer from "./Orders/OrdersContainer";
 import BasicTabs from "../../hoc/BasicTabs/BasicTabs";
 import RoutesContainer from "./Routes/RoutesContainer";
-import CarLoadContainer from "./CarLoad/CarLoadContainer";
+import ShippingContainer from "./Shipping/ShippingContainer";
 
 const Delivery = ({currentDelivery, loadDelivery, linkOrdersToDeliveryAndCalculate, ordersPreview}) => {
     let {id} = useParams();
@@ -59,7 +59,7 @@ const Delivery = ({currentDelivery, loadDelivery, linkOrdersToDeliveryAndCalcula
             <BasicTabs labels={tabLabels} fullWidth={true}>
                 <OrdersContainer/>
                 <RoutesContainer/>
-                <CarLoadContainer/>
+                <ShippingContainer/>
             </BasicTabs>
 
         </Box>

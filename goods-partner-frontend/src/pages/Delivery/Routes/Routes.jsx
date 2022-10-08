@@ -6,7 +6,7 @@ import RouteContent from "./RouteContent/RouteContent";
 const Routes = ({routes}) => {
     const [currentRoute, setCurrentRoute] = React.useState(routes[0]);
 
-    return (<Grid container spacing={2} sx={{padding: '0 24px'}}>
+    return (<Grid container spacing={2}>
         <Grid item xs={3}>
             <RoutesSidebar routes={routes} currentRoute={currentRoute} setCurrentRoute={setCurrentRoute}/>
         </Grid>

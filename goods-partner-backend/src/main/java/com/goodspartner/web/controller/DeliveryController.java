@@ -56,6 +56,7 @@ public class DeliveryController {
         return deliveryService.findById(id);
     }
 
+    // TODO: Should return DeliveryShortDto
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PostMapping()
     @ApiOperation(value = "Add Delivery")
