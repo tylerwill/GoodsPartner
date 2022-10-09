@@ -20,8 +20,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class StatisticsControllerTest extends AbstractWebITest {
 
     public static final String MOCK_STATISTICS_PATH = "datasets/common/statistics/statistics.json";
-    public static final String MOCK_CAR_STATISTICS_PATH = "datasets/common/statistics/carStatistics.json";
-    public static final String MOCK_DAILY_CAR_STATISTICS_PATH = "datasets/common/statistics/dailyCarStatistics.json";
+    public static final String MOCK_NO_STATISTICS_PATH = "datasets/common/statistics/no-statistics.json";
+    public static final String MOCK_CAR_STATISTICS_PATH = "datasets/common/statistics/car-statistics.json";
+    public static final String MOCK_CAR_NO_STATISTICS_PATH = "datasets/common/statistics/no-car-statistics.json";
+    public static final String MOCK_DAILY_CAR_STATISTICS_PATH = "datasets/common/statistics/daily-car-statistics.json";
 
     @Test
     @DataSet(value = "common/statistics/dataset.json")
@@ -43,7 +45,8 @@ class StatisticsControllerTest extends AbstractWebITest {
                         .param("dateFrom", "2022-01-01")
                         .param("dateTo", "2022-01-10")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk())
+                .andExpect(content().json(getResponseAsString(MOCK_NO_STATISTICS_PATH)));
     }
 
     @Test
@@ -77,7 +80,8 @@ class StatisticsControllerTest extends AbstractWebITest {
                         .param("dateFrom", "2022-01-01")
                         .param("dateTo", "2022-01-10")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk())
+                .andExpect(content().json(getResponseAsString(MOCK_CAR_NO_STATISTICS_PATH)));
     }
 
     @Test

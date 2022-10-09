@@ -3,5 +3,25 @@
   "orderCount": 29,
   "weight": 1627.5,
   "fuelConsumption": 51,
-  "averageDeliveryDuration": 200
+  "averageDeliveryDuration": 200,
+  "routesForPeriodPerDay": {
+    "2022-09-21": 1,
+    "2022-09-22": 1,
+    "2022-09-23": 1
+  },
+  "ordersForPeriodPerDay": {
+    "2022-09-21": 10,
+    "2022-09-22": 10,
+    "2022-09-23": 9
+  },
+  "weightForPeriodPerDay": {
+    "2022-09-21": 1088,
+    "2022-09-22": 282,
+    "2022-09-23": 257
+  },
+  "fuelConsumptionForPeriodPerDay": {
+    "2022-09-21": 21,
+    "2022-09-22": 16,
+    "2022-09-23": 12
+  }
 }

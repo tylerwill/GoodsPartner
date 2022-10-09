@@ -1,0 +1,19 @@
+{
+  "routes": [],
+  "totalTimeInRoutes": 0,
+  "orderCount": 0,
+  "weight": 0,
+  "fuelConsumption": 0,
+  "incompleteRoutePointsCount": 0,
+  "car": {
+    "id": 51,
+    "name": "Mercedes Sprinter",
+    "licencePlate": "AA 1111 CT",
+    "driver": "Oleg Dudka",
+    "weightCapacity": 2000,
+    "cooler": false,
+    "available": true,
+    "loadSize": 0,
+    "travelCost": 12
+  }
+}
