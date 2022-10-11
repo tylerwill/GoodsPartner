@@ -8,6 +8,7 @@ export const SET_DELIVERY_LOADING = "SET_DELIVERY_LOADING";
 export const CHANGE_CURRENT_DELIVERY_STATUS = "CHANGE_CURRENT_DELIVERY_STATUS";
 export const CHANGE_ROUTE_POINT_FOR_CURRENT_DELIVERY = "CHANGE_ROUTE_POINT_FOR_CURRENT_DELIVERY";
 export const CHANGE_ROUTE_FOR_CURRENT_DELIVERY = "CHANGE_ROUTE_FOR_CURRENT_DELIVERY";
+export const SET_CURRENT_HISTORY = "SET_CURRENT_HISTORY";
 
 export const setDeliveries = (deliveries) => {
     return {
@@ -84,4 +85,12 @@ export const changeRouteForCurrentDelivery = (route) => {
         }
     }
 }
+
+export const setCurrentHistory = (history) => {
+    return {
+        type: SET_CURRENT_HISTORY,
+        payload: history
+    }
+}
+
 

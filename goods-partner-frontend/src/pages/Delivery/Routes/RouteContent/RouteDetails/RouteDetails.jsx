@@ -94,6 +94,9 @@ const RouteStatusSelect = ({route, updateRoute}) => {
 
     const handleChange = (event) => {
         const updatedRoute = {...route, status: event.target.value};
+        if(event.target.value==='DRAFT') {
+            return;
+        }
         updateRoute(updatedRoute);
     }
     const CustomSelect = styled(Select)(() => ({
@@ -104,11 +107,11 @@ const RouteStatusSelect = ({route, updateRoute}) => {
             fontWeight: 500,
             backgroundColor: '#1565C0',
             color: '#fff',
-            '-webkit-text-fill-color':'#fff'
+            '-webkitTextFillColor':'#fff !important'
         },
 
         '& .MuiSelect-icon': {
-            color: '#fff'
+            color: '#fff !important'
         }
     }));
 

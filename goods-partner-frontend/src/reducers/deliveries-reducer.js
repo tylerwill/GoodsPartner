@@ -5,12 +5,12 @@ import {
     CHANGE_ROUTE_POINT_FOR_CURRENT_DELIVERY,
     changeCurrentDeliveryStatus, changeRouteForCurrentDelivery,
     changeRoutePointForCurrentDelivery,
-    SET_CURRENT_DELIVERY,
+    SET_CURRENT_DELIVERY, SET_CURRENT_HISTORY,
     SET_DELIVERIES,
     SET_DELIVERY_LOADING,
     SET_ORDERS_PREVIEW,
     SET_ORDERS_PREVIEW_LOADING,
-    setCurrentDelivery,
+    setCurrentDelivery, setCurrentHistory,
     setDeliveries,
     setDeliveryLoading,
     setOrdersPreview,
@@ -33,7 +33,8 @@ let initialOrders = {
         ordersPreview: null,
         ordersPreviewLoading: false,
         orderAddressDialogOpen: false,
-        deliveryLoading: false
+        deliveryLoading: false,
+        deliveryHistory: []
     }
 ;
 
@@ -68,6 +69,9 @@ const deliveriesReducer = (state = initialOrders, action) => {
 
         case CHANGE_ROUTE_FOR_CURRENT_DELIVERY:
             return updateRouteForCurrentDelivery(state, action.payload.route);
+
+        case SET_CURRENT_HISTORY:
+            return {...state, deliveryHistory: action.payload};
         default:
             return state;
     }
@@ -103,7 +107,6 @@ const updateRouteForCurrentDelivery = (state, route) => {
         }
     }
 
-    debugger;
     const newState = {...state, currentDelivery: {...state.currentDelivery, routes: updatedRoutes}};
     return newState;
 }
@@ -219,12 +222,23 @@ export const updateRoutePoint = (routeId, newRoutePoint) => (dispatch, getState)
 export const updateRoute = (route) => (dispatch, getState) => {
     const state = getState();
     const deliveryId = state.deliveries.currentDelivery.id;
-    console.log("update route in reducer:", route);
+
     deliveriesApi.changeRouteStatus(deliveryId, route).then(response => {
         if (response.status === 200) {
             dispatch(changeRouteForCurrentDelivery(route));
         }
     })
 }
+
+export const loadHistory = () => (dispatch, getState) => {
+    const deliveryId = getState().deliveries.currentDelivery.id;
+
+    deliveriesApi.findHistory(deliveryId).then(response => {
+        if (response.status === 200) {
+            dispatch(setCurrentHistory(response.data));
+        }
+    })
+}
+
 
 export default deliveriesReducer;

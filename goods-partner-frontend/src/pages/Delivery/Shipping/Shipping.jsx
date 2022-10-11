@@ -29,7 +29,7 @@ const Shipping = ({productsShipping}) => {
                 </TableHead>
                 <TableBody>
                     {productsShipping.map((shipping) => {
-                        return (<Row shipping={shipping}/>)
+                        return (<Row key={shipping.id} shipping={shipping}/>)
                     })}
                 </TableBody>
             </Table>

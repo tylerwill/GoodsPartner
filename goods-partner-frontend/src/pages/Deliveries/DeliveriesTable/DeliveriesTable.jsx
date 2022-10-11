@@ -12,6 +12,7 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TablePagination from "@mui/material/TablePagination";
 import {Link, useNavigate} from "react-router-dom";
+import DeliveryStatusChip from "../../../components/DeliveryStatusChip/DeliveryStatusChip";
 
 const DeliveriesTable = ({deliveries}) => {
     // TODO: [UI] Remove shadow
@@ -141,8 +142,7 @@ function EnhancedTable({deliveries}) {
                                             sx={{cursor:'pointer'}}
                                         >
                                             <TableCell component="th" scope="row" align="left">
-                                                {createStatusChip(delivery.status)}
-
+                                                <DeliveryStatusChip status={ delivery.status}/>
                                             </TableCell>
                                             <TableCell align="left">{delivery.deliveryDate}</TableCell>
                                             <TableCell align="left">{delivery.orderCount ?? "-" }</TableCell>
@@ -176,36 +176,6 @@ function EnhancedTable({deliveries}) {
     );
 }
 
-
-function createStatusChip(status) {
-    let text;
-    let color;
-    switch (status) {
-        case 'APPROVED': {
-            text = 'Підтверджена';
-            color = 'primary';
-            break;
-        }
-
-        case 'DRAFT': {
-            text = 'Створена';
-            color = 'default';
-            break;
-        }
-
-        case 'COMPLETED': {
-            text = 'Закінчена';
-            color = 'success';
-            break;
-        }
-
-    }
-
-    return <Chip label={text}
-                 sx={{color: '#000', borderWidth: '2px'}}
-                 color={color} variant="outlined"/>
-
-}
 
 // TODO [UI]: Move comparators into util
 function descendingComparator(a, b, orderBy) {

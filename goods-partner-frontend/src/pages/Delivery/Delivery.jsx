@@ -8,6 +8,8 @@ import BasicTabs from "../../hoc/BasicTabs/BasicTabs";
 import ShippingContainer from "./Shipping/ShippingContainer";
 import DoneIcon from '@mui/icons-material/Done';
 import Routes from "./Routes/Routes";
+import HistoryContainer from "./History/HistoryContainer";
+import DeliveryStatusChip from "../../components/DeliveryStatusChip/DeliveryStatusChip";
 
 const Delivery = ({
                       currentDelivery, loadDelivery,
@@ -31,14 +33,18 @@ const Delivery = ({
     const hasInvalidOrders = ordersPreview?.orders
         .some(order => order.mapPoint.status === "UNKNOWN");
 
-    const tabLabels = ['Замовлення', 'Маршрути', 'Завантаження'];
-    debugger;
+    const tabLabels = ['Замовлення', 'Маршрути', 'Завантаження', 'Історія'];
     return <section>
         <Box sx={{mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-            <Typography variant="h6" component="h2">
-                {/*TODO: [UI Max] Format date to be same as in design*/}
-                Доставка на {currentDelivery.deliveryDate}
-            </Typography>
+            <Box sx={{display: 'flex'}}>
+                <Typography
+                    sx={{mr:2}}
+                    variant="h6" component="h2">
+                    {/*TODO: [UI Max] Format date to be same as in design*/}
+                    Доставка на {currentDelivery.deliveryDate}
+                </Typography>
+                <DeliveryStatusChip status={currentDelivery.status}/>
+            </Box>
 
             {calculated ?
                 <Button variant="contained" color={"success"}
@@ -48,7 +54,8 @@ const Delivery = ({
                 </Button>
 
                 :
-                <Tooltip title="Для розрахунку маршруту відредагуйте адреси, що потребують уточнення" placement="top"
+                <Tooltip title="Для розрахунку маршруту відредагуйте адреси, що потребують уточнення"
+                         placement="top"
                          arrow>
                 <span>
                     <Button variant="contained"
@@ -57,7 +64,6 @@ const Delivery = ({
                 </span>
                 </Tooltip>
             }
-
 
         </Box>
 
@@ -88,6 +94,7 @@ const Delivery = ({
                     updateRoute={updateRoute}
                 />
                 <ShippingContainer/>
+                <HistoryContainer/>
             </BasicTabs>
 
         </Box>

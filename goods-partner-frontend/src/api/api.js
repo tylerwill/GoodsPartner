@@ -69,5 +69,9 @@ export const deliveriesApi = {
 
     changeRouteStatus(deliveryId, route) {
         return axiosWithSetting.put(`/api/v1/deliveries/${deliveryId}/routes/${route.id}`, route);
+    },
+
+    findHistory(deliveryId) {
+        return axiosWithSetting.get(`/api/v1/deliveries/${deliveryId}/histories`);
     }
 }
