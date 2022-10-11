@@ -24,8 +24,11 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.goodspartner.entity.DeliveryStatus.COMPLETED;
 
@@ -48,10 +51,27 @@ public class DefaultStatisticsService implements StatisticsService {
 
         CalculationRoutesResult calculationRoutesResult = calculateRoutesStatistic(routes);
 
-//        For future
-//        Map<LocalDate, Integer> routesPerDayMap = deliveries.stream()
-//                .collect(Collectors.toMap(DeliveryDto::getDeliveryDate,
-//                        delivery -> delivery.getRoutes().size()));
+        // Plots data
+        Map<LocalDate, Integer> routesPerDay = deliveries.stream()
+                .collect(Collectors.toMap(DeliveryDto::getDeliveryDate, delivery -> delivery.getRoutes().size()));
+
+        Map<LocalDate, Integer> ordersPerDay = deliveries.stream()
+                .collect(Collectors.toMap(DeliveryDto::getDeliveryDate,
+                        delivery -> delivery.getRoutes().stream()
+                                .map(RouteDto::getTotalOrders)
+                                .mapToInt(Integer::intValue).sum()));
+
+        Map<LocalDate, Integer> weightPerDay = deliveries.stream()
+                .collect(Collectors.toMap(DeliveryDto::getDeliveryDate,
+                        delivery -> delivery.getRoutes().stream()
+                                .map(RouteDto::getTotalWeight)
+                                .mapToInt(Double::intValue).sum()));
+
+        Map<LocalDate, Integer> fuelConsumptionPerDay = deliveries.stream()
+                .collect(Collectors.toMap(DeliveryDto::getDeliveryDate,
+                        delivery -> delivery.getRoutes().stream()
+                                .map(route -> route.getCar().getTravelCost() * route.getDistance() / 100)
+                                .mapToInt(Double::intValue).sum()));
 
         return StatisticsCalculation.builder()
                 .routeCount(routes.size())
@@ -59,7 +79,24 @@ public class DefaultStatisticsService implements StatisticsService {
                 .weight(calculationRoutesResult.totalWeight)
                 .fuelConsumption(calculationRoutesResult.fuelConsumption)
                 .averageDeliveryDuration(averageDeliveryDuration)
+                .routesForPeriodPerDay(getDataForPeriodPerDay(dateFrom, dateTo, routesPerDay))
+                .ordersForPeriodPerDay(getDataForPeriodPerDay(dateFrom, dateTo, ordersPerDay))
+                .weightForPeriodPerDay(getDataForPeriodPerDay(dateFrom, dateTo, weightPerDay))
+                .fuelConsumptionForPeriodPerDay(getDataForPeriodPerDay(dateFrom, dateTo, fuelConsumptionPerDay))
                 .build();
+    }
+
+    private Map<LocalDate, Integer> getDataForPeriodPerDay(LocalDate dateFrom,
+                                                           LocalDate dateTo,
+                                                           Map<LocalDate, Integer> mappingData) {
+        Map<LocalDate, Integer> dataForPeriodPerDay = new LinkedHashMap<>();
+        LocalDate day = dateFrom;
+        while (day.isBefore(dateTo) || day.isEqual(dateTo)) {
+            Integer count = mappingData.get(day);
+            dataForPeriodPerDay.put(day, count != null ? count : 0);
+            day = day.plusDays(1);
+        }
+        return dataForPeriodPerDay;
     }
 
     @Override
@@ -111,12 +148,7 @@ public class DefaultStatisticsService implements StatisticsService {
     }
 
     private List<DeliveryDto> getCompletedDeliveriesInRange(LocalDate dateFrom, LocalDate dateTo) {
-
         List<Delivery> deliveries = deliveryRepository.findByStatusAndDeliveryDateBetween(COMPLETED, dateFrom, dateTo);
-        if (deliveries.isEmpty()) {
-            throw new DeliveryNotFoundException(COMPLETED, dateFrom, dateTo);
-        }
-
         return deliveryRouteMapper.mapDeliveriesWithRoutes(deliveries);
     }
 

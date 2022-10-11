@@ -4,6 +4,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.util.Map;
+
 @Builder
 @Getter
 @Setter
@@ -14,5 +17,11 @@ public class StatisticsCalculation {
     private double weight;
     private int fuelConsumption;
     private long averageDeliveryDuration;
+
+    // Plots. Polymorphic value data
+    private Map<LocalDate, Integer> routesForPeriodPerDay;
+    private Map<LocalDate, Integer> ordersForPeriodPerDay;
+    private Map<LocalDate, Integer> weightForPeriodPerDay;
+    private Map<LocalDate, Integer> fuelConsumptionForPeriodPerDay;
 
 }
