@@ -4,7 +4,7 @@ import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItemButton from "@mui/material/ListItemButton";
 
-const RoutesSidebar = ({routes, currentRoute, setCurrentRoute}) => {
+const RoutesSidebar = ({routes, currentRoute, setCurrentRouteIndex}) => {
     return (
         <List
             sx={{
@@ -22,14 +22,14 @@ const RoutesSidebar = ({routes, currentRoute, setCurrentRoute}) => {
             }
         >
             {
-                routes.map(route => {
+                routes.map((route, index) => {
                     const car = route.car;
                     return (<React.Fragment key={"routeSidebar"  + route.id}>
                         <Divider/>
                         <ListItem alignItems="flex-start"
                                   sx={{p: 0}}
                         >
-                            <ListItemButton onClick={()=> setCurrentRoute(route)} selected={route.id === currentRoute.id}>
+                            <ListItemButton onClick={()=> setCurrentRouteIndex(index)} selected={route.id === currentRoute.id}>
                                 <ListItemText primary={car.name + ", " + car.licencePlate} secondary={car.driver}/>
                             </ListItemButton>
                         </ListItem>

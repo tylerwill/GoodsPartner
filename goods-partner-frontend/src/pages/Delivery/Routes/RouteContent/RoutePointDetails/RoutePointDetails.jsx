@@ -1,16 +1,16 @@
 import React from 'react';
 import Box from "@mui/material/Box";
-import {Button, Typography} from "@mui/material";
+import {FormControl, MenuItem, Select, styled, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import InfoTableItem from "../../../../../components/InfoTableItem/InfoTableItem";
 
 
-const RoutePointDetails = ({routePoint, number}) => {
+const RoutePointDetails = ({routePoint, number, updateRoutePoint}) => {
     return (<Box sx={{
         width: '100%', background: 'rgba(0, 0, 0, 0.02)',
         borderRadius: '6px', p: 2
     }}>
-        <RoutePointDetailsHeader routePoint={routePoint} number={number}/>
+        <RoutePointDetailsHeader routePoint={routePoint} number={number} updateRoutePoint={updateRoutePoint}/>
         <Box sx={{mt: 3}}>
             <RoutePointDetailsBody routePoint={routePoint}/>
         </Box>
@@ -18,12 +18,14 @@ const RoutePointDetails = ({routePoint, number}) => {
 
 }
 
-const RoutePointDetailsHeader = ({routePoint, number}) => {
+const RoutePointDetailsHeader = ({routePoint, number, updateRoutePoint}) => {
     return (<Box sx={{width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <Typography sx={{fontWeight: "bold", maxWidth: '450px'}} variant="body2" component="h2">
             №{number}, {routePoint.address}
         </Typography>
-        <Button variant="outlined" disabled>Змінити машину</Button>
+
+        {/*<Button variant="outlined" disabled>Змінити машину</Button>*/}
+        <RoutePointSelect updateRoutePoint={updateRoutePoint} routePoint={routePoint}/>
     </Box>);
 }
 
@@ -53,5 +55,53 @@ const RoutePointDetailsBody = ({routePoint}) => {
     </Grid>);
 }
 
+const RoutePointSelect = ({routePoint, updateRoutePoint}) => {
+    const {status} = routePoint;
+    const selectColor = getSelectColor(status);
+
+    const handleChange = (event) => {
+        updateRoutePoint(routePoint, event.target.value);
+    }
+    const CustomSelect = styled(Select)(() => ({
+        "&.MuiOutlinedInput-root": {
+            "& fieldset": {
+                borderColor: selectColor
+            }
+        },
+        '& .MuiOutlinedInput-input': {
+            padding: '4px 16px',
+            textTransform: 'uppercase',
+            fontSize: '13px',
+            fontWeight: 500,
+            color: selectColor
+        }
+    }));
+
+    return <div>
+        <FormControl>
+            <CustomSelect
+                value={status}
+                onChange={handleChange}
+                autoWidth
+                MenuProps={{MenuListProps: {disablePadding: true}}}
+            >
+                <MenuItem value={'PENDING'}>В очікуванні</MenuItem>
+                <MenuItem value={'DONE'}>Готово</MenuItem>
+                <MenuItem value={'SKIPPED'}>Пропущено</MenuItem>
+            </CustomSelect>
+        </FormControl>
+    </div>
+}
+
+function getSelectColor(status) {
+    switch (status) {
+        case 'PENDING':
+            return '#1976D2'
+        case 'DONE':
+            return '#2E7D32'
+        case 'SKIPPED':
+            return '#ED6C02'
+    }
+}
 
 export default RoutePointDetails;

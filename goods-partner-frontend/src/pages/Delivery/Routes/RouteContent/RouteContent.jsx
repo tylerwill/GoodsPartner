@@ -5,7 +5,17 @@ import Divider from "@mui/material/Divider";
 import RouteDetails from "./RouteDetails/RouteDetails";
 import RoutePointDetails from "./RoutePointDetails/RoutePointDetails";
 
-const RouteContent = ({route}) => {
+const RouteContent = ({deliveryDate, route, updateRoutePoint, updateRoute}) => {
+
+    const updateRoutePointHandler = (routePoint, newStatus) => {
+        const updatedRoutePoint = {...routePoint, status:newStatus};
+        if(route.status!== 'APPROVED') {
+            alert('Зміна статусу неможлива. Маршрут завершенний або не розпочатий.');
+        }else {
+            updateRoutePoint(route.id, updatedRoutePoint);
+        }
+    }
+
     return <List
         sx={{
             width: '100%', minHeight: '80vh',
@@ -23,7 +33,7 @@ const RouteContent = ({route}) => {
     >
         <Divider/>
         <ListItem>
-            <RouteDetails route={route}/>
+            <RouteDetails route={route} updateRoute={updateRoute} deliveryDate={deliveryDate}/>
         </ListItem>
         <ListItem>
             <Typography component={'h3'} sx={{fontSize: '14px', fontWeight: 'bold'}}>
@@ -35,7 +45,7 @@ const RouteContent = ({route}) => {
             <ListItem
                 key={routePoint.id}>
                 <RoutePointDetails
-                    routePoint={routePoint} number={index + 1}/>
+                    updateRoutePoint={updateRoutePointHandler} routePoint={routePoint} number={index + 1}/>
             </ListItem>)}
     </List>
 }

@@ -20,7 +20,8 @@ function App() {
     const {isLoaded} = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: key,
-        libraries:libraries
+        libraries:libraries,
+        region:'UA'
     })
 
     // TODO: Temp solution, render our app only if google maps loaded.

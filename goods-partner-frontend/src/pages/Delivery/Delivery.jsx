@@ -5,11 +5,22 @@ import {Link, useParams} from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import OrdersContainer from "./Orders/OrdersContainer";
 import BasicTabs from "../../hoc/BasicTabs/BasicTabs";
-import RoutesContainer from "./Routes/RoutesContainer";
 import ShippingContainer from "./Shipping/ShippingContainer";
+import DoneIcon from '@mui/icons-material/Done';
+import Routes from "./Routes/Routes";
 
-const Delivery = ({currentDelivery, loadDelivery, linkOrdersToDeliveryAndCalculate, ordersPreview}) => {
+const Delivery = ({
+                      currentDelivery, loadDelivery,
+                      linkOrdersToDeliveryAndCalculate,
+                      ordersPreview, approve,
+                      updateRoutePoint, updateRoute
+                  }) => {
+
     let {id} = useParams();
+
+    const calculated = currentDelivery?.orders?.length > 0;
+
+    const routesForCurrentDelivery = currentDelivery.routes;
 
     useEffect(() => {
         if (currentDelivery.id !== id) {
@@ -21,20 +32,33 @@ const Delivery = ({currentDelivery, loadDelivery, linkOrdersToDeliveryAndCalcula
         .some(order => order.mapPoint.status === "UNKNOWN");
 
     const tabLabels = ['Замовлення', 'Маршрути', 'Завантаження'];
-
+    debugger;
     return <section>
         <Box sx={{mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
             <Typography variant="h6" component="h2">
                 {/*TODO: [UI Max] Format date to be same as in design*/}
                 Доставка на {currentDelivery.deliveryDate}
             </Typography>
-            <Tooltip title="Для розрахунку маршруту відредагуйте адреси, що потребують уточнення" placement="top" arrow>
+
+            {calculated ?
+                <Button variant="contained" color={"success"}
+                        onClick={() => approve(currentDelivery.id)}
+                        disabled={currentDelivery.status !== 'DRAFT'}>
+                    <DoneIcon sx={{mr: 1, width: '0.7em', height: '0.7em'}}/> Затвердити
+                </Button>
+
+                :
+                <Tooltip title="Для розрахунку маршруту відредагуйте адреси, що потребують уточнення" placement="top"
+                         arrow>
                 <span>
                     <Button variant="contained"
                             disabled={hasInvalidOrders}
                             onClick={linkOrdersToDeliveryAndCalculate}>Розрахувати Маршрут <ArrowForward/></Button>
                 </span>
-            </Tooltip>
+                </Tooltip>
+            }
+
+
         </Box>
 
 
@@ -52,13 +76,17 @@ const Delivery = ({currentDelivery, loadDelivery, linkOrdersToDeliveryAndCalcula
         </Breadcrumbs>
 
 
-
-        <Box sx={{marginTop:'16px'}}>
+        <Box sx={{marginTop: '16px'}}>
             {/*TODO: [UI] Add icons */}
             {/*TODO: [UI Max] disable some labels if route is not in calculated status */}
             <BasicTabs labels={tabLabels} fullWidth={true}>
                 <OrdersContainer/>
-                <RoutesContainer/>
+                <Routes
+                    deliveryDate={currentDelivery.deliveryDate}
+                    routes={routesForCurrentDelivery}
+                    updateRoutePoint={updateRoutePoint}
+                    updateRoute={updateRoute}
+                />
                 <ShippingContainer/>
             </BasicTabs>
 

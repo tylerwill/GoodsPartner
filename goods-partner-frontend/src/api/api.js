@@ -34,10 +34,6 @@ export const carsApi = {
 
     update(car) {
         return axiosWithSetting.put(`api/v1/cars/${car.id}`, car);
-    },
-
-    findById(id) {
-        return axiosWithSetting.get(`api/v1/cars/${id}`);
     }
 }
 
@@ -60,5 +56,18 @@ export const deliveriesApi = {
 
     calculate (id) {
         return axiosWithSetting.post(`/api/v1/deliveries/${id}/calculate`);
+    },
+
+    approve(id) {
+        return axiosWithSetting.put(`/api/v1/deliveries/${id}/approve`);
+    },
+
+    changeRoutePointStatus(deliveryId, routeId, routePoint) {
+        const routePointId = routePoint.id;
+        return axiosWithSetting.put(`/api/v1/deliveries/${deliveryId}/routes/${routeId}/route-points/${routePointId}`, routePoint);
+    },
+
+    changeRouteStatus(deliveryId, route) {
+        return axiosWithSetting.put(`/api/v1/deliveries/${deliveryId}/routes/${route.id}`, route);
     }
 }

@@ -1,17 +1,19 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import {Button, Typography} from "@mui/material";
+import {Button, FormControl, MenuItem, Select, styled, Typography} from "@mui/material";
 import {toHoursAndMinutes} from "../../../../../util/util";
 import InfoTableItem from "../../../../../components/InfoTableItem/InfoTableItem";
 import RouteMapDialog from "../RouteMapDialog/RouteMapDialog";
 
-const RouteDetails = ({route}) => {
+const RouteDetails = ({route, updateRoute, deliveryDate}) => {
+
+    console.log("render route details", route);
     return (<Box sx={{
         width: '100%', background: 'rgba(0, 0, 0, 0.02)',
         borderRadius: '6px', p: 2
     }}>
-        <RouteDetailsHeader route={route}/>
+        <RouteDetailsHeader route={route} updateRoute={updateRoute} deliveryDate={deliveryDate}/>
         <Box sx={{mt: 3}}>
             <RouteDetailsBody route={route}/>
         </Box>
@@ -21,17 +23,20 @@ const RouteDetails = ({route}) => {
 
 export default RouteDetails;
 
-const RouteDetailsHeader = ({route}) => {
-    const [routeMapOpen, setRouteMapOpen] = React.useState(true);
+const RouteDetailsHeader = ({route, updateRoute, deliveryDate}) => {
+    const [routeMapOpen, setRouteMapOpen] = React.useState(false);
 
     return (<Box sx={{width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <Typography sx={{fontWeight: "bold"}} variant="body2" component="h2">
             {/*TODO: replace with real date*/}
-            Маршрут №{route.id} від 2022-02-04
+            Маршрут №{route.id} від {deliveryDate}
         </Typography>
         <Box>
-            <Button sx={{mr: 2}} onClick={() => setRouteMapOpen(true)} variant="text">Показати на мапі</Button>
-            <Button variant="contained" disabled>Створений</Button>
+
+            <Box sx={{display: 'flex'}}>
+                <Button sx={{mr: 2}} onClick={() => setRouteMapOpen(true)} variant="text">Показати на
+                    мапі</Button><RouteStatusSelect route={route} updateRoute={updateRoute}/></Box>
+
             <RouteMapDialog route={route} open={routeMapOpen} closeDialog={() => setRouteMapOpen(false)}/>
         </Box>
     </Box>);
@@ -81,3 +86,48 @@ const RouteDetailsBody = ({route}) => {
         </Grid>
     </Grid>);
 }
+
+
+const RouteStatusSelect = ({route, updateRoute}) => {
+    const {status} = route;
+//   const selectColor = getSelectColor(status);
+
+    const handleChange = (event) => {
+        const updatedRoute = {...route, status: event.target.value};
+        updateRoute(updatedRoute);
+    }
+    const CustomSelect = styled(Select)(() => ({
+        '& .MuiOutlinedInput-input': {
+            padding: '4px 16px',
+            textTransform: 'uppercase',
+            fontSize: '13px',
+            fontWeight: 500,
+            backgroundColor: '#1565C0',
+            color: '#fff',
+            '-webkit-text-fill-color':'#fff'
+        },
+
+        '& .MuiSelect-icon': {
+            color: '#fff'
+        }
+    }));
+
+    return <div>
+        <FormControl disabled={status === 'DRAFT' || status === 'COMPLETED'}>
+            <CustomSelect
+                value={status}
+                onChange={handleChange}
+                autoWidth
+                MenuProps={{MenuListProps: {disablePadding: true}}}
+            >
+                <MenuItem value={'DRAFT'}>Створений</MenuItem>
+                <MenuItem value={'INPROGRESS'}>В роботі</MenuItem>
+                <MenuItem value={'APPROVED'}>Підтверджений</MenuItem>
+                <MenuItem value={'COMPLETED'}>Закінчений</MenuItem>
+                <MenuItem value={'INCOMPLETED'}>Не закінчений</MenuItem>
+            </CustomSelect>
+        </FormControl>
+    </div>
+}
+
+
