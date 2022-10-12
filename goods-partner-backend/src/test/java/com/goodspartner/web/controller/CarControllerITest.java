@@ -39,29 +39,40 @@ public class CarControllerITest extends AbstractWebITest {
 
     @Test
     @DataSet(value = "common/car/dataset_cars.yml", disableConstraints = true)
-    @DisplayName("when Add Car then Ok Status Returned")
-    void whenAddTheFirstCar_thenOkStatusReturned() throws Exception {
+    @DisplayName("when Add The First Car then Added Car and Ok Status Returned")
+    void whenAddTheFirstCar_thenAddedCar_andOkStatusReturned() throws Exception {
         CarDto carDto = new CarDto(
                 0,
                 "MAN",
                 "AA 2455 CT",
                 "Ivan Kornienko",
                 4000,
-                false,
                 true,
+                false,
                 0,
                 10);
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/cars")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(carDto)))
+                .andExpect(content()
+                        .json("""
+                                {                          
+                                 "name":"MAN",
+                                 "licencePlate":"AA 2455 CT",
+                                 "driver":"Ivan Kornienko",
+                                 "weightCapacity":4000,
+                                 "cooler":true,
+                                 "available":false,
+                                 "travelCost": 10}
+                                """))
                 .andExpect(status().isOk());
     }
 
     @Test
     @DataSet(value = "common/car/dataset_cars.yml", disableConstraints = true)
     @ExpectedDataSet("common/car/dataset_update_car.yml")
-    @DisplayName("when Update Car then Ok Status Returned")
-    void whenUpdateCar_thenOkStatusReturned() throws Exception {
+    @DisplayName("when Update Car then Updated Car and Ok Status Returned")
+    void whenUpdateCar_thenUpdatedCar_andOkStatusReturned() throws Exception {
         CarDto carDto = new CarDto();
         carDto.setAvailable(false);
         carDto.setName("Mazda CX5");
@@ -76,6 +87,18 @@ public class CarControllerITest extends AbstractWebITest {
         mockMvc.perform(put("/api/v1/cars/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(carDto)))
+                .andExpect(content()
+                        .json("""
+                                {
+                                 "id": 1,
+                                 "name":"Mazda CX5",
+                                 "licencePlate":"AA 2244 CT",
+                                 "driver":"Vasya Pupkin",
+                                 "weightCapacity":3500,
+                                 "cooler":false,
+                                 "available":false,
+                                 "travelCost": 10}
+                                """))
                 .andExpect(status().isOk());
     }
 

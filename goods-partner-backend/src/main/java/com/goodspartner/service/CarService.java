@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface CarService {
 
-    void add(CarDto carDto);
+    CarDto add(CarDto carDto);
 
     void delete(int id);
 
-    void update(int id, CarDto car);
+    CarDto update(int id, CarDto car);
 
     CarDto getById(int id);
 

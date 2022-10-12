@@ -33,20 +33,20 @@ public class CarController {
     @PutMapping("/{id}")
     @ApiOperation(value = "Edit Car",
             notes = "Provide an id to edit up specific car")
-    public void update(@ApiParam(value = "ID of edited Car", required = true)
-                       @PathVariable int id,
-                       @ApiParam(value = "Edited CarDto", type = "CarDto", required = true)
-                       @RequestBody CarDto car) {
-        carService.update(id, car);
+    public CarDto update(@ApiParam(value = "ID of edited Car", required = true)
+                         @PathVariable int id,
+                         @ApiParam(value = "Edited CarDto", type = "CarDto", required = true)
+                         @RequestBody CarDto car) {
+        return carService.update(id, car);
     }
 
     // TODO: Controller should return created entity
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PostMapping()
     @ApiOperation(value = "Add car")
-    public void add(@ApiParam(value = "CarDto that you want to add", type = "CarDto", required = true)
-                    @RequestBody CarDto car) {
-        carService.add(car);
+    public CarDto add(@ApiParam(value = "CarDto that you want to add", type = "CarDto", required = true)
+                      @RequestBody CarDto car) {
+        return carService.add(car);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
