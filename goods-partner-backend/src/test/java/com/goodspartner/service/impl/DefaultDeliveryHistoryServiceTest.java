@@ -7,6 +7,7 @@ import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.DeliveryDto;
+import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.StoreDto;
 import com.goodspartner.dto.VRPSolution;
@@ -14,6 +15,7 @@ import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RouteStatus;
+import com.goodspartner.entity.Store;
 import com.goodspartner.event.DeliveryAuditEvent;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.service.DeliveryService;
@@ -22,10 +24,9 @@ import com.goodspartner.service.RouteService;
 import com.goodspartner.service.StoreService;
 import com.goodspartner.service.VRPSolver;
 import com.graphhopper.ResponsePath;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.mockito.AdditionalMatchers;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -53,15 +55,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({TestSecurityDisableConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 @RecordApplicationEvents
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
     private static final String MOCKED_DELIVERY_DTO = "datasets/common/delivery/calculate/deliveryDto.json";
     private static final String MOCKED_ROUTE = "datasets/common/delivery/calculate/RouteDto.json";
 
     @Autowired
     private DeliveryService deliveryService;
-    @Autowired
-    private StoreService storeService;
 
     @Autowired
     private ApplicationEvents applicationEvents;
@@ -71,6 +70,7 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
     private RoutePoint routePoint;
     private RoutePoint anotherRoutePoint;
     private RouteDto routeDto;
+    private MapPoint storeMapPoint;
 
     @MockBean
     private GraphhopperService graphhopperService;
@@ -80,14 +80,24 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
     private VRPSolver vrpSolver;
     @MockBean
     private CarRepository carRepository;
+    @MockBean
+    private StoreService storeService;
 
-    @BeforeAll
+    @BeforeEach
     public void before() throws JsonProcessingException {
         var routePointString = "{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"DONE\", \"address\": \"Хрещатик 1А\", \"clientId\": 0, \"mapPoint\": null, \"clientName\": \"ТОВ ПЕКАРНЯ\", \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}";
         routePoint = objectMapper.readValue(routePointString, RoutePoint.class);
 
         var anotherRoutePointString = "{\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}";
         anotherRoutePoint = objectMapper.readValue(anotherRoutePointString, RoutePoint.class);
+
+        Store store = new Store(UUID.fromString("5688492e-ede4-45d3-923b-5f9773fd3d4b"),
+                "Склад №1",
+                "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
+                50.08340335,
+                29.885050630832627);
+
+        when(storeService.getMainStore()).thenReturn(store);
 
         CarDto carDto = CarDto.builder()
                 .id(1)
@@ -99,13 +109,30 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
                 .cooler(Boolean.TRUE)
                 .build();
 
+        String storeAddress = "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна";
+        StoreDto storeDto = StoreDto.builder()
+                .address(storeAddress)
+                .name("Склад №1")
+                .mapPoint(MapPoint.builder()
+                        .address(storeAddress)
+                        .latitude(50.08340335)
+                        .longitude(29.885050630832627)
+                        .status(KNOWN)
+                        .build())
+                .build();
+
         routeDto = new RouteDto();
         routeDto.setCar(carDto);
         routeDto.setStatus(RouteStatus.COMPLETED);
         routeDto.setDistance(0.0);
-        routeDto.setStoreName(storeService.getMainStore().getName());
-        routeDto.setStoreAddress(storeService.getMainStore().getAddress());
+        routeDto.setStore(storeDto);
 
+        storeMapPoint = MapPoint.builder()
+                .status(MapPoint.AddressStatus.KNOWN)
+                .address("м. Київ, вул. Некрасова 138")
+                .latitude(72.12)
+                .longitude(85.15)
+                .build();
     }
 
     @Test
@@ -153,14 +180,12 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
             executeStatementsBefore = "ALTER SEQUENCE routes_sequence RESTART WITH 50")
     @DisplayName("When Calculate Delivery Then History Created")
     public void testWhenCalculatedDeliveryThenCorrectHistoryCreated() throws Exception {
-        StoreDto store = storeService.getMainStore();
-
         Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), Route.class);
 
         VRPSolution regularVrpSolution = new VRPSolution();
         regularVrpSolution.setRoutePoints(route.getRoutePoints());
         regularVrpSolution.setCar(route.getCar());
-        when(vrpSolver.optimize(Collections.emptyList(), store, Collections.emptyList())).thenReturn(Collections.emptyList());
+        when(vrpSolver.optimize(Collections.emptyList(), storeMapPoint, Collections.emptyList())).thenReturn(Collections.emptyList());
         when(vrpSolver.optimize(
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList())),
                 any(),

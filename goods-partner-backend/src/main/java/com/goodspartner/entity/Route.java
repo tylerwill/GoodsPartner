@@ -46,8 +46,6 @@ public class Route {
     private LocalDateTime startTime;
     private LocalDateTime finishTime;
     private long spentTime;
-    private String storeName;
-    private String storeAddress;
     private boolean optimization;
 
     @Type(type = "json")
@@ -60,4 +58,7 @@ public class Route {
 
     @OneToOne
     private Car car;
+
+    @OneToOne
+    private Store store;
 }

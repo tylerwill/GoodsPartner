@@ -10,7 +10,6 @@ import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.Product;
-import com.goodspartner.dto.StoreDto;
 import com.goodspartner.dto.VRPSolution;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
@@ -42,6 +41,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -58,6 +58,7 @@ class DeliveryControllerITest extends AbstractWebITest {
 
     private static final String MOCKED_DELIVERY_DTO = "datasets/common/delivery/calculate/deliveryDto.json";
     private static final String MOCKED_ROUTE = "datasets/common/delivery/calculate/RouteDto.json";
+
     private final LinkedList<RoutePoint> incorrectRoutePoints = new LinkedList<>();
     private final LinkedList<RoutePoint> routePoints = new LinkedList<>();
     @Autowired
@@ -78,9 +79,16 @@ class DeliveryControllerITest extends AbstractWebITest {
     private MapPoint mapPointUnknown;
     private OrderDto orderDtoFirst;
     private OrderDto orderDtoSecond;
+    private MapPoint storeMapPoint;
 
     @BeforeAll
     void before() {
+        storeMapPoint = MapPoint.builder()
+                .address("15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна")
+                .latitude(50.08340335)
+                .longitude(29.885050630832627)
+                .status(KNOWN)
+                .build();
 
         mapPointAutovalidatedFirst = MapPoint.builder()
                 .address("вулиця Єлизавети Чавдар, 36, Київ, Україна, 02000")
@@ -394,15 +402,12 @@ class DeliveryControllerITest extends AbstractWebITest {
             executeStatementsBefore = "ALTER SEQUENCE routes_sequence RESTART WITH 50")
     @DisplayName("when Calculate Delivery With Correct Id then DeliveryDto Return")
     void whenCalculateDelivery_withCorrectId_thenDeliveryDtoReturn() throws Exception {
-
-        StoreDto store = storeService.getMainStore();
-
         Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), Route.class);
 
         VRPSolution regularVrpSolution = new VRPSolution();
         regularVrpSolution.setRoutePoints(route.getRoutePoints());
         regularVrpSolution.setCar(route.getCar());
-        when(vrpSolver.optimize(Collections.emptyList(), store, Collections.emptyList())).thenReturn(Collections.emptyList());
+        when(vrpSolver.optimize(Collections.emptyList(), storeMapPoint, Collections.emptyList())).thenReturn(Collections.emptyList());
         when(vrpSolver.optimize(
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList())),
                 any(),
@@ -427,15 +432,12 @@ class DeliveryControllerITest extends AbstractWebITest {
             executeStatementsBefore = "ALTER SEQUENCE routes_sequence RESTART WITH 1")
     @DisplayName("when RECalculate Delivery With Correct Id then DeliveryDto Return")
     void whenRECalculateDelivery_withCorrectId_thenDeliveryDtoReturn() throws Exception {
-
-        StoreDto store = storeService.getMainStore();
-
         Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), Route.class);
 
         VRPSolution regularVrpSolution = new VRPSolution();
         regularVrpSolution.setRoutePoints(route.getRoutePoints());
         regularVrpSolution.setCar(route.getCar());
-        when(vrpSolver.optimize(Collections.emptyList(), store, Collections.emptyList())).thenReturn(Collections.emptyList());
+        when(vrpSolver.optimize(Collections.emptyList(), storeMapPoint, Collections.emptyList())).thenReturn(Collections.emptyList());
         when(vrpSolver.optimize(
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList())),
                 any(),

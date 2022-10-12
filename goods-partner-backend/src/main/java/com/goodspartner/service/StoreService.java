@@ -1,9 +1,7 @@
 package com.goodspartner.service;
 
-import com.goodspartner.dto.StoreDto;
+import com.goodspartner.entity.Store;
 
 public interface StoreService {
-
-    StoreDto getMainStore();
-
+    Store getMainStore();
 }

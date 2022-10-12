@@ -1,82 +1,87 @@
 {
-    "id": 51,
-    "status": "DRAFT",
-    "totalWeight": 1148.76,
-    "totalPoints": 3,
-    "totalOrders": 4,
-    "distance": 162.44,
-    "estimatedTime": 176,
-    "startTime": null,
-    "finishTime": null,
-    "spentTime": 0,
-    "storeName": "Склад №1",
-    "storeAddress": "Фастів, вул. Широка, 15",
-    "optimization": false,
-    "routePoints": [
-      {
-        "id": "9aeb98de-84c0-4897-8b54-c7bc1194c53f",
-        "status": "PENDING",
-        "completedAt": null,
-        "clientId": 0,
-        "clientName": "ТОВ \"Пекарня\"",
-        "address": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
-        "addressTotalWeight": 804.98,
-        "routePointDistantTime": 76,
-        "orders": [
-          {
-            "id": 10,
-            "orderNumber": "426457",
-            "comment": "бн"
-          },
-          {
-            "id": 9,
-            "orderNumber": "986453",
-            "comment": "бн"
-          }
-        ]
-      },
-      {
-        "id": "a6bc7d85-a15a-40f8-ab7b-90f04b943f6f",
-        "status": "PENDING",
-        "completedAt": null,
-        "clientId": 0,
-        "clientName": "ТОВ \"Пекарня\"",
-        "address": "м. Київ, вул. Металістів, 8, оф. 4-24",
-        "addressTotalWeight": 5.5,
-        "routePointDistantTime": 10,
-        "orders": [
-          {
-            "id": 3,
-            "orderNumber": "45463",
-            "comment": "бн"
-          }
-        ]
-      },
-      {
-        "id": "ccfe2ff1-e8c0-4542-82f9-58e9bf13cc09",
-        "status": "PENDING",
-        "completedAt": null,
-        "clientId": 0,
-        "clientName": "ТОВ \"Пекарня\"",
-        "address": "м. Київ, вул. Хрещатик, 1",
-        "addressTotalWeight": 338.28,
-        "routePointDistantTime": 11,
-        "orders": [
-          {
-            "id": 5,
-            "orderNumber": "432565"
-          }
-        ]
-      }
-    ],
-    "car": {
-      "id": 51,
-      "name": "Mercedes Sprinter",
-      "licencePlate": "AA 1111 CT",
-      "driver": "Oleg Dudka",
-      "weightCapacity": 2000,
-      "cooler": false,
-      "available": true,
-      "travelCost": 12
+  "id": 51,
+  "status": "DRAFT",
+  "totalWeight": 1148.76,
+  "totalPoints": 3,
+  "totalOrders": 4,
+  "distance": 162.44,
+  "estimatedTime": 176,
+  "startTime": null,
+  "finishTime": null,
+  "spentTime": 0,
+  "optimization": false,
+  "routePoints": [
+    {
+      "id": "9aeb98de-84c0-4897-8b54-c7bc1194c53f",
+      "status": "PENDING",
+      "completedAt": null,
+      "clientId": 0,
+      "clientName": "ТОВ \"Пекарня\"",
+      "address": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
+      "addressTotalWeight": 804.98,
+      "routePointDistantTime": 76,
+      "orders": [
+        {
+          "id": 10,
+          "orderNumber": "426457",
+          "comment": "бн"
+        },
+        {
+          "id": 9,
+          "orderNumber": "986453",
+          "comment": "бн"
+        }
+      ]
+    },
+    {
+      "id": "a6bc7d85-a15a-40f8-ab7b-90f04b943f6f",
+      "status": "PENDING",
+      "completedAt": null,
+      "clientId": 0,
+      "clientName": "ТОВ \"Пекарня\"",
+      "address": "м. Київ, вул. Металістів, 8, оф. 4-24",
+      "addressTotalWeight": 5.5,
+      "routePointDistantTime": 10,
+      "orders": [
+        {
+          "id": 3,
+          "orderNumber": "45463",
+          "comment": "бн"
+        }
+      ]
+    },
+    {
+      "id": "ccfe2ff1-e8c0-4542-82f9-58e9bf13cc09",
+      "status": "PENDING",
+      "completedAt": null,
+      "clientId": 0,
+      "clientName": "ТОВ \"Пекарня\"",
+      "address": "м. Київ, вул. Хрещатик, 1",
+      "addressTotalWeight": 338.28,
+      "routePointDistantTime": 11,
+      "orders": [
+        {
+          "id": 5,
+          "orderNumber": "432565"
+        }
+      ]
     }
+  ],
+  "car": {
+    "id": 51,
+    "name": "Mercedes Sprinter",
+    "licencePlate": "AA 1111 CT",
+    "driver": "Oleg Dudka",
+    "weightCapacity": 2000,
+    "cooler": false,
+    "available": true,
+    "travelCost": 12
+  },
+  "store": {
+    "id": "5688492e-ede4-45d3-923b-5f9773fd3d4b",
+    "name": "Склад №1",
+    "address": "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
+    "latitude": 50.08,
+    "longitude": 29.89
+  }
 }

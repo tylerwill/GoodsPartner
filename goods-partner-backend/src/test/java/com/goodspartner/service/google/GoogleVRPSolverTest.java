@@ -1,9 +1,9 @@
 package com.goodspartner.service.google;
 
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.dto.VRPSolution;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.StoreDto;
+import com.goodspartner.dto.VRPSolution;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RoutePointStatus;
@@ -24,9 +24,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @TestInstance(PER_CLASS)
@@ -49,9 +49,17 @@ public class GoogleVRPSolverTest extends AbstractWebITest {
     private List<RoutePoint> routePointList;
     private StoreDto storeDto;
     private Car car;
+    private MapPoint storeMapPoint;
 
     @BeforeAll
     void setUp() throws IOException {
+
+        storeMapPoint = MapPoint.builder()
+                .address("15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна")
+                .latitude(50.08340335)
+                .longitude(29.885050630832627)
+                .status(KNOWN)
+                .build();
 
         car = new Car(
                 1,
@@ -141,7 +149,7 @@ public class GoogleVRPSolverTest extends AbstractWebITest {
         when(responsePath.getDistance()).thenReturn(20.2);
         when(responsePath.getTime()).thenReturn(20L);
 
-        List<VRPSolution> vrpOptimisation = googleVRPSovler.optimize(List.of(car), storeDto, routePointList);
+        List<VRPSolution> vrpOptimisation = googleVRPSovler.optimize(List.of(car), storeMapPoint, routePointList);
 
         Assertions.assertEquals(1, vrpOptimisation.size());
         VRPSolution vrpSolution = vrpOptimisation.get(0);

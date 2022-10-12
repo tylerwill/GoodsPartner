@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -39,6 +40,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestInstance(PER_CLASS)
 @Import({TestSecurityDisableConfig.class})
+@DirtiesContext
 @AutoConfigureMockMvc(addFilters = false)
 class OrdersReportGeneratorITest extends AbstractBaseITest {
 

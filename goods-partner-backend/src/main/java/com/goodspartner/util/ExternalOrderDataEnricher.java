@@ -1,8 +1,8 @@
 package com.goodspartner.util;
 
 import com.goodspartner.dto.Product;
+import com.goodspartner.service.StoreService;
 import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
-import com.goodspartner.service.impl.MockedStoreService;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import java.util.List;
 @Component
 public class ExternalOrderDataEnricher {
 
-    private final MockedStoreService storeService;
+    private final StoreService storeService;
 
     public void enrichODataProduct(ODataProductDto product) {
         product.setUnitWeight(calculateProductUnitWeight(product));

@@ -11,7 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = {
         DeliveryMapperImpl.class,
@@ -20,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
         CarMapperImpl.class,
         OrderExternalMapperImpl.class,
         RouteMapperImpl.class,
-        ProductShippingMapper.class
+        ProductShippingMapper.class,
+        StoreMapperImpl.class
 })
 public class DeliveryMapperTest {
 

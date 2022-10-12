@@ -19,6 +19,7 @@ ROUTES:
     DISTANCE: 0.0
     CAR_ID: 1
     ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    STORE_ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
 
   - ID: 2
     DELIVERY_ID: d0000000-0000-0000-0000-000000000002
@@ -26,6 +27,7 @@ ROUTES:
     DISTANCE: 0.0
     CAR_ID: 2
     ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    STORE_ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
 
   - ID: 3
     DELIVERY_ID: d0000000-0000-0000-0000-000000000002
@@ -33,24 +35,28 @@ ROUTES:
     DISTANCE: 0.0
     CAR_ID: 3
     ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    STORE_ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
 
   - ID: 4
     DELIVERY_ID: d0000000-0000-0000-0000-000000000003
     STATUS: "COMPLETED"
     DISTANCE: 0.0
     ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    STORE_ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
 
   - ID: 5
     DELIVERY_ID: d0000000-0000-0000-0000-000000000004
     STATUS: "APPROVED"
     DISTANCE: 0.0
     ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    STORE_ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
 
   - ID: 6
     DELIVERY_ID: d0000000-0000-0000-0000-000000000004
     STATUS: "DRAFT"
     DISTANCE: 0.0
     ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    STORE_ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
 
 CARS:
   - ID: 1
@@ -82,3 +88,10 @@ CARS:
     AVAILABLE: FALSE
     TRAVEL_COST: 20
     DELETED: FALSE
+
+STORE:
+  - ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
+    NAME: "Склад №1"
+    ADDRESS: "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна"
+    LATITUDE: 50.08
+    LONGITUDE: 29.89
