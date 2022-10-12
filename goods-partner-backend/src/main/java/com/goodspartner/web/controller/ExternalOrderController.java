@@ -3,6 +3,7 @@ package com.goodspartner.web.controller;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.service.GeocodeService;
 import com.goodspartner.service.IntegrationService;
+import com.goodspartner.service.util.OrderCommentProcessor;
 import com.goodspartner.web.controller.response.OrdersCalculation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -22,6 +23,7 @@ public class ExternalOrderController {
 
     private final IntegrationService integrationService; // GrangeDolceIntegration
     private final GeocodeService geocodeService;
+    private final OrderCommentProcessor orderCommentProcessor;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @GetMapping
@@ -30,6 +32,8 @@ public class ExternalOrderController {
         LocalDate calculationDate = LocalDate.parse(date);
 
         List<OrderDto> orders = integrationService.findAllByShippingDate(calculationDate);
+
+        orderCommentProcessor.processOrderComments(orders);
 
         geocodeService.enrichValidAddress(orders);
 

@@ -1,0 +1,97 @@
+{
+  "date": "2022-07-10",
+  "orders": [
+    {
+      "orderNumber": "45678",
+      "refKey": "01grande-0000-0000-0000-000000000000",
+      "createdDate": "2022-02-17",
+      "managerFullName": "Балашова Лариса",
+      "comment": "бн",
+      "clientName": "Домашня випічка",
+      "address": "Бровари, Марії Лагунової, 11",
+      "mapPoint": {
+        "address": "вулиця Марії Лагунової, 11, Бровари, Київська обл., Україна, 07400",
+        "latitude": 50.51,
+        "longitude": 30.79,
+        "status": "AUTOVALIDATED"
+      },
+      "products": [
+        {
+          "productName": "Наповнювач фруктово-ягідний (декоргель) (12 кг)",
+          "amount": 1,
+          "storeName": "Склад №1"
+        }
+      ]
+    },
+    {
+      "orderNumber": "43532",
+      "refKey": "02grande-0000-0000-0000-000000000000",
+      "createdDate": "2022-02-17",
+      "comment": "бн",
+      "managerFullName": "Шульженко Олег",
+      "clientName": "ТОВ Пекарня",
+      "address": "вул. Невідома 8667",
+      "mapPoint": {
+        "address": null,
+        "latitude": 0.0,
+        "longitude": 0.0,
+        "status": "UNKNOWN"
+      },
+      "products": [
+        {
+          "productName": "66784 Арахісова паста",
+          "amount": 1,
+          "storeName": "Склад №2"
+        }
+      ]
+    },
+    {
+      "orderNumber": "45789",
+      "refKey": "04grande-0000-0000-0000-000000000000",
+      "createdDate": "2022-02-17",
+      "comment": "бн",
+      "managerFullName": "Кравченко Сергій",
+      "clientName": "Тераса ТОВ (Іль Моліно)",
+      "address": "м. Житомир, вул Корольова, 1",
+      "mapPoint": {
+        "address": null,
+        "latitude": 0.0,
+        "longitude": 0.0,
+        "status": "UNKNOWN"
+      },
+      "products": [
+        {
+          "productName": "Гурме Голд  (AV23AB) 12л",
+          "amount": 1,
+          "storeName": "Склад №1"
+        }
+      ]
+    },
+
+    {
+      "orderNumber": "00000002130",
+      "refKey": "05grande-0000-0000-0000-000000000000",
+      "createdDate": "2022-02-17",
+      "managerFullName": "Балашова Лариса",
+      "frozen": true,
+      "clientName": "Домашня випічка",
+      "address": "вулиця Київська, 34, Фастів, Київська обл., Україна, 08500",
+      "comment": "доставка: Нова пошта, заморозка: доставка в холодильнику",
+      "mapPoint": {
+        "address": "вулиця Київська, 34, Фастів, Київська обл., Україна, 08500",
+        "latitude": 50.0823797,
+        "longitude": 29.9285037,
+        "status": "AUTOVALIDATED"
+      },
+      "products": [
+        {
+          "productName": "Наповнювач фруктово-ягідний (декоргель) (12 кг)",
+          "amount": 1,
+          "storeName": "Склад №1"
+        }
+      ]
+    }
+
+  ],
+  "totalOrdersWeight": 45.00
+}

@@ -37,13 +37,16 @@ class OrdersControllerITest extends AbstractWebITest {
 
     private static final double AUTOVALIDATED_ADDRESS_LATITUDE = 50.51;
     private static final double AUTOVALIDATED_ADDRESS_LONGITUDE = 30.79;
-    private static final double OUTSIDE_REGION_ADDRESS_LATITUDE = 50.25;
-    private static final double OUTSIDE_REGION_ADDRESS_LONGITUDE = 28.69;
+    private static final double OUT_OF_REGION_ADDRESS_LATITUDE = 50.25;
+    private static final double OUT_OF_REGION_ADDRESS_LONGITUDE = 28.69;
+    private static final double NOVA_POSHTA_ADDRESS_LATITUDE = 50.0823797;
+    private static final double NOVA_POSHTA_ADDRESS_LONGITUDE = 29.9285037;
     private static final String FORMATTED_ADDRESS = "вулиця Марії Лагунової, 11, Бровари, Київська обл., Україна, 07400";
     private static final String AUTOVALIDATED_ADDRESS = "Бровари, Марії Лагунової, 11";
     private static final String UNKNOWN_ADDRESS = "вул. Невідома 8667";
     private static final String KNOWN_ADDRESS = "м.Львів, вулиця Незалежності 105";
-    private static final String OUTSIDE_REGION_ADDRESS = "м. Житомир, вул Корольова, 1";
+    private static final String OUT_OF_REGION_ADDRESS = "м. Житомир, вул Корольова, 1";
+    private static final String NOVA_POSHTA_ADDRESS = "вулиця Київська, 34, Фастів, Київська обл., Україна, 08500";
 
     @MockBean
     private IntegrationService integrationService;
@@ -51,10 +54,11 @@ class OrdersControllerITest extends AbstractWebITest {
     @MockBean
     private GoogleClient googleClient;
 
-    private OrderDto orderDtoFirst;
-    private OrderDto orderDtoSecond;
-    private OrderDto orderDtoThird;
-    private OrderDto orderDtoFourth;
+    private OrderDto orderWithAutovalidatedAddress;
+    private OrderDto orderWithUnknownAddress;
+    private OrderDto orderWithKnownAddress;
+    private OrderDto orderWithOutOfRegionAddress;
+    private OrderDto orderWithSpecialComment;
 
     @BeforeAll
     void setUp() {
@@ -67,7 +71,7 @@ class OrdersControllerITest extends AbstractWebITest {
                 .totalProductWeight(12.0)
                 .build();
 
-        orderDtoFirst = OrderDto.builder()
+        orderWithAutovalidatedAddress = OrderDto.builder()
                 .orderNumber("45678")
                 .refKey("01grande-0000-0000-0000-000000000000")
                 .createdDate(LocalDate.parse("2022-02-17"))
@@ -87,7 +91,7 @@ class OrdersControllerITest extends AbstractWebITest {
                 .totalProductWeight(20.0)
                 .build();
 
-        orderDtoSecond = OrderDto.builder()
+        orderWithUnknownAddress = OrderDto.builder()
                 .orderNumber("43532")
                 .refKey("02grande-0000-0000-0000-000000000000")
                 .createdDate(LocalDate.parse("2022-02-17"))
@@ -107,7 +111,7 @@ class OrdersControllerITest extends AbstractWebITest {
                 .totalProductWeight(10.0)
                 .build();
 
-        orderDtoThird = OrderDto.builder()
+        orderWithKnownAddress = OrderDto.builder()
                 .orderNumber("45679")
                 .refKey("03grande-0000-0000-0000-000000000000")
                 .createdDate(LocalDate.parse("2022-02-17"))
@@ -127,16 +131,29 @@ class OrdersControllerITest extends AbstractWebITest {
                 .totalProductWeight(1.0)
                 .build();
 
-        orderDtoFourth = OrderDto.builder()
+        orderWithOutOfRegionAddress = OrderDto.builder()
                 .orderNumber("45789")
                 .refKey("04grande-0000-0000-0000-000000000000")
                 .createdDate(LocalDate.parse("2022-02-17"))
                 .clientName("Тераса ТОВ (Іль Моліно)")
-                .address(OUTSIDE_REGION_ADDRESS)
+                .address(OUT_OF_REGION_ADDRESS)
                 .comment("бн")
                 .managerFullName("Кравченко Сергій")
                 .products(List.of(productFourth))
                 .orderWeight(1.00)
+                .build();
+
+        orderWithSpecialComment = OrderDto.builder()
+                .orderNumber("00000002130")
+                .refKey("05grande-0000-0000-0000-000000000000")
+                .createdDate(LocalDate.parse("2022-02-17"))
+                .clientName("Домашня випічка")
+                .address(AUTOVALIDATED_ADDRESS)
+                .comment("доставка: Нова пошта, заморозка: доставка в холодильнику")
+                .managerFullName("Балашова Лариса")
+                .isFrozen(false)
+                .products(List.of(productFirst))
+                .orderWeight(12.00)
                 .build();
     }
 
@@ -145,11 +162,17 @@ class OrdersControllerITest extends AbstractWebITest {
     void whenGetOrders_then_expectedJsonReturned() throws Exception {
 
         when(integrationService.findAllByShippingDate(LocalDate.parse("2022-07-10")))
-                .thenReturn(List.of(orderDtoFirst, orderDtoSecond, orderDtoFourth));
+                .thenReturn(
+                        List.of(orderWithAutovalidatedAddress,
+                                orderWithUnknownAddress,
+                                orderWithOutOfRegionAddress));
 
         mockGoogleGeocodeService();
 
-        when(integrationService.calculateTotalOrdersWeight(List.of(orderDtoFirst, orderDtoSecond, orderDtoFourth)))
+        when(integrationService.calculateTotalOrdersWeight(
+                List.of(orderWithAutovalidatedAddress,
+                        orderWithUnknownAddress,
+                        orderWithOutOfRegionAddress)))
                 .thenReturn(33.00);
 
         mockMvc.perform(get("/api/v1/orders")
@@ -161,6 +184,34 @@ class OrdersControllerITest extends AbstractWebITest {
     }
 
     @Test
+    @DisplayName("when Get Orders Containing Special Comment then Expected Json Returned")
+    void whenGetOrdersContainingSpecialComment_then_expectedJsonReturned() throws Exception {
+
+        when(integrationService.findAllByShippingDate(LocalDate.parse("2022-07-10")))
+                .thenReturn(
+                        List.of(orderWithAutovalidatedAddress,
+                                orderWithUnknownAddress,
+                                orderWithOutOfRegionAddress,
+                                orderWithSpecialComment));
+
+        mockGoogleGeocodeService();
+
+        when(integrationService.calculateTotalOrdersWeight(
+                List.of(orderWithAutovalidatedAddress,
+                        orderWithUnknownAddress,
+                        orderWithOutOfRegionAddress,
+                        orderWithSpecialComment)))
+                .thenReturn(45.00);
+
+        mockMvc.perform(get("/api/v1/orders")
+                        .param("date", "2022-07-10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .json(getResponseAsString("response/orders-with-special-comments.json")));
+    }
+
+    @Test
     @DataSet(value = "common/orders_external/dataset_address_external.yml",
             cleanBefore = true,
             skipCleaningFor = {"flyway_schema_history"})
@@ -168,12 +219,20 @@ class OrdersControllerITest extends AbstractWebITest {
     void givenKnownAddressesTable_whenGetOrders_then_expectedJsonReturned() throws Exception {
 
         when(integrationService.findAllByShippingDate(LocalDate.parse("2022-07-10")))
-                .thenReturn(List.of(orderDtoFirst, orderDtoSecond, orderDtoThird, orderDtoFourth));
+                .thenReturn(
+                        List.of(orderWithAutovalidatedAddress,
+                                orderWithUnknownAddress,
+                                orderWithKnownAddress,
+                                orderWithOutOfRegionAddress));
 
         mockGoogleGeocodeService();
 
         when(integrationService
-                .calculateTotalOrdersWeight(List.of(orderDtoFirst, orderDtoSecond, orderDtoThird, orderDtoFourth)))
+                .calculateTotalOrdersWeight(
+                        List.of(orderWithAutovalidatedAddress,
+                                orderWithUnknownAddress,
+                                orderWithKnownAddress,
+                                orderWithOutOfRegionAddress)))
                 .thenReturn(43.00);
 
         mockMvc.perform(get("/api/v1/orders")
@@ -223,7 +282,7 @@ class OrdersControllerITest extends AbstractWebITest {
 
         //configure mock for outside region address
         LatLng latLngMockForForOutsideRegionAddress =
-                new LatLng(OUTSIDE_REGION_ADDRESS_LATITUDE, OUTSIDE_REGION_ADDRESS_LONGITUDE);
+                new LatLng(OUT_OF_REGION_ADDRESS_LATITUDE, OUT_OF_REGION_ADDRESS_LONGITUDE);
         Geometry geometryMockForForOutsideRegionAddress = new Geometry();
         geometryMockForForOutsideRegionAddress.location = latLngMockForForOutsideRegionAddress;
         GeocodingResult geocodingResultForOutsideRegionAddress = new GeocodingResult();
@@ -232,11 +291,26 @@ class OrdersControllerITest extends AbstractWebITest {
         GeocodingResult[] mockedGeocodeResultsForOutsideRegionAddress =
                 new GeocodingResult[]{geocodingResultForOutsideRegionAddress};
 
-        when(googleClient.getGeocodingResults(OUTSIDE_REGION_ADDRESS))
+        when(googleClient.getGeocodingResults(OUT_OF_REGION_ADDRESS))
                 .thenReturn(mockedGeocodeResultsForOutsideRegionAddress);
 
         //configure mock for unknown region address
         when(googleClient.getGeocodingResults(UNKNOWN_ADDRESS))
                 .thenReturn(new GeocodingResult[0]);
+
+        //configure mock for Nova Poshta address
+        LatLng latLngMockForNovaPoshtaAddress =
+                new LatLng(NOVA_POSHTA_ADDRESS_LATITUDE, NOVA_POSHTA_ADDRESS_LONGITUDE);
+        Geometry geometryMockForNovaPoshtaAddress = new Geometry();
+        geometryMockForNovaPoshtaAddress.location = latLngMockForNovaPoshtaAddress;
+        GeocodingResult geocodingResultForNovaPoshtaAddress = new GeocodingResult();
+        geocodingResultForNovaPoshtaAddress.formattedAddress = NOVA_POSHTA_ADDRESS;
+        geocodingResultForNovaPoshtaAddress.geometry = geometryMockForNovaPoshtaAddress;
+
+        GeocodingResult[] mockedGeocodeResultsForNovaPoshtaAddress =
+                new GeocodingResult[]{geocodingResultForNovaPoshtaAddress};
+
+        when(googleClient.getGeocodingResults(NOVA_POSHTA_ADDRESS))
+                .thenReturn(mockedGeocodeResultsForNovaPoshtaAddress);
     }
 }
