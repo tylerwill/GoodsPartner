@@ -2,6 +2,8 @@ package com.goodspartner.web.handler;
 
 import com.goodspartner.exceptions.DeliveryNotFoundException;
 import com.goodspartner.exceptions.IllegalDeliveryStatusForOperation;
+import com.goodspartner.exceptions.IllegalRoutePointStatusForOperation;
+import com.goodspartner.exceptions.IllegalRouteStatusForOperation;
 import com.goodspartner.exceptions.NoOrdersFoundForDelivery;
 import com.goodspartner.exceptions.NoRoutesFoundForDelivery;
 import com.goodspartner.web.dto.ErrorMessage;
@@ -33,6 +35,18 @@ public class DeliveryControllerAdvice {
 
     @ExceptionHandler(IllegalDeliveryStatusForOperation.class)
     public ResponseEntity<ErrorMessage> illegalDeliveryStatusForOperation(IllegalDeliveryStatusForOperation exception) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+    }
+
+    @ExceptionHandler(IllegalRoutePointStatusForOperation.class)
+    public ResponseEntity<ErrorMessage> illegalRoutePointStatusForOperation(IllegalRoutePointStatusForOperation exception) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+    }
+
+    @ExceptionHandler(IllegalRouteStatusForOperation.class)
+    public ResponseEntity<ErrorMessage> illegalRouteStatusForOperation(IllegalRouteStatusForOperation exception) {
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
     }

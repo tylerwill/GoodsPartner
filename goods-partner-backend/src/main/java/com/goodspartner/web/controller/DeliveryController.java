@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -131,6 +132,13 @@ public class DeliveryController {
     @PutMapping("/{id}/routes/{routeId}/route-points/{routePointId}")
     public void updateRoutePoint(@PathVariable int routeId, @PathVariable String routePointId, @RequestBody RoutePoint routePoint) {
         routeService.updatePoint(routeId, routePointId, routePoint);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PutMapping("/{id}/routes/{routeId}/reorder")
+    public void reorderRoutePoints(@PathVariable("id") UUID deliveryId, @PathVariable int routeId,
+                                   @RequestBody LinkedList<RoutePoint> routePoints) {
+        routeService.reorderRoutePoints(deliveryId, routeId, routePoints);
     }
 
     /**

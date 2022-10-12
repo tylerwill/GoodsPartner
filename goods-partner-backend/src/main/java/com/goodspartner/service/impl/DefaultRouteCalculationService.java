@@ -27,6 +27,7 @@ import java.math.RoundingMode;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -35,7 +36,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DefaultRouteCalculationService implements RouteCalculationService {
-
     private final StoreService storeFactory;
     private final VRPSolver vrpSolver;
     private final GraphhopperService graphhopperService;
@@ -94,6 +94,20 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     }
 
     @VisibleForTesting
+    Route recalculateRoute(Route route, LinkedList<RoutePoint> routePoints) {
+        List<MapPoint> mapPoints = routePoints.stream().map(RoutePoint::getMapPoint).toList();
+
+        ResponsePath routePath = graphhopperService.getRoute(mapPoints);
+
+        route.setDistance(BigDecimal.valueOf(routePath.getDistance() / 1000)
+                .setScale(2, RoundingMode.HALF_UP).doubleValue());
+        route.setEstimatedTime(Duration.ofMillis(routePath.getTime()).toMinutes());
+        route.setRoutePoints(routePoints);
+
+        return route;
+    }
+
+    @VisibleForTesting
     int getTotalOrders(List<RoutePoint> routePoints) {
         return routePoints.stream()
                 .map(routePointDto -> routePointDto.getOrders().size())
@@ -103,8 +117,8 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     @VisibleForTesting
     double getRouteOrdersTotalWeight(List<RoutePoint> routePoints) {
         return BigDecimal.valueOf(routePoints.stream()
-                .map(RoutePoint::getAddressTotalWeight)
-                .collect(Collectors.summarizingDouble(amount -> amount)).getSum())
+                        .map(RoutePoint::getAddressTotalWeight)
+                        .collect(Collectors.summarizingDouble(amount -> amount)).getSum())
                 .setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
@@ -171,8 +185,8 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
 
     private double getOrderTotalWeight(List<Product> orderedProducts) {
         return BigDecimal.valueOf(orderedProducts.stream()
-                .map(Product::getTotalProductWeight)
-                .collect(Collectors.summarizingDouble(weight -> weight)).getSum())
+                        .map(Product::getTotalProductWeight)
+                        .collect(Collectors.summarizingDouble(weight -> weight)).getSum())
                 .setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 }

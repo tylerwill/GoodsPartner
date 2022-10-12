@@ -1,12 +1,17 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.RouteDto;
+
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.entity.RouteStatus;
+import com.goodspartner.exceptions.DeliveryNotFoundException;
+import com.goodspartner.exceptions.IllegalDeliveryStatusForOperation;
+import com.goodspartner.exceptions.IllegalRoutePointStatusForOperation;
+import com.goodspartner.exceptions.IllegalRouteStatusForOperation;
 import com.goodspartner.exceptions.RouteNotFoundException;
 import com.goodspartner.mapper.RouteMapper;
 import com.goodspartner.mapper.RoutePointMapper;
@@ -19,7 +24,12 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
+
+import static com.goodspartner.entity.DeliveryStatus.COMPLETED;
+import static com.goodspartner.entity.RoutePointStatus.PENDING;
 
 @AllArgsConstructor
 @Service
@@ -30,6 +40,7 @@ public class DefaultRouteService implements RouteService {
     private final RouteMapper routeMapper;
     private final RouteRepository routeRepository;
     private final DeliveryRepository deliveryRepository;
+    private final DefaultRouteCalculationService routeCalculationService;
     private final DefaultDeliveryHistoryService deliveryHistoryService;
 
     @Override
@@ -83,6 +94,24 @@ public class DefaultRouteService implements RouteService {
         routeRepository.save(route);
     }
 
+    @Override
+    public void reorderRoutePoints(UUID deliveryId, int routeId, LinkedList<RoutePoint> routePoints) {
+
+        validateDelivery(deliveryId);
+
+        Route route = routeRepository.findById(routeId)
+                .orElseThrow(() -> new RouteNotFoundException(routeId));
+
+        validateRoute(route, deliveryId);
+
+        if (isAllRoutePointsPending(routePoints)) {
+            Route reorderedRoute = routeCalculationService.recalculateRoute(route, routePoints);
+            routeRepository.save(reorderedRoute);
+        } else {
+            throw new IllegalRoutePointStatusForOperation(routePoints, "reorder");
+        }
+    }
+
     private boolean isAllRoutePointsDone(List<RoutePoint> routePoints) {
         return routePoints.stream()
                 .filter(routePointDto -> !routePointDto.getStatus().equals(RoutePointStatus.DONE))
@@ -97,6 +126,7 @@ public class DefaultRouteService implements RouteService {
                 .isEmpty();
     }
 
+
     private void processDeliveryStatus(Route route) {
         Delivery delivery = route.getDelivery();
         if (isAllRoutesCompleted(delivery)) {
@@ -106,6 +136,32 @@ public class DefaultRouteService implements RouteService {
 
             deliveryRepository.save(delivery);
             log.info("Delivery ID {} was automatically close due to all Routes are COMPLETED", route.getId());
+        }
+    }
+
+    private boolean isAllRoutePointsPending(List<RoutePoint> routePoints) {
+        return routePoints.stream()
+                .allMatch(routePoint -> routePoint.getStatus().equals(PENDING));
+    }
+
+    private void validateDelivery(UUID deliveryId) {
+        Delivery savedDelivery = deliveryRepository.findById(deliveryId).
+                orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
+
+        if (savedDelivery.getStatus().equals(COMPLETED)) {
+            throw new IllegalDeliveryStatusForOperation(savedDelivery, "reorder route for");
+        }
+    }
+
+    private void validateRoute(Route route, UUID deliveryId) {
+        if (!route.getDelivery().getId().equals(deliveryId)) {
+            throw new RouteNotFoundException(deliveryId);
+        }
+        RouteStatus routeStatus = route.getStatus();
+        if (routeStatus.equals(RouteStatus.COMPLETED) ||
+                routeStatus.equals(RouteStatus.INPROGRESS) ||
+                routeStatus.equals(RouteStatus.INCOMPLETE)) {
+            throw new IllegalRouteStatusForOperation(route, "reorder");
         }
     }
 }

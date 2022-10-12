@@ -14,6 +14,8 @@ import com.goodspartner.dto.StoreDto;
 import com.goodspartner.dto.VRPSolution;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
+import com.goodspartner.entity.RoutePoint;
+import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.StoreService;
@@ -33,9 +35,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,7 +58,8 @@ class DeliveryControllerITest extends AbstractWebITest {
 
     private static final String MOCKED_DELIVERY_DTO = "datasets/common/delivery/calculate/deliveryDto.json";
     private static final String MOCKED_ROUTE = "datasets/common/delivery/calculate/RouteDto.json";
-
+    private final LinkedList<RoutePoint> incorrectRoutePoints = new LinkedList<>();
+    private final LinkedList<RoutePoint> routePoints = new LinkedList<>();
     @Autowired
     private StoreService storeService;
 
@@ -142,6 +148,96 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .products(List.of(product))
                 .orderWeight(12.00)
                 .build();
+
+        MapPoint mapPointFirst = MapPoint.builder()
+                .longitude(30.5339629)
+                .latitude(50.4782535)
+                .address("м. Київ, вул. Електриків 29А")
+                .status(MapPoint.AddressStatus.KNOWN)
+                .build();
+
+        MapPoint mapPointSecond = MapPoint.builder()
+                .longitude(30.603752)
+                .latitude(50.4439883)
+                .address("м.Київ, вул.Туманяна,15-А")
+                .status(MapPoint.AddressStatus.KNOWN)
+                .build();
+
+        MapPoint mapPointThird = MapPoint.builder()
+                .longitude(30.4936555)
+                .latitude(50.4895138)
+                .address("м.Київ,пр-т Бандери,21")
+                .status(MapPoint.AddressStatus.KNOWN)
+                .build();
+
+        MapPoint mapPointFourth = MapPoint.builder()
+                .longitude(80.4936555)
+                .latitude(50.4895138)
+                .address("м.Київ,пр-т Бандери,142")
+                .status(MapPoint.AddressStatus.KNOWN)
+                .build();
+
+        RoutePoint.OrderReference orderReference = RoutePoint.OrderReference.builder()
+                .id(1)
+                .comment("бн")
+                .orderTotalWeight(1500.35)
+                .orderNumber("145366")
+                .build();
+
+        RoutePoint routePointFirst = RoutePoint.builder()
+                .id(UUID.fromString("8a5dd1be-7584-4a6e-9981-f5c9e7cfae58"))
+                .status(RoutePointStatus.PENDING)
+                .completedAt(null)
+                .clientName("Очеретня І.П.ФОП")
+                .address("м. Київ, вул. Електриків 29А")
+                .addressTotalWeight(24.0)
+                .routePointDistantTime(0)
+                .mapPoint(mapPointFirst)
+                .orders(List.of(orderReference))
+                .build();
+
+        RoutePoint routePointSecond = RoutePoint.builder()
+                .id(UUID.fromString("67fe44ab-78c2-4bf2-9a1d-f3551c9caec7"))
+                .status(RoutePointStatus.PENDING)
+                .completedAt(null)
+                .clientName("Кендібуфет ТОВ")
+                .address("м.Київ, вул.Туманяна,15-А")
+                .addressTotalWeight(20.0)
+                .routePointDistantTime(0)
+                .mapPoint(mapPointSecond)
+                .orders(List.of(orderReference))
+                .build();
+
+        RoutePoint routePointThird = RoutePoint.builder()
+                .id(UUID.fromString("96b4f747-4ce7-40ca-a728-3183ca103d2f"))
+                .status(RoutePointStatus.PENDING)
+                .completedAt(null)
+                .clientName("Фоззі-Фуд ТОВ")
+                .address("м.Київ,пр-т Бандери,21")
+                .addressTotalWeight(18.0)
+                .routePointDistantTime(0)
+                .orders(List.of(orderReference))
+                .mapPoint(mapPointThird)
+                .build();
+
+        RoutePoint routePointFourth = RoutePoint.builder()
+                .id(UUID.fromString("f6f73d76-8005-11ec-b3ce-00155dd72305"))
+                .status(RoutePointStatus.DONE)
+                .completedAt(LocalDateTime.now())
+                .clientName("Кух Плюс ТОВ")
+                .address("м.Київ,пр-т Бандери,142")
+                .addressTotalWeight(18.0)
+                .routePointDistantTime(100)
+                .orders(List.of(orderReference))
+                .mapPoint(mapPointFourth)
+                .build();
+
+        routePoints.add(routePointFirst);
+        routePoints.add(routePointSecond);
+        routePoints.add(routePointThird);
+
+        incorrectRoutePoints.add(routePointFirst);
+        incorrectRoutePoints.add(routePointFourth);
     }
 
     @Test
@@ -184,8 +280,8 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .build();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(deliveryDto)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(deliveryDto)))
                 .andExpect(status().isOk());
     }
 
@@ -436,5 +532,100 @@ class DeliveryControllerITest extends AbstractWebITest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(List.of(orderDtoSecond))))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DataSet(value = "common/recalculate_route/dataset_routes.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
+    @ExpectedDataSet(value = "datasets/common/recalculate_route/dataset_updated_routes.yml")
+    @DisplayName("when Reorder Route then Ok Status Returned")
+    void whenReorderRoute_thenOkStatusReturned() throws Exception {
+
+        when(graphhopperService.getRoute(anyList())).thenReturn(graphhopperResponse);
+        when(graphhopperResponse.getDistance()).thenReturn(42000.0);
+        when(graphhopperResponse.getTime()).thenReturn(4800000L);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
+                                "123e4567-e89b-12d3-a456-556642440000/routes/1/reorder")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(routePoints)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DataSet(value = "common/recalculate_route/dataset_routes.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
+    @DisplayName("when Reorder Route with Not Existing DeliveryId then Not Found Return")
+    void whenReorderRoute_withNotExistingDeliveryId_thenNotFoundReturn() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
+                                "123e4567-e89b-12d3-a456-556642440035/routes/1/reorder")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(routePoints)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DataSet(value = "common/recalculate_route/dataset_routes.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
+    @DisplayName("when Reorder Route with Not Existing Route Id then Not Found Return")
+    void whenReorderRoute_withNotExistingRouteId_thenNotFoundReturn() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
+                                "123e4567-e89b-12d3-a456-556642440034/routes/10/reorder")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(routePoints)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DataSet(value = "common/recalculate_route/dataset_routes.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
+    @DisplayName("when Reorder Route with Incorrect DeliveryId To RouteId then Not Found Return")
+    void whenReorderRoute_withIncorrectDeliveryIdToRouteId_thenNotFoundReturn() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
+                                "123e4567-e89b-12d3-a456-556642440000/routes/2/reorder")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(routePoints)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DataSet(value = "common/recalculate_route/dataset_routes.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
+    @DisplayName("when Reorder Route with Incorrect Route Status then Exception Thrown")
+    void whenReorderRoute_withIncorrectRouteStatus_thenExceptionThrown() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
+                                "123e4567-e89b-12d3-a456-556642440001/routes/2/reorder")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(routePoints)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DataSet(value = "common/recalculate_route/dataset_routes.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
+    @DisplayName("when Reorder Route with Incorrect Delivery Status then Exception Thrown")
+    void whenReorderRoute_withIncorrectDeliveryStatus_thenExceptionThrown() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
+                                "f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454/routes/3/reorder")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(routePoints)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DataSet(value = "datasets/common/recalculate_route/dataset_routes.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
+    @DisplayName("when Reorder Route Route with Incorrect RoutePointStatus then Exception Thrown")
+    void whenReorderRoute_withIncorrectRoutePointStatus_thenExceptionThrown() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
+                                "125e4567-e89b-12d3-a456-556642440005/routes/4/reorder")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(incorrectRoutePoints)))
+                .andExpect(status().isBadRequest());
     }
 }
