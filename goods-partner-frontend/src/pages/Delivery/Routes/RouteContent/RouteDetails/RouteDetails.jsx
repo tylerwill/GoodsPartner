@@ -7,8 +7,6 @@ import InfoTableItem from "../../../../../components/InfoTableItem/InfoTableItem
 import RouteMapDialog from "../RouteMapDialog/RouteMapDialog";
 
 const RouteDetails = ({route, updateRoute, deliveryDate}) => {
-
-    console.log("render route details", route);
     return (<Box sx={{
         width: '100%', background: 'rgba(0, 0, 0, 0.02)',
         borderRadius: '6px', p: 2

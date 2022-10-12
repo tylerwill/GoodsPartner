@@ -7,10 +7,10 @@ import {Route, Routes} from "react-router-dom";
 import DeliveriesContainer from "./pages/Deliveries/DeliveriesContainer";
 import DeliveryContainer from "./pages/Delivery/DeliveryContainer";
 import {useJsApiLoader} from "@react-google-maps/api";
-import {Backdrop, createTheme} from "@mui/material";
+import {Backdrop} from "@mui/material";
+import ReportsContainer from "./pages/Reports/ReportsContainer";
 
 const libraries = ['places'];
-
 
 
 function App() {
@@ -20,8 +20,8 @@ function App() {
     const {isLoaded} = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: key,
-        libraries:libraries,
-        region:'UA'
+        libraries: libraries,
+        region: 'UA'
     })
 
     // TODO: Temp solution, render our app only if google maps loaded.
@@ -33,7 +33,6 @@ function App() {
     }
 
 
-
     return (
         <>
             <CssBaseline/>
@@ -42,6 +41,7 @@ function App() {
                     <Route path="/cars" element={<CarsContainer/>}/>
                     <Route path="/deliveries" element={<DeliveriesContainer/>}/>
                     <Route path="/delivery/:id" element={<DeliveryContainer/>}/>
+                    <Route path="/reports/" element={<ReportsContainer/>}/>
                 </Routes>
             </Layout>
         </>

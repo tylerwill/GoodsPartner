@@ -50,11 +50,11 @@ export const deliveriesApi = {
         return axiosWithSetting.get(`/api/v1/deliveries/${id}`);
     },
 
-    linkOrders (id, orders) {
+    linkOrders(id, orders) {
         return axiosWithSetting.post(`/api/v1/deliveries/${id}/orders`, orders);
     },
 
-    calculate (id) {
+    calculate(id) {
         return axiosWithSetting.post(`/api/v1/deliveries/${id}/calculate`);
     },
 
@@ -74,4 +74,11 @@ export const deliveriesApi = {
     findHistory(deliveryId) {
         return axiosWithSetting.get(`/api/v1/deliveries/${deliveryId}/histories`);
     }
+}
+
+export const reportsApi = {
+    getDeliveriesStatistics(dateFrom, dateTo) {
+        return axiosWithSetting.get('/api/v1/statistics/deliveries', {params: {dateFrom, dateTo}});
+    },
+
 }
