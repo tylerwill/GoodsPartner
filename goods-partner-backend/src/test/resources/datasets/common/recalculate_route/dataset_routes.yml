@@ -9,8 +9,6 @@ ROUTES:
     START_TIME: null
     FINISH_TIME: null
     SPENT_TIME: 0
-    STORE_NAME: "Склад №1"
-    STORE_ADDRESS: "Фастів, вул. Широка, 15"
     ROUTE_POINTS: "[{\"id\":\"67fe44ab-78c2-4bf2-9a1d-f3551c9caec7\",\"status\":\"PENDING\",\"completedAt\":null,\"clientId\":0,\"clientName\":\"Кендібуфет ТОВ\",\"address\":\"вул.Туманяна,15-А\",\"addressTotalWeight\":20.0,\"routePointDistantTime\":0,\"mapPoint\":{\"address\":\"м.Київ, вул.Туманяна,15-А\",\"latitude\":50.4439883,\"longitude\":30.603752,\"status\":\"KNOWN\"},\"orders\":[{\"id\":12,\"orderNumber\":\"00000002658\",\"comment\":null}]},{\"id\":\"96b4f747-4ce7-40ca-a728-3183ca103d2f\",\"status\":\"PENDING\",\"completedAt\":null,\"clientId\":0,\"clientName\":\"Фоззі-Фуд ТОВ\",\"address\":\"м.Київ,пр-т Бандери,21\",\"addressTotalWeight\":18.0,\"routePointDistantTime\":0,\"mapPoint\":{\"address\":\"м.Київ,пр-т Бандери,21\",\"latitude\":50.4895138,\"longitude\":30.4936555,\"status\":\"KNOWN\"},\"orders\":[{\"id\":10,\"orderNumber\":\"00000002611\",\"comment\":null}]},{\"id\":\"8a5dd1be-7584-4a6e-9981-f5c9e7cfae58\",\"status\":\"PENDING\",\"completedAt\":null,\"clientId\":0,\"clientName\":\"Очеретня І.П.ФОП\",\"address\":\"м. Київ, вул. Електриків 29А\",\"addressTotalWeight\":24.0,\"routePointDistantTime\":0,\"mapPoint\":{\"address\":\"м. Київ, вул. Електриків 29А\",\"latitude\":50.4782535,\"longitude\":30.5339629,\"status\":\"KNOWN\"},\"orders\":[{\"id\":13,\"orderNumber\":\"00000002659\",\"comment\":null}]}]"
     OPTIMIZATION: TRUE
     DELIVERY_ID: 123e4567-e89b-12d3-a456-556642440000
@@ -25,8 +23,6 @@ ROUTES:
     SPENT_TIME: 0
     START_TIME: null
     FINISH_TIME: null
-    STORE_NAME: "Склад №1"
-    STORE_ADDRESS: "Фастів, вул. Широка, 15"
     OPTIMIZATION: TRUE
     ROUTE_POINTS: "[{\"id\":\"741a37c1-8f13-4335-95f6-a5b14aaf7fbd\",\"orders\":[{\"id\":9,\"orderNumber\":\"986453\",\"comment\":\"бн\"},{\"id\":10,\"orderNumber\":\"426457\",\"comment\":\"бн\"},{\"id\":12,\"orderNumber\":\"586126\",\"comment\":\"бн\"}],\"status\":\"PENDING\",\"address\":\"м. Київ, вул. Молодогвардійська, 22, оф. 35\",\"clientId\":1,\"clientName\":\"ТОВ Пекарня\",\"completedAt\":[2022,8,8,12,23,23],\"addressTotalWeight\":804.98,\"routePointDistantTime\":60},{\"id\":\"93e632fa-18a6-11ed-861d-0242ac120002\",\"orders\":[{\"id\":3,\"orderNumber\":\"45463\",\"comment\":\"бн\"}],\"status\":\"PENDING\",\"address\":\"м. Київ, вул. Глибочицька, 12Б, оф. 3\",\"clientId\":2,\"clientName\":\"ТОВ Кондитерська\",\"completedAt\":[2022,8,8,15,45,12],\"addressTotalWeight\":5.5,\"routePointDistantTime\":180},{\"id\":\"148b44a8-3fce-45fd-91f2-fccabbb52525\",\"orders\":[{\"id\":5,\"orderNumber\":\"432565\",\"comment\":\"бн\"}],\"status\":\"PENDING\",\"address\":\"м. Київ, вул. Хрещатик, 1\",\"clientId\":3,\"clientName\":\"ТОВ Хлібзавод\",\"completedAt\":[2022,8,8,19,38,19],\"addressTotalWeight\":338.28,\"routePointDistantTime\":240}]"
     DELIVERY_ID: 123e4567-e89b-12d3-a456-556642440001
@@ -41,8 +37,6 @@ ROUTES:
     SPENT_TIME: 400
     START_TIME: "2022-08-08 11:00:00"
     FINISH_TIME: "2022-08-08 13:00:00"
-    STORE_NAME: "Склад №2"
-    STORE_ADDRESS: "Фастів, вул. Зелена, 5"
     OPTIMIZATION: TRUE
     ROUTE_POINTS: "[{\"id\":\"841a37c1-8f13-4335-95f6-a5b14aaf7fbs\",\"orders\":[{\"id\":9,\"orderNumber\":\"986453\",\"comment\":\"бн\"},{\"id\":10,\"orderNumber\":\"426457\",\"comment\":\"бн\"},{\"id\":12,\"orderNumber\":\"586126\",\"comment\":\"бн\"}],\"status\":\"DONE\",\"address\":\"м. Київ, вул. Молодогвардійська, 22, оф. 35\",\"clientId\":1,\"clientName\":\"ТОВ Пекарня\",\"completedAt\":[2022,8,8,12,23,23],\"addressTotalWeight\":804.98,\"routePointDistantTime\":60},{\"id\":\"93e632fa-18a6-11ed-861d-0242ac120002\",\"orders\":[{\"id\":3,\"orderNumber\":\"45463\",\"comment\":\"бн\"}],\"status\":\"DONE\",\"address\":\"м. Київ, вул. Глибочицька, 12Б, оф. 3\",\"clientId\":2,\"clientName\":\"ТОВ Кондитерська\",\"completedAt\":[2022,8,8,15,45,12],\"addressTotalWeight\":5.5,\"routePointDistantTime\":180},{\"id\":\"148b44a8-3fce-45fd-91f2-fccabbb52525\",\"orders\":[{\"id\":5,\"orderNumber\":\"432565\",\"comment\":\"бн\"}],\"status\":\"DONE\",\"address\":\"м. Київ, вул. Хрещатик, 1\",\"clientId\":3,\"clientName\":\"ТОВ Хлібзавод\",\"completedAt\":[2022,8,8,19,38,19],\"addressTotalWeight\":338.28,\"routePointDistantTime\":240}]"
     DELIVERY_ID: f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454
@@ -57,8 +51,6 @@ ROUTES:
     SPENT_TIME: 0
     START_TIME: null
     FINISH_TIME: null
-    STORE_NAME: "Склад №2"
-    STORE_ADDRESS: "Фастів, вул. Зелена, 5"
     OPTIMIZATION: TRUE
     ROUTE_POINTS: "[{\"id\":\"67fe44ab-78c2-4bf2-9a1d-f3551c9caec8\",\"status\":\"DONE\",\"completedAt\":null,\"clientId\":0,\"clientName\":\"Кендібуфет ТОВ\",\"address\":\"вул.Туманяна,15-А\",\"addressTotalWeight\":20.0,\"routePointDistantTime\":0,\"mapPoint\":{\"address\":\"м.Київ, вул.Туманяна,15-А\",\"latitude\":50.4439883,\"longitude\":30.603752,\"status\":\"KNOWN\"},\"orders\":[{\"id\":12,\"orderNumber\":\"00000002658\",\"comment\":null}]},{\"id\":\"96b4f747-4ce7-40ca-a728-3183ca103d2f\",\"status\":\"DONE\",\"completedAt\":null,\"clientId\":0,\"clientName\":\"Фоззі-Фуд ТОВ\",\"address\":\"м.Київ,пр-т Бандери,21\",\"addressTotalWeight\":18.0,\"routePointDistantTime\":0,\"mapPoint\":{\"address\":\"м.Київ,пр-т Бандери,21\",\"latitude\":50.4895138,\"longitude\":30.4936555,\"status\":\"KNOWN\"},\"orders\":[{\"id\":10,\"orderNumber\":\"00000002611\",\"comment\":null}]},{\"id\":\"8a5dd1be-7584-4a6e-9981-f5c9e7cfae58\",\"status\":\"DONE\",\"completedAt\":null,\"clientId\":0,\"clientName\":\"Очеретня І.П.ФОП\",\"address\":\"м. Київ, вул. Електриків 29А\",\"addressTotalWeight\":24.0,\"routePointDistantTime\":0,\"mapPoint\":{\"address\":\"м. Київ, вул. Електриків 29А\",\"latitude\":50.4782535,\"longitude\":30.5339629,\"status\":\"KNOWN\"},\"orders\":[{\"id\":13,\"orderNumber\":\"00000002659\",\"comment\":null}]}]"
     DELIVERY_ID: 125e4567-e89b-12d3-a456-556642440005
