@@ -27,9 +27,8 @@ public class RouteDto {
     private LocalDateTime startTime;
     private LocalDateTime finishTime;
     private long spentTime;
-    private String storeName;
-    private String storeAddress;
     private boolean optimization;
     private List<RoutePoint> routePoints;
     private CarDto car;
+    private StoreDto store;
 }

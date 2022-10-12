@@ -11,6 +11,8 @@ import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.entity.RouteStatus;
+import com.goodspartner.entity.Store;
+import com.goodspartner.mapper.StoreMapper;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.RouteCalculationService;
@@ -36,7 +38,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DefaultRouteCalculationService implements RouteCalculationService {
-    private final StoreService storeFactory;
+
+    private final StoreService storeService;
+    private final StoreMapper storeMapper;
     private final VRPSolver vrpSolver;
     private final GraphhopperService graphhopperService;
     private final CarRepository carRepository;
@@ -55,11 +59,11 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                 .filter(orderExternal -> orderExternal.isFrozen() == coolerRoute.isCoolerNecessary())
                 .toList();
 
-        StoreDto store = storeFactory.getMainStore();
+        Store store = storeService.getMainStore();
         List<Car> cars = carRepository.findByAvailableTrueAndCoolerIs(coolerRoute.isCoolerNecessary());
         List<RoutePoint> routePoints = mapToRoutePoints(filteredOrders);
 
-        List<VRPSolution> vrpSolutions = vrpSolver.optimize(cars, store, routePoints);
+        List<VRPSolution> vrpSolutions = vrpSolver.optimize(cars, storeMapper.getMapPoint(store), routePoints);
         return vrpSolutions.stream()
                 .map(vrpSolution -> mapToRoute(vrpSolution, store))
                 .collect(Collectors.toList());
@@ -67,11 +71,11 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     }
 
     @VisibleForTesting
-    Route mapToRoute(VRPSolution carRoute, StoreDto storeDto) {
+    Route mapToRoute(VRPSolution carRoute, Store store) {
         List<RoutePoint> routePoints = carRoute.getRoutePoints();
 
         List<MapPoint> mapPoints = new ArrayList<>();
-        mapPoints.add(storeDto.getMapPoint());
+        mapPoints.add(storeMapper.getMapPoint(store));
         mapPoints.addAll(carRoute.getRoutePoints().stream().map(RoutePoint::getMapPoint).toList());
 
         ResponsePath routePath = graphhopperService.getRoute(mapPoints);
@@ -84,11 +88,10 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
         route.setDistance(BigDecimal.valueOf(routePath.getDistance() / 1000)
                 .setScale(2, RoundingMode.HALF_UP).doubleValue());
         route.setEstimatedTime(Duration.ofMillis(routePath.getTime()).toMinutes());
-        route.setStoreName(storeDto.getName());
-        route.setStoreAddress(storeDto.getMapPoint().getAddress());
         route.setRoutePoints(routePoints);
         route.setOptimization(true);
         route.setCar(carRoute.getCar());
+        route.setStore(store);
 
         return route;
     }

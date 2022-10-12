@@ -1,13 +1,20 @@
 package com.goodspartner.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.goodspartner.AbstractBaseITest;
 import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.OrderDto;
-import org.junit.jupiter.api.*;
+import com.goodspartner.entity.Store;
+import com.goodspartner.service.StoreService;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -19,6 +26,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+import static org.mockito.Mockito.when;
 
 // Test integration with 1C server
 
@@ -31,6 +39,11 @@ class GrandeDolceIntegrationServiceITest extends AbstractBaseITest {
     @LocalServerPort
     private int port;
 
+    @MockBean
+    private StoreService mockStoreService;
+    @Mock
+    private Store mockStore;
+
     @Autowired
     private GrandeDolceIntegrationService grandeDolceOrderService;
 
@@ -40,6 +53,9 @@ class GrandeDolceIntegrationServiceITest extends AbstractBaseITest {
         mockRequest.setLocalPort(port);
         RequestAttributes request = new ServletWebRequest(mockRequest);
         RequestContextHolder.setRequestAttributes(request);
+
+        when(mockStoreService.getMainStore()).thenReturn(mockStore);
+        when(mockStore.getName()).thenReturn("Склад №1");
     }
 
     /*
@@ -48,7 +64,7 @@ class GrandeDolceIntegrationServiceITest extends AbstractBaseITest {
     private static final LocalDate DATE = LocalDate.of(2022, 2, 4);
 
     @Test
-    void getOrdersFromExternalSource() throws JsonProcessingException {
+    void getOrdersFromExternalSource() {
 
         List<OrderDto> orders = grandeDolceOrderService.findAllByShippingDate(DATE);
 

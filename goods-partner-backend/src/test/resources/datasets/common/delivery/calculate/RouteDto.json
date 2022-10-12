@@ -8,8 +8,6 @@
   "startTime": null,
   "finishTime": null,
   "spentTime": 0,
-  "storeName": "Склад №1",
-  "storeAddress": "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
   "optimization": false,
   "routePoints": [
     {
@@ -70,5 +68,12 @@
     "cooler": true,
     "available": true,
     "travelCost": 15
+  },
+  "store": {
+    "id": "5688492e-ede4-45d3-923b-5f9773fd3d4b",
+    "name": "Склад №1",
+    "address": "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
+    "latitude": 50.08,
+    "longitude": 29.89
   }
 }

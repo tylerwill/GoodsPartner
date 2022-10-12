@@ -1,12 +1,13 @@
 package com.goodspartner.service.impl;
 
+import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.VRPSolution;
-import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.entity.RouteStatus;
+import com.goodspartner.entity.Store;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -15,21 +16,28 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.util.List;
+import java.util.UUID;
 
+import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @TestInstance(PER_CLASS)
 class DefaultRouteCalculationServiceTest {
     private final DefaultRouteCalculationService routeService = new DefaultRouteCalculationService(
-            null, null, null, null);
+            null, null, null, null, null);
     private List<RoutePoint> routePoints;
     private RoutePoint firstRoutePoint;
     private RoutePoint secondRoutePoint;
+    private MapPoint storeMapPoint;
 
     @BeforeAll
     void before() {
+        storeMapPoint = MapPoint.builder()
+                .address("15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна")
+                .latitude(50.08340335)
+                .longitude(29.885050630832627)
+                .status(KNOWN)
+                .build();
 
         RoutePoint.OrderReference orderReferenceFirst = RoutePoint.OrderReference.builder()
                 .id(12)
@@ -87,12 +95,6 @@ class DefaultRouteCalculationServiceTest {
     @Disabled
     @DisplayName("test calculateRoute Should Create And Return Correct RouteDto Object")
     void testCalculateRoute() {
-
-        // prepare
-        StoreDto storeDto = mock(StoreDto.class);
-        when(storeDto.getAddress()).thenReturn("м. Київ, вул. Металістів, 8, оф. 4-24");
-        when(storeDto.getName()).thenReturn("Склад №1");
-
         Car car = new Car(
                 1,
                 "Mercedes Vito",
@@ -103,6 +105,12 @@ class DefaultRouteCalculationServiceTest {
                 1000,
                 10,
                 false);
+
+        Store store = new Store(UUID.fromString("5688492e-ede4-45d3-923b-5f9773fd3d4b"),
+                "Склад №1",
+                "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
+                50.08340335,
+                29.885050630832627);
 
         routePoints = List.of(firstRoutePoint);
 
@@ -150,13 +158,12 @@ class DefaultRouteCalculationServiceTest {
         expectedRoute.setTotalOrders(2);
         expectedRoute.setDistance(150.05);
         expectedRoute.setEstimatedTime(0);
-        expectedRoute.setStoreName("Склад №1");
-        expectedRoute.setStoreAddress("м. Київ, вул. Металістів, 8, оф. 4-24");
         expectedRoute.setRoutePoints(fakeRoutePointList);
         expectedRoute.setCar(car);
+        expectedRoute.setStore(store);
 
         //when
-        Route actualRoute = routeService.mapToRoute(vrpSolution, storeDto);
+        Route actualRoute = routeService.mapToRoute(vrpSolution, store);
 
         //then
         Assertions.assertEquals(expectedRoute, actualRoute);

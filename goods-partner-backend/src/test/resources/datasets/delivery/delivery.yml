@@ -43,12 +43,11 @@ ROUTES:
     TOTAL_ORDERS: 1
     ESTIMATED_TIME: 100
     SPENT_TIME: 100
-    STORE_NAME: "Склад №1"
-    STORE_ADDRESS: "15, Калинова вулиця, Фастів"
     OPTIMIZATION: TRUE
     ROUTE_POINTS: []
     DELIVERY_ID: 123e4567-e89b-12d3-a456-556642440000
     CAR_ID: 1
+    STORE_ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
 
 CARS:
   - ID: 1
@@ -60,3 +59,10 @@ CARS:
     AVAILABLE: TRUE
     TRAVEL_COST: 10
     DELETED: FALSE
+
+STORE:
+  - ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
+    NAME: "Склад №1"
+    ADDRESS: "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна"
+    LATITUDE: 50.08
+    LONGITUDE: 29.89

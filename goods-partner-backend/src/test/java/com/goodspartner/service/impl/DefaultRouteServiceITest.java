@@ -6,11 +6,12 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractBaseITest;
 import com.goodspartner.dto.CarDto;
+import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.RouteDto;
+import com.goodspartner.dto.StoreDto;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.service.RouteService;
-import com.goodspartner.service.StoreService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,15 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
+
 @DBRider
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DefaultRouteServiceITest extends AbstractBaseITest {
 
     @Autowired
     private RouteService routeService;
-
-    @Autowired
-    private StoreService storeService;
 
     private RoutePoint routePoint;
     private RoutePoint anotherRoutePoint;
@@ -51,12 +51,23 @@ class DefaultRouteServiceITest extends AbstractBaseITest {
                 .cooler(Boolean.TRUE)
                 .build();
 
+        String storeAddress = "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна";
+        StoreDto storeDto = StoreDto.builder()
+                .address(storeAddress)
+                .name("Склад №1")
+                .mapPoint(MapPoint.builder()
+                        .address(storeAddress)
+                        .latitude(50.08340335)
+                        .longitude(29.885050630832627)
+                        .status(KNOWN)
+                        .build())
+                .build();
+
         routeDto = new RouteDto();
         routeDto.setCar(carDto);
         routeDto.setStatus(RouteStatus.COMPLETED);
         routeDto.setDistance(0.0);
-        routeDto.setStoreName(storeService.getMainStore().getName());
-        routeDto.setStoreAddress(storeService.getMainStore().getAddress());
+        routeDto.setStore(storeDto);
     }
 
     @Test

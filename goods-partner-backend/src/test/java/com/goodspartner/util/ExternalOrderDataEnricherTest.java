@@ -1,17 +1,21 @@
 package com.goodspartner.util;
 
 import com.goodspartner.dto.Product;
+import com.goodspartner.entity.Store;
+import com.goodspartner.service.StoreService;
 import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
-import com.goodspartner.service.impl.MockedStoreService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ExternalOrderDataEnricherTest {
 
-    private final MockedStoreService mockedStoreService = new MockedStoreService();
+
+    private final StoreService mockedStoreService = mock(StoreService.class);
     private final ExternalOrderDataEnricher dtoHelper = new ExternalOrderDataEnricher(mockedStoreService);
 
     private ODataProductDto oDataProductInKg;
@@ -28,6 +32,10 @@ class ExternalOrderDataEnricherTest {
         oDataProductInL = ODataProductDto.builder().measure("л").totalProductWeight(11.3).build();
 
         product = Product.builder().amount(4).unitWeight(0.5).build();
+
+        Store mockStore = mock(Store.class);
+        when(mockedStoreService.getMainStore()).thenReturn(mockStore);
+        when(mockStore.getName()).thenReturn("Склад №1");
     }
 
 

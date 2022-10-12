@@ -1,13 +1,12 @@
 package com.goodspartner.service.google;
 
-import com.goodspartner.dto.VRPSolution;
 import com.goodspartner.dto.DistanceMatrix;
 import com.goodspartner.dto.MapPoint;
-import com.goodspartner.dto.StoreDto;
+import com.goodspartner.dto.VRPSolution;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.RoutePoint;
-import com.goodspartner.service.VRPSolver;
 import com.goodspartner.service.GraphhopperService;
+import com.goodspartner.service.VRPSolver;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.ortools.Loader;
 import com.google.ortools.constraintsolver.Assignment;
@@ -45,10 +44,10 @@ public class GoogleVRPSolver implements VRPSolver {
     }
 
     @Override
-    public List<VRPSolution> optimize(List<Car> cars, StoreDto storeDto, List<RoutePoint> routePoints) {
+    public List<VRPSolution> optimize(List<Car> cars, MapPoint storeMapPoint, List<RoutePoint> routePoints) {
 
         List<MapPoint> mapPoints = new ArrayList<>();
-        mapPoints.add(storeDto.getMapPoint());
+        mapPoints.add(storeMapPoint);
         mapPoints.addAll(routePoints.stream().map(RoutePoint::getMapPoint).toList());
 
         DistanceMatrix matrix = graphhopperService.getMatrix(mapPoints);
