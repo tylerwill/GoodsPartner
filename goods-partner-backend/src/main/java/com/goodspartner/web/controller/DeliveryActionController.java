@@ -30,7 +30,7 @@ public class DeliveryActionController {
     private final RouteService routeService;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
-    @PutMapping("/{id}/{action}")
+    @PostMapping("/{id}/{action}")
     @ApiOperation(value = "Approve Delivery",
             notes = "Provide an id to approve delivery")
     public DeliveryActionResponse approve(@ApiParam(value = "ID of Delivery to be approved", required = true)

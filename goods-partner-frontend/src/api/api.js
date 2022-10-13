@@ -59,16 +59,15 @@ export const deliveriesApi = {
     },
 
     approve(id) {
-        return axiosWithSetting.put(`/api/v1/deliveries/${id}/approve`);
+        return axiosWithSetting.post(`/api/v1/deliveries/${id}/approve`);
     },
 
-    changeRoutePointStatus(deliveryId, routeId, routePoint) {
-        const routePointId = routePoint.id;
-        return axiosWithSetting.put(`/api/v1/deliveries/${deliveryId}/routes/${routeId}/route-points/${routePointId}`, routePoint);
+    applyRoutePointAction(deliveryId, routeId, routePointId, action) {
+        return axiosWithSetting.post(`/api/v1/deliveries/${deliveryId}/routes/${routeId}/route-points/${routePointId}/${action}`);
     },
 
-    changeRouteStatus(deliveryId, route) {
-        return axiosWithSetting.put(`/api/v1/deliveries/${deliveryId}/routes/${route.id}`, route);
+    applyRouteAction(deliveryId, routeId, action) {
+        return axiosWithSetting.post(`/api/v1/deliveries/${deliveryId}/routes/${routeId}/${action}`);
     },
 
     findHistory(deliveryId) {

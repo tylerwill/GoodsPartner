@@ -5,7 +5,7 @@ export const SET_ORDERS_PREVIEW_LOADING = "SET_ORDERS_PREVIEW_LOADING";
 export const SET_ORDERS_PREVIEW = "SET_ORDERS_PREVIEW";
 export const UPDATE_ADDRESS_FOR_ORDERS_PREVIEW = "UPDATE_ADDRESS_FOR_ORDERS_PREVIEW";
 export const SET_DELIVERY_LOADING = "SET_DELIVERY_LOADING";
-export const CHANGE_CURRENT_DELIVERY_STATUS = "CHANGE_CURRENT_DELIVERY_STATUS";
+export const APPROVE_DELIVERY = "CHANGE_CURRENT_DELIVERY_STATUS";
 export const CHANGE_ROUTE_POINT_FOR_CURRENT_DELIVERY = "CHANGE_ROUTE_POINT_FOR_CURRENT_DELIVERY";
 export const CHANGE_ROUTE_FOR_CURRENT_DELIVERY = "CHANGE_ROUTE_FOR_CURRENT_DELIVERY";
 export const SET_CURRENT_HISTORY = "SET_CURRENT_HISTORY";
@@ -60,29 +60,24 @@ export const setDeliveryLoading = (loading) => {
     }
 }
 
-export const changeCurrentDeliveryStatus = (status) => {
+export const approveDelivery = (status) => {
     return {
-        type: CHANGE_CURRENT_DELIVERY_STATUS,
+        type: APPROVE_DELIVERY,
         payload: status
     }
 }
 
-export const changeRoutePointForCurrentDelivery = (routeId, newRoutePoint) => {
+export const changeRoutePointForCurrentDelivery = (statuses) => {
     return {
         type: CHANGE_ROUTE_POINT_FOR_CURRENT_DELIVERY,
-        payload: {
-            routeId,
-            newRoutePoint
-        }
+        payload: statuses
     }
 }
 
-export const changeRouteForCurrentDelivery = (route) => {
+export const changeRouteForCurrentDelivery = (statuses) => {
     return {
         type: CHANGE_ROUTE_FOR_CURRENT_DELIVERY,
-        payload: {
-            route
-        }
+        payload: statuses
     }
 }
 

@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from "react-redux";
 import Delivery from "./Delivery";
 import {
-    approve,
+    approve, getOrderById,
     linkOrdersToDeliveryAndCalculate,
     loadDelivery, updateRoute,
     updateRoutePoint
@@ -20,7 +20,8 @@ const DeliveriesContainer = connect(mapStateToProps, {
     linkOrdersToDeliveryAndCalculate,
     approve,
     updateRoutePoint,
-    updateRoute
+    updateRoute,
+    getOrderById
 })(Delivery);
 
 export default DeliveriesContainer;

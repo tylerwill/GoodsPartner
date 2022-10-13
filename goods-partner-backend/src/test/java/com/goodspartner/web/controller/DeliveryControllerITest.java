@@ -319,7 +319,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     void whenApproveDelivery_thenOkStatusReturned() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000/approve"))
+                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000/approve"))
                 .andExpect(status().isOk());
     }
 
@@ -330,7 +330,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     void whenApproveDelivery_thenCorrectDeliveryAndRoutesStatusDtoReturned() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000/approve"))
+                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000/approve"))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .json(getResponseAsString("datasets/delivery/delivery-and-routes-status.json")));
@@ -344,7 +344,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     void whenApproveDeliveryByNonExistingId_thenNotFoundReturned() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/v1/deliveries/00000000-0000-0000-0000-000000000000/approve"))
+                        .post("/api/v1/deliveries/00000000-0000-0000-0000-000000000000/approve"))
                 .andExpect(status().isNotFound());
     }
 
@@ -354,7 +354,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     void whenApproveDeliveryOfNonDraftStatus_thenExceptionThrown() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000/approve"))
+                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000/approve"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -364,7 +364,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     void whenApproveDeliveryWithoutRoutes_thenExceptionThrown() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/approve"))
+                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/approve"))
                 .andExpect(status().isBadRequest());
     }
 

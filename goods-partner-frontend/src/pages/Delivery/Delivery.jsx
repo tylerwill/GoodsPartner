@@ -10,17 +10,19 @@ import DoneIcon from '@mui/icons-material/Done';
 import Routes from "./Routes/Routes";
 import HistoryContainer from "./History/HistoryContainer";
 import DeliveryStatusChip from "../../components/DeliveryStatusChip/DeliveryStatusChip";
+import {getOrderById} from "../../reducers/deliveries-reducer";
 
 const Delivery = ({
                       currentDelivery, loadDelivery,
                       linkOrdersToDeliveryAndCalculate,
                       ordersPreview, approve,
-                      updateRoutePoint, updateRoute
+                      updateRoutePoint, updateRoute,
+                      getOrderById
                   }) => {
 
     let {id} = useParams();
 
-    const calculated = currentDelivery?.orders?.length > 0;
+    const calculated = currentDelivery?.routes?.length > 0;
 
     const routesForCurrentDelivery = currentDelivery.routes;
 
@@ -33,12 +35,17 @@ const Delivery = ({
     const hasInvalidOrders = ordersPreview?.orders
         .some(order => order.mapPoint.status === "UNKNOWN");
 
-    const tabLabels = ['Замовлення', 'Маршрути', 'Завантаження', 'Історія'];
+    const tabLabels = [
+        {name: 'Замовлення', enabled: true},
+        {name: 'Маршрути', enabled: calculated},
+        {name: 'Завантаження', enabled: calculated},
+        {name: 'Історія', enabled: true}];
+
     return <section>
         <Box sx={{mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
             <Box sx={{display: 'flex'}}>
                 <Typography
-                    sx={{mr:2}}
+                    sx={{mr: 2}}
                     variant="h6" component="h2">
                     {/*TODO: [UI Max] Format date to be same as in design*/}
                     Доставка на {currentDelivery.deliveryDate}
@@ -92,6 +99,7 @@ const Delivery = ({
                     routes={routesForCurrentDelivery}
                     updateRoutePoint={updateRoutePoint}
                     updateRoute={updateRoute}
+                    getOrderById={getOrderById}
                 />
                 <ShippingContainer/>
                 <HistoryContainer/>

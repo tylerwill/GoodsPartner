@@ -33,18 +33,18 @@ function a11yProps(index) {
 }
 
 export default function BasicTabs({children, labels, fullWidth}) {
-    const [value, setValue] = React.useState(0);
+    const [tabIndex, setTabIndex] = React.useState(0);
 
     const handleChange = (event, newValue) => {
-        setValue(newValue);
+        setTabIndex(newValue);
     };
 
     return (
         <Box sx={{bgcolor: 'background.paper'}}>
-            {createTabsPanel(value, handleChange, labels, fullWidth)}
+            {createTabsPanel(tabIndex, handleChange, labels, fullWidth)}
             {
                 children.map((element, index) => {
-                    return (<TabPanel key={"tabPanel" + labels[index]} value={value} index={index}>
+                    return (<TabPanel key={"tabPanel" + labels[index].name} value={tabIndex} index={index}>
                         {element}
                     </TabPanel>)
                 })
@@ -58,8 +58,8 @@ function createTabsPanel(value, handleChange, labels, fullWidth) {
                         textColor={ fullWidth ? "inherit" : "primary"}>
         {
             labels.map((label, index) => <Tab sx={{borderBottom: 1, borderColor: 'divider'}}
-                                              key={"tab" + label}
-                                              label={label} {...a11yProps(index)}/>)
+                                              key={"tab" + label.name}
+                                              label={label.name} disabled={!label.enabled} {...a11yProps(index)}/>)
         }
     </Tabs>);
 

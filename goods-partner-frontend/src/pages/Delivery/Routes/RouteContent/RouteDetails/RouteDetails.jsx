@@ -88,14 +88,16 @@ const RouteDetailsBody = ({route}) => {
 
 const RouteStatusSelect = ({route, updateRoute}) => {
     const {status} = route;
-//   const selectColor = getSelectColor(status);
+
+    const statusToActionMap = {
+        'INPROGRESS': 'START',
+        'COMPLETED': 'COMPLETE'
+    }
 
     const handleChange = (event) => {
-        const updatedRoute = {...route, status: event.target.value};
-        if(event.target.value==='DRAFT') {
-            return;
+        if (event.target.value === 'INPROGRESS' || event.target.value === 'COMPLETED') {
+            updateRoute(route.id, statusToActionMap[event.target.value]);
         }
-        updateRoute(updatedRoute);
     }
     const CustomSelect = styled(Select)(() => ({
         '& .MuiOutlinedInput-input': {
@@ -105,7 +107,7 @@ const RouteStatusSelect = ({route, updateRoute}) => {
             fontWeight: 500,
             backgroundColor: '#1565C0',
             color: '#fff',
-            '-webkitTextFillColor':'#fff !important'
+            'WebkitTextFillColor': '#fff !important'
         },
 
         '& .MuiSelect-icon': {
@@ -121,11 +123,11 @@ const RouteStatusSelect = ({route, updateRoute}) => {
                 autoWidth
                 MenuProps={{MenuListProps: {disablePadding: true}}}
             >
-                <MenuItem value={'DRAFT'}>Створений</MenuItem>
+                <MenuItem disabled value={'DRAFT'}>Створений</MenuItem>
                 <MenuItem value={'INPROGRESS'}>В роботі</MenuItem>
-                <MenuItem value={'APPROVED'}>Підтверджений</MenuItem>
+                <MenuItem disabled value={'APPROVED'}>Підтверджений</MenuItem>
                 <MenuItem value={'COMPLETED'}>Закінчений</MenuItem>
-                <MenuItem value={'INCOMPLETED'}>Не закінчений</MenuItem>
+                <MenuItem disabled value={'INCOMPLETED'}>Не закінчений</MenuItem>
             </CustomSelect>
         </FormControl>
     </div>

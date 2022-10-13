@@ -1,16 +1,19 @@
 import {
     ADD_DELIVERY_TO_LIST,
     addDeliveryToList,
-    CHANGE_CURRENT_DELIVERY_STATUS, CHANGE_ROUTE_FOR_CURRENT_DELIVERY,
+    APPROVE_DELIVERY,
+    approveDelivery,
+    CHANGE_ROUTE_FOR_CURRENT_DELIVERY,
     CHANGE_ROUTE_POINT_FOR_CURRENT_DELIVERY,
-    changeCurrentDeliveryStatus, changeRouteForCurrentDelivery,
     changeRoutePointForCurrentDelivery,
-    SET_CURRENT_DELIVERY, SET_CURRENT_HISTORY,
+    SET_CURRENT_DELIVERY,
+    SET_CURRENT_HISTORY,
     SET_DELIVERIES,
     SET_DELIVERY_LOADING,
     SET_ORDERS_PREVIEW,
     SET_ORDERS_PREVIEW_LOADING,
-    setCurrentDelivery, setCurrentHistory,
+    setCurrentDelivery,
+    setCurrentHistory,
     setDeliveries,
     setDeliveryLoading,
     setOrdersPreview,
@@ -60,15 +63,14 @@ const deliveriesReducer = (state = initialOrders, action) => {
             const newOrdersPreview = updateAddressForPreviewOrder(state.ordersPreview, action.payload);
             return {...state, ordersPreview: newOrdersPreview};
 
-        case CHANGE_CURRENT_DELIVERY_STATUS:
-            const newVar = {...state, currentDelivery: {...state.currentDelivery, status: action.payload}};
-            return newVar;
+        case APPROVE_DELIVERY:
+            return approveCurrentDelivery(state, action.payload);
 
         case CHANGE_ROUTE_POINT_FOR_CURRENT_DELIVERY:
-            return updateRoutePointForCurrentDelivery(state, action.payload.routeId, action.payload.newRoutePoint);
+            return updateStatusesForCurrentDelivery(state, action.payload);
 
         case CHANGE_ROUTE_FOR_CURRENT_DELIVERY:
-            return updateRouteForCurrentDelivery(state, action.payload.route);
+            return updateStatusesForCurrentDelivery(state, action.payload);
 
         case SET_CURRENT_HISTORY:
             return {...state, deliveryHistory: action.payload};
@@ -77,39 +79,70 @@ const deliveriesReducer = (state = initialOrders, action) => {
     }
 }
 
-const updateRoutePointForCurrentDelivery = (state, routeId, newRoutePoint) => {
-    const currentDelivery = {...state.currentDelivery};
-    const updatedRoutes = [...currentDelivery.routes];
-    const routeToUpdate = updatedRoutes.find(route => route.id === routeId);
+function approveCurrentDelivery(state, statuses) {
+    if (state.currentDelivery.id !== statuses.deliveryId) {
+        return state;
+    }
+    const newRoutesStatuses = statuses.routesStatus;
+    const newRoutes = [...state.currentDelivery.routes];
 
-    const updatedRoutePoints = routeToUpdate.routePoints;
-
-    for (let i = 0; i < updatedRoutePoints.length; i++) {
-        const oldRoutePoint = updatedRoutePoints[i];
-        if (oldRoutePoint.id === newRoutePoint.id) {
-            updatedRoutePoints[i] = newRoutePoint;
-            break;
+    for (let i = 0; i < newRoutes.length; i++) {
+        const currentRoute = newRoutes[i];
+        const newStatus = foundRouteStatus(newRoutesStatuses, currentRoute.id);
+        if (newStatus) {
+            currentRoute.status = newStatus;
         }
     }
 
-    return {...state, currentDelivery: {...state.currentDelivery, routes: updatedRoutes}};
-}
-
-const updateRouteForCurrentDelivery = (state, route) => {
-    const currentDelivery = state.currentDelivery;
-    const updatedRoutes = [...currentDelivery.routes];
-
-    for (let i = 0; i < updatedRoutes.length; i++) {
-        const oldRoute = updatedRoutes[i];
-        if (oldRoute.id === route.id) {
-            updatedRoutes[i] = route;
-            break;
-        }
-    }
-
-    const newState = {...state, currentDelivery: {...state.currentDelivery, routes: updatedRoutes}};
+    const newState = {...state, currentDelivery: {...state.currentDelivery, status: statuses.deliveryStatus}};
     return newState;
 }
+
+function foundRouteStatus(routes, id) {
+    return routes.find(route => route.id === id)?.routeStatus;
+}
+
+const updateStatusesForCurrentDelivery = (state, statuses) => {
+    if (state.currentDelivery.id !== statuses.deliveryId) {
+        return state;
+    }
+
+    const newRoutes = [...state.currentDelivery.routes];
+    let changedRoute = undefined;
+
+    for (let i = 0; i < newRoutes.length; i++) {
+        const currentRoute = newRoutes[i];
+        if (currentRoute.id === statuses.routeId) {
+            currentRoute.status = statuses.routeStatus;
+            changedRoute = currentRoute;
+
+            break;
+        }
+    }
+
+    if (statuses.routePointId) {
+        const newRoutePoints = [...changedRoute.routePoints];
+        updateRoutePointStatusAndCompleteAt(newRoutePoints, statuses);
+    }
+
+    const newCurrentDelivery = {...state.currentDelivery, routes: newRoutes};
+    newCurrentDelivery.status = statuses.deliveryStatus;
+    //
+    return {...state, currentDelivery: newCurrentDelivery};
+}
+
+function updateRoutePointStatusAndCompleteAt(routePoints, statuses) {
+    for (let i = 0; i < routePoints.length; i++) {
+        const routePoint = routePoints[i];
+        if (routePoint.id === statuses.routePointId) {
+            routePoint.status = statuses.routePointStatus;
+            routePoint.completedAt = statuses.pointCompletedAt;
+            break;
+        }
+    }
+
+}
+
 
 const updateAddressForPreviewOrder = (oldOrdersPreview, newAddress) => {
     const updatedOrders = oldOrdersPreview.orders.map(order => {
@@ -153,6 +186,7 @@ export const loadDelivery = (id) => (dispatch) => {
 
 // TODO [UI]: Do we need async here? https://redux.js.org/tutorials/fundamentals/part-6-async-logic
 export const createDelivery = (date) => (dispatch) => {
+    dispatch(setDeliveryLoading(true));
     // TODO: [UI] remove status creation
     const newDelivery = {deliveryDate: date, status: 'DRAFT'};
 
@@ -164,6 +198,7 @@ export const createDelivery = (date) => (dispatch) => {
             dispatch(addDeliveryToList(createdDelivery));
             // TODO [UI Max]: redirect not working
             dispatch(push(`/delivery/${createdDelivery.id}`));
+            dispatch(setDeliveryLoading(false));
         }
     })
 }
@@ -203,29 +238,31 @@ export const linkOrdersToDeliveryAndCalculate = () => (dispatch, getState) => {
 export const approve = (deliveryId) => (dispatch) => {
     deliveriesApi.approve(deliveryId).then(response => {
         if (response.status === 200) {
-            dispatch(changeCurrentDeliveryStatus('APPROVED'));
+            dispatch(approveDelivery(response.data));
         }
     })
 }
 
-export const updateRoutePoint = (routeId, newRoutePoint) => (dispatch, getState) => {
+export const updateRoutePoint = (routeId, routePointId, action) => (dispatch, getState) => {
     const state = getState();
     const deliveryId = state.deliveries.currentDelivery.id;
-    console.log("update in reducer:", newRoutePoint);
-    deliveriesApi.changeRoutePointStatus(deliveryId, routeId, newRoutePoint).then(response => {
+
+    deliveriesApi.applyRoutePointAction(deliveryId, routeId, routePointId, action).then(response => {
         if (response.status === 200) {
-            dispatch(changeRoutePointForCurrentDelivery(routeId, newRoutePoint));
+            console.log("response", response.status);
+            dispatch(changeRoutePointForCurrentDelivery(response.data));
         }
     })
 }
 
-export const updateRoute = (route) => (dispatch, getState) => {
+export const updateRoute = (routeId, action) => (dispatch, getState) => {
     const state = getState();
     const deliveryId = state.deliveries.currentDelivery.id;
 
-    deliveriesApi.changeRouteStatus(deliveryId, route).then(response => {
+    deliveriesApi.applyRouteAction(deliveryId, routeId, action).then(response => {
         if (response.status === 200) {
-            dispatch(changeRouteForCurrentDelivery(route));
+            console.log("response", response.status);
+            dispatch(changeRoutePointForCurrentDelivery(response.data));
         }
     })
 }
@@ -240,5 +277,10 @@ export const loadHistory = () => (dispatch, getState) => {
     })
 }
 
+export const getOrderById = (id) => (dispatch, getState) => {
+    const state = getState();
+    const orders = state.deliveries.currentDelivery.orders;
+    return orders.find(order => order.id === id);
+}
 
 export default deliveriesReducer;

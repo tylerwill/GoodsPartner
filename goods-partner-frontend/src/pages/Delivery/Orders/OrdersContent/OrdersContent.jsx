@@ -24,8 +24,11 @@ const OrdersContent = ({orders, updatePreviewOrderAddress}) => {
     const invalidOrders = orders
         .filter(order => order.mapPoint.status === "UNKNOWN");
 
-    const tabLabels = [`Всі замовлення (${orders.length})`,
-        `потребують уточнення (${invalidOrders.length})`]
+
+    const tabLabels = [
+        {name: `Всі замовлення (${orders.length})`, enabled: true},
+        {name: `потребують уточнення (${invalidOrders.length})`, enabled: true}
+    ];
 
     return <Box>
         <BasicTabs labels={tabLabels}>
