@@ -288,8 +288,8 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .build();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(deliveryDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(deliveryDto)))
                 .andExpect(status().isOk());
     }
 
@@ -321,6 +321,20 @@ class DeliveryControllerITest extends AbstractWebITest {
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000/approve"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
+    @DisplayName("when Approve Delivery then Correct DeliveryAndRoutesStatusDto Returned")
+    void whenApproveDelivery_thenCorrectDeliveryAndRoutesStatusDtoReturned() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000/approve"))
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .json(getResponseAsString("datasets/delivery/delivery-and-routes-status.json")));
+
     }
 
     @Test

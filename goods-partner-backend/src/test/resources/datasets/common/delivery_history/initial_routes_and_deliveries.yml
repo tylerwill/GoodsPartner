@@ -45,14 +45,15 @@ ROUTES:
 
   - ID: 5
     DELIVERY_ID: d0000000-0000-0000-0000-000000000004
-    STATUS: "APPROVED"
+    STATUS: "INPROGRESS"
+    START_TIME: "2022-09-27 12:23:43"
     DISTANCE: 0.0
     CAR_ID: 1
     ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
 
   - ID: 6
     DELIVERY_ID: d0000000-0000-0000-0000-000000000004
-    STATUS: "DRAFT"
+    STATUS: "COMPLETED"
     DISTANCE: 0.0
     ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
 

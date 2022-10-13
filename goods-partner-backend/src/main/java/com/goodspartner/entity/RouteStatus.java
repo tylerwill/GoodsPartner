@@ -8,8 +8,7 @@ public enum RouteStatus {
     DRAFT("DRAFT"),
     APPROVED("APPROVED"),
     INPROGRESS("INPROGRESS"),
-    COMPLETED("COMPLETED"),
-    INCOMPLETE("INCOMPLETE");
+    COMPLETED("COMPLETED");
 
     @Getter
     private final String status;

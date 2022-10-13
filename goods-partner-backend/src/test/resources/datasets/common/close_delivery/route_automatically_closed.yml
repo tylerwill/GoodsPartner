@@ -23,6 +23,7 @@ ROUTES:
   - ID: 2
     DELIVERY_ID: d0000000-0000-0000-0000-000000000002
     STATUS: "COMPLETED"
+    COMPLETED_AT:
     DISTANCE: 0.0
     CAR_ID: 2
     ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"

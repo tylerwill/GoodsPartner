@@ -1,5 +1,7 @@
 package com.goodspartner.service.impl;
 
+import com.goodspartner.action.DeliveryAction;
+import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.DeliveryShortDto;
 import com.goodspartner.entity.CarLoad;
@@ -13,7 +15,6 @@ import com.goodspartner.exceptions.DeliveryModifyException;
 import com.goodspartner.exceptions.DeliveryNotFoundException;
 import com.goodspartner.exceptions.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exceptions.NoOrdersFoundForDelivery;
-import com.goodspartner.exceptions.NoRoutesFoundForDelivery;
 import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.service.CarLoadService;
@@ -137,29 +138,37 @@ public class DefaultDeliveryService implements DeliveryService {
 
     @Override
     @Transactional
-    public void approve(UUID deliveryId) {
+    public DeliveryActionResponse approve(UUID deliveryId, DeliveryAction action) {
 
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
 
-        if (delivery.getStatus() != DRAFT) {
-            throw new IllegalDeliveryStatusForOperation(delivery, "approve");
-        }
-
-        List<Route> routes = delivery.getRoutes();
-        if (routes.isEmpty()) {
-            throw new NoRoutesFoundForDelivery(deliveryId);
-        }
-
-        delivery.setStatus(DeliveryStatus.APPROVED);
-        routes.forEach(route -> route.setStatus(RouteStatus.APPROVED));
+        action.perform(delivery);
 
         deliveryHistoryService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_APPROVED, delivery.getId());
-        routes.forEach(route ->
-                deliveryHistoryService.publishRouteStatusChangeAuto(RouteStatus.APPROVED, route));
+
+        List<Route> routes = delivery.getRoutes();
+        routes.forEach(route -> route.setStatus(RouteStatus.APPROVED));
+        routes.forEach(deliveryHistoryService::publishRouteStatusChangeAuto);
 
         deliveryRepository.save(delivery);
+
+        return mapDeliveryActionResponse(delivery, routes);
     }
+
+    private DeliveryActionResponse mapDeliveryActionResponse(Delivery delivery, List<Route> routes) {
+        DeliveryActionResponse deliveryActionResponse = new DeliveryActionResponse();
+        deliveryActionResponse.setDeliveryId(delivery.getId());
+        deliveryActionResponse.setDeliveryStatus(delivery.getStatus());
+
+        List<DeliveryActionResponse.RoutesStatus> routeStatuses = routes.stream()
+                .map(route -> new DeliveryActionResponse.RoutesStatus(route.getId(), route.getStatus()))
+                .toList();
+        deliveryActionResponse.setRoutesStatus(routeStatuses);
+
+        return deliveryActionResponse;
+    }
+
 
     private void validateDelivery(Delivery delivery) {
         if (delivery.getStatus() != DRAFT) {

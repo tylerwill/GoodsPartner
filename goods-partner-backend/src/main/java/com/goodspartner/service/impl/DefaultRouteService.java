@@ -1,23 +1,23 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.RouteDto;
-
+import com.goodspartner.action.RouteAction;
+import com.goodspartner.action.RoutePointAction;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
-import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.exceptions.DeliveryNotFoundException;
 import com.goodspartner.exceptions.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exceptions.IllegalRoutePointStatusForOperation;
 import com.goodspartner.exceptions.IllegalRouteStatusForOperation;
 import com.goodspartner.exceptions.RouteNotFoundException;
-import com.goodspartner.mapper.RouteMapper;
-import com.goodspartner.mapper.RoutePointMapper;
+import com.goodspartner.exceptions.RoutePointNotFoundException;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.RouteRepository;
 import com.goodspartner.service.RouteService;
+import com.goodspartner.web.controller.response.RouteActionResponse;
+import com.goodspartner.web.controller.response.RoutePointActionResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,8 +36,6 @@ import static com.goodspartner.entity.RoutePointStatus.PENDING;
 @Slf4j
 public class DefaultRouteService implements RouteService {
 
-    private final RoutePointMapper routePointMapper;
-    private final RouteMapper routeMapper;
     private final RouteRepository routeRepository;
     private final DeliveryRepository deliveryRepository;
     private final DefaultRouteCalculationService routeCalculationService;
@@ -45,53 +43,92 @@ public class DefaultRouteService implements RouteService {
 
     @Override
     @Transactional
-    public void update(int id, RouteDto routeDto) {
-        RouteStatus oldRouteStatus = routeRepository.findById(id).map(Route::getStatus)
+    public RouteActionResponse update(int routeId, RouteAction action) {
+
+        Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new RouteNotFoundException("Route not found"));
 
-        Route oldRoute = routeRepository.findById(id)
-                .orElseThrow(() -> new RouteNotFoundException("Route not found"));
+        action.perform(route);
 
-        Route updateRoute = routeMapper.update(oldRoute, routeDto);
+        deliveryHistoryService.publishRouteUpdated(route);
 
-        deliveryHistoryService.publishIfRouteUpdated(routeDto, oldRouteStatus, updateRoute);
+        processDeliveryStatus(route);
 
-        processDeliveryStatus(updateRoute);
-        routeRepository.save(updateRoute);
+        routeRepository.save(route);
+
+        return getRouteActionResponse(route);
+    }
+
+    private RouteActionResponse getRouteActionResponse(Route route) {
+        RouteActionResponse routePointActionResponse = new RouteActionResponse();
+
+        // Route
+        routePointActionResponse.setRouteId(route.getId());
+        routePointActionResponse.setRouteStatus(route.getStatus());
+        routePointActionResponse.setRouteFinishTime(route.getFinishTime());
+
+        // Delivery
+        Delivery delivery = route.getDelivery();
+        routePointActionResponse.setDeliveryId(delivery.getId());
+        routePointActionResponse.setDeliveryStatus(delivery.getStatus());
+        return routePointActionResponse;
     }
 
     @Override
     @Transactional
-    public void updatePoint(int routeId, String routePointId, RoutePoint routePoint) {
+    public RoutePointActionResponse updatePoint(int routeId, UUID routePointId, RoutePointAction action) {
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new RouteNotFoundException("Route not found"));
 
         List<RoutePoint> routePoints = route.getRoutePoints();
 
-        RoutePoint point = routePoints.stream()
-                .filter(r -> r.getId().toString().equals(routePointId))
-                .findFirst().orElse(null);
-        if(point != null){
-            RoutePointStatus oldRoutePointStatus = point.getStatus();
-            routePointMapper.update(point, routePoint);
+        RoutePoint routePoint = routePoints.stream()
+                .filter(r -> r.getId().equals(routePointId))
+                .findFirst()
+                .orElseThrow(() -> new RoutePointNotFoundException(routePointId));
 
-            deliveryHistoryService.publishIfPointUpdated(routePoint, oldRoutePointStatus, route);
-        }
+        action.perform(routePoint);
 
-        route.setRoutePoints(routePoints);
+        deliveryHistoryService.publishRoutePointUpdated(routePoint, route);
 
+        processRouteStatus(route, routePoints);
+
+        processDeliveryStatus(route);
+
+        routeRepository.save(route);
+
+        return getRoutePointActionResponse(route, routePoint);
+    }
+
+    private RoutePointActionResponse getRoutePointActionResponse(Route route, RoutePoint routePoint) {
+        RoutePointActionResponse routePointActionResponse = new RoutePointActionResponse();
+
+        // RoutePoint
+        routePointActionResponse.setRoutePointId(routePoint.getId());
+        routePointActionResponse.setRoutePointStatus(routePoint.getStatus());
+        routePointActionResponse.setPointCompletedAt(routePoint.getCompletedAt());
+
+        // Route
+        routePointActionResponse.setRouteId(route.getId());
+        routePointActionResponse.setRouteStatus(route.getStatus());
+        routePointActionResponse.setRouteFinishTime(route.getFinishTime());
+
+        // Delivery
+        Delivery delivery = route.getDelivery();
+        routePointActionResponse.setDeliveryId(delivery.getId());
+        routePointActionResponse.setDeliveryStatus(delivery.getStatus());
+        return routePointActionResponse;
+    }
+
+    private void processRouteStatus(Route route, List<RoutePoint> routePoints) {
         if (isAllRoutePointsDone(routePoints)) {
             route.setStatus(RouteStatus.COMPLETED);
             route.setFinishTime(LocalDateTime.now());
 
-            deliveryHistoryService.publishRouteStatusChangeAuto(RouteStatus.COMPLETED, route);
+            deliveryHistoryService.publishRouteStatusChangeAuto(route);
 
-            log.info("Route ID {} was automatically close due to all RoutePoints are DONE", route.getId());
-
-            processDeliveryStatus(route);
+            log.info("Route ID {} was automatically close due to all RoutePoints are completed", route.getId());
         }
-
-        routeRepository.save(route);
     }
 
     @Override
@@ -114,7 +151,7 @@ public class DefaultRouteService implements RouteService {
 
     private boolean isAllRoutePointsDone(List<RoutePoint> routePoints) {
         return routePoints.stream()
-                .filter(routePointDto -> !routePointDto.getStatus().equals(RoutePointStatus.DONE))
+                .filter(routePoint -> routePoint.getStatus().equals(PENDING))
                 .findFirst()
                 .isEmpty();
     }
@@ -159,8 +196,7 @@ public class DefaultRouteService implements RouteService {
         }
         RouteStatus routeStatus = route.getStatus();
         if (routeStatus.equals(RouteStatus.COMPLETED) ||
-                routeStatus.equals(RouteStatus.INPROGRESS) ||
-                routeStatus.equals(RouteStatus.INCOMPLETE)) {
+                routeStatus.equals(RouteStatus.INPROGRESS)) {
             throw new IllegalRouteStatusForOperation(route, "reorder");
         }
     }

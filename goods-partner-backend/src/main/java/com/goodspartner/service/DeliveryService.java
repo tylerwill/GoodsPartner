@@ -1,5 +1,7 @@
 package com.goodspartner.service;
 
+import com.goodspartner.action.DeliveryAction;
+import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.DeliveryShortDto;
 
@@ -20,5 +22,5 @@ public interface DeliveryService {
 
     DeliveryDto calculateDelivery(UUID deliveryID);
 
-    void approve(UUID id);
+    DeliveryActionResponse approve(UUID id, DeliveryAction deliveryAction);
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
+import com.goodspartner.action.RouteAction;
+import com.goodspartner.action.RoutePointAction;
 import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.DeliveryDto;
@@ -43,6 +45,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static com.goodspartner.action.DeliveryAction.APPROVE;
 import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -215,7 +218,8 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
     @DisplayName("When RoutePoint updated with status completed and Delivery automatically closed then correct History Created")
     public void testWhenRoutePointUpdatedAndDeliveryAutomaticallyClosedThenCorrectHistoryCreated() {
 
-        routeService.updatePoint(1, "00000000-0000-0000-0000-000000000001", routePoint);
+        UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000001");
+        routeService.updatePoint(1, uuid, RoutePointAction.COMPLETE);
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
@@ -228,10 +232,7 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("When update route with status completed and Delivery automatically closed then correct History Created")
     public void testUpdateRouteWithStatusCompletedAndDeliveryAutomaticallyClosedThenCorrectHistoryCreated() {
-        routeDto.setId(1);
-        routeDto.setRoutePoints(List.of(routePoint, anotherRoutePoint));
-
-        routeService.update(1, routeDto);
+        routeService.update(5, RouteAction.COMPLETE);
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
@@ -244,7 +245,8 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("When RoutePoint updated then correct History Created")
     public void testWhenRoutePointUpdatedThenCorrectHistoryCreated() {
-        routeService.updatePoint(1, "00000000-0000-0000-0000-000000000001", routePoint);
+        UUID routePointUUID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+        routeService.updatePoint(1, routePointUUID, RoutePointAction.COMPLETE);
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
@@ -258,10 +260,8 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("When route status Updated Then Correct History Created")
     public void testRouteStatusUpdated_thenCorrectHistoryCreated() {
-        routeDto.setId(5);
-        routeDto.setRoutePoints(List.of(routePoint));
 
-        routeService.update(5, routeDto);
+        routeService.update(5, RouteAction.COMPLETE);
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
@@ -275,7 +275,8 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
     @DisplayName("When RoutePoint updated with status completed and Route automatically closed then correct History Created")
     public void testWhenRoutePointUpdatedAndRouteAutomaticallyClosedThenCorrectHistoryCreated() {
 
-        routeService.updatePoint(2, "00000000-0000-0000-0000-000000000001", routePoint);
+        UUID routeId = UUID.fromString("00000000-0000-0000-0000-000000000001");
+        routeService.updatePoint(2, routeId, RoutePointAction.COMPLETE);
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
@@ -292,11 +293,11 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
         routeDto.setStatus(RouteStatus.INPROGRESS);
         routeDto.setRoutePoints(List.of(routePoint));
 
-        routeService.update(5, routeDto);
+        routeService.update(2, RouteAction.START);
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
-                .filter(event -> event.getName().equals("SECURITY OFF розпочав(ла) маршрут до авто Mercedes Sprinter AA 1111 CT"))
+                .filter(event -> event.getName().equals("SECURITY OFF розпочав(ла) маршрут до авто MAN AA 2455 CT"))
                 .count());
     }
 
@@ -306,7 +307,9 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
     @DisplayName("when Approve Delivery then History On Delivery And Routes Status Update Created")
     void whenApproveDelivery_thenHistoryOnDeliveryAndRoutesStatusUpdateCreated() {
 
-        deliveryService.approve(UUID.fromString("d0000000-0000-0000-0000-000000000001"));
+        UUID deliveryId = UUID.fromString("d0000000-0000-0000-0000-000000000001");
+
+        deliveryService.approve(deliveryId, APPROVE);
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)

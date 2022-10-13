@@ -4,7 +4,6 @@ import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.DeliveryHistoryDto;
 import com.goodspartner.dto.DeliveryShortDto;
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.dto.RouteDto;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.service.DeliveryHistoryService;
 import com.goodspartner.service.DeliveryService;
@@ -66,6 +65,7 @@ public class DeliveryController {
         return deliveryService.add(deliveryDto);
     }
 
+    // TODO probably not in use anymore
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PutMapping("/{id}")
     @ApiOperation(value = "Edit Delivery",
@@ -75,15 +75,6 @@ public class DeliveryController {
                               @ApiParam(value = "Edited DeliveryDto", type = "DeliveryDto", required = true)
                               @RequestBody DeliveryDto deliveryDto) {
         return deliveryService.update(id, deliveryDto);
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
-    @PutMapping("/{id}/approve")
-    @ApiOperation(value = "Approve Delivery",
-            notes = "Provide an id to approve delivery")
-    public void approve(@ApiParam(value = "ID of Delivery to be approved", required = true)
-                               @PathVariable UUID id) {
-        deliveryService.approve(id);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
@@ -122,17 +113,6 @@ public class DeliveryController {
         return deliveryService.calculateDelivery(deliveryId);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
-    @PutMapping("/{id}/routes/{routeId}")
-    public void updateRoute(@PathVariable int routeId, @RequestBody RouteDto routeDto) {
-        routeService.update(routeId, routeDto);
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
-    @PutMapping("/{id}/routes/{routeId}/route-points/{routePointId}")
-    public void updateRoutePoint(@PathVariable int routeId, @PathVariable String routePointId, @RequestBody RoutePoint routePoint) {
-        routeService.updatePoint(routeId, routePointId, routePoint);
-    }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
     @PutMapping("/{id}/routes/{routeId}/reorder")

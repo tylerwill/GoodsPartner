@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import static com.goodspartner.entity.RoutePointStatus.DONE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -123,6 +124,25 @@ public class RouteControllerITest extends AbstractWebITest {
                                   "carLoadDetails": []
                                 }"""));
     }
+
+//    @Test
+//    @DataSet(value = "common/close_delivery/initial_routes_and_deliveries.yml",
+//            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
+//    @DisplayName("Update route then Correct DeliveryAndRoutesStatus Returned")
+//    public void testUpdateRoute_thenCorrectDeliveryAndRoutesStatusReturned() {
+//        mockMvc.perform(post("/api/v1/deliveries/d0000000-0000-0000-0000-000000000001/routes/1/"DONE")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(deliveryDto)))
+//                .andExpect(status().isOk())
+//                .andExpect(content()
+//                        .json("""
+//                                {
+//                                  "date": "7777-07-07",
+//                                  "routes": [],
+//                                  "carLoadDetails": []
+//                                }"""));
+//    }
+
 }
 
 

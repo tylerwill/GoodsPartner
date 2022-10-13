@@ -45,7 +45,7 @@ public class Route {
     private long estimatedTime;
     private LocalDateTime startTime;
     private LocalDateTime finishTime;
-    private long spentTime;
+    private long spentTime; // TODO Minutes? Only for completed so far
     private boolean optimization;
 
     @Type(type = "json")

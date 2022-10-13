@@ -1,13 +1,11 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.DeliveryHistoryDto;
-import com.goodspartner.dto.RouteDto;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryHistory;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
-import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.event.DeliveryAuditEvent;
 import com.goodspartner.exceptions.DeliveryNotFoundException;
@@ -63,64 +61,55 @@ public class DefaultDeliveryHistoryService implements DeliveryHistoryService {
     }
 
     @Override
-    public void publishIfRouteUpdated(RouteDto routeDto, RouteStatus oldRouteStatus, Route updateRoute) {
-        if (!routeDto.getStatus().equals(oldRouteStatus)) {
-            if (routeDto.getStatus().equals(RouteStatus.INPROGRESS)) {
-                publishRouteStart(updateRoute, routeDto);
-            } else {
-                publishRouteStatusUpdated(updateRoute, routeDto);
-            }
-        }
-    }
-
-    @Override
-    public void publishIfPointUpdated(RoutePoint routePoint, RoutePointStatus oldRoutePointStatus, Route route) {
-        if (!routePoint.getStatus().equals(oldRoutePointStatus)) {
-            String template = DeliveryHistoryTemplate.ROUTE_POINT_STATUS.getTemplate();
+    public void publishRouteUpdated(Route updateRoute) {
+        if (updateRoute.getStatus().equals(RouteStatus.INPROGRESS)) {
+            String template = DeliveryHistoryTemplate.ROUTE_START.getTemplate();
 
             Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
-            values.put("carName", route.getCar().getName());
-            values.put("carLicensePlate", route.getCar().getLicencePlate());
-            values.put("clientName", routePoint.getClientName());
-            values.put("clientAddress", routePoint.getAddress());
-            values.put("routePointStatus", routePoint.getStatus().toString());
+            values.put("carLicensePlate", updateRoute.getCar().getLicencePlate());
+            values.put("routeStatus", updateRoute.getStatus().toString());
+            values.put("carName", updateRoute.getCar().getName());
 
-            publishPreparedEvent(values, template, route.getDelivery().getId());
+            publishPreparedEvent(values, template, updateRoute.getDelivery().getId());
+
+        } else {
+
+            String template = DeliveryHistoryTemplate.ROUTE_STATUS.getTemplate();
+
+            Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
+            values.put("carName", updateRoute.getCar().getName());
+            values.put("carLicensePlate", updateRoute.getCar().getLicencePlate());
+            values.put("routeStatus", updateRoute.getStatus().toString());
+
+            publishPreparedEvent(values, template, updateRoute.getDelivery().getId());
         }
+
     }
 
     @Override
-    public void publishRouteStatusChangeAuto(RouteStatus routeStatus, Route route) {
+    public void publishRoutePointUpdated(RoutePoint routePoint, Route route) {
+        String template = DeliveryHistoryTemplate.ROUTE_POINT_STATUS.getTemplate();
+
+        Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
+        values.put("carName", route.getCar().getName());
+        values.put("carLicensePlate", route.getCar().getLicencePlate());
+        values.put("clientName", routePoint.getClientName());
+        values.put("clientAddress", routePoint.getAddress());
+        values.put("routePointStatus", routePoint.getStatus().toString());
+
+        publishPreparedEvent(values, template, route.getDelivery().getId());
+    }
+
+    @Override
+    public void publishRouteStatusChangeAuto(Route route) {
         String template = DeliveryHistoryTemplate.ROUTE_STATUS_AUTO.getTemplate();
 
         Map<String, String> values = new HashMap<>();
         values.put("carName", route.getCar().getName());
         values.put("carLicensePlate", route.getCar().getLicencePlate());
-        values.put("routeStatus", routeStatus.toString());
+        values.put("routeStatus", route.getStatus().getStatus());
 
         publishPreparedEvent(values, template, route.getDelivery().getId());
-    }
-
-    private void publishRouteStart(Route updateRoute, RouteDto routeDto) {
-        String template = DeliveryHistoryTemplate.ROUTE_START.getTemplate();
-
-        Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
-        values.put("carLicensePlate", routeDto.getCar().getLicencePlate());
-        values.put("routeStatus", routeDto.getStatus().toString());
-        values.put("carName", routeDto.getCar().getName());
-
-        publishPreparedEvent(values, template, updateRoute.getDelivery().getId());
-    }
-
-    private void publishRouteStatusUpdated(Route updateRoute, RouteDto routeDto) {
-        String template = DeliveryHistoryTemplate.ROUTE_STATUS.getTemplate();
-
-        Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
-        values.put("carName", routeDto.getCar().getName());
-        values.put("carLicensePlate", routeDto.getCar().getLicencePlate());
-        values.put("routeStatus", routeDto.getStatus().toString());
-
-        publishPreparedEvent(values, template, updateRoute.getDelivery().getId());
     }
 
     private void publishPreparedEvent(Map<String, String> values, String template, UUID deliveryId) {

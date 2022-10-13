@@ -5,21 +5,28 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractBaseITest;
+import com.goodspartner.action.RoutePointAction;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.StoreDto;
+import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.RoutePoint;
+import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.service.RouteService;
+import com.goodspartner.web.controller.response.RouteActionResponse;
+import com.goodspartner.web.controller.response.RoutePointActionResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
+import java.util.UUID;
 
+import static com.goodspartner.action.RouteAction.COMPLETE;
 import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
 
 @DBRider
@@ -73,28 +80,27 @@ class DefaultRouteServiceITest extends AbstractBaseITest {
     @Test
     @DataSet(value = "common/close_delivery/initial_routes_and_deliveries.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
-    @ExpectedDataSet("common/close_delivery/route_and_delivery_automatically_closed.yml")
-    @DisplayName("When update routePoint then Route and Delivery should be automatically closed")
-    public void testUpdatePoint_thenRouteAndDeliveryShouldBeAutomaticallyClosed() {
-        routeService.updatePoint(1, "00000000-0000-0000-0000-000000000001", routePoint);
-    }
-
-    @Test
-    @DataSet(value = "common/close_delivery/initial_routes_and_deliveries.yml",
-            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
-    @ExpectedDataSet("common/close_delivery/route_automatically_closed.yml")
     @DisplayName("When update routePoint then Route should be automatically closed")
     public void testUpdatePoint_thenRouteShouldBeAutomaticallyClosed() {
-        routeService.updatePoint(2, "00000000-0000-0000-0000-000000000001", routePoint);
+        RoutePointActionResponse routePointActionResponse =
+                routeService.updatePoint(2, UUID.fromString("00000000-0000-0000-0000-000000000001"), RoutePointAction.COMPLETE);
+
+        Assertions.assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000001"), routePointActionResponse.getRoutePointId());
+        Assertions.assertEquals(RoutePointStatus.DONE, routePointActionResponse.getRoutePointStatus());
+        Assertions.assertEquals(2, routePointActionResponse.getRouteId());
+        Assertions.assertEquals(RouteStatus.COMPLETED, routePointActionResponse.getRouteStatus());
     }
 
     @Test
     @DataSet(value = "common/close_delivery/initial_routes_and_deliveries.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
-    @ExpectedDataSet("common/close_delivery/route_point_closed_only.yml")
     @DisplayName("When update routePoint then routePoint should be in status Done")
     public void testUpdatePoint_thenRoutePointShouldBeDone() {
-        routeService.updatePoint(3, "00000000-0000-0000-0000-000000000001", routePoint);
+        RoutePointActionResponse routePointActionResponse =
+                routeService.updatePoint(3, UUID.fromString("00000000-0000-0000-0000-000000000001"), RoutePointAction.COMPLETE);
+
+        Assertions.assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000001"), routePointActionResponse.getRoutePointId());
+        Assertions.assertEquals(RoutePointStatus.DONE, routePointActionResponse.getRoutePointStatus());
     }
 
     @Test
@@ -103,23 +109,45 @@ class DefaultRouteServiceITest extends AbstractBaseITest {
     @ExpectedDataSet("common/close_delivery/update_and_close_route.yml")
     @DisplayName("Update route with status completed")
     public void testUpdateRoute_thenRouteShouldBeClosed() {
-        routeDto.setId(5);
-        routeDto.setRoutePoints(List.of(routePoint));
-
-        routeService.update(5, routeDto);
+        routeService.update(5, COMPLETE);
     }
 
+    // TODO probably not relevant anymore
     @Test
     @DataSet(value = "common/close_delivery/initial_routes_and_deliveries.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/close_delivery/delivery_automatically_closed.yml")
     @DisplayName("When update route with status completed then delivery should be automatically closed")
     public void testUpdateRoute_thenDeliveryAutomaticallyShouldBeClosed() {
-        routeDto.setId(1);
-        routeDto.setRoutePoints(List.of(routePoint, anotherRoutePoint));
-
-        routeService.update(1, routeDto);
+        routeService.update(1, COMPLETE);
     }
 
+    @Test
+    @DataSet(value = "common/close_delivery/initial_routes_and_deliveries.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
+    @DisplayName("Update route then Correct DeliveryAndRoutesStatus Returned")
+    public void testUpdateRoute_thenCorrectDeliveryAndRoutesStatusReturned() {
+        RouteActionResponse update = routeService.update(1, COMPLETE);
+        Assertions.assertEquals(UUID.fromString("d0000000-0000-0000-0000-000000000001"), update.getDeliveryId());
+        Assertions.assertEquals("COMPLETED", update.getDeliveryStatus().getStatus());
+        Assertions.assertEquals(1, update.getRouteId());
+        Assertions.assertEquals("COMPLETED", update.getRouteStatus().getStatus());
+
+    }
+
+    @Test
+    @DataSet(value = "common/close_delivery/initial_routes_and_deliveries.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
+    @DisplayName("When update routePoint And Route And Delivery then Correct Reply Returned")
+    public void testUpdatePointAndRouteAndDelivery_thenCorrectReplyReturned() {
+        RoutePointActionResponse routePointActionResponse = routeService.updatePoint(1, UUID.fromString("00000000-0000-0000-0000-000000000001"), RoutePointAction.COMPLETE);
+
+        Assertions.assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000001"), routePointActionResponse.getRoutePointId());
+        Assertions.assertEquals(RoutePointStatus.DONE, routePointActionResponse.getRoutePointStatus());
+        Assertions.assertEquals(1, routePointActionResponse.getRouteId());
+        Assertions.assertEquals(RouteStatus.COMPLETED, routePointActionResponse.getRouteStatus());
+        Assertions.assertEquals(UUID.fromString("d0000000-0000-0000-0000-000000000001"), routePointActionResponse.getDeliveryId());
+        Assertions.assertEquals(DeliveryStatus.COMPLETED, routePointActionResponse.getDeliveryStatus());
+    }
 
 }
