@@ -234,7 +234,7 @@ const AdditionalInfo = ({order}) => {
                     Коментар
                 </Typography>
                 <Typography variant="caption" display="block" gutterBottom>
-                    {order.comment?.isEmpty() ? '-' : order.comment}
+                    {order.comment?.length === 0 ? '-' : order.comment}
                 </Typography>
             </Grid>
         </Grid>)
