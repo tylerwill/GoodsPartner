@@ -67,7 +67,6 @@ yarn-error.log*
 database.env
 .eslintcache
 
-reports/
 logs
 
 
