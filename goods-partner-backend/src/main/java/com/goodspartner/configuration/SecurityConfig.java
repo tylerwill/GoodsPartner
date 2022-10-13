@@ -20,6 +20,7 @@ public class SecurityConfig {
     public SecurityFilterChain filter(HttpSecurity http) throws Exception {
         // FIXME: Disable CORS only in dev mode
         http
+                .csrf().disable()
                 .cors().disable()
                 .authorizeRequests().anyRequest().authenticated()
                 .and().oauth2Login();
