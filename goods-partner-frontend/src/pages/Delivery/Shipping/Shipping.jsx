@@ -15,8 +15,10 @@ import {Collapse} from "@mui/material";
 
 const Shipping = ({productsShipping}) => {
 
-    return <Box>
-        <TableContainer component={Paper}>
+    return <Box sx={{paddingLeft:'24px', paddingRight:'24px'}}>
+        <TableContainer component={Paper}  style={{
+            borderTop: '1px solid rgba(0, 0, 0, 0.1)'
+        }}>
             <Table aria-label="collapsible table">
                 <TableHead>
                     <TableRow>

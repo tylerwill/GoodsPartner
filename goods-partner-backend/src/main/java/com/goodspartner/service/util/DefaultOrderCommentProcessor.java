@@ -42,12 +42,19 @@ public class DefaultOrderCommentProcessor implements OrderCommentProcessor {
     }
 
     private boolean checkOrderCommentIfFrozen(OrderDto orderDto) {
-        String orderComment = orderDto.getComment().toLowerCase();
-        return orderComment.contains(FROZEN);
+        String orderComment = orderDto.getComment();
+        if(orderComment == null) {
+            return false;
+        }
+        return orderComment.toLowerCase().contains(FROZEN);
     }
 
     private boolean checkOrderCommentIfToBeShippedByThirdPart(OrderDto orderDto) {
-        String orderComment = orderDto.getComment().toLowerCase();
-        return orderComment.contains(THIRD_PARTY) || orderComment.contains(THIRD_PARTY_BINDED);
+        String orderComment = orderDto.getComment();
+        if(orderComment == null) {
+            return false;
+        }
+        String orderCommentLowerCase = orderComment.toLowerCase();
+        return orderCommentLowerCase.contains(THIRD_PARTY) || orderCommentLowerCase.contains(THIRD_PARTY_BINDED);
     }
 }

@@ -65,13 +65,15 @@ export const addCar = (car) => (dispatch) => {
     carsApi.add(car).then(response => {
         if (response.status === 200) {
             console.log("response", response);
-            dispatch(addCarActionCreator(car));
+            dispatch(addCarActionCreator(response.data));
         }
     })
 }
 export const updateCar = (car) => (dispatch) => {
     carsApi.update(car).then(response => {
-        dispatch(updateCarAction(car));
+        if (response.status === 200) {
+            dispatch(updateCarAction(response.data));
+        }
     })
 }
 

@@ -101,7 +101,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private ODataWrapperDto<ODataOrderDto> getOrders(URI orderUri) {
         return webClient.get()
                 .uri(orderUri)
-                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+//                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
                 })
@@ -117,7 +117,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private ODataWrapperDto<ODataProductDto> parseProducts(URI productUri) {
         return webClient.get()
                 .uri(productUri)
-                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+//                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataProductDto>>() {
                 })

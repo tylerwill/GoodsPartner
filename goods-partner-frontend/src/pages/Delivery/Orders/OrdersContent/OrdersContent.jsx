@@ -43,7 +43,9 @@ const OrdersContent = ({orders, updatePreviewOrderAddress}) => {
 }
 
 const createTable = (orders, keyPrefix, setOrderAddressDialogOpen, setEditedOrder) => {
-    return (<TableContainer component={Paper}>
+    return (<TableContainer component={Paper} style={{
+            borderTop: '1px solid rgba(0, 0, 0, 0.1)'
+        }}>
             <Table aria-label="collapsible table">
                 <TableHead>
                     <TableRow>
@@ -124,7 +126,7 @@ const Row = ({order, keyPrefix, setOrderAddressDialogOpen, setEditedOrder}) => {
                                         <TableRow>
                                             <TableCell sx={{width: '500px'}}>Артикул</TableCell>
                                             <TableCell>Кількість</TableCell>
-                                            <TableCell>Вага</TableCell>
+                                            <TableCell>Упаковка</TableCell>
                                             <TableCell>Загальна вага</TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -138,7 +140,7 @@ const Row = ({order, keyPrefix, setOrderAddressDialogOpen, setEditedOrder}) => {
                                                     {product.productName}
                                                 </TableCell>
                                                 <TableCell> {product.amount}</TableCell>
-                                                <TableCell> {product.unitWeight} кг</TableCell>
+                                                <TableCell> {product.unitWeight} {product.measure}</TableCell>
                                                 <TableCell> {product.totalProductWeight} кг</TableCell>
                                             </TableRow>
                                         ))}
@@ -173,14 +175,7 @@ const AdditionalInfo = ({order}) => {
 
     return (
         <Grid sx={{mt: 2, p: 2, background: 'rgba(0, 0, 0, 0.02)', borderRadius: '6px'}} container spacing={2}>
-            <Grid item xs={4}>
-                <Typography sx={{mb: 1}} variant="caption" display="block" gutterBottom>
-                    Коментар
-                </Typography>
-                <Typography variant="caption" display="block" gutterBottom>
-                    {order.comment}
-                </Typography>
-            </Grid>
+
             <Grid item xs={4}>
                 <Typography sx={{mb: 1}} variant="caption" display="block" gutterBottom>
                     Діапазон доставки
@@ -230,6 +225,14 @@ const AdditionalInfo = ({order}) => {
                 <Box>
                     <FormControlLabel checked={order.isFrozen} control={<Checkbox/>} label="Потребує заморозки"/>
                 </Box>
+            </Grid>
+            <Grid item xs={4}>
+                <Typography sx={{mb: 1}} variant="caption" display="block" gutterBottom>
+                    Коментар
+                </Typography>
+                <Typography variant="caption" display="block" gutterBottom>
+                    {order.comment?.isEmpty() ? '-' : order.comment}
+                </Typography>
             </Grid>
         </Grid>)
 }

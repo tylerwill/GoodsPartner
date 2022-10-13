@@ -15,7 +15,6 @@ public class DefaultStoreService implements StoreService {
 
     private static final String STORE_NAME = "Склад №1";
 
-    @Autowired
     private final StoreRepository storeRepository;
 
     @Override

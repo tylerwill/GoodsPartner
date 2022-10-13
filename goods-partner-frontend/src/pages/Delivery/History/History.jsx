@@ -15,8 +15,10 @@ const History = ({deliveryHistory, loadHistory}) => {
 
 
     console.log("history", deliveryHistory);
-    return <Box>
-        <TableContainer component={Paper}>
+    return <Box sx={{paddingLeft:'24px', paddingRight:'24px'}}>
+        <TableContainer component={Paper}  style={{
+            borderTop: '1px solid rgba(0, 0, 0, 0.1)'
+        }}>
             <Table sx={{minWidth: 650}} size="small" aria-label="a dense table">
                 <TableHead>
                     <TableRow>

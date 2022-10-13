@@ -105,6 +105,17 @@ function toGoogleWaypoints(route) {
         }
     )
 
+    const storeMapPoint = route.store.mapPoint;
+    const storeWaypoint = {
+        lat: storeMapPoint.latitude,
+        lng: storeMapPoint.longitude,
+        name: route.store.name
+    }
+
+    // store is the first and the last point on the way
+    googleWaypoints.unshift(storeWaypoint);
+    googleWaypoints.push(storeWaypoint);
+
     return googleWaypoints;
 }
 

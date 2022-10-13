@@ -14,6 +14,6 @@ import org.springframework.context.annotation.Configuration;
 public class GrandeDolce1CProperties {
 
     private String url;
-    private String login;
-    private String password;
+//    private String login;
+//    private String password;
 }

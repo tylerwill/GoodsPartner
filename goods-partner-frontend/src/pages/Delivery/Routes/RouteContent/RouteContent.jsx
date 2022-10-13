@@ -9,9 +9,9 @@ const RouteContent = ({deliveryDate, route, updateRoutePoint, updateRoute}) => {
 
     const updateRoutePointHandler = (routePoint, newStatus) => {
         const updatedRoutePoint = {...routePoint, status:newStatus};
-        if(route.status!== 'APPROVED') {
+        if(route.status!== 'INPROGRESS') {
             alert('Зміна статусу неможлива. Маршрут завершенний або не розпочатий.');
-        }else {
+        } else {
             updateRoutePoint(route.id, updatedRoutePoint);
         }
     }
