@@ -8,6 +8,7 @@ import com.goodspartner.exceptions.InvalidActionType;
 import com.goodspartner.exceptions.NoOrdersFoundForDelivery;
 import com.goodspartner.exceptions.NoRoutesFoundForDelivery;
 import com.goodspartner.exceptions.RouteInWrongState;
+import com.goodspartner.exceptions.StoreNotFoundException;
 import com.goodspartner.web.dto.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +63,12 @@ public class DeliveryControllerAdvice {
     @ExceptionHandler(RouteInWrongState.class)
     public ResponseEntity<ErrorMessage> routeInWrongState(RouteInWrongState routeInWrongState) {
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST, routeInWrongState.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+    }
+
+    @ExceptionHandler(StoreNotFoundException.class)
+    public ResponseEntity<ErrorMessage> storeNotFound(StoreNotFoundException storeNotFoundException) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST, storeNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
     }
 }

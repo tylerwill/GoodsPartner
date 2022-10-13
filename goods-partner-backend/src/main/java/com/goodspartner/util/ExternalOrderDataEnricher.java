@@ -2,12 +2,11 @@ package com.goodspartner.util;
 
 import com.goodspartner.dto.Product;
 import com.goodspartner.service.StoreService;
+import com.goodspartner.service.dto.external.grandedolce.Measure;
 import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -16,8 +15,8 @@ public class ExternalOrderDataEnricher {
     private final StoreService storeService;
 
     public void enrichODataProduct(ODataProductDto product) {
-        product.setUnitWeight(calculateProductUnitWeight(product));
         product.setTotalProductWeight(getTotalProductWeight(product));
+        product.setUnitWeight(calculateProductUnitWeight(product));
         product.setStoreName(storeService.getMainStore().getName());
     }
 
@@ -33,14 +32,12 @@ public class ExternalOrderDataEnricher {
 
     @VisibleForTesting
     double getTotalProductWeight(ODataProductDto product) {
-        List<String> allowableMeasure = List.of("кг", "л", "шт");
-        String measure = product.getMeasure();
-        return allowableMeasure.contains(measure) ?
-                (!measure.equals("шт") ? product.getTotalProductWeight() : 1.0) : 0.0;
+        return Measure.of(product.getMeasure()).calculateTotalProductWeight(product);
     }
 
     @VisibleForTesting
     double getTotalProductWeight(Product product) {
         return product.getAmount() * product.getUnitWeight();
     }
+
 }
