@@ -2,9 +2,15 @@ package com.goodspartner.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.goodspartner.dto.MapPoint;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +29,11 @@ public class RoutePoint {
     private String address;
     private double addressTotalWeight;
     private long routePointDistantTime;
+    private LocalTime expectedArrival;
+    private LocalTime expectedCompletion;
+    private LocalTime deliveryStart;
+    private LocalTime deliveryEnd;
+
     private MapPoint mapPoint;
 
     @JsonIgnoreProperties(value = {"orderTotalWeight"})

@@ -17,34 +17,37 @@ ROUTES:
     DELIVERY_ID: d0000000-0000-0000-0000-000000000001
     STATUS: "COMPLETED"
     DISTANCE: 0.0
-    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, 
+                    {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
 
   - ID: 2
     DELIVERY_ID: d0000000-0000-0000-0000-000000000002
     STATUS: "APPROVED"
     DISTANCE: 0.0
-    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, 
+                    {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
 
   - ID: 3
     DELIVERY_ID: d0000000-0000-0000-0000-000000000002
     STATUS: "DRAFT"
     DISTANCE: 0.0
-    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, 
+                    {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
 
   - ID: 4
     DELIVERY_ID: d0000000-0000-0000-0000-000000000003
     STATUS: "COMPLETED"
     DISTANCE: 0.0
-    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
 
   - ID: 5
     DELIVERY_ID: d0000000-0000-0000-0000-000000000004
     STATUS: "INPROGRESS"
     DISTANCE: 0.0
-    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
 
   - ID: 6
     DELIVERY_ID: d0000000-0000-0000-0000-000000000004
     STATUS: "DRAFT"
     DISTANCE: 0.0
-    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"

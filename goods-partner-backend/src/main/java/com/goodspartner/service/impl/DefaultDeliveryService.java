@@ -117,14 +117,16 @@ public class DefaultDeliveryService implements DeliveryService {
 
         validateDelivery(delivery);
 
+        // Cleanup in case of recalculation
         List<OrderExternal> orders = delivery.getOrders();
+        orders.forEach(orderExternal -> orderExternal.setCarLoad(null));
 
-        // Frozen Orders
+        // Routes
         List<Route> coolerRoutes = routeCalculationService.calculateRoutes(orders, RouteMode.COOLER);
-        List<CarLoad> coolerCarLoad = carLoadService.buildCarLoad(coolerRoutes, orders);
-
-        // Other orders
         List<Route> regularRoutes = routeCalculationService.calculateRoutes(orders, RouteMode.REGULAR);
+
+        // CarLoad
+        List<CarLoad> coolerCarLoad = carLoadService.buildCarLoad(coolerRoutes, orders);
         List<CarLoad> regularCarLoads = carLoadService.buildCarLoad(regularRoutes, orders);
 
         // Update Delivery

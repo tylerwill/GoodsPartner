@@ -4,7 +4,6 @@ import com.goodspartner.dto.CarLoadDto;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.OrderExternal;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.math.BigDecimal;
@@ -15,15 +14,7 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", uses = OrderExternalMapper.class)
 public interface CarLoadMapper {
 
-    List<CarLoad> toCarLoads(List<CarLoadDto> carLoadDtos);
-
-    List<CarLoadDto> toCarLoadDtos(List<CarLoad> carLoads);
-
     CarLoad carLoadDtoToCarLoad(CarLoadDto carLoadDto);
-
-    @Mapping(target = "car", source = "car")
-    @Mapping(target = "car.loadSize", source = "orders", qualifiedByName = "mapCarLoadSize")
-    CarLoadDto carLoadToCarLoadDto(CarLoad carLoad);
 
     @Named("mapCarLoadSize")
     default double mapCarLoadSize(List<OrderExternal> orders) {

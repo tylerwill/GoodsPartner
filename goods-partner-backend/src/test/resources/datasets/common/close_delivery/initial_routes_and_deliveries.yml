@@ -19,7 +19,8 @@ ROUTES:
     START_TIME: "2022-09-27 12:23:43"
     DISTANCE: 0.0
     CAR_ID: 1
-    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, 
+                    {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
     STORE_ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
 
   - ID: 2
@@ -27,7 +28,8 @@ ROUTES:
     STATUS: "APPROVED"
     DISTANCE: 0.0
     CAR_ID: 2
-    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, 
+                    {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"DONE\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
     STORE_ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
 
   - ID: 3
@@ -35,14 +37,15 @@ ROUTES:
     STATUS: "DRAFT"
     DISTANCE: 0.0
     CAR_ID: 3
-    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}, 
+                    {\"id\": \"00000000-0000-0000-0000-000000000002\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
     STORE_ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
 
   - ID: 4
     DELIVERY_ID: d0000000-0000-0000-0000-000000000003
     STATUS: "COMPLETED"
     DISTANCE: 0.0
-    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
     STORE_ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
 
   - ID: 5
@@ -50,7 +53,7 @@ ROUTES:
     STATUS: "INPROGRESS"
     START_TIME: "2022-09-27 12:23:43"
     DISTANCE: 0.0
-    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
     STORE_ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
     CAR_ID: 3
 
@@ -58,7 +61,7 @@ ROUTES:
     DELIVERY_ID: d0000000-0000-0000-0000-000000000004
     STATUS: "DRAFT"
     DISTANCE: 0.0
-    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
+    ROUTE_POINTS: "[{\"id\": \"00000000-0000-0000-0000-000000000001\", \"orders\": null, \"status\": \"PENDING\", \"address\": null, \"expectedArrival\": null, \"expectedCompletion\": null, \"clientId\": 0, \"mapPoint\": null, \"clientName\": null, \"completedAt\": null, \"deliveryEnd\": null, \"deliveryStart\": null, \"addressTotalWeight\": 0.0, \"routePointDistantTime\": 0}]"
     STORE_ID: 5688492e-ede4-45d3-923b-5f9773fd3d4b
 
 CARS:

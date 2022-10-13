@@ -22,12 +22,14 @@ import com.goodspartner.service.dto.RouteMode;
 import com.google.common.annotations.VisibleForTesting;
 import com.graphhopper.ResponsePath;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +37,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.goodspartner.service.google.GoogleVRPSolver.SERVICE_TIME_AT_LOCATION_MIN;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DefaultRouteCalculationService implements RouteCalculationService {
@@ -59,11 +64,19 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                 .filter(orderExternal -> orderExternal.isFrozen() == coolerRoute.isCoolerNecessary())
                 .toList();
 
+        if (filteredOrders.isEmpty()) {
+            log.info("No orders found for mode {}", coolerRoute.name());
+            return Collections.emptyList();
+        }
+        
         Store store = storeService.getMainStore();
         List<Car> cars = carRepository.findByAvailableTrueAndCoolerIs(coolerRoute.isCoolerNecessary());
         List<RoutePoint> routePoints = mapToRoutePoints(filteredOrders);
 
+        log.info("Start route optimisation for {} orders", orders.size());
         List<VRPSolution> vrpSolutions = vrpSolver.optimize(cars, storeMapper.getMapPoint(store), routePoints);
+        log.info("Finished route optimisation for {} orders", orders.size());
+
         return vrpSolutions.stream()
                 .map(vrpSolution -> mapToRoute(vrpSolution, store))
                 .collect(Collectors.toList());
@@ -71,14 +84,16 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     }
 
     @VisibleForTesting
-    Route mapToRoute(VRPSolution carRoute, Store store) {
-        List<RoutePoint> routePoints = carRoute.getRoutePoints();
+    Route mapToRoute(VRPSolution vrpSolution, Store store) {
 
         List<MapPoint> mapPoints = new ArrayList<>();
         mapPoints.add(storeMapper.getMapPoint(store));
-        mapPoints.addAll(carRoute.getRoutePoints().stream().map(RoutePoint::getMapPoint).toList());
+        mapPoints.addAll(vrpSolution.getRoutePoints().stream().map(RoutePoint::getMapPoint).toList());
+        mapPoints.add(storeMapper.getMapPoint(store)); // Return back to Store
 
         ResponsePath routePath = graphhopperService.getRoute(mapPoints);
+
+        List<RoutePoint> routePoints = vrpSolution.getRoutePoints();
 
         Route route = new Route();
         route.setStatus(RouteStatus.DRAFT);
@@ -86,11 +101,15 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
         route.setTotalPoints(routePoints.size());
         route.setTotalOrders(getTotalOrders(routePoints));
         route.setDistance(BigDecimal.valueOf(routePath.getDistance() / 1000)
-                .setScale(2, RoundingMode.HALF_UP).doubleValue());
-        route.setEstimatedTime(Duration.ofMillis(routePath.getTime()).toMinutes());
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue());
+
+        int totalWaitTimeMin = SERVICE_TIME_AT_LOCATION_MIN * routePoints.size();
+        route.setEstimatedTime(Duration.ofMillis(routePath.getTime()).toMinutes() + totalWaitTimeMin);
+
         route.setRoutePoints(routePoints);
         route.setOptimization(true);
-        route.setCar(carRoute.getCar());
+        route.setCar(vrpSolution.getCar());
         route.setStore(store);
 
         return route;
@@ -153,6 +172,12 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
             routePoint.setOrders(orderReferences);
             routePoint.setAddressTotalWeight(addressTotalWeight);
             routePoint.setMapPoint(getMapPoint(addressExternal));
+
+            // TODO : issue #205 how to represent several orders per one client. Now we take first
+            OrderExternal firstOrder = orderList.get(0);
+            routePoint.setDeliveryStart(firstOrder.getDeliveryStart());
+            routePoint.setDeliveryEnd(firstOrder.getDeliveryFinish());
+
             routePointList.add(routePoint);
         });
         return routePointList;

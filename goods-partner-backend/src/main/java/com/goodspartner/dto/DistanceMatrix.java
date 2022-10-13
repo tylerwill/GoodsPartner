@@ -10,6 +10,6 @@ import lombok.Setter;
 public class DistanceMatrix {
 
     private Long[][] distance;
-    private Long[][] duration;
+    private Long[][] duration; // in minutes
 
 }

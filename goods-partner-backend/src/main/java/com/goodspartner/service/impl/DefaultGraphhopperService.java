@@ -12,6 +12,7 @@ import com.graphhopper.util.shapes.GHPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,10 +37,12 @@ public class DefaultGraphhopperService implements GraphhopperService {
                         endStop.getLatitude(), endStop.getLongitude())
                         .setProfile(properties.getProfiles().getVehicle())
                         .setLocale(Locale.UK);
+
                 ResponsePath path = getResponsePath(request);
 
                 distanceMatrix[i][j] = (long) path.getDistance();
-                durationMatrix[i][j] = path.getTime() / 1000;
+                durationMatrix[i][j] = Duration.ofMillis(path.getTime()).toMinutes();
+
             }
         }
         return DistanceMatrix.builder()
@@ -61,6 +64,7 @@ public class DefaultGraphhopperService implements GraphhopperService {
         if (response.hasErrors()) {
             throw new RuntimeException(response.getErrors().toString());
         }
+
         return response.getBest();
     }
 
