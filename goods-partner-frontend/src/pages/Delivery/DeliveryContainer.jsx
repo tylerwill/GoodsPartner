@@ -11,7 +11,8 @@ import {
 const mapStateToProps = (state) => {
     return {
         currentDelivery: state.deliveries.currentDelivery,
-        ordersPreview: state.deliveries.ordersPreview
+        ordersPreview: state.deliveries.ordersPreview,
+        deliveriesLoading: state.deliveries.deliveryLoading
     }
 }
 

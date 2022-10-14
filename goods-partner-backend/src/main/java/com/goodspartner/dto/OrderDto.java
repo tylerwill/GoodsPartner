@@ -1,5 +1,6 @@
 package com.goodspartner.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -33,9 +34,10 @@ public class OrderDto {
     private String managerFullName;
     private boolean isFrozen;
 
-    // TODO move to default properties
-    private LocalTime deliveryStart = LocalTime.of(9,0); // Default start
-    private LocalTime deliveryFinish = LocalTime.of(18, 0); // Default end
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    private LocalTime deliveryStart;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    private LocalTime deliveryFinish;
 
     // Address
     private String clientName;

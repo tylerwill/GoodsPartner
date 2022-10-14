@@ -17,7 +17,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import ChooseAddressDialog from "./ChooseAddressDialog/ChooseAddressDialog";
 
-const OrdersContent = ({orders, updatePreviewOrderAddress}) => {
+const OrdersContent = ({orders, updatePreviewOrderAddress, updateOrder}) => {
     const [orderAddressDialogOpen, setOrderAddressDialogOpen] = React.useState(false);
     const [editedOrder, setEditedOrder] = React.useState(null);
 
@@ -32,8 +32,8 @@ const OrdersContent = ({orders, updatePreviewOrderAddress}) => {
 
     return <Box>
         <BasicTabs labels={tabLabels}>
-            {createTable(orders, "all", setOrderAddressDialogOpen, setEditedOrder)}
-            {createTable(invalidOrders, "invalid", setOrderAddressDialogOpen, setEditedOrder)}
+            {createTable(orders, "all", setOrderAddressDialogOpen, setEditedOrder, updateOrder)}
+            {createTable(invalidOrders, "invalid", setOrderAddressDialogOpen, setEditedOrder, updateOrder)}
         </BasicTabs>
 
         {
@@ -45,7 +45,7 @@ const OrdersContent = ({orders, updatePreviewOrderAddress}) => {
     </Box>
 }
 
-const createTable = (orders, keyPrefix, setOrderAddressDialogOpen, setEditedOrder) => {
+const createTable = (orders, keyPrefix, setOrderAddressDialogOpen, setEditedOrder, updateOrder) => {
     return (<TableContainer component={Paper} style={{
             borderTop: '1px solid rgba(0, 0, 0, 0.1)'
         }}>
@@ -66,7 +66,7 @@ const createTable = (orders, keyPrefix, setOrderAddressDialogOpen, setEditedOrde
                     {orders.map((order, index) => {
                         return (<Row order={order} key={keyPrefix + index} keyPrefix={keyPrefix + "subTable"}
                                      setOrderAddressDialogOpen={setOrderAddressDialogOpen}
-                                     setEditedOrder={setEditedOrder}/>)
+                                     setEditedOrder={setEditedOrder} updateOrder={updateOrder}/>)
                     })}
                 </TableBody>
             </Table>
@@ -75,7 +75,7 @@ const createTable = (orders, keyPrefix, setOrderAddressDialogOpen, setEditedOrde
 }
 
 
-const Row = ({order, keyPrefix, setOrderAddressDialogOpen, setEditedOrder}) => {
+const Row = ({order, keyPrefix, setOrderAddressDialogOpen, setEditedOrder, updateOrder}) => {
     const [orderTableOpen, setOrderTableOpen] = React.useState(false);
 
 
@@ -151,7 +151,7 @@ const Row = ({order, keyPrefix, setOrderAddressDialogOpen, setEditedOrder}) => {
                                 </Table>
                             </TableContainer>
 
-                            <AdditionalInfo order={order}/>
+                            <AdditionalInfo order={order} updateOrder={updateOrder}/>
                         </Box>
                     </Collapse>
                 </TableCell>
@@ -161,19 +161,22 @@ const Row = ({order, keyPrefix, setOrderAddressDialogOpen, setEditedOrder}) => {
 }
 
 // TODO: [Max UI] Move into separate file
-const AdditionalInfo = ({order}) => {
-
-    const defaultFrom = React.useState("9:00");
-    const defaultTo = React.useState("18:00");
-
-    const [from, setFrom] = order.deliveryStart == null ? defaultFrom : order.deliveryStart;
-    const [to, setTo] = order.deliveryFinish == null ? defaultTo : order.deliveryFinish;
+const AdditionalInfo = ({order, updateOrder}) => {
+    const from = order.deliveryStart ?? "09:00";
+    const to = order.deliveryFinish ?? "18:00";
 
     const handleChangeFrom = (event) => {
-        setFrom(event.target.value);
+        const newOrder = {...order, deliveryStart: event.target.value};
+        updateOrder(newOrder);
     };
     const handleChangeTo = (event) => {
-        setTo(event.target.value);
+        const newOrder = {...order, deliveryFinish: event.target.value};
+        updateOrder(newOrder);
+    };
+
+    const handleFreeze = (event) => {
+        const newOrder = {...order, frozen:event.target.checked};
+        updateOrder(newOrder);
     };
 
     return (
@@ -190,7 +193,7 @@ const AdditionalInfo = ({order}) => {
                         onChange={handleChangeFrom}
                         sx={{minWidth: "140px", height: "40px", mr: 1}}
                     >
-                        <MenuItem value={"9:00"}>9:00</MenuItem>
+                        <MenuItem value={"09:00"}>9:00</MenuItem>
                         <MenuItem value={"10:00"}>10:00</MenuItem>
                         <MenuItem value={"11:00"}>11:00</MenuItem>
                         <MenuItem value={"12:00"}>12:00</MenuItem>
@@ -226,7 +229,7 @@ const AdditionalInfo = ({order}) => {
                     Заморозка
                 </Typography>
                 <Box>
-                    <FormControlLabel checked={order.isFrozen} control={<Checkbox/>} label="Потребує заморозки"/>
+                    <FormControlLabel onChange={(e)=>handleFreeze(e)} checked={order.frozen} control={<Checkbox/>} label="Потребує заморозки"/>
                 </Box>
             </Grid>
             <Grid item xs={4}>
