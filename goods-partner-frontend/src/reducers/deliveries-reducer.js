@@ -18,7 +18,9 @@ import {
     setDeliveryLoading,
     setOrdersPreview,
     setOrdersPreviewLoading,
-    UPDATE_ADDRESS_FOR_ORDERS_PREVIEW
+    UPDATE_ADDRESS_FOR_ORDERS_PREVIEW,
+    UPDATE_ORDER,
+    updateOrderAction
 } from "../actions/deliveries-actions";
 import {deliveriesApi, ordersApi} from "../api/api";
 import {push} from 'react-router-redux';
@@ -74,10 +76,27 @@ const deliveriesReducer = (state = initialOrders, action) => {
 
         case SET_CURRENT_HISTORY:
             return {...state, deliveryHistory: action.payload};
+
+        case UPDATE_ORDER:
+            const newState = {...state,
+                ordersPreview: {...state.ordersPreview, orders: replaceOrder(state.ordersPreview.orders, action.payload)}};
+            return newState;
         default:
             return state;
     }
 }
+
+function replaceOrder(orders, newOrder) {
+    const newOrders = [...orders];
+    for (let i = 0; i < newOrders.length; i++) {
+        if (newOrders[i].refKey === newOrder.refKey) {
+            newOrders[i] = newOrder;
+            break;
+        }
+    }
+    return newOrders;
+}
+
 
 function approveCurrentDelivery(state, statuses) {
     if (state.currentDelivery.id !== statuses.deliveryId) {
@@ -168,6 +187,7 @@ export const loadDeliveries = () => (dispatch) => {
 }
 
 export const loadDelivery = (id) => (dispatch) => {
+    setDeliveryLoading(true);
     deliveriesApi.findById(id).then(response => {
         if (response.status === 200) {
             const delivery = response.data;
@@ -179,6 +199,7 @@ export const loadDelivery = (id) => (dispatch) => {
                 dispatch(setOrdersPreviewLoading(false));
             }
             dispatch(setCurrentDelivery(delivery));
+            setDeliveryLoading(false);
         }
     })
 }
@@ -205,12 +226,10 @@ export const createDelivery = (date) => (dispatch) => {
 
 // util method
 const findPreviewOrdersForDelivery = (dispatch, date) => {
-    dispatch(setOrdersPreviewLoading(true));
     ordersApi.getOrdersByDate(date)
         .then(response => {
             if (response.status === 200) {
                 dispatch(setOrdersPreview(response.data));
-                dispatch(setOrdersPreviewLoading(false));
             }
         })
 }
@@ -282,5 +301,6 @@ export const getOrderById = (id) => (dispatch, getState) => {
     const orders = state.deliveries.currentDelivery.orders;
     return orders.find(order => order.id === id);
 }
+
 
 export default deliveriesReducer;

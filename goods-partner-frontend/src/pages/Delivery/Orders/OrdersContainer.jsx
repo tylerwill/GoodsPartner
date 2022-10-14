@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from "react-redux";
 import Orders from "./Orders";
-import {updateAddressOrdersPreview} from "../../../actions/deliveries-actions";
+import {updateAddressOrdersPreview, updateOrderAction} from "../../../actions/deliveries-actions";
 
 const mapStateToProps = (state) => {
     return {
@@ -13,7 +13,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updatePreviewOrderAddress: (newAddress) => dispatch(updateAddressOrdersPreview(newAddress))
+        updatePreviewOrderAddress: (newAddress) => dispatch(updateAddressOrdersPreview(newAddress)),
+        updateOrder: (order)=> dispatch(updateOrderAction(order))
     };
 };
 

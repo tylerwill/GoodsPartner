@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Box, Breadcrumbs, Button, Tooltip, Typography} from "@mui/material";
+import {Backdrop, Box, Breadcrumbs, Button, CircularProgress, Tooltip, Typography} from "@mui/material";
 import {ArrowForward} from "@mui/icons-material";
 import {Link, useParams} from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -17,13 +17,11 @@ const Delivery = ({
                       linkOrdersToDeliveryAndCalculate,
                       ordersPreview, approve,
                       updateRoutePoint, updateRoute,
-                      getOrderById
+                      getOrderById, deliveriesLoading
                   }) => {
 
     let {id} = useParams();
-
     const calculated = currentDelivery?.routes?.length > 0;
-
     const routesForCurrentDelivery = currentDelivery.routes;
 
     useEffect(() => {
@@ -31,6 +29,15 @@ const Delivery = ({
             loadDelivery(id);
         }
     }, [currentDelivery.id]);
+
+    if (deliveriesLoading) {
+        // TODO: [UI Max] This component using in different places. Should be moved to hoc
+        return <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                         open={deliveriesLoading}
+        >
+            <CircularProgress color="inherit"/>
+        </Backdrop>
+    }
 
     const hasInvalidOrders = ordersPreview?.orders
         .some(order => order.mapPoint.status === "UNKNOWN");
