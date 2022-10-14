@@ -59,7 +59,7 @@ const Cars = ({loadCars, cars, deleteCar, addCar, updateCar}) => {
                             <TableCell>Модель авто</TableCell>
                             <TableCell align="center">Номер авто</TableCell>
                             <TableCell align="left">Водій</TableCell>
-                            <TableCell align="center">Вантажопідйомність, т</TableCell>
+                            <TableCell align="center">Вантажопідйомність, кг</TableCell>
                             <TableCell align="center">Витрати палива, л/100км</TableCell>
                             <TableCell align="center">Морозильна камера</TableCell>
                             <TableCell align="center">Доступність</TableCell>
