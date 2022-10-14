@@ -28,8 +28,10 @@ public class OrderDto {
     private String comment;
     private String managerFullName;
     private boolean isFrozen;
-    private LocalTime deliveryStart;
-    private LocalTime deliveryFinish;
+
+    // TODO move to default properties
+    private LocalTime deliveryStart = LocalTime.of(9,0); // Default start
+    private LocalTime deliveryFinish = LocalTime.of(18, 0); // Default end
 
     // Address
     private String clientName;

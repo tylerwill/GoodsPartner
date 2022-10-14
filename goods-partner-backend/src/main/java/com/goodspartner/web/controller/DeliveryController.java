@@ -33,7 +33,6 @@ import java.util.UUID;
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
-    private final RouteService routeService;
     private final OrderExternalService orderExternalService;
     private final DeliveryHistoryService deliveryHistoryService;
 
@@ -98,27 +97,6 @@ public class DeliveryController {
                                    @RequestBody List<OrderDto> orderDtos) {
 
         orderExternalService.saveValidOrdersAndEnrichKnownAddressesCache(id, orderDtos);
-    }
-
-    /**
-     * Delivery Routes manipulation
-     */
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
-    @PostMapping("/{id}/calculate")
-    @ApiOperation(value = "Calculate routes by Delivery ID",
-            notes = "Return DeliveryDto",
-            response = DeliveryDto.class)
-    public DeliveryDto calculateRoutes(@PathVariable("id") UUID deliveryId) {
-        return deliveryService.calculateDelivery(deliveryId);
-    }
-
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
-    @PutMapping("/{id}/routes/{routeId}/reorder")
-    public void reorderRoutePoints(@PathVariable("id") UUID deliveryId, @PathVariable int routeId,
-                                   @RequestBody LinkedList<RoutePoint> routePoints) {
-        routeService.reorderRoutePoints(deliveryId, routeId, routePoints);
     }
 
     /**

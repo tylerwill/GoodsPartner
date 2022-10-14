@@ -3,6 +3,8 @@ package com.goodspartner.web.controller;
 import com.goodspartner.action.DeliveryAction;
 import com.goodspartner.action.RouteAction;
 import com.goodspartner.action.RoutePointAction;
+import com.goodspartner.dto.DeliveryDto;
+import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import com.goodspartner.web.controller.response.RouteActionResponse;
 import com.goodspartner.web.controller.response.RoutePointActionResponse;
@@ -16,9 +18,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedList;
 import java.util.UUID;
 
 @RestController
@@ -54,5 +58,25 @@ public class DeliveryActionController {
         return routeService.updatePoint(routeId, routePointId, RoutePointAction.of(action)); // TODO think about method name
     }
 
+    /**
+     * Delivery Routes manipulation
+     */
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PostMapping("/{id}/calculate")
+    @ApiOperation(value = "Calculate routes by Delivery ID",
+            notes = "Return DeliveryDto",
+            response = DeliveryDto.class)
+    public DeliveryDto calculateRoutes(@PathVariable("id") UUID deliveryId) {
+        return deliveryService.calculateDelivery(deliveryId);
+    }
+
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PutMapping("/{id}/routes/{routeId}/reorder")
+    public void reorderRoutePoints(@PathVariable("id") UUID deliveryId, @PathVariable int routeId,
+                                   @RequestBody LinkedList<RoutePoint> routePoints) {
+        routeService.reorderRoutePoints(deliveryId, routeId, routePoints);
+    }
 
 }
