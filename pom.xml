@@ -14,9 +14,9 @@
     </modules>
 
     <properties>
-        <sonar.organization>bogdanparashchak</sonar.organization>
+        <sonar.organization>goodspartner</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.projectKey>BogdanParashchak_GoodsPartner</sonar.projectKey>
+        <sonar.projectKey>com.goodspartner:goods-partner</sonar.projectKey>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
     </properties>
 
