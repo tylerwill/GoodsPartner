@@ -121,13 +121,16 @@ public class DefaultDeliveryService implements DeliveryService {
         List<OrderExternal> orders = delivery.getOrders();
         orders.forEach(orderExternal -> orderExternal.setCarLoad(null));
 
+        List<OrderExternal> includedOrders = orders.stream()
+                .filter(orderExternal -> !orderExternal.isExcluded()).toList();
+
         // Routes
-        List<Route> coolerRoutes = routeCalculationService.calculateRoutes(orders, RouteMode.COOLER);
-        List<Route> regularRoutes = routeCalculationService.calculateRoutes(orders, RouteMode.REGULAR);
+        List<Route> coolerRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.COOLER);
+        List<Route> regularRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.REGULAR);
 
         // CarLoad
-        List<CarLoad> coolerCarLoad = carLoadService.buildCarLoad(coolerRoutes, orders);
-        List<CarLoad> regularCarLoads = carLoadService.buildCarLoad(regularRoutes, orders);
+        List<CarLoad> coolerCarLoad = carLoadService.buildCarLoad(coolerRoutes, includedOrders);
+        List<CarLoad> regularCarLoads = carLoadService.buildCarLoad(regularRoutes, includedOrders);
 
         // Update Delivery
         delivery.setRoutes(ListUtils.union(coolerRoutes, regularRoutes));

@@ -1,0 +1,1 @@
+ALTER TABLE grandedolce_orders ADD COLUMN excluded BOOLEAN DEFAULT FALSE;

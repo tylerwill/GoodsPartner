@@ -60,6 +60,9 @@ public class OrderExternal {
     @Column(name = "delivery_finish")
     private LocalTime deliveryFinish;
 
+    @Column(name = "excluded")
+    private boolean excluded;
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumns({
             @JoinColumn(name = "client_name", referencedColumnName = "client_name"),
