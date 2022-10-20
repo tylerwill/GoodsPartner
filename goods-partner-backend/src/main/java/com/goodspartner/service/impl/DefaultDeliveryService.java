@@ -25,6 +25,7 @@ import com.goodspartner.service.dto.RouteMode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +49,8 @@ public class DefaultDeliveryService implements DeliveryService {
     @Override
     @Transactional(readOnly = true)
     public List<DeliveryShortDto> findAll() {
-        return deliveryRepository.findAll()
+        Sort sortByDeliveryDate = Sort.by(Sort.Direction.DESC, "deliveryDate");
+        return deliveryRepository.findAll(sortByDeliveryDate)
                 .stream()
                 .map(deliveryMapper::deliveryToDeliveryShortDto)
                 .toList();

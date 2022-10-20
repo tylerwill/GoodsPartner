@@ -65,7 +65,7 @@ const RoutePointDetailsHeader = ({routePoint, number, updateRoutePoint, getOrder
 
 const RoutePointDetailsBody = ({routePoint}) => {
     const orderNumber = routePoint.orders[0].orderNumber;
-
+    const completedAt = routePoint.completedAt === null ? '-' : routePoint.completedAt;
     return (<Grid container spacing={2}>
         <Grid item xs={4}>
             <InfoTableItem title={"Номер замовлення"} data={orderNumber}/>
@@ -77,13 +77,13 @@ const RoutePointDetailsBody = ({routePoint}) => {
             <InfoTableItem title={"Клієнт"} data={routePoint.clientName}/>
         </Grid>
         <Grid item xs={4}>
-            <InfoTableItem title={"Прибуття, прогноз"} data={"-"}/>
+            <InfoTableItem title={"Прибуття, прогноз"} data={routePoint.expectedArrival}/>
         </Grid>
         <Grid item xs={4}>
-            <InfoTableItem title={"Завершення, прогноз"} data={"-"}/>
+            <InfoTableItem title={"Завершення, прогноз"} data={routePoint.expectedCompletion}/>
         </Grid>
         <Grid item xs={4}>
-            <InfoTableItem title={"Завершення, факт"} data={"-"}/>
+            <InfoTableItem title={"Завершення, факт"} data={completedAt}/>
         </Grid>
 
     </Grid>);
@@ -145,7 +145,8 @@ function getSelectColor(status) {
 }
 
 const RoutePointOrdersDialog = ({open, closeDialog, routePoint, ordersDetailedInfo}) => {
-    const commentText = ordersDetailedInfo.filter(order => order.comment).join(", ");
+    const commentText = ordersDetailedInfo.filter(order => order.comment).map(order => order.comment).join(",");;
+    console.log("comment", commentText);
 
     return (<Dialog
         maxWidth={'lg'}

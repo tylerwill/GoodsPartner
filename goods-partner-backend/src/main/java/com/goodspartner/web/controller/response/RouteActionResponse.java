@@ -1,5 +1,6 @@
 package com.goodspartner.web.controller.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.RouteStatus;
@@ -23,6 +24,8 @@ public class RouteActionResponse {
 
     private int routeId;
     private RouteStatus routeStatus;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalDateTime routeFinishTime;
 
 }

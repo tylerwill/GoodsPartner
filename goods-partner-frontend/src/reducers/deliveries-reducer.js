@@ -19,8 +19,7 @@ import {
     setOrdersPreview,
     setOrdersPreviewLoading,
     UPDATE_ADDRESS_FOR_ORDERS_PREVIEW,
-    UPDATE_ORDER,
-    updateOrderAction
+    UPDATE_ORDER
 } from "../actions/deliveries-actions";
 import {deliveriesApi, ordersApi} from "../api/api";
 import {push} from 'react-router-redux';
@@ -78,8 +77,13 @@ const deliveriesReducer = (state = initialOrders, action) => {
             return {...state, deliveryHistory: action.payload};
 
         case UPDATE_ORDER:
-            const newState = {...state,
-                ordersPreview: {...state.ordersPreview, orders: replaceOrder(state.ordersPreview.orders, action.payload)}};
+            const newState = {
+                ...state,
+                ordersPreview: {
+                    ...state.ordersPreview,
+                    orders: replaceOrder(state.ordersPreview.orders, action.payload)
+                }
+            };
             return newState;
         default:
             return state;
@@ -133,6 +137,7 @@ const updateStatusesForCurrentDelivery = (state, statuses) => {
         const currentRoute = newRoutes[i];
         if (currentRoute.id === statuses.routeId) {
             currentRoute.status = statuses.routeStatus;
+            currentRoute.finishTime = statuses.routeFinishTime;
             changedRoute = currentRoute;
 
             break;

@@ -44,7 +44,7 @@ const RouteDetailsHeader = ({route, updateRoute, deliveryDate}) => {
 const RouteDetailsBody = ({route}) => {
     const car = route.car;
 
-    const startTime = route.startTime ? route.startTime : '9:30';
+    const startTime = route.startTime ? route.startTime : '8:00';
     const finishTime = route.finishTime ? route.finishTime : '-';
     const spentTime = route.spentTime ? route.spentTime : '-';
 
@@ -53,10 +53,10 @@ const RouteDetailsBody = ({route}) => {
             <InfoTableItem title={"Вантажність машини"} data={car.weightCapacity + " кг"}/>
         </Grid>
         <Grid item xs={3}>
-            <InfoTableItem title={"Склад"} data={route.storeName}/>
+            <InfoTableItem title={"Склад"} data={route.store.name}/>
         </Grid>
         <Grid item xs={6}>
-            <InfoTableItem title={"Адреса складу"} data={route.storeAddress}/>
+            <InfoTableItem title={"Адреса складу"} data={route.store.address}/>
         </Grid>
         <Grid item xs={3}>
             <InfoTableItem title={"Кількість адрес"} data={route.totalPoints}/>
