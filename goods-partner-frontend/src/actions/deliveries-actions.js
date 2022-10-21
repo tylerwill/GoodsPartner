@@ -1,4 +1,6 @@
+export const SET_DELIVERIES = "SET_DELIVERIES";
 export const SET_CURRENT_DELIVERY = "SET_CURRENT_DELIVERY";
+export const ADD_DELIVERY_TO_LIST = "ADD_DELIVERY_TO_LIST";
 export const SET_ORDERS_PREVIEW_LOADING = "SET_ORDERS_PREVIEW_LOADING";
 export const SET_ORDERS_PREVIEW = "SET_ORDERS_PREVIEW";
 export const UPDATE_ADDRESS_FOR_ORDERS_PREVIEW = "UPDATE_ADDRESS_FOR_ORDERS_PREVIEW";
@@ -9,6 +11,19 @@ export const CHANGE_ROUTE_FOR_CURRENT_DELIVERY = "CHANGE_ROUTE_FOR_CURRENT_DELIV
 export const SET_CURRENT_HISTORY = "SET_CURRENT_HISTORY";
 export const UPDATE_ORDER = "UPDATE_ORDER";
 
+export const setDeliveries = (deliveries) => {
+    return {
+        type: SET_DELIVERIES,
+        payload: deliveries
+    }
+}
+
+export const addDeliveryToList = (delivery) => {
+    return {
+        type: ADD_DELIVERY_TO_LIST,
+        payload: delivery
+    }
+}
 
 export const setCurrentDelivery = (delivery) => {
     return {

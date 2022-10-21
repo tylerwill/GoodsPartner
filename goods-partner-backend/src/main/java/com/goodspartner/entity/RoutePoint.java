@@ -1,6 +1,5 @@
 package com.goodspartner.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.goodspartner.dto.MapPoint;
 import lombok.AllArgsConstructor;

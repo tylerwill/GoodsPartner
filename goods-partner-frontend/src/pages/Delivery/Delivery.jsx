@@ -10,8 +10,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import Routes from "./Routes/Routes";
 import HistoryContainer from "./History/HistoryContainer";
 import DeliveryStatusChip from "../../components/DeliveryStatusChip/DeliveryStatusChip";
-
-import Loading from "../../components/Loading/Loading";
+import {getOrderById} from "../../reducers/deliveries-reducer";
 
 const Delivery = ({
                       currentDelivery, loadDelivery,
@@ -32,7 +31,12 @@ const Delivery = ({
     }, [currentDelivery.id]);
 
     if (deliveriesLoading) {
-        return <Loading/>
+        // TODO: [UI Max] This component using in different places. Should be moved to hoc
+        return <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                         open={deliveriesLoading}
+        >
+            <CircularProgress color="inherit"/>
+        </Backdrop>
     }
 
     const hasInvalidOrders = ordersPreview?.orders

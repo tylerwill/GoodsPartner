@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {
-    Alert,
     Backdrop,
     Box,
     Button,
@@ -9,30 +8,29 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Snackbar,
+    DialogTitle,
     TextField,
     Typography
 } from "@mui/material";
 import {ArrowForward} from "@mui/icons-material";
 import DeliveriesTable from "./DeliveriesTable/DeliveriesTable";
-import {useDispatch, useSelector} from "react-redux";
-import {createDelivery, fetchDeliveries} from "../../features/deliveries/deliveriesSlice";
-import Loading from "../../components/Loading/Loading";
-import ErrorAlert from "../../components/ErrorAlert/ErrorAlert";
 
-const Deliveries = () => {
+const Deliveries = ({deliveries, loadDeliveries, createDelivery, deliveriesLoading}) => {
     const [openNewDeliveryDialog, setOpenNewDeliveryDialog] = React.useState(false);
 
-    const {deliveries, loading, error} = useSelector(state => state.deliveries);
-    const dispatch = useDispatch();
-
-    console.log("error", error);
+    // TODO: [UI] check amount for back calls
     useEffect(() => {
-        dispatch(fetchDeliveries());
-    }, [dispatch])
+        loadDeliveries();
+    }, [])
 
-    if (loading) {
-        return <Loading/>
+    // TODO: [UI] This logic is not working. NEed to think about two flags. Loaded and Loading
+    if (deliveriesLoading) {
+        // TODO: [UI Max] This component using in different places. Should be moved to hoc
+        return <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                         open={deliveriesLoading}
+        >
+            <CircularProgress color="inherit"/>
+        </Backdrop>
     }
 
     return <section>
@@ -49,9 +47,7 @@ const Deliveries = () => {
         </Box>
 
         <NewDeliveryDialog open={openNewDeliveryDialog} setOpen={setOpenNewDeliveryDialog}
-                           onCreate={(date) => dispatch(createDelivery(date))}/>
-
-        {error && <ErrorAlert error={error}/>}
+                           onCreate={(date) => createDelivery(date)}/>
     </section>
 }
 

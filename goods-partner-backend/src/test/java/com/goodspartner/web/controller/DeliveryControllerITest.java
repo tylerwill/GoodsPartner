@@ -228,7 +228,7 @@ class DeliveryControllerITest extends AbstractWebITest {
         RoutePoint routePointFourth = RoutePoint.builder()
                 .id(UUID.fromString("f6f73d76-8005-11ec-b3ce-00155dd72305"))
                 .status(RoutePointStatus.DONE)
-                .completedAt(LocalTime.now())
+                .completedAt(LocalDateTime.now())
                 .clientName("Кух Плюс ТОВ")
                 .address("м.Київ,пр-т Бандери,142")
                 .addressTotalWeight(18.0)

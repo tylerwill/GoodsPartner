@@ -26,7 +26,6 @@ public class RouteDto {
     private double distance;
     private long estimatedTime;
 
-
     // TODO: fix formats globally
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalDateTime startTime;

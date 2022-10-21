@@ -2,13 +2,13 @@ import './App.css';
 import Layout from "./components/Layout/Layout";
 import CssBaseline from "@mui/material/CssBaseline";
 import * as React from "react";
+import CarsContainer from "./pages/Cars/CarsContainer";
 import {Route, Routes} from "react-router-dom";
+import DeliveriesContainer from "./pages/Deliveries/DeliveriesContainer";
 import DeliveryContainer from "./pages/Delivery/DeliveryContainer";
 import {useJsApiLoader} from "@react-google-maps/api";
 import {Backdrop} from "@mui/material";
-import Cars from "./pages/Cars/Cars";
-import Deliveries from "./pages/Deliveries/Deliveries";
-import Reports from "./pages/Reports/Reports";
+import ReportsContainer from "./pages/Reports/ReportsContainer";
 
 const libraries = ['places'];
 
@@ -38,10 +38,10 @@ function App() {
             <CssBaseline/>
             <Layout>
                 <Routes>
-                    <Route path="/cars" element={<Cars/>}/>
-                    <Route path="/deliveries" element={<Deliveries/>}/>
-                    <Route path="/delivery/:deliveryId" element={<DeliveryContainer/>}/>
-                    <Route path="/reports/" element={<Reports/>}/>
+                    <Route path="/cars" element={<CarsContainer/>}/>
+                    <Route path="/deliveries" element={<DeliveriesContainer/>}/>
+                    <Route path="/delivery/:id" element={<DeliveryContainer/>}/>
+                    <Route path="/reports/" element={<ReportsContainer/>}/>
                 </Routes>
             </Layout>
         </>

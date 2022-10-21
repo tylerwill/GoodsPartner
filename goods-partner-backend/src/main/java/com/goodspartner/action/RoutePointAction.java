@@ -4,7 +4,7 @@ import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.exceptions.InvalidActionType;
 import lombok.AllArgsConstructor;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static com.goodspartner.entity.RoutePointStatus.DONE;
@@ -26,7 +26,7 @@ public enum RoutePointAction {
         @Override
         public void perform(RoutePoint routePoint) {
             routePoint.setStatus(DONE);
-            routePoint.setCompletedAt(LocalTime.now());
+            routePoint.setCompletedAt(LocalDateTime.now());
         }
     },
 

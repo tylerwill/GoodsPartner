@@ -1,17 +1,17 @@
 import axios from "axios";
 import {currentHost} from "../util/util";
 
-const host = currentHost();
 const defaultOptions = {
-    baseURL: `${host}/api/v1/`
+    baseURL: currentHost()
 };
 
-export const axiosWithSetting = axios.create(defaultOptions);
+const axiosWithSetting = axios.create(defaultOptions);
+
 
 // TODO [UI Max]: Config axios to not duplicate prefix /api/v1
 export const ordersApi = {
     getOrdersByDate(date) {
-        return axiosWithSetting.get('/orders', {
+        return axiosWithSetting.get('api/v1/orders', {
             params: {
                 date
             }
@@ -19,39 +19,65 @@ export const ordersApi = {
     }
 }
 
+export const carsApi = {
+    getCars() {
+        return axiosWithSetting.get('api/v1/cars');
+    },
+
+    add(car) {
+        return axiosWithSetting.post(`api/v1/cars`, car);
+    },
+
+    deleteCar(id) {
+        return axiosWithSetting.delete(`api/v1/cars/${id}`);
+    },
+
+    update(car) {
+        return axiosWithSetting.put(`api/v1/cars/${car.id}`, car);
+    }
+}
+
 export const deliveriesApi = {
+    findAll() {
+        return axiosWithSetting.get('api/v1/deliveries');
+    },
+
+    create(delivery) {
+        return axiosWithSetting.post('/api/v1/deliveries', delivery)
+    },
+
     findById(id) {
-        return axiosWithSetting.get(`//deliveries/${id}`);
+        return axiosWithSetting.get(`/api/v1/deliveries/${id}`);
     },
 
     linkOrders(id, orders) {
-        return axiosWithSetting.post(`//deliveries/${id}/orders`, orders);
+        return axiosWithSetting.post(`/api/v1/deliveries/${id}/orders`, orders);
     },
 
     calculate(id) {
-        return axiosWithSetting.post(`//deliveries/${id}/calculate`);
+        return axiosWithSetting.post(`/api/v1/deliveries/${id}/calculate`);
     },
 
     approve(id) {
-        return axiosWithSetting.post(`//deliveries/${id}/approve`);
+        return axiosWithSetting.post(`/api/v1/deliveries/${id}/approve`);
     },
 
     applyRoutePointAction(deliveryId, routeId, routePointId, action) {
-        return axiosWithSetting.post(`//deliveries/${deliveryId}/routes/${routeId}/route-points/${routePointId}/${action}`);
+        return axiosWithSetting.post(`/api/v1/deliveries/${deliveryId}/routes/${routeId}/route-points/${routePointId}/${action}`);
     },
 
     applyRouteAction(deliveryId, routeId, action) {
-        return axiosWithSetting.post(`//deliveries/${deliveryId}/routes/${routeId}/${action}`);
+        return axiosWithSetting.post(`/api/v1/deliveries/${deliveryId}/routes/${routeId}/${action}`);
     },
 
     findHistory(deliveryId) {
-        return axiosWithSetting.get(`//deliveries/${deliveryId}/histories`);
+        return axiosWithSetting.get(`/api/v1/deliveries/${deliveryId}/histories`);
     }
 }
 
 export const reportsApi = {
     getDeliveriesStatistics(dateFrom, dateTo) {
-        return axiosWithSetting.get('//statistics/deliveries', {params: {dateFrom, dateTo}});
+        return axiosWithSetting.get('/api/v1/statistics/deliveries', {params: {dateFrom, dateTo}});
     },
 
 }
