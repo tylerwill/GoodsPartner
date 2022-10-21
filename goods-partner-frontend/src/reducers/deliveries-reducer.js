@@ -1,6 +1,4 @@
 import {
-    ADD_DELIVERY_TO_LIST,
-    addDeliveryToList,
     APPROVE_DELIVERY,
     approveDelivery,
     CHANGE_ROUTE_FOR_CURRENT_DELIVERY,
@@ -8,13 +6,11 @@ import {
     changeRoutePointForCurrentDelivery,
     SET_CURRENT_DELIVERY,
     SET_CURRENT_HISTORY,
-    SET_DELIVERIES,
     SET_DELIVERY_LOADING,
     SET_ORDERS_PREVIEW,
     SET_ORDERS_PREVIEW_LOADING,
     setCurrentDelivery,
     setCurrentHistory,
-    setDeliveries,
     setDeliveryLoading,
     setOrdersPreview,
     setOrdersPreviewLoading,
@@ -22,10 +18,8 @@ import {
     UPDATE_ORDER
 } from "../actions/deliveries-actions";
 import {deliveriesApi, ordersApi} from "../api/api";
-import {push} from 'react-router-redux';
 
 let initialOrders = {
-        deliveriesPreview: [],
         currentDelivery: {
             "productsShipping": [],
             "deliveryDate": null,
@@ -44,15 +38,10 @@ let initialOrders = {
 
 const deliveriesReducer = (state = initialOrders, action) => {
     switch (action.type) {
-        case SET_DELIVERIES: {
-            return {...state, deliveriesPreview: action.payload}
-        }
         case SET_CURRENT_DELIVERY: {
             return {...state, currentDelivery: action.payload}
         }
-        case ADD_DELIVERY_TO_LIST: {
-            return {...state, deliveriesPreview: [...state.deliveriesPreview, action.payload]}
-        }
+
         case SET_ORDERS_PREVIEW_LOADING:
             return {...state, ordersPreviewLoading: action.payload};
 
@@ -181,16 +170,6 @@ const updateAddressForPreviewOrder = (oldOrdersPreview, newAddress) => {
 
 // ----------------- THUNKS -------------------------
 
-export const loadDeliveries = () => (dispatch) => {
-    setDeliveryLoading(true);
-    deliveriesApi.findAll().then(response => {
-        if (response.status === 200) {
-            dispatch(setDeliveries(response.data));
-        }
-        setDeliveryLoading(false);
-    })
-}
-
 export const loadDelivery = (id) => (dispatch) => {
     setDeliveryLoading(true);
     deliveriesApi.findById(id).then(response => {
@@ -205,26 +184,6 @@ export const loadDelivery = (id) => (dispatch) => {
             }
             dispatch(setCurrentDelivery(delivery));
             setDeliveryLoading(false);
-        }
-    })
-}
-
-
-// TODO [UI]: Do we need async here? https://redux.js.org/tutorials/fundamentals/part-6-async-logic
-export const createDelivery = (date) => (dispatch) => {
-    dispatch(setDeliveryLoading(true));
-    // TODO: [UI] remove status creation
-    const newDelivery = {deliveryDate: date, status: 'DRAFT'};
-
-    deliveriesApi.create(newDelivery).then(response => {
-        if (response.status === 200) {
-            const createdDelivery = response.data;
-            dispatch(setCurrentDelivery(createdDelivery));
-            findPreviewOrdersForDelivery(dispatch, createdDelivery.deliveryDate);
-            dispatch(addDeliveryToList(createdDelivery));
-            // TODO [UI Max]: redirect not working
-            dispatch(push(`/delivery/${createdDelivery.id}`));
-            dispatch(setDeliveryLoading(false));
         }
     })
 }

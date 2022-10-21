@@ -14,8 +14,8 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import {EditOutlined} from "@mui/icons-material";
 import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
 import ChooseAddressDialog from "./ChooseAddressDialog/ChooseAddressDialog";
+import OrderAdditionalInfo from "./OrderAdditionalInfo/OrderAdditionalInfo";
 
 const OrdersContent = ({orders, updatePreviewOrderAddress, updateOrder}) => {
     const [orderAddressDialogOpen, setOrderAddressDialogOpen] = React.useState(false);
@@ -76,6 +76,8 @@ const createTable = (orders, keyPrefix, setOrderAddressDialogOpen, setEditedOrde
 
 
 const Row = ({order, keyPrefix, setOrderAddressDialogOpen, setEditedOrder, updateOrder}) => {
+    const from = order.deliveryStart ?? "09:00";
+    const to = order.deliveryFinish ?? "18:00";
     const [orderTableOpen, setOrderTableOpen] = React.useState(false);
 
 
@@ -116,7 +118,7 @@ const Row = ({order, keyPrefix, setOrderAddressDialogOpen, setEditedOrder, updat
                     </Stack>
 
                 </TableCell>
-                <TableCell>9:00 - 18:00</TableCell>
+                <TableCell>{from} - {to}</TableCell>
                 <TableCell>{order.managerFullName}</TableCell>
             </TableRow>
             <TableRow>
@@ -151,96 +153,13 @@ const Row = ({order, keyPrefix, setOrderAddressDialogOpen, setEditedOrder, updat
                                 </Table>
                             </TableContainer>
 
-                            <AdditionalInfo order={order} updateOrder={updateOrder}/>
+                            <OrderAdditionalInfo order={order} updateOrder={updateOrder}/>
                         </Box>
                     </Collapse>
                 </TableCell>
             </TableRow>
         </>
     );
-}
-
-// TODO: [Max UI] Move into separate file
-const AdditionalInfo = ({order, updateOrder}) => {
-    const from = order.deliveryStart ?? "09:00";
-    const to = order.deliveryFinish ?? "18:00";
-
-    const handleChangeFrom = (event) => {
-        const newOrder = {...order, deliveryStart: event.target.value};
-        updateOrder(newOrder);
-    };
-    const handleChangeTo = (event) => {
-        const newOrder = {...order, deliveryFinish: event.target.value};
-        updateOrder(newOrder);
-    };
-
-    const handleFreeze = (event) => {
-        const newOrder = {...order, frozen:event.target.checked};
-        updateOrder(newOrder);
-    };
-
-    return (
-        <Grid sx={{mt: 2, p: 2, background: 'rgba(0, 0, 0, 0.02)', borderRadius: '6px'}} container spacing={2}>
-
-            <Grid item xs={4}>
-                <Typography sx={{mb: 1}} variant="caption" display="block" gutterBottom>
-                    Діапазон доставки
-                </Typography>
-                <Box>
-                    <Select
-                        value={from}
-                        label="Age"
-                        onChange={handleChangeFrom}
-                        sx={{minWidth: "140px", height: "40px", mr: 1}}
-                    >
-                        <MenuItem value={"09:00"}>9:00</MenuItem>
-                        <MenuItem value={"10:00"}>10:00</MenuItem>
-                        <MenuItem value={"11:00"}>11:00</MenuItem>
-                        <MenuItem value={"12:00"}>12:00</MenuItem>
-                        <MenuItem value={"13:00"}>13:00</MenuItem>
-                        <MenuItem value={"14:00"}>14:00</MenuItem>
-                        <MenuItem value={"15:00"}>15:00</MenuItem>
-                        <MenuItem value={"16:00"}>16:00</MenuItem>
-                        <MenuItem value={"17:00"}>17:00</MenuItem>
-                        <MenuItem value={"18:00"}>18:00</MenuItem>
-                    </Select>
-                    {/*TODO: [UI Max] Move select creation into different component*/}
-                    <Select
-                        value={to}
-                        label="Age"
-                        onChange={handleChangeTo}
-                        sx={{minWidth: "140px", height: "40px"}}
-                    >
-                        <MenuItem value={"10:00"}>10:00</MenuItem>
-                        <MenuItem value={"11:00"}>11:00</MenuItem>
-                        <MenuItem value={"12:00"}>12:00</MenuItem>
-                        <MenuItem value={"13:00"}>13:00</MenuItem>
-                        <MenuItem value={"14:00"}>14:00</MenuItem>
-                        <MenuItem value={"15:00"}>15:00</MenuItem>
-                        <MenuItem value={"16:00"}>16:00</MenuItem>
-                        <MenuItem value={"17:00"}>17:00</MenuItem>
-                        <MenuItem value={"18:00"}>18:00</MenuItem>
-                        <MenuItem value={"19:00"}>19:00</MenuItem>
-                    </Select>
-                </Box>
-            </Grid>
-            <Grid item xs={4}>
-                <Typography sx={{mb: 1}} variant="caption" display="block" gutterBottom>
-                    Заморозка
-                </Typography>
-                <Box>
-                    <FormControlLabel onChange={(e)=>handleFreeze(e)} checked={order.frozen} control={<Checkbox/>} label="Потребує заморозки"/>
-                </Box>
-            </Grid>
-            <Grid item xs={4}>
-                <Typography sx={{mb: 1}} variant="caption" display="block" gutterBottom>
-                    Коментар
-                </Typography>
-                <Typography variant="caption" display="block" gutterBottom>
-                    {order.comment?.length === 0 ? '-' : order.comment}
-                </Typography>
-            </Grid>
-        </Grid>)
 }
 
 export default OrdersContent;
