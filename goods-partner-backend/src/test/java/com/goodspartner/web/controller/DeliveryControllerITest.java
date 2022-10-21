@@ -20,7 +20,14 @@ import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.StoreService;
 import com.goodspartner.service.VRPSolver;
 import com.graphhopper.ResponsePath;
-import org.junit.jupiter.api.*;
+import com.graphhopper.util.Instruction;
+import com.graphhopper.util.InstructionList;
+import com.graphhopper.util.Translation;
+import com.graphhopper.util.TranslationMap;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.AdditionalMatchers;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +43,7 @@ import java.time.LocalTime;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
@@ -69,7 +77,8 @@ class DeliveryControllerITest extends AbstractWebITest {
     private GraphhopperService graphhopperService;
     @MockBean
     private ResponsePath graphhopperResponse;
-
+    @MockBean
+    private InstructionList instructions;
     private MapPoint mapPointAutovalidatedFirst;
     private MapPoint mapPointAutovalidatedSecond;
     private MapPoint mapPointKnown;
@@ -245,8 +254,8 @@ class DeliveryControllerITest extends AbstractWebITest {
         incorrectRoutePoints.add(routePointFourth);
     }
 
+    // Should be disabled?
     @Test
-    @Disabled
     @DataSet(value = "delivery/get_delivery.yml", skipCleaningFor = "flyway_schema_history",
             cleanAfter = true, cleanBefore = true)
     @DisplayName("when Get Delivery then OK status returned")
@@ -548,17 +557,43 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .andExpect(status().isNotFound());
     }
 
-    // TODO fix RoutePoint matching. At th emoment due to reordering/completedAt/etc results doesn't match
     @Test
     @DataSet(value = "common/recalculate_route/dataset_routes.yml", skipCleaningFor = "flyway_schema_history",
             cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet(value = "datasets/common/recalculate_route/dataset_updated_routes.yml", ignoreCols = "ROUTE_POINTS")
+    @ExpectedDataSet(value = "datasets/common/recalculate_route/dataset_updated_routes.yml")
     @DisplayName("when Reorder Route then Ok Status Returned")
     void whenReorderRoute_thenOkStatusReturned() throws Exception {
+
+        Instruction instructionFirst = new Instruction(0, "", null);
+        instructionFirst.setTime(11567);
+
+        Instruction instructionSecond = new Instruction(0, "", null);
+        instructionSecond.setTime(1355789);
+
+        Instruction instructionThird = new Instruction(5, "", null);
+
+        Instruction instructionFourth = new Instruction(0, "", null);
+        instructionFourth.setTime(3556678);
+
+        Instruction instructionFifth = new Instruction(0, "", null);
+        instructionFourth.setTime(578690);
+
+        Instruction instructionSixth = new Instruction(4, "", null);
+
+        Translation translation = new TranslationMap.TranslationHashMap(Locale.UK);
+        instructions = new InstructionList(6, translation);
+
+        instructions.add(0, instructionFirst);
+        instructions.add(1, instructionSecond);
+        instructions.add(2, instructionThird);
+        instructions.add(3, instructionFourth);
+        instructions.add(4, instructionFifth);
+        instructions.add(5, instructionSixth);
 
         when(graphhopperService.getRoute(anyList())).thenReturn(graphhopperResponse);
         when(graphhopperResponse.getDistance()).thenReturn(42000.0);
         when(graphhopperResponse.getTime()).thenReturn(4800000L);
+        when(graphhopperResponse.getInstructions()).thenReturn(instructions);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
                                 "123e4567-e89b-12d3-a456-556642440000/routes/1/reorder")

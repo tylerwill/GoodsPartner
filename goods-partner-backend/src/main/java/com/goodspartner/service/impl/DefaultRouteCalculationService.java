@@ -2,7 +2,6 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.Product;
-import com.goodspartner.dto.StoreDto;
 import com.goodspartner.dto.VRPSolution;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.Car;
@@ -21,6 +20,8 @@ import com.goodspartner.service.VRPSolver;
 import com.goodspartner.service.dto.RouteMode;
 import com.google.common.annotations.VisibleForTesting;
 import com.graphhopper.ResponsePath;
+import com.graphhopper.util.Instruction;
+import com.graphhopper.util.InstructionList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,8 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     private final VRPSolver vrpSolver;
     private final GraphhopperService graphhopperService;
     private final CarRepository carRepository;
+    private final int ARRIVAL_SIGN = 5;
+    private final int FINISH_SIGN = 4;
 
     @Override
     public List<Route> calculateRoutes(List<OrderExternal> orders, RouteMode coolerRoute) {
@@ -68,7 +71,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
             log.info("No orders found for mode {}", coolerRoute.name());
             return Collections.emptyList();
         }
-        
+
         Store store = storeService.getMainStore();
         List<Car> cars = carRepository.findByAvailableTrueAndCoolerIs(coolerRoute.isCoolerNecessary());
         List<RoutePoint> routePoints = mapToRoutePoints(filteredOrders);
@@ -124,8 +127,25 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
         route.setDistance(BigDecimal.valueOf(routePath.getDistance() / 1000)
                 .setScale(2, RoundingMode.HALF_UP).doubleValue());
         route.setEstimatedTime(Duration.ofMillis(routePath.getTime()).toMinutes());
-        route.setRoutePoints(routePoints);
 
+        List<Long> legTimes = new ArrayList<>();
+        InstructionList pathInstructions = routePath.getInstructions();
+
+        int index = 1;
+        for (Instruction instruction : pathInstructions) {
+            long legTime = instruction.getTime();
+            legTimes.add(legTime);
+
+            if (instruction.getSign() == ARRIVAL_SIGN || instruction.getSign() == FINISH_SIGN) {
+                long arrivedTime = legTimes.stream().mapToLong(Long::longValue).sum();
+                long arrivedTimeInMinutes = Duration.ofMillis(arrivedTime).toMinutes();
+                legTimes.clear();
+
+                routePoints.get(index).setRoutePointDistantTime(arrivedTimeInMinutes);
+                index++;
+            }
+        }
+        route.setRoutePoints(routePoints);
         return route;
     }
 

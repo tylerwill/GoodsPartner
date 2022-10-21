@@ -47,8 +47,8 @@
       "createdDate": "2022-01-28",
       "comment": "бн",
       "managerFullName": "Наталія Рябченко",
-      "deliveryStart": "11:00:00",
-      "deliveryFinish": "13:00:00",
+      "deliveryStart": "11:00",
+      "deliveryFinish": "13:00",
       "clientName": "Кух Плюс ТОВ (Кухмайстер) бн",
       "address": "вул.Єлізавети Чавдар, буд.36",
       "mapPoint": {
