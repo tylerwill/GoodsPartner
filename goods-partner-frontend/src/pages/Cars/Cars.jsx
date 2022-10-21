@@ -15,8 +15,14 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import CarFormDialog from "./CarFormDialog/CarFormDialog";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchCars, addCar, updateCar, deleteCar} from "../../features/cars/carsSlice";
 
-const Cars = ({loadCars, cars, deleteCar, addCar, updateCar}) => {
+const Cars = () => {
+    const {cars, loading, error} = useSelector(state => state.cars);
+    const dispatch = useDispatch();
+
+
     const defaultNewCarState = {
         id: null,
         name: '',
@@ -34,13 +40,22 @@ const Cars = ({loadCars, cars, deleteCar, addCar, updateCar}) => {
     const [newCar, setNewCar] = useState(defaultNewCarState);
 
     const addCarHandler = (car) => {
-        addCar(car);
+        dispatch(addCar(car));
         setNewCar(defaultNewCarState);
     }
 
+    const updateCarHandler = (car) => {
+        dispatch(updateCar(car));
+        setNewCar(defaultNewCarState);
+    }
+
+    const deleteCarHandler = (id) => {
+        dispatch(deleteCar(id));
+    }
+
     useEffect(() => {
-        loadCars();
-    }, []);
+        dispatch(fetchCars());
+    }, [dispatch]);
 
     return <section>
         <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
@@ -49,7 +64,6 @@ const Cars = ({loadCars, cars, deleteCar, addCar, updateCar}) => {
             </Typography>
 
             <Button onClick={() => setIsAddCarDialogOpen(true)} variant="contained">Додати авто</Button>
-
         </Box>
         <Box mt={2}>
             <TableContainer component={Paper}>
@@ -79,7 +93,7 @@ const Cars = ({loadCars, cars, deleteCar, addCar, updateCar}) => {
                                 <TableCell align="center">{car.available ? <CheckIcon/> : <CloseIcon/>}</TableCell>
                                 <TableCell><BasicMenu car={car}
                                                       setEditedCar={setEditedCar}
-                                                      deleteCar={deleteCar}
+                                                      deleteCar={deleteCarHandler}
                                                       openEditDialog={setIsEditCarDialogOpen}
                                 /></TableCell>
                             </TableRow>
@@ -96,7 +110,7 @@ const Cars = ({loadCars, cars, deleteCar, addCar, updateCar}) => {
 
         {/*Dialog for editing existing car*/}
         <CarFormDialog closeDialog={() => setIsEditCarDialogOpen(false)} open={isEditCarDialogOpen}
-                       actionHandler={updateCar}
+                       actionHandler={updateCarHandler}
                        car={editedCar}
                        setCar={setEditedCar}
         />
@@ -114,6 +128,7 @@ function BasicMenu({car, deleteCar, setEditedCar, openEditDialog}) {
         setAnchorEl(null);
     };
     const handleDelete = () => {
+        // TODO:replace confirm dialog
         if (window.confirm(`Are you sure wanted to delete car: ${car} ?`)) {
             deleteCar(car.id);
         }
