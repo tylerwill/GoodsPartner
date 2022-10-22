@@ -63,6 +63,9 @@ public class OrderExternal {
     @Column(name = "excluded")
     private boolean excluded;
 
+    @Column(name = "dropped")
+    private boolean dropped;
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumns({
             @JoinColumn(name = "client_name", referencedColumnName = "client_name"),

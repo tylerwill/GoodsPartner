@@ -12,7 +12,7 @@ import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.StoreDto;
-import com.goodspartner.dto.VRPSolution;
+import com.goodspartner.service.dto.RoutingSolution;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
@@ -25,6 +25,7 @@ import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.RouteService;
 import com.goodspartner.service.StoreService;
 import com.goodspartner.service.VRPSolver;
+import com.goodspartner.service.dto.VRPSolution;
 import com.graphhopper.ResponsePath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -185,15 +186,21 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
     public void testWhenCalculatedDeliveryThenCorrectHistoryCreated() throws Exception {
         Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), Route.class);
 
-        VRPSolution regularVrpSolution = new VRPSolution();
-        regularVrpSolution.setRoutePoints(route.getRoutePoints());
-        regularVrpSolution.setCar(route.getCar());
-        when(vrpSolver.optimize(Collections.emptyList(), storeMapPoint, Collections.emptyList())).thenReturn(Collections.emptyList());
+        RoutingSolution regularRoutingSolution = RoutingSolution.builder()
+                .routePoints(route.getRoutePoints())
+                .car(route.getCar())
+                .build();
+        VRPSolution vrpSolution = VRPSolution.builder()
+                .routings(List.of(regularRoutingSolution))
+                .build();
+        VRPSolution emptySolution = VRPSolution.builder().build();
+
+        when(vrpSolver.optimize(Collections.emptyList(), storeMapPoint, Collections.emptyList())).thenReturn(emptySolution);
         when(vrpSolver.optimize(
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList())),
                 any(),
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList()))))
-                .thenReturn(List.of(regularVrpSolution));
+                .thenReturn(vrpSolution);
 
         when(graphhopperService.getRoute(anyList())).thenReturn(graphhopperResponse);
         when(graphhopperResponse.getDistance()).thenReturn(80000.0);

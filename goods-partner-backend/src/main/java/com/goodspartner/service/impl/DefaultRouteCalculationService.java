@@ -2,7 +2,8 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.Product;
-import com.goodspartner.dto.VRPSolution;
+import com.goodspartner.service.dto.VRPSolution;
+import com.goodspartner.service.dto.RoutingSolution;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.OrderExternal;
@@ -30,12 +31,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.goodspartner.service.google.GoogleVRPSolver.SERVICE_TIME_AT_LOCATION_MIN;
@@ -54,7 +57,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     private final int FINISH_SIGN = 4;
 
     @Override
-    public List<Route> calculateRoutes(List<OrderExternal> orders, RouteMode coolerRoute) {
+    public List<Route> calculateRoutes(List<OrderExternal> orders, RouteMode routeMode) {
 
         // TODO require clarification with client. We want to highlight orders outside of the Kyiv in response
         List<OrderExternal> kyivOrders = orders.stream()
@@ -64,39 +67,57 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
 
         List<OrderExternal> filteredOrders = kyivOrders
                 .stream()
-                .filter(orderExternal -> orderExternal.isFrozen() == coolerRoute.isCoolerNecessary())
+                .filter(orderExternal -> orderExternal.isFrozen() == routeMode.isCoolerNecessary())
                 .toList();
 
         if (filteredOrders.isEmpty()) {
-            log.info("No orders found for mode {}", coolerRoute.name());
+            log.info("No orders found for mode {}", routeMode.name());
             return Collections.emptyList();
         }
 
         Store store = storeService.getMainStore();
-        List<Car> cars = carRepository.findByAvailableTrueAndCoolerIs(coolerRoute.isCoolerNecessary());
+        List<Car> cars = carRepository.findByAvailableTrueAndCoolerIs(routeMode.isCoolerNecessary());
         List<RoutePoint> routePoints = mapToRoutePoints(filteredOrders);
 
         log.info("Start route optimisation for {} orders", orders.size());
-        List<VRPSolution> vrpSolutions = vrpSolver.optimize(cars, storeMapper.getMapPoint(store), routePoints);
+        VRPSolution solution = vrpSolver.optimize(cars, storeMapper.getMapPoint(store), routePoints);
         log.info("Finished route optimisation for {} orders", orders.size());
 
-        return vrpSolutions.stream()
+        updateDroppedOrders(filteredOrders, solution);
+
+        return solution.getRoutings().stream()
                 .map(vrpSolution -> mapToRoute(vrpSolution, store))
                 .collect(Collectors.toList());
 
     }
 
+    private void updateDroppedOrders(List<OrderExternal> orders, VRPSolution solution) {
+        if (solution.getDroppedPoints() == null || solution.getDroppedPoints().isEmpty()) {
+            return;
+        }
+
+        Map<Integer, OrderExternal> orderMap = orders.stream()
+                .collect(Collectors.toMap(OrderExternal::getId, Function.identity()));
+
+        solution.getDroppedPoints()
+                .stream()
+                .map(RoutePoint::getOrders)
+                .flatMap(Collection::stream)
+                .map(orderReference -> orderMap.get(orderReference.getId()))
+                .forEach(orderExternal -> orderExternal.setDropped(true));
+    }
+
     @VisibleForTesting
-    Route mapToRoute(VRPSolution vrpSolution, Store store) {
+    Route mapToRoute(RoutingSolution RoutingSolution, Store store) {
 
         List<MapPoint> mapPoints = new ArrayList<>();
         mapPoints.add(storeMapper.getMapPoint(store));
-        mapPoints.addAll(vrpSolution.getRoutePoints().stream().map(RoutePoint::getMapPoint).toList());
+        mapPoints.addAll(RoutingSolution.getRoutePoints().stream().map(RoutePoint::getMapPoint).toList());
         mapPoints.add(storeMapper.getMapPoint(store)); // Return back to Store
 
         ResponsePath routePath = graphhopperService.getRoute(mapPoints);
 
-        List<RoutePoint> routePoints = vrpSolution.getRoutePoints();
+        List<RoutePoint> routePoints = RoutingSolution.getRoutePoints();
 
         Route route = new Route();
         route.setStatus(RouteStatus.DRAFT);
@@ -112,7 +133,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
 
         route.setRoutePoints(routePoints);
         route.setOptimization(true);
-        route.setCar(vrpSolution.getCar());
+        route.setCar(RoutingSolution.getCar());
         route.setStore(store);
 
         return route;

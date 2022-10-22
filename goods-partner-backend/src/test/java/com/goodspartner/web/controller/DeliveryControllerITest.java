@@ -10,7 +10,7 @@ import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.Product;
-import com.goodspartner.dto.VRPSolution;
+import com.goodspartner.service.dto.RoutingSolution;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
@@ -19,6 +19,7 @@ import com.goodspartner.repository.CarRepository;
 import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.StoreService;
 import com.goodspartner.service.VRPSolver;
+import com.goodspartner.service.dto.VRPSolution;
 import com.graphhopper.ResponsePath;
 import com.graphhopper.util.Instruction;
 import com.graphhopper.util.InstructionList;
@@ -44,7 +45,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -61,8 +65,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestInstance(PER_CLASS)
 class DeliveryControllerITest extends AbstractWebITest {
 
+    // TODO require further refactoring
     private static final String MOCKED_DELIVERY_DTO = "datasets/common/delivery/calculate/deliveryDto.json";
     private static final String MOCKED_ROUTE = "datasets/common/delivery/calculate/RouteDto.json";
+
+    private static final String MOCKED_ROUTE_NEW = "mock/route/RouteDto.json";
+    private static final String RESPONSE_DELIVERY_DROPPED_POINTS = "response/delivery/delivery_with_dropped_order.json";
+
 
     private final LinkedList<RoutePoint> incorrectRoutePoints = new LinkedList<>();
     private final LinkedList<RoutePoint> routePoints = new LinkedList<>();
@@ -425,15 +434,21 @@ class DeliveryControllerITest extends AbstractWebITest {
     void whenCalculateDelivery_withCorrectId_thenDeliveryDtoReturn() throws Exception {
         Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), Route.class);
 
-        VRPSolution regularVrpSolution = new VRPSolution();
-        regularVrpSolution.setRoutePoints(route.getRoutePoints());
-        regularVrpSolution.setCar(route.getCar());
-        when(vrpSolver.optimize(Collections.emptyList(), storeMapPoint, Collections.emptyList())).thenReturn(Collections.emptyList());
+        RoutingSolution regularRoutingSolution = RoutingSolution.builder()
+                .routePoints(route.getRoutePoints())
+                .car(route.getCar())
+                .build();
+        VRPSolution vrpSolution = VRPSolution.builder()
+                .routings(List.of(regularRoutingSolution))
+                .build();
+        VRPSolution emptySolution = VRPSolution.builder().build();
+
+        when(vrpSolver.optimize(Collections.emptyList(), storeMapPoint, Collections.emptyList())).thenReturn(emptySolution);
         when(vrpSolver.optimize(
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList())),
                 any(),
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList()))))
-                .thenReturn(List.of(regularVrpSolution));
+                .thenReturn(vrpSolution);
 
         when(graphhopperService.getRoute(anyList())).thenReturn(graphhopperResponse);
         when(graphhopperResponse.getDistance()).thenReturn(80000.0);
@@ -450,20 +465,68 @@ class DeliveryControllerITest extends AbstractWebITest {
     @Test
     @DataSet(value = "common/delivery/calculate/sqlDump.json", skipCleaningFor = "flyway_schema_history",
             cleanAfter = true, cleanBefore = true,
+            executeStatementsBefore = "ALTER SEQUENCE routes_sequence RESTART WITH 50")
+    @DisplayName("when Calculate Delivery With Correct Id then DeliveryDto Return")
+    void whenCalculateDelivery_withCorrectId_thenDroppedPointsFound() throws Exception {
+
+        UUID includedRoutePoint = UUID.fromString("1a3f567f-ed97-43b5-be8e-cc644172aad1");
+        UUID droppedRoutePoint = UUID.fromString("8acc3bd5-3d98-48f9-82f9-24360659dcb8");
+        Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE_NEW), Route.class);
+
+        Map<UUID, RoutePoint> routePointMap = route.getRoutePoints().stream()
+                .collect(Collectors.toMap(RoutePoint::getId, Function.identity()));
+
+        RoutingSolution regularRoutingSolution = RoutingSolution.builder()
+                .routePoints(List.of(routePointMap.get(includedRoutePoint)))
+                .car(route.getCar())
+                .build();
+        VRPSolution vrpSolution = VRPSolution.builder()
+                .routings(List.of(regularRoutingSolution))
+                .droppedPoints(List.of(routePointMap.get(droppedRoutePoint)))
+                .build();
+        VRPSolution emptySolution = VRPSolution.builder().build();
+
+        when(vrpSolver.optimize(Collections.emptyList(), storeMapPoint, Collections.emptyList())).thenReturn(emptySolution);
+        when(vrpSolver.optimize(
+                AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList())),
+                any(),
+                AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList()))))
+                .thenReturn(vrpSolution);
+
+        when(graphhopperService.getRoute(anyList())).thenReturn(graphhopperResponse);
+        when(graphhopperResponse.getDistance()).thenReturn(80000.0);
+        when(graphhopperResponse.getTime()).thenReturn(4800000L);
+
+        when(carRepository.findByAvailableTrueAndCoolerIs(false)).thenReturn(List.of(route.getCar()));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries/70574dfd-48a3-40c7-8b0c-3e5defe7d080/calculate")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(getResponseAsString(RESPONSE_DELIVERY_DROPPED_POINTS)));
+    }
+
+    @Test
+    @DataSet(value = "common/delivery/calculate/sqlDump.json", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true,
             executeStatementsBefore = "ALTER SEQUENCE routes_sequence RESTART WITH 1")
     @DisplayName("when RECalculate Delivery With Correct Id then DeliveryDto Return")
     void whenRECalculateDelivery_withCorrectId_thenDeliveryDtoReturn() throws Exception {
         Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), Route.class);
 
-        VRPSolution regularVrpSolution = new VRPSolution();
-        regularVrpSolution.setRoutePoints(route.getRoutePoints());
-        regularVrpSolution.setCar(route.getCar());
-        when(vrpSolver.optimize(Collections.emptyList(), storeMapPoint, Collections.emptyList())).thenReturn(Collections.emptyList());
+        RoutingSolution regularRoutingSolution = RoutingSolution.builder()
+                .routePoints(route.getRoutePoints())
+                .car(route.getCar())
+                .build();
+        VRPSolution vrpSolution = VRPSolution.builder()
+                .routings(List.of(regularRoutingSolution))
+                .build();
+
+        when(vrpSolver.optimize(Collections.emptyList(), storeMapPoint, Collections.emptyList())).thenReturn(VRPSolution.builder().build());
         when(vrpSolver.optimize(
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList())),
                 any(),
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList()))))
-                .thenReturn(List.of(regularVrpSolution));
+                .thenReturn(vrpSolution);
 
         when(graphhopperService.getRoute(anyList())).thenReturn(graphhopperResponse);
         when(graphhopperResponse.getDistance()).thenReturn(80000.0);

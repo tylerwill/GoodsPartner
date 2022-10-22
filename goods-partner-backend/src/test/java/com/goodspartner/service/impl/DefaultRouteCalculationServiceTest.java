@@ -1,7 +1,7 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.MapPoint;
-import com.goodspartner.dto.VRPSolution;
+import com.goodspartner.service.dto.RoutingSolution;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
@@ -114,9 +114,10 @@ class DefaultRouteCalculationServiceTest {
 
         routePoints = List.of(firstRoutePoint);
 
-        VRPSolution vrpSolution = new VRPSolution();
-        vrpSolution.setRoutePoints(routePoints);
-        vrpSolution.setCar(car);
+        RoutingSolution routingSolution = RoutingSolution.builder()
+                .routePoints(routePoints)
+                .car(car)
+                .build();
 
         //    -----------------   fake objects for Assertion  ----------------
 
@@ -163,7 +164,7 @@ class DefaultRouteCalculationServiceTest {
         expectedRoute.setStore(store);
 
         //when
-        Route actualRoute = routeService.mapToRoute(vrpSolution, store);
+        Route actualRoute = routeService.mapToRoute(routingSolution, store);
 
         //then
         Assertions.assertEquals(expectedRoute, actualRoute);

@@ -3,11 +3,12 @@ package com.goodspartner.service.google;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.StoreDto;
-import com.goodspartner.dto.VRPSolution;
+import com.goodspartner.service.dto.RoutingSolution;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.repository.CarRepository;
+import com.goodspartner.service.dto.VRPSolution;
 import com.graphhopper.GHResponse;
 import com.graphhopper.GraphHopper;
 import com.graphhopper.ResponsePath;
@@ -33,8 +34,6 @@ import static org.mockito.Mockito.when;
 public class GoogleVRPSolverTest extends AbstractWebITest {
 
     @MockBean
-    private CarRepository carRepository;
-    @MockBean
     private GraphHopper hopper;
 
     @Mock
@@ -45,9 +44,7 @@ public class GoogleVRPSolverTest extends AbstractWebITest {
     @Autowired
     private GoogleVRPSolver googleVRPSovler;
 
-    private VRPSolution carRoutesDto;
     private List<RoutePoint> routePointList;
-    private StoreDto storeDto;
     private Car car;
     private MapPoint storeMapPoint;
 
@@ -121,22 +118,6 @@ public class GoogleVRPSolverTest extends AbstractWebITest {
                 .build();
 
         routePointList = List.of(routePointFirst, routePointSecond);
-
-        carRoutesDto = VRPSolution.builder()
-                .car(car)
-                .routePoints(routePointList)
-                .build();
-
-        storeDto = StoreDto.builder()
-                .name("Склад 1")
-                .address("м. Київ, вул. Некрасова 138")
-                .mapPoint(MapPoint.builder()
-                        .status(MapPoint.AddressStatus.KNOWN)
-                        .address("м. Київ, вул. Некрасова 138")
-                        .latitude(72.12)
-                        .longitude(85.15)
-                        .build())
-                .build();
     }
 
     @Test
@@ -149,13 +130,14 @@ public class GoogleVRPSolverTest extends AbstractWebITest {
         when(responsePath.getDistance()).thenReturn(20.2);
         when(responsePath.getTime()).thenReturn(20L);
 
-        List<VRPSolution> vrpOptimisation = googleVRPSovler.optimize(List.of(car), storeMapPoint, routePointList);
+        VRPSolution vrpOptimisation = googleVRPSovler.optimize(List.of(car), storeMapPoint, routePointList);
 
-        Assertions.assertEquals(1, vrpOptimisation.size());
-        VRPSolution vrpSolution = vrpOptimisation.get(0);
+        List<RoutingSolution> routings = vrpOptimisation.getRoutings();
+        Assertions.assertEquals(1, routings.size());
+        RoutingSolution routingSolution = routings.get(0);
 
-        Assertions.assertEquals(car, vrpSolution.getCar());
-        Assertions.assertEquals(2, vrpSolution.getRoutePoints().size());
+        Assertions.assertEquals(car, routingSolution.getCar());
+        Assertions.assertEquals(2, routingSolution.getRoutePoints().size());
     }
 
     @Test

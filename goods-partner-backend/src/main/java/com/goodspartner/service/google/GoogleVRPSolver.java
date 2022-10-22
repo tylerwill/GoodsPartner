@@ -2,12 +2,13 @@ package com.goodspartner.service.google;
 
 import com.goodspartner.dto.DistanceMatrix;
 import com.goodspartner.dto.MapPoint;
-import com.goodspartner.dto.VRPSolution;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.service.GraphhopperService;
-import com.goodspartner.service.dto.GoogleVRPSolverStatus;
 import com.goodspartner.service.VRPSolver;
+import com.goodspartner.service.dto.GoogleVRPSolverStatus;
+import com.goodspartner.service.dto.RoutingSolution;
+import com.goodspartner.service.dto.VRPSolution;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.ortools.Loader;
 import com.google.ortools.constraintsolver.Assignment;
@@ -34,19 +35,18 @@ import java.util.List;
 @AllArgsConstructor
 public class GoogleVRPSolver implements VRPSolver {
 
+    public static final int SERVICE_TIME_AT_LOCATION_MIN = 5; // 5 minutes
+
     private static final int ROUTE_START_INDEX = 0;
     private static final int SOLUTION_PROCESSING_TIME_SEC = 30;
-
     // Capacity
     private static final String VEHICLE_CAPACITY_DIMENSION_NAME = "Capacity";
     private static final int SLACK_CAPACITY = 0;
     private static final boolean START_FROM_DEPOT_TRUE = true;
-
     // TimeWindow
     private static final String VEHICLE_TIME_DIMENSION_NAME = "Time";
     private static final long SLACK_TIME_WINDOW_MIN = 120L;
     private static final long MAX_ROUTE_TIME_MIN = 10 * 60L;
-    public static final int SERVICE_TIME_AT_LOCATION_MIN = 5; // 5 minutes
     private static final boolean START_FROM_DEPOT_FALSE = false;
 
     private static final LocalTime DEFAULT_DEPOT_START_TIME = LocalTime.of(8, 0); // 0 start of a day
@@ -66,7 +66,7 @@ public class GoogleVRPSolver implements VRPSolver {
     }
 
     @Override
-    public List<VRPSolution> optimize(List<Car> cars, MapPoint storeMapPoint, List<RoutePoint> routePoints) {
+    public VRPSolution optimize(List<Car> cars, MapPoint storeMapPoint, List<RoutePoint> routePoints) {
 
         List<MapPoint> mapPoints = new ArrayList<>();
         mapPoints.add(storeMapPoint);
@@ -78,9 +78,9 @@ public class GoogleVRPSolver implements VRPSolver {
         return solve(cars, routePoints, matrix);
     }
 
-    private List<VRPSolution> solve(List<Car> cars,
-                                    List<RoutePoint> routePoints,
-                                    DistanceMatrix routePointsMatrix) {
+    private VRPSolution solve(List<Car> cars,
+                              List<RoutePoint> routePoints,
+                              DistanceMatrix routePointsMatrix) {
         Long[][] distanceMatrix = routePointsMatrix.getDistance();
         Long[][] timeMatrix = routePointsMatrix.getDuration(); // discuss
         Long[][] timeWindows = calculateTimeWindows(routePoints);
@@ -99,19 +99,18 @@ public class GoogleVRPSolver implements VRPSolver {
         return getVRPSolution(cars, routePoints, manager, routing);
     }
 
-    private List<VRPSolution> getVRPSolution(List<Car> cars, List<RoutePoint> routePoints,
-                                             RoutingIndexManager manager, RoutingModel routing) {
+    private VRPSolution getVRPSolution(List<Car> cars, List<RoutePoint> routePoints,
+                                       RoutingIndexManager manager, RoutingModel routing) {
         Assignment solution = getSolution(routing);
         log.info("Solution solved with status: {} and cost: {}",
                 GoogleVRPSolverStatus.getByCode(solution.solver().state()).name(),
                 solution.objectiveValue());
 
-        // Display dropped nodes.
-        droppedNodesInspection(routePoints, manager, routing, solution);
+        List<RoutePoint> droppedRoutePoints = droppedNodesInspection(routePoints, manager, routing, solution);
 
         RoutingDimension timeDimension = routing.getMutableDimension(VEHICLE_TIME_DIMENSION_NAME);
 
-        List<VRPSolution> vrpSolutions = new ArrayList<>(1);
+        List<RoutingSolution> routingSolutions = new ArrayList<>(1);
         for (int i = 0; i < cars.size(); ++i) {
             List<RoutePoint> carRoutePoints = new ArrayList<>(1);
             long index = routing.start(i);
@@ -133,16 +132,20 @@ public class GoogleVRPSolver implements VRPSolver {
                     index = solution.value(routing.nextVar(index));
                 }
 
-                vrpSolutions.add(VRPSolution.builder()
+                routingSolutions.add(RoutingSolution.builder()
                         .car(cars.get(i))
                         .routePoints(carRoutePoints)
                         .build());
             }
         }
-        return vrpSolutions;
+        return VRPSolution.builder()
+                .routings(routingSolutions)
+                .droppedPoints(droppedRoutePoints)
+                .build();
     }
 
-    private void droppedNodesInspection(List<RoutePoint> routePoints, RoutingIndexManager manager, RoutingModel routing, Assignment solution) {
+    private List<RoutePoint> droppedNodesInspection(List<RoutePoint> routePoints, RoutingIndexManager manager,
+                                                    RoutingModel routing, Assignment solution) {
         List<RoutePoint> droppedNodes = new ArrayList<>();
         for (int node = 0; node < routing.size(); ++node) {
             if (routing.isStart(node) || routing.isEnd(node)) {
@@ -152,7 +155,8 @@ public class GoogleVRPSolver implements VRPSolver {
                 droppedNodes.add(routePoints.get(manager.indexToNode(node) - 1));
             }
         }
-        log.info("Dropped nodes size: {}", droppedNodes.size());
+        log.warn("Dropped nodes size: {}", droppedNodes.size());
+        return droppedNodes;
     }
 
     private Assignment getSolution(RoutingModel routing) {
@@ -198,7 +202,7 @@ public class GoogleVRPSolver implements VRPSolver {
                 MAX_ROUTE_TIME_MIN,
                 START_FROM_DEPOT_FALSE,
                 VEHICLE_TIME_DIMENSION_NAME
-                );
+        );
         RoutingDimension timeDimension = routing.getMutableDimension(VEHICLE_TIME_DIMENSION_NAME);
 //        timeDimension.setGlobalSpanCostCoefficient(9*60L); // Global boundaries for all routes. Hack!
         // Add time window constraints for each location except depot.

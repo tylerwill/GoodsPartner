@@ -119,9 +119,7 @@ public class DefaultDeliveryService implements DeliveryService {
 
         validateDelivery(delivery);
 
-        // Cleanup in case of recalculation
-        List<OrderExternal> orders = delivery.getOrders();
-        orders.forEach(orderExternal -> orderExternal.setCarLoad(null));
+        List<OrderExternal> orders = resetOrders(delivery.getOrders());
 
         List<OrderExternal> includedOrders = orders.stream()
                 .filter(orderExternal -> !orderExternal.isExcluded()).toList();
@@ -141,6 +139,15 @@ public class DefaultDeliveryService implements DeliveryService {
         deliveryHistoryService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, deliveryId);
 
         return deliveryMapper.deliveryToDeliveryDto(deliveryRepository.save(delivery));
+    }
+
+    // Cleanup calculated order state in case of recalculation
+    private List<OrderExternal> resetOrders(List<OrderExternal> orders) {
+        orders.forEach(orderExternal -> {
+            orderExternal.setCarLoad(null);
+            orderExternal.setDropped(false);
+        });
+        return orders;
     }
 
     @Override

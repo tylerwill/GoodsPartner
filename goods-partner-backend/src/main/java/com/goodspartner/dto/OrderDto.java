@@ -34,6 +34,7 @@ public class OrderDto {
     private String managerFullName;
     private boolean isFrozen;
     private boolean excluded;
+    private boolean dropped;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime deliveryStart;
