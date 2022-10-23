@@ -8,7 +8,7 @@ import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.event.DeliveryAuditEvent;
-import com.goodspartner.exceptions.DeliveryNotFoundException;
+import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.mapper.DeliveryHistoryMapper;
 import com.goodspartner.repository.DeliveryHistoryRepository;
 import com.goodspartner.repository.DeliveryRepository;

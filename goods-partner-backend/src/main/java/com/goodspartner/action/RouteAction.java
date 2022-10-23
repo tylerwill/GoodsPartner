@@ -2,8 +2,8 @@ package com.goodspartner.action;
 
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RouteStatus;
-import com.goodspartner.exceptions.InvalidActionType;
-import com.goodspartner.exceptions.RouteInWrongState;
+import com.goodspartner.exception.InvalidActionType;
+import com.goodspartner.exception.RouteInWrongState;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

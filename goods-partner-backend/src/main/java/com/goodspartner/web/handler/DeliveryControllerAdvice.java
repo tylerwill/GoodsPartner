@@ -1,14 +1,14 @@
 package com.goodspartner.web.handler;
 
-import com.goodspartner.exceptions.DeliveryNotFoundException;
-import com.goodspartner.exceptions.IllegalDeliveryStatusForOperation;
-import com.goodspartner.exceptions.IllegalRoutePointStatusForOperation;
-import com.goodspartner.exceptions.IllegalRouteStatusForOperation;
-import com.goodspartner.exceptions.InvalidActionType;
-import com.goodspartner.exceptions.NoOrdersFoundForDelivery;
-import com.goodspartner.exceptions.NoRoutesFoundForDelivery;
-import com.goodspartner.exceptions.RouteInWrongState;
-import com.goodspartner.exceptions.StoreNotFoundException;
+import com.goodspartner.exception.DeliveryNotFoundException;
+import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
+import com.goodspartner.exception.IllegalRoutePointStatusForOperation;
+import com.goodspartner.exception.IllegalRouteStatusForOperation;
+import com.goodspartner.exception.InvalidActionType;
+import com.goodspartner.exception.NoOrdersFoundForDelivery;
+import com.goodspartner.exception.NoRoutesFoundForDelivery;
+import com.goodspartner.exception.RouteInWrongState;
+import com.goodspartner.exception.StoreNotFoundException;
 import com.goodspartner.web.dto.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

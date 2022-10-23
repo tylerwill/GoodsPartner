@@ -1,9 +1,9 @@
 package com.goodspartner.web.handler;
 
-import com.goodspartner.exceptions.CarNotFoundException;
-import com.goodspartner.exceptions.GoogleApiException;
-import com.goodspartner.exceptions.RouteNotFoundException;
-import com.goodspartner.exceptions.UnknownAddressException;
+import com.goodspartner.exception.CarNotFoundException;
+import com.goodspartner.exception.GoogleApiException;
+import com.goodspartner.exception.RouteNotFoundException;
+import com.goodspartner.exception.UnknownAddressException;
 import com.goodspartner.web.dto.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

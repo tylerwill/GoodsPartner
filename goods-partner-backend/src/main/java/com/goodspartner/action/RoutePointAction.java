@@ -1,7 +1,7 @@
 package com.goodspartner.action;
 
 import com.goodspartner.entity.RoutePoint;
-import com.goodspartner.exceptions.InvalidActionType;
+import com.goodspartner.exception.InvalidActionType;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;

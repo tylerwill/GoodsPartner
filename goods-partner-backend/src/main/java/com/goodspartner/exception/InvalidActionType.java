@@ -1,4 +1,4 @@
-package com.goodspartner.exceptions;
+package com.goodspartner.exception;
 
 public class InvalidActionType extends RuntimeException{
     private static final String ILLEGAL_ACTION = "Unknown action type: %s";

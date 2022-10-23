@@ -1,4 +1,4 @@
-package com.goodspartner.exceptions;
+package com.goodspartner.exception;
 
 public class StoreNotFoundException extends RuntimeException {
 

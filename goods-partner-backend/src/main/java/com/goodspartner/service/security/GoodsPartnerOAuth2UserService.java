@@ -1,10 +1,9 @@
-package com.goodspartner.service.impl;
+package com.goodspartner.service.security;
 
 import com.goodspartner.entity.User;
 import com.goodspartner.repository.UserRepository;
 import com.goodspartner.service.dto.CustomOAuth2User;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +17,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Service
-public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+public class GoodsPartnerOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
 
@@ -29,10 +28,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = (String) oAuth2User.getAttributes().get("email");
 
         User user = userRepository.findUserByEmail(email)
-                .orElseThrow(()->new UsernameNotFoundException("This email is not found in database"));
+                .orElseThrow(() -> new UsernameNotFoundException("This email is not found in database"));
 
-        if(!user.isEnabled()){
-            throw new DisabledException("User is disabled");
+        if (!user.isEnabled()) {
+            throw new DisabledException("User is disabled: " + email);
         }
 
         CustomOAuth2User customOAuth2User = new CustomOAuth2User();

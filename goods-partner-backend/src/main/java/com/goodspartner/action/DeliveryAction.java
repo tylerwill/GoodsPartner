@@ -3,9 +3,9 @@ package com.goodspartner.action;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
-import com.goodspartner.exceptions.IllegalDeliveryStatusForOperation;
-import com.goodspartner.exceptions.InvalidActionType;
-import com.goodspartner.exceptions.NoRoutesFoundForDelivery;
+import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
+import com.goodspartner.exception.InvalidActionType;
+import com.goodspartner.exception.NoRoutesFoundForDelivery;
 
 import java.util.Arrays;
 import java.util.List;

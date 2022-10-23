@@ -1,4 +1,4 @@
-package com.goodspartner.exceptions;
+package com.goodspartner.exception;
 
 
 import java.util.UUID;

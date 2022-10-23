@@ -2,7 +2,7 @@ package com.goodspartner.event;
 
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryHistory;
-import com.goodspartner.exceptions.DeliveryNotFoundException;
+import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.service.DeliveryHistoryService;
 import com.goodspartner.util.AuditorBuilder;

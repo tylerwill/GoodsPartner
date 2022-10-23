@@ -3,7 +3,7 @@ package com.goodspartner.report;
 import com.goodspartner.dto.Product;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.OrderExternal;
-import com.goodspartner.exceptions.DeliveryNotFoundException;
+import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.repository.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

@@ -1,6 +1,6 @@
 package com.goodspartner.service.client;
 
-import com.goodspartner.exceptions.GoogleApiException;
+import com.goodspartner.exception.GoogleApiException;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;

@@ -1,9 +1,8 @@
 package com.goodspartner.report;
 
 import com.goodspartner.entity.Delivery;
-import com.goodspartner.exceptions.DeliveryNotFoundException;
+import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.repository.DeliveryRepository;
-import com.goodspartner.service.RouteService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.poi.ss.usermodel.Sheet;

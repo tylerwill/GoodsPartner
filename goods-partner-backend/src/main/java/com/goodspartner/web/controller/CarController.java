@@ -28,7 +28,6 @@ public class CarController {
         return carService.findAll();
     }
 
-    // TODO: Controller should return updated entity
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PutMapping("/{id}")
     @ApiOperation(value = "Edit Car",
@@ -40,7 +39,6 @@ public class CarController {
         return carService.update(id, car);
     }
 
-    // TODO: Controller should return created entity
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PostMapping()
     @ApiOperation(value = "Add car")
@@ -53,7 +51,7 @@ public class CarController {
     @DeleteMapping("{id}")
     @ApiOperation(value = "Remove Car by id",
             notes = "Provide an id to remove up specific car")
-    public void delete(@ApiParam(value = "ID value for the car you need to retrieve", required = true)
+    public void delete(@ApiParam(value = "ID of the car to delete", required = true)
                        @PathVariable("id") int id) {
         carService.delete(id);
     }

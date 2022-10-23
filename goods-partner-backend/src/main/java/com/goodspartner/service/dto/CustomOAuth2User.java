@@ -13,7 +13,6 @@ public class CustomOAuth2User implements OAuth2User {
 
     private String username;
     private String email;
-    private String password;
     private List<? extends GrantedAuthority> authorities;
     private boolean accountNonExpired;
     private boolean accountNonLocked;
@@ -26,7 +25,6 @@ public class CustomOAuth2User implements OAuth2User {
 
         attributes.put("username", username);
         attributes.put("email", email);
-        attributes.put("password", password);
         attributes.put("authorities", authorities);
         attributes.put("accountNonExpired", accountNonExpired);
         attributes.put("accountNonLocked", accountNonLocked);

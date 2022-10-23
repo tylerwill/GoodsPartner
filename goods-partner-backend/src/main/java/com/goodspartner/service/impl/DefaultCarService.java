@@ -4,7 +4,7 @@ import com.goodspartner.cache.CarLocationCache;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.entity.Car;
 import com.goodspartner.dto.Location;
-import com.goodspartner.exceptions.CarNotFoundException;
+import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.mapper.CarMapper;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.service.CarService;
