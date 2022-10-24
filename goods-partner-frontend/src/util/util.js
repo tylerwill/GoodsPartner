@@ -1,3 +1,5 @@
+import {format} from 'date-fns'
+
 export const currentHost = () => {
     const host = process.env.NODE_ENV === "development"
         ? process.env.REACT_APP_LOCALHOST_BASE_URL
@@ -17,4 +19,8 @@ export const toHoursAndMinutes = (totalMinutes) => {
     const hours = Math.floor(totalMinutes / 60);
 
     return `${hours}год. ${minutes}хв.`;
+}
+
+export const reformatDate = (date) => {
+    return format(new Date(date), 'dd.MM.yy')
 }

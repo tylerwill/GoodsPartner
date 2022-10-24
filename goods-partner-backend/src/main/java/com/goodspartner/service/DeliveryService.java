@@ -20,7 +20,7 @@ public interface DeliveryService {
 
     DeliveryDto delete(UUID id);
 
-    DeliveryDto calculateDelivery(UUID deliveryID);
+    DeliveryDto calculateDelivery(DeliveryDto deliveryDto);
 
     DeliveryActionResponse approve(UUID id, DeliveryAction deliveryAction);
 }

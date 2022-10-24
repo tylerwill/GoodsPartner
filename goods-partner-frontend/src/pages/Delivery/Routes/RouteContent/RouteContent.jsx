@@ -5,7 +5,7 @@ import Divider from "@mui/material/Divider";
 import RouteDetails from "./RouteDetails/RouteDetails";
 import RoutePointDetails from "./RoutePointDetails/RoutePointDetails";
 
-const RouteContent = ({deliveryDate, route, updateRoutePoint, updateRoute, getOrderById}) => {
+const RouteContent = ({deliveryDate, route, updateRoutePoint, updateRoute}) => {
 
     const updateRoutePointHandler = (routePointId, action) => {
         if (route.status !== 'INPROGRESS') {
@@ -32,8 +32,7 @@ const RouteContent = ({deliveryDate, route, updateRoutePoint, updateRoute, getOr
     >
         <Divider/>
         <ListItem>
-            <RouteDetails route={route} updateRoute={updateRoute} deliveryDate={deliveryDate}
-                          />
+            <RouteDetails route={route} updateRoute={updateRoute} deliveryDate={deliveryDate}/>
         </ListItem>
         <ListItem>
             <Typography component={'h3'} sx={{fontSize: '14px', fontWeight: 'bold'}}>
@@ -45,7 +44,6 @@ const RouteContent = ({deliveryDate, route, updateRoutePoint, updateRoute, getOr
             <ListItem
                 key={routePoint.id}>
                 <RoutePointDetails
-                    getOrderById={getOrderById}
                     updateRoutePoint={updateRoutePointHandler} routePoint={routePoint} number={index + 1}/>
             </ListItem>)}
     </List>

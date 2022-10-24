@@ -22,4 +22,7 @@ public interface DeliveryRepository extends JpaRepository<Delivery, UUID> {
     @EntityGraph(attributePaths = {"routes", "routes.car", "routes.store"})
     List<Delivery> findByStatusAndDeliveryDateBetween(DeliveryStatus status, LocalDate dateFrom, LocalDate dateTo);
 
+    @EntityGraph(attributePaths = {"orders"})
+    Optional<Delivery> findById(UUID id);
+
 }

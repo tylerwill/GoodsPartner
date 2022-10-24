@@ -38,7 +38,6 @@ export default function BasicTabs({children, labels, fullWidth}) {
     const handleChange = (event, newValue) => {
         setTabIndex(newValue);
     };
-
     return (
         <Box sx={{bgcolor: 'background.paper'}}>
             {createTabsPanel(tabIndex, handleChange, labels, fullWidth)}
@@ -59,7 +58,8 @@ function createTabsPanel(value, handleChange, labels, fullWidth) {
         {
             labels.map((label, index) => <Tab sx={{borderBottom: 1, borderColor: 'divider'}}
                                               key={"tab" + label.name}
-                                              label={label.name} disabled={!label.enabled} {...a11yProps(index)}/>)
+                                              iconPosition="start"
+                                              label={<>{label.icon} {label.name}</>} disabled={!label.enabled} {...a11yProps(index)}/>)
         }
     </Tabs>);
 

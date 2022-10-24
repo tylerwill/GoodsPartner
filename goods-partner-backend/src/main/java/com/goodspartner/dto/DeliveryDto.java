@@ -1,5 +1,6 @@
 package com.goodspartner.dto;
 
+import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.DeliveryStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ public class DeliveryDto {
     private UUID id;
     private LocalDate deliveryDate;
     private DeliveryStatus status;
+    private DeliveryFormationStatus formationStatus;
 
     private List<RouteDto> routes;
     private List<OrderDto> orders;

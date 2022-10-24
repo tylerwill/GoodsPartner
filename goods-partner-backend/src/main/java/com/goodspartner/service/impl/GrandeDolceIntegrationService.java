@@ -15,8 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
 import java.net.URI;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -105,6 +107,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
                 })
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(15)))
                 .block();
     }
 
@@ -121,6 +124,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataProductDto>>() {
                 })
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(15)))
                 .block();
     }
 

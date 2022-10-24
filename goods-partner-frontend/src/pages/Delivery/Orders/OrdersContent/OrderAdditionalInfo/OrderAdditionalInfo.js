@@ -29,27 +29,11 @@ const AdditionalInfo = ({order, updateOrder}) => {
                     Діапазон доставки
                 </Typography>
                 <Box>
-                    <Select
-                        value={from}
-                        label="Age"
-                        onChange={handleChangeFrom}
-                        sx={{minWidth: "140px", height: "40px", mr: 1}}
-                    >
-                        <MenuItem value={"09:00"}>9:00</MenuItem>
-                        <MenuItem value={"10:00"}>10:00</MenuItem>
-                        <MenuItem value={"11:00"}>11:00</MenuItem>
-                        <MenuItem value={"12:00"}>12:00</MenuItem>
-                        <MenuItem value={"13:00"}>13:00</MenuItem>
-                        <MenuItem value={"14:00"}>14:00</MenuItem>
-                        <MenuItem value={"15:00"}>15:00</MenuItem>
-                        <MenuItem value={"16:00"}>16:00</MenuItem>
-                        <MenuItem value={"17:00"}>17:00</MenuItem>
-                        <MenuItem value={"18:00"}>18:00</MenuItem>
-                    </Select>
-                    {/*TODO: [UI Max] Move select creation into different component*/}
-                    <TimeSelect from={from} to={to} value={to} onChange={handleChangeTo}/>
+                    <TimeSelect from={9} to={19} value={from} onChange={handleChangeFrom}/>
+                    <TimeSelect from={9} to={19} value={to} onChange={handleChangeTo}/>
                 </Box>
             </Grid>
+
             <Grid item xs={4}>
                 <Typography sx={{mb: 1}} variant="caption" display="block" gutterBottom>
                     Заморозка
@@ -59,6 +43,7 @@ const AdditionalInfo = ({order, updateOrder}) => {
                                       label="Потребує заморозки"/>
                 </Box>
             </Grid>
+
             <Grid item xs={4}>
                 <Typography sx={{mb: 1}} variant="caption" display="block" gutterBottom>
                     Коментар
@@ -70,19 +55,25 @@ const AdditionalInfo = ({order, updateOrder}) => {
         </Grid>)
 }
 
+
 const TimeSelect = ({from, to, value, onChange}) => {
-    const range = (from, to) => Array(to - from + 1)
-        .fill(0)
-        .map((_, i) => from + i)
-        .map(e => <MenuItem value={`${e}:00`}>{`${e}:00`}</MenuItem>);
+    const menuItems = range(from, to)
+        .map(e => String(e))
+        // transform 9:00 -> 09:00
+        .map(e => e.length === 1 ? "0" + e : e)
+        .map(e => <MenuItem key={value + e} value={`${e}:00`}>{`${e}:00`}</MenuItem>);
     return (<Select
         value={value}
         onChange={onChange}
-        sx={{minWidth: "140px", height: "40px"}}
+        sx={{minWidth: "140px", height: "40px", mr:1}}
     >
-        {range}
+        {menuItems}
     </Select>)
-
 }
+
+const range = (from, to) => Array(to - from + 1)
+    .fill(0)
+    .map((_, i) => from + i);
+
 
 export default AdditionalInfo;

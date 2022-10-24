@@ -12,6 +12,7 @@ import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.Geometry;
 import com.google.maps.model.LatLng;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -33,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 @DBRider
 @TestInstance(PER_CLASS)
+@Disabled("Removed order controller. Rework to test for service")
 class OrdersControllerITest extends AbstractWebITest {
 
     private static final double AUTOVALIDATED_ADDRESS_LATITUDE = 50.51;

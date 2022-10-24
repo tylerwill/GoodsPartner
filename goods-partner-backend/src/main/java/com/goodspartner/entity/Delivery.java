@@ -59,6 +59,10 @@ public class Delivery {
     @Column(length = 9)
     private DeliveryStatus status;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column(length = 17)
+    private DeliveryFormationStatus formationStatus;
+
     @Column(name = "deleted")
     private boolean deleted = false;
 

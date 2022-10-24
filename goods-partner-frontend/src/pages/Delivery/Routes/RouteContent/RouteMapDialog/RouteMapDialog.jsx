@@ -37,7 +37,6 @@ const RouteMapDialog = ({route, open, closeDialog}) => {
         renderer.setMap(mapRef.current);
         renderer.setOptions({suppressMarkers: true, preserveViewport: true});
         renderer.setDirections(response);
-        console.log("rendered for map", mapRef.current);
         centerMap(mapRef, lngs, lats);
     };
 
@@ -128,7 +127,6 @@ function splitWaypoints(waypoints) {
 }
 
 function calculateRoute(waypointsParts, callback) {
-    console.log("calculate route");
     // eslint-disable-next-line no-undef
     const directionService = new google.maps.DirectionsService();
 

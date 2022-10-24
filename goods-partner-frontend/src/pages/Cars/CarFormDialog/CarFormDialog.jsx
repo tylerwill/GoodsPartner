@@ -26,7 +26,6 @@ export default function CarFormDialog({closeDialog, open, actionHandler, car, se
     }
 
     const saveHandler = () => {
-        console.log("Handler car: ", car);
         actionHandler(car);
         closeDialog();
     }

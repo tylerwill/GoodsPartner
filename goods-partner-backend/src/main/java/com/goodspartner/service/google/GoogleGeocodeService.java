@@ -33,7 +33,11 @@ public class GoogleGeocodeService implements GeocodeService {
 
     @Override
     public void enrichValidAddress(List<OrderDto> orders) {
+        long startTime = System.currentTimeMillis();
+
         orders.forEach(this::enrichAddress);
+
+        log.info("Addresses have been enriched in {}", System.currentTimeMillis() - startTime);
     }
 
     private void enrichAddress(OrderDto orderDto) {

@@ -3,7 +3,7 @@ import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogT
 import {Autocomplete, GoogleMap, MarkerF} from "@react-google-maps/api";
 
 // TODO: Maybe we should use it as hoc in future
-const ChooseAddressDialog = ({order, open, handleClose, updatePreviewOrderAddress}) => {
+const ChooseAddressDialog = ({order, open, handleClose, updateAddressForOrder}) => {
     const {mapPoint} = order;
 
     const [orderAddress, setOrderAddress] = useState({
@@ -13,6 +13,8 @@ const ChooseAddressDialog = ({order, open, handleClose, updatePreviewOrderAddres
             ...mapPoint
         }
     });
+
+    const handleUpdateAddress = () => {updateAddressForOrder(orderAddress); handleClose();}
 
     const isValidAddress = orderAddress.mapPoint.status !== 'UNKNOWN';
 
@@ -47,11 +49,9 @@ const ChooseAddressDialog = ({order, open, handleClose, updatePreviewOrderAddres
         const newMapPoint = {
             latitude: lat,
             longitude: lng,
-            address: formattedAddress,
-            status: "AUTOVALIDATED"
+            address: formattedAddress
         }
 
-        console.log("new map point", newMapPoint);
         const newOrderAddress = {
             ...orderAddress,
             address: formattedAddress,
@@ -92,7 +92,6 @@ const ChooseAddressDialog = ({order, open, handleClose, updatePreviewOrderAddres
                     if (!place) {
                         return;
                     }
-                    console.log("onChange", place);
                     const formattedAddress = place.formatted_address;
                     const location = place.geometry.location;
                     setCoordinates(formattedAddress, location.lat(), location.lng());
@@ -118,7 +117,7 @@ const ChooseAddressDialog = ({order, open, handleClose, updatePreviewOrderAddres
         </DialogContent>
         <DialogActions>
             <Button onClick={handleClose}>Скасувати</Button>
-            <Button onClick={() => {updatePreviewOrderAddress(orderAddress); handleClose();}} disabled={!isValidAddress}>Зберегти</Button>
+            <Button onClick={handleUpdateAddress} disabled={!isValidAddress}>Зберегти</Button>
         </DialogActions>
     </Dialog>);
 }

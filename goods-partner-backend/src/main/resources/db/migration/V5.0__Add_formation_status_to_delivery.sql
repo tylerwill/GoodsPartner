@@ -1,0 +1,1 @@
+ALTER TABLE deliveries ADD COLUMN "formation_status" VARCHAR(17);

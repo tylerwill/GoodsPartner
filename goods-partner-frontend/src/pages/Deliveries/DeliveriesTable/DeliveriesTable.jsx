@@ -13,6 +13,7 @@ import TableBody from "@mui/material/TableBody";
 import TablePagination from "@mui/material/TablePagination";
 import {Link, useNavigate} from "react-router-dom";
 import DeliveryStatusChip from "../../../components/DeliveryStatusChip/DeliveryStatusChip";
+import {reformatDate} from "../../../util/util";
 
 const DeliveriesTable = ({deliveries}) => {
     // TODO: [UI] Remove shadow
@@ -125,13 +126,12 @@ function EnhancedTable({deliveries}) {
                             order={order}
                             orderBy={orderBy}
                             onRequestSort={handleRequestSort}
-                            rowCount={deliveries.length}
                         />
                         <TableBody>
                             {/* TODO: [UI Max] Fix sorting by status column */}
                             {stableSort(deliveries, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((delivery, index) => {
+                                .map((delivery) => {
                                     return (
                                         <TableRow
                                             hover
@@ -139,13 +139,14 @@ function EnhancedTable({deliveries}) {
                                             tabIndex={-1}
                                             key={delivery.id}
                                             onClick={() => handleRowClick(delivery.id)}
-                                            sx={{cursor:'pointer'}}
+                                            sx={{cursor: 'pointer'}}
                                         >
                                             <TableCell component="th" scope="row" align="left">
-                                                <DeliveryStatusChip status={ delivery.status}/>
+                                                <DeliveryStatusChip status={delivery.status}/>
                                             </TableCell>
-                                            <TableCell align="left">{delivery.deliveryDate}</TableCell>
-                                            <TableCell align="left">{delivery.orderCount ?? "-" }</TableCell>
+                                            <TableCell
+                                                align="left">{reformatDate(delivery.deliveryDate)}</TableCell>
+                                            <TableCell align="left">{delivery.orderCount ?? "-"}</TableCell>
                                             <TableCell align="left">{delivery.routeCount ?? "-"}</TableCell>
                                         </TableRow>
                                     );

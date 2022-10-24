@@ -2,9 +2,6 @@ import React from 'react';
 import {Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis} from 'recharts';
 
 export default ({xAxisName, yAxisName, data}) => {
-    console.log("x", xAxisName);
-    console.log("y", yAxisName);
-    console.log("data", data);
     return (
         <BarChart
             width={900}

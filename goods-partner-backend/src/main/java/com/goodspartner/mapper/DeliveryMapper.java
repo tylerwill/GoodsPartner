@@ -25,6 +25,10 @@ public interface DeliveryMapper {
     @Mapping(target = "productsShipping", ignore = true)
     DeliveryDto toDeliveryDtoResult(@MappingTarget DeliveryDto deliveryDto, Delivery delivery);
 
+    @Mapping(target = "routes", ignore = true)
+    @Mapping(target = "productsShipping", ignore = true)
+    DeliveryDto toDeliveryDtoWithOrders(@MappingTarget DeliveryDto deliveryDto, Delivery delivery);
+
     @Mapping(target = "productsShipping", source = "carLoads")
     DeliveryDto deliveryToDeliveryDto(Delivery delivery);
 

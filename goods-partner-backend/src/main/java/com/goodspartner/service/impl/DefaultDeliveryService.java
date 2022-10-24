@@ -1,11 +1,11 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.action.DeliveryAction;
-import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.DeliveryShortDto;
-import com.goodspartner.entity.CarLoad;
+import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.Delivery;
+import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.OrderExternal;
@@ -17,14 +17,13 @@ import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exception.NoOrdersFoundForDelivery;
 import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.DeliveryRepository;
-import com.goodspartner.service.CarLoadService;
 import com.goodspartner.service.DeliveryHistoryService;
 import com.goodspartner.service.DeliveryService;
-import com.goodspartner.service.RouteCalculationService;
-import com.goodspartner.service.dto.RouteMode;
+import com.goodspartner.service.OrderExternalService;
+import com.goodspartner.service.util.DeliveryCalculationHelper;
+import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.ListUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +32,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.goodspartner.entity.DeliveryFormationStatus.ORDERS_LOADED;
+import static com.goodspartner.entity.DeliveryFormationStatus.ORDERS_LOADING;
 import static com.goodspartner.entity.DeliveryStatus.DRAFT;
 
 @Slf4j
@@ -42,9 +43,9 @@ public class DefaultDeliveryService implements DeliveryService {
 
     private final DeliveryMapper deliveryMapper;
     private final DeliveryRepository deliveryRepository;
-    private final RouteCalculationService routeCalculationService;
-    private final CarLoadService carLoadService;
     private final DeliveryHistoryService deliveryHistoryService;
+    private final OrderExternalService orderExternalService;
+    private final DeliveryCalculationHelper deliveryCalculationHelper;
 
     @Override
     @Transactional(readOnly = true)
@@ -73,9 +74,19 @@ public class DefaultDeliveryService implements DeliveryService {
     @Override
     @Transactional(readOnly = true)
     public DeliveryDto findById(UUID deliveryId) {
-        return deliveryRepository.findById(deliveryId)
+        DeliveryDto deliveryDto = deliveryRepository.findById(deliveryId)
                 .map(deliveryMapper::deliveryToDeliveryDto)
                 .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
+
+        if (deliveryDto.getOrders().isEmpty()) {
+            List<OrderDto> ordersFromCache = orderExternalService.getOrdersFromCache(deliveryId);
+            if (!ordersFromCache.isEmpty()) {
+                deliveryDto.setOrders(ordersFromCache);
+                deliveryDto.setFormationStatus(ORDERS_LOADED);
+            }
+        }
+
+        return deliveryDto;
     }
 
     @Override
@@ -86,9 +97,14 @@ public class DefaultDeliveryService implements DeliveryService {
             throw new IllegalArgumentException("There is already delivery on date: " + deliveryDto.getDeliveryDate());
         }
 
+        deliveryDto.setStatus(DRAFT);
+        deliveryDto.setFormationStatus(ORDERS_LOADING);
+
         Delivery addedDelivery = deliveryRepository.save(deliveryMapper.deliveryDtoToDelivery(deliveryDto));
 
         DeliveryDto addedDeliveryDto = deliveryMapper.toDeliveryDtoResult(new DeliveryDto(), addedDelivery);
+
+        orderExternalService.saveToOrderCache(addedDelivery.getId(), addedDelivery.getDeliveryDate());
 
         deliveryHistoryService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CREATED, addedDeliveryDto.getId());
 
@@ -112,33 +128,40 @@ public class DefaultDeliveryService implements DeliveryService {
     }
 
     @Override
+    public DeliveryDto calculateDelivery(DeliveryDto deliveryDto) {
+        Delivery delivery = saveOrders(deliveryDto);
+
+        delivery.setFormationStatus(DeliveryFormationStatus.ROUTE_CALCULATION);
+
+        //Calculated in async method
+        deliveryCalculationHelper.calculate(delivery.getId());
+
+        return deliveryMapper.toDeliveryDtoWithOrders(new DeliveryDto(), deliveryRepository.save(delivery));
+    }
+
     @Transactional
-    public DeliveryDto calculateDelivery(UUID deliveryId) {
+    private Delivery saveOrders(DeliveryDto deliveryDto) {
+        UUID deliveryId = deliveryDto.getId();
+
         Delivery delivery = deliveryRepository.findById(deliveryId)
-                .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
+                .orElseThrow(() -> new DeliveryNotFoundException(deliveryDto.getId()));
 
-        validateDelivery(delivery);
+        List<OrderExternal> orderExternals;
 
-        List<OrderExternal> orders = resetOrders(delivery.getOrders());
+        if (delivery.getOrders().isEmpty()) {
+            orderExternals = orderExternalService.saveValidOrdersAndEnrichKnownAddressesCache(deliveryDto);
 
-        List<OrderExternal> includedOrders = orders.stream()
-                .filter(orderExternal -> !orderExternal.isExcluded()).toList();
+            log.info("Orders for Delivery: {} have been saved to DB", delivery.getId());
 
-        // Routes
-        List<Route> coolerRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.COOLER);
-        List<Route> regularRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.REGULAR);
+            orderExternalService.evictCache(deliveryId);
+        } else {
+            orderExternals = resetOrders(delivery.getOrders());
+            validateDelivery(delivery);
+        }
 
-        // CarLoad
-        List<CarLoad> coolerCarLoad = carLoadService.buildCarLoad(coolerRoutes, includedOrders);
-        List<CarLoad> regularCarLoads = carLoadService.buildCarLoad(regularRoutes, includedOrders);
+        delivery.setOrders(orderExternals);
 
-        // Update Delivery
-        delivery.setRoutes(ListUtils.union(coolerRoutes, regularRoutes));
-        delivery.setCarLoads(ListUtils.union(coolerCarLoad, regularCarLoads));
-
-        deliveryHistoryService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, deliveryId);
-
-        return deliveryMapper.deliveryToDeliveryDto(deliveryRepository.save(delivery));
+        return delivery;
     }
 
     // Cleanup calculated order state in case of recalculation

@@ -21,15 +21,17 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
+import {useSelector} from "react-redux";
+import {selectOrdersByIds} from "../../../../../features/currentDelivery/currentDeliverySlice";
 
 
-const RoutePointDetails = ({routePoint, number, updateRoutePoint, getOrderById}) => {
+const RoutePointDetails = ({routePoint, number, updateRoutePoint}) => {
     return (<Box sx={{
         width: '100%', background: 'rgba(0, 0, 0, 0.02)',
         borderRadius: '6px', p: 2
     }}>
-        <RoutePointDetailsHeader getOrderById={getOrderById}
-                                 routePoint={routePoint} number={number} updateRoutePoint={updateRoutePoint}/>
+        <RoutePointDetailsHeader
+            routePoint={routePoint} number={number} updateRoutePoint={updateRoutePoint}/>
         <Box sx={{mt: 3}}>
             <RoutePointDetailsBody routePoint={routePoint}/>
         </Box>
@@ -37,14 +39,11 @@ const RoutePointDetails = ({routePoint, number, updateRoutePoint, getOrderById})
 
 }
 
-const RoutePointDetailsHeader = ({routePoint, number, updateRoutePoint, getOrderById}) => {
+const RoutePointDetailsHeader = ({routePoint, number, updateRoutePoint}) => {
+    const ordersIdsFromRoute = routePoint.orders.map(o => o.id);
     const [orderDialogOpen, setOrderDialogOpen] = React.useState(false);
 
-    const ordersFromRoute = routePoint.orders;
-    const ordersDetailedInfo = [];
-    for (let i = 0; i < ordersFromRoute.length; i++) {
-        ordersDetailedInfo.push(getOrderById(ordersFromRoute[i].id));
-    }
+    const ordersDetailedInfo = useSelector(state => selectOrdersByIds(state.currentDelivery, ordersIdsFromRoute));
 
     return (<Box sx={{width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <Typography sx={{fontWeight: "bold", maxWidth: '450px'}} variant="body2" component="h2">
@@ -145,8 +144,8 @@ function getSelectColor(status) {
 }
 
 const RoutePointOrdersDialog = ({open, closeDialog, routePoint, ordersDetailedInfo}) => {
-    const commentText = ordersDetailedInfo.filter(order => order.comment).map(order => order.comment).join(",");;
-    console.log("comment", commentText);
+    const commentText = ordersDetailedInfo.filter(order => order.comment).map(order => order.comment).join(",");
+    ;
 
     return (<Dialog
         maxWidth={'lg'}
@@ -161,8 +160,7 @@ const RoutePointOrdersDialog = ({open, closeDialog, routePoint, ordersDetailedIn
                     <InfoTableItem title={"Коментар"} data={commentText.trim().length === 0 ? '-' : commentText}/>
                 </Grid>
             </Grid>
-            <TableContainer sx={{marginTop:4}} component={Paper} style={{
-
+            <TableContainer sx={{marginTop: 4}} component={Paper} style={{
                 borderTop: '1px solid rgba(0, 0, 0, 0.1)'
             }}>
                 <Table sx={{minWidth: 650}} size="small" aria-label="a dense table">
@@ -200,7 +198,7 @@ const RoutePointOrdersDialog = ({open, closeDialog, routePoint, ordersDetailedIn
 
         </DialogContent>
         <DialogActions>
-            <Button sx={{mr:2, mb:1}} onClick={() => closeDialog()} variant={'contained'}>Закрити </Button>
+            <Button sx={{mr: 2, mb: 1}} onClick={() => closeDialog()} variant={'contained'}>Закрити </Button>
         </DialogActions>
     </Dialog>)
 }

@@ -7,16 +7,33 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import {useParams} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import Loading from "../../../components/Loading/Loading";
+import {fetchHistoryForDelivery} from "../../../features/history/historySlice";
+import ErrorAlert from "../../../components/ErrorAlert/ErrorAlert";
 
-const History = ({deliveryHistory, loadHistory}) => {
+const History = () => {
+    const {id} = useParams();
+    const dispatch = useDispatch();
+    const {historyForDelivery, loading, error} = useSelector(state => state.history);
+    const {delivery} = useSelector(state => state.currentDelivery.delivery);
+
+
     useEffect(() => {
-        loadHistory();
-    }, []);
+        if (!delivery || delivery.id !== id) {
+            dispatch(fetchHistoryForDelivery(id));
+        }
 
+    }, [delivery, dispatch, id]);
 
-    console.log("history", deliveryHistory);
-    return <Box sx={{paddingLeft:'24px', paddingRight:'24px'}}>
-        <TableContainer component={Paper}  style={{
+    if (loading) {
+        return <Loading/>
+    }
+
+    return <Box sx={{paddingLeft: '24px', paddingRight: '24px'}}>
+        {error && <ErrorAlert error={error}/>}
+        <TableContainer component={Paper} style={{
             borderTop: '1px solid rgba(0, 0, 0, 0.1)'
         }}>
             <Table sx={{minWidth: 650}} size="small" aria-label="a dense table">
@@ -29,7 +46,7 @@ const History = ({deliveryHistory, loadHistory}) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {deliveryHistory.map((history) => (
+                    {historyForDelivery.map((history) => (
                         <TableRow
                             key={history.id}
                             sx={{'&:last-child td, &:last-child th': {border: 0}}}

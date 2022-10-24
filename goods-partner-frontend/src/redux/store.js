@@ -1,16 +1,18 @@
 import carsReducer from "../features/cars/carsSlice";
 import deliveriesReducer from "../features/deliveries/deliveriesSlice";
+import currentDeliveryReducer from "../features/currentDelivery/currentDeliverySlice";
 import reportsReducer from "../features/reports/reportsSlice";
-import deliveriesReducerO from "../reducers/deliveries-reducer";
+import historyReducer from "../features/history/historySlice";
+
 import {configureStore} from "@reduxjs/toolkit";
 
 const store = configureStore({
     reducer: {
         cars: carsReducer,
-        deliveries : deliveriesReducer,
-        carsPage: carsReducer,
+        deliveriesList: deliveriesReducer,
         reports: reportsReducer,
-        deliveriesO: deliveriesReducerO
+        currentDelivery: currentDeliveryReducer,
+        history: historyReducer,
     }
 })
 

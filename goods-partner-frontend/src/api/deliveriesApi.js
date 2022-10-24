@@ -13,13 +13,9 @@ export const deliveriesApi = {
         return axiosWithSetting.get(`/deliveries/${id}`);
     },
 
-    // TODO: Remove
-    linkOrders(id, orders) {
-        return axiosWithSetting.post(`/deliveries/${id}/orders`, orders);
-    },
 
-    calculate(id) {
-        return axiosWithSetting.post(`/deliveries/${id}/calculate`);
+    calculate(delivery) {
+        return axiosWithSetting.post(`/deliveries/${delivery.id}/calculate`, delivery);
     },
 
     approve(id) {
