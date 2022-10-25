@@ -10,6 +10,7 @@ import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.Product;
+import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.service.dto.RoutingSolution;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
@@ -149,6 +150,7 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .comment("comment")
                 .managerFullName("Шевцова Галина")
                 .isFrozen(false)
+                .deliveryType(DeliveryType.REGULAR)
                 .deliveryStart(null)
                 .deliveryFinish(null)
                 .clientName("Кух Плюс ТОВ (Кухмайстер) бн")
@@ -165,6 +167,7 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .comment("нал без оплати  0675438404 Світлана")
                 .managerFullName("Шевцова Галина")
                 .isFrozen(false)
+                .deliveryType(DeliveryType.REGULAR)
                 .deliveryStart(LocalTime.of(12, 0))
                 .deliveryFinish(LocalTime.of(14, 0))
                 .clientName("Ексклюзив Кейк")

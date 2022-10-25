@@ -4,6 +4,7 @@ import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
+import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
 import com.goodspartner.exception.DeliveryNotFoundException;
@@ -44,7 +45,10 @@ public class DeliveryCalculationHelper {
         List<OrderExternal> orderExternals = delivery.getOrders();
 
         List<OrderExternal> includedOrders = orderExternals.stream()
-                .filter(orderExternal -> !orderExternal.isExcluded()).toList();
+                .filter(orderExternal -> !orderExternal.isExcluded())
+                .filter(orderExternal -> DeliveryType.REGULAR.equals(orderExternal.getDeliveryType()))
+                .toList();
+
         // Routes
         List<Route> coolerRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.COOLER);
         List<Route> regularRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.REGULAR);

@@ -16,7 +16,7 @@ import com.goodspartner.repository.OrderExternalRepository;
 import com.goodspartner.service.GeocodeService;
 import com.goodspartner.service.IntegrationService;
 import com.goodspartner.service.OrderExternalService;
-import com.goodspartner.service.util.OrderCommentProcessor;
+import com.goodspartner.service.util.ExternalOrderPostProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -45,7 +45,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
     private final AddressExternalRepository addressExternalRepository;
     private final IntegrationService integrationService; // GrangeDolceIntegration
     private final GeocodeService geocodeService;
-    private final OrderCommentProcessor orderCommentProcessor;
+    private final ExternalOrderPostProcessor orderCommentProcessor;
     private final OrderCache orderCache;
 
     @Override
@@ -54,14 +54,15 @@ public class DefaultOrderExternalService implements OrderExternalService {
         log.info("Fetching orders from 1C");
 
         List<OrderDto> orders = integrationService.findAllByShippingDate(date);
-
-        if (!orders.isEmpty()) {
-            orderCommentProcessor.processOrderComments(orders);
-            geocodeService.enrichValidAddress(orders);
-            orderCache.saveOrders(deliveryId, orders);
-
-            log.info("Saved to cache orders for delivery {} on {} date", deliveryId, date);
+        if (orders.isEmpty()) {
+            log.warn("No orders where found in 1C for date: {}", date);
+            return;
         }
+
+        orderCommentProcessor.processOrderComments(orders);
+        geocodeService.enrichValidAddress(orders);
+        orderCache.saveOrders(deliveryId, orders);
+        log.info("Saved to cache orders for delivery {} on {} date", deliveryId, date);
     }
 
     @Override

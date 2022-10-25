@@ -2,6 +2,7 @@ package com.goodspartner.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.goodspartner.entity.DeliveryType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,7 @@ public class OrderDto {
     private String comment;
     private String managerFullName;
     private boolean isFrozen;
+    private DeliveryType deliveryType;
     private boolean excluded;
     private boolean dropped;
 

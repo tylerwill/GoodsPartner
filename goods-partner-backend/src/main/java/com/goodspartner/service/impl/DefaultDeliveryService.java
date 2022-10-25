@@ -1,6 +1,8 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.action.DeliveryAction;
+import com.goodspartner.entity.DeliveryType;
+import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.DeliveryShortDto;
 import com.goodspartner.dto.OrderDto;
@@ -127,6 +129,7 @@ public class DefaultDeliveryService implements DeliveryService {
         return deliveryMapper.toDeliveryDtoResult(new DeliveryDto(), updatedDelivery);
     }
 
+    @Transactional
     @Override
     public DeliveryDto calculateDelivery(DeliveryDto deliveryDto) {
         Delivery delivery = saveOrders(deliveryDto);
@@ -139,7 +142,6 @@ public class DefaultDeliveryService implements DeliveryService {
         return deliveryMapper.toDeliveryDtoWithOrders(new DeliveryDto(), deliveryRepository.save(delivery));
     }
 
-    @Transactional
     private Delivery saveOrders(DeliveryDto deliveryDto) {
         UUID deliveryId = deliveryDto.getId();
 

@@ -13,11 +13,11 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "grandedolce.business")
 public class GrandeDolceBusinessProperties {
 
-    private PostalDelivery postalDelivery;
+    private PrePacking prePacking;
 
     @Getter
     @Setter
-    public static class PostalDelivery{
-        private String novaPoshtaAddress;
+    public static class PrePacking {
+        private String address;
     }
 }

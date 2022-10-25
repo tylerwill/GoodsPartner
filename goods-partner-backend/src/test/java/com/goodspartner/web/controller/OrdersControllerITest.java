@@ -6,6 +6,7 @@ import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.Product;
+import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.service.client.GoogleClient;
 import com.goodspartner.service.IntegrationService;
 import com.google.maps.model.GeocodingResult;
@@ -83,6 +84,8 @@ class OrdersControllerITest extends AbstractWebITest {
                 .managerFullName("Балашова Лариса")
                 .products(List.of(productFirst))
                 .orderWeight(12.00)
+                .deliveryType(DeliveryType.REGULAR)
+                .excluded(false)
                 .build();
 
         Product productSecond = Product.builder()
@@ -103,6 +106,8 @@ class OrdersControllerITest extends AbstractWebITest {
                 .managerFullName("Шульженко Олег")
                 .products(List.of(productSecond))
                 .orderWeight(20.00)
+                .deliveryType(DeliveryType.REGULAR)
+                .excluded(false)
                 .build();
 
         Product productThird = Product.builder()
@@ -123,6 +128,8 @@ class OrdersControllerITest extends AbstractWebITest {
                 .managerFullName("Кравченко Сергій")
                 .products(List.of(productThird))
                 .orderWeight(10.00)
+                .deliveryType(DeliveryType.REGULAR)
+                .excluded(false)
                 .build();
 
         Product productFourth = Product.builder()
@@ -143,6 +150,8 @@ class OrdersControllerITest extends AbstractWebITest {
                 .managerFullName("Кравченко Сергій")
                 .products(List.of(productFourth))
                 .orderWeight(1.00)
+                .deliveryType(DeliveryType.REGULAR)
+                .excluded(false)
                 .build();
 
         orderWithSpecialComment = OrderDto.builder()
@@ -156,6 +165,8 @@ class OrdersControllerITest extends AbstractWebITest {
                 .isFrozen(false)
                 .products(List.of(productFirst))
                 .orderWeight(12.00)
+                .deliveryType(DeliveryType.POSTAL)
+                .excluded(false)
                 .build();
     }
 
