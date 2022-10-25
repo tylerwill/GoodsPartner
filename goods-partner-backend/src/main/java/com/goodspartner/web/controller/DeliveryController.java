@@ -96,5 +96,4 @@ public class DeliveryController {
                                                              @PathVariable("id") UUID id) {
         return deliveryHistoryService.findByDelivery(id);
     }
-
 }

@@ -45,7 +45,8 @@ public class DefaultDeliveryHistoryService implements DeliveryHistoryService {
     public List<DeliveryHistoryDto> findByDelivery(UUID id) {
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow(() -> new DeliveryNotFoundException(id));
-        return deliveryHistoryMapper.toDeliveryHistoryDtos(deliveryHistoryRepository.findByDelivery(delivery));
+        return deliveryHistoryMapper.toDeliveryHistoryDtos(
+                deliveryHistoryRepository.findByDeliveryOrderByCreatedAtDesc(delivery));
     }
 
     @Override

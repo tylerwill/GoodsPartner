@@ -25,7 +25,4 @@ public interface DeliveryHistoryService {
     void publishRouteUpdated(Route route);
 
     void publishRoutePointUpdated(RoutePoint routePoint, Route route);
-
-
-
 }

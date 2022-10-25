@@ -11,5 +11,5 @@ import java.util.UUID;
 @Repository
 public interface DeliveryHistoryRepository extends JpaRepository<DeliveryHistory, UUID> {
 
-    List<DeliveryHistory> findByDelivery(Delivery delivery);
+    List<DeliveryHistory> findByDeliveryOrderByCreatedAtDesc(Delivery delivery);
 }
