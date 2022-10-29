@@ -47,7 +47,7 @@ export default function Layout(props) {
             <Sidebar open={open}/>
             <Main open={open}>
                 <Toolbar/>
-                <Container disableGutters>
+                <Container disableGutters maxWidth={"xl"}>
                     {props.children}
                 </Container>
             </Main>

@@ -8,6 +8,7 @@ import Cars from "./pages/Cars/Cars";
 import Deliveries from "./pages/Deliveries/Deliveries";
 import Reports from "./pages/Reports/Reports";
 import Delivery from "./pages/Delivery/Delivery";
+import Users from "./pages/Users/Users";
 
 const libraries = ['places'];
 
@@ -39,6 +40,7 @@ function App() {
             <Layout>
                 <Routes>
                     <Route path="/cars" element={<Cars/>}/>
+                    <Route path="/users" element={<Users/>}/>
                     <Route path="/deliveries" element={<Deliveries/>}/>
                     <Route path="/delivery/:id" element={<Delivery/>}/>
                     <Route path="/reports/" element={<Reports/>}/>

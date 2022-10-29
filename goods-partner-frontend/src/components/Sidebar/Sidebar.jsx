@@ -8,14 +8,12 @@ import {Link} from "react-router-dom";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import InventoryIcon from "@mui/icons-material/Inventory";
 import ListItemText from "@mui/material/ListItemText";
-import {ContentPasteSharp, Download, ExpandLess, ExpandMore, Inventory2Sharp} from "@mui/icons-material";
-import {Collapse} from "@mui/material";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import RouteIcon from "@mui/icons-material/Route";
+import {ContentPasteSharp, Inventory2Sharp} from "@mui/icons-material";
+import SupervisedUserCircle from "@mui/icons-material/SupervisedUserCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import GrandeDolceLogo from "../Logo/GrandeDolceLogo";
+
 
 const ListButton = (icon, name, paddingLeft) => {
     return (<>
@@ -60,6 +58,9 @@ const Sidebar = ({open}) => {
                     </ListItem>
                     <ListItem disablePadding component={Link} to={"/cars"}>
                         {ListButton(<LocalShippingIcon/>, 'Автомобілі')}
+                    </ListItem>
+                    <ListItem disablePadding component={Link} to={"/users"}>
+                        {ListButton(<SupervisedUserCircle/>, 'Користувачі')}
                     </ListItem>
                     <ListItem disablePadding component={Link} to={"/reports"}>
                         {ListButton(<ContentPasteSharp/>, 'Звітність')}

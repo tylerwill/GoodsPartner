@@ -1,7 +1,6 @@
 package com.goodspartner.web.controller;
 
 
-import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.UserDto;
 import com.goodspartner.service.UserService;
 import io.swagger.annotations.ApiParam;
@@ -56,9 +55,9 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping("/{id}")
     public UserDto update(@ApiParam(value = "Id of edited user", required = true)
-                                @PathVariable int id,
-                                @ApiParam(value = "Edited User", type = "UserDto", required = true)
-                                UserDto userDto) {
+                          @PathVariable int id,
+                          @ApiParam(value = "Edited User", type = "UserDto", required = true)
+                          @RequestBody UserDto userDto) {
         return userService.update(id, userDto);
     }
 

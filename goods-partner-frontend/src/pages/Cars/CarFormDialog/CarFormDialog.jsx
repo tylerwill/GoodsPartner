@@ -16,7 +16,7 @@ const style = {
     padding: '16px 24px',
 };
 
-export default function CarFormDialog({closeDialog, open, actionHandler, car, setCar}) {
+export default function CarFormDialog({title, closeDialog, open, actionHandler, car, setCar}) {
     function handleACooler(e) {
         setCar({...car, cooler: e.target.checked});
     }
@@ -42,7 +42,7 @@ export default function CarFormDialog({closeDialog, open, actionHandler, car, se
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <Typography variant="h6" component="h3">
-                                Додати авто
+                                {title}
                             </Typography>
                         </Grid>
                         <Grid item xs={6}>
@@ -94,7 +94,7 @@ export default function CarFormDialog({closeDialog, open, actionHandler, car, se
                         <Grid item xs={12} sx={{mt: 2}}>
                             <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
                                 <Button sx={{mr: 2}} variant="outlined" onClick={closeDialog}>Скасувати</Button>
-                                <Button variant="outlined" onClick={saveHandler}> Зберегти </Button>
+                                <Button variant="contained" onClick={saveHandler}> Зберегти </Button>
                             </Box>
                         </Grid>
                     </Grid>
