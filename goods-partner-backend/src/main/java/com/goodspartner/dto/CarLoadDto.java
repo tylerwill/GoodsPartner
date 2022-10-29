@@ -15,5 +15,5 @@ import java.util.List;
 @EqualsAndHashCode
 public class CarLoadDto {
     private CarDto car;
-    private List<OrderDto> orders;
+    private List<OrderDto> orders; // TODO Maybe more lightweight DTO here?
 }

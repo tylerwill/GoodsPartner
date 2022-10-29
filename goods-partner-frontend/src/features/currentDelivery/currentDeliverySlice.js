@@ -13,6 +13,12 @@ export const fetchDelivery = createAsyncThunk('currentDelivery/fetch',
             .then(response => response.data);
     })
 
+export const fetchDeliveryForDriver = createAsyncThunk('currentDelivery/fetchForDriver',
+    (id) => {
+        return deliveriesApi.findByIdForDriver(id)
+            .then(response => response.data);
+    })
+
 export const calculateDelivery = createAsyncThunk('currentDelivery/calculate',
     (delivery) => {
         return deliveriesApi.calculate(delivery)
@@ -148,6 +154,21 @@ const currentDeliverySlice = createSlice({
             state.error = ''
         })
         builder.addCase(updateRoutePointStatus.rejected, (state, action) => {
+            state.error = action.error.message
+        })
+
+        // load delivery for driver
+        builder.addCase(fetchDeliveryForDriver.pending, state => {
+            state.loading = true
+        })
+        builder.addCase(fetchDeliveryForDriver.fulfilled, (state, action) => {
+            state.loading = false
+            state.delivery = action.payload
+            state.error = ''
+        })
+        builder.addCase(fetchDeliveryForDriver.rejected, (state, action) => {
+            state.loading = false
+            state.delivery = null
             state.error = action.error.message
         })
 

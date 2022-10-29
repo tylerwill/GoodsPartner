@@ -14,13 +14,8 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", uses = OrderExternalMapper.class)
 public interface CarLoadMapper {
 
-    CarLoad carLoadDtoToCarLoad(CarLoadDto carLoadDto);
+    CarLoad mapDtoToEntity(CarLoadDto carLoadDto);
 
-    @Named("mapCarLoadSize")
-    default double mapCarLoadSize(List<OrderExternal> orders) {
-        return BigDecimal.valueOf(orders.stream()
-                        .map(OrderExternal::getOrderWeight)
-                        .collect(Collectors.summarizingDouble(s -> s)).getSum())
-                .setScale(2, RoundingMode.HALF_UP).doubleValue();
-    }
+    CarLoadDto mapToDto(CarLoad carLoad);
+
 }

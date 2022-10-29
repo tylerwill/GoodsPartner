@@ -10,6 +10,7 @@ import {BrowserRouter} from "react-router-dom";
 import {Provider} from "react-redux";
 import store from './redux/store';
 import {createTheme, ThemeProvider} from "@mui/material";
+import {AuthProvider} from "./auth/AuthProvider";
 
 const muiTheme = createTheme({
     components: {
@@ -28,7 +29,9 @@ root.render(
         <ThemeProvider theme={muiTheme}>
             <BrowserRouter>
                 <Provider store={store}>
-                    <App/>
+                    <AuthProvider>
+                        <App/>
+                    </AuthProvider>
                 </Provider>
             </BrowserRouter>
         </ThemeProvider>

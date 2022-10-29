@@ -3,19 +3,25 @@ import {Box, Button, Typography} from "@mui/material";
 import {ArrowForward} from "@mui/icons-material";
 import DeliveriesTable from "./DeliveriesTable/DeliveriesTable";
 import {useDispatch, useSelector} from "react-redux";
-import {createDelivery, fetchDeliveries} from "../../features/deliveries/deliveriesSlice";
+import {createDelivery, fetchDeliveries, fetchDeliveriesForDriver} from "../../features/deliveries/deliveriesSlice";
 import Loading from "../../components/Loading/Loading";
 import ErrorAlert from "../../components/ErrorAlert/ErrorAlert";
 import NewDeliveryDialog from "./NewDeliveryDialog/NewDeliveryDialog";
+import useAuth from "../../auth/AuthProvider";
 
 const Deliveries = () => {
     const [openNewDeliveryDialog, setOpenNewDeliveryDialog] = React.useState(false);
 
     const {deliveries, loading, error} = useSelector(state => state.deliveriesList);
     const dispatch = useDispatch();
+    const {user} = useAuth();
 
     useEffect(() => {
-        dispatch(fetchDeliveries());
+        if (user.role === 'DRIVER') {
+            dispatch(fetchDeliveriesForDriver());
+        } else {
+            dispatch(fetchDeliveries());
+        }
     }, [dispatch])
 
     if (loading) {
@@ -27,7 +33,8 @@ const Deliveries = () => {
             <Typography variant="h6" component="h2">
                 Доставки
             </Typography>
-            <Button onClick={() => setOpenNewDeliveryDialog(true)} variant="contained">Створити нову доставку <ArrowForward/></Button>
+            <Button onClick={() => setOpenNewDeliveryDialog(true)} variant="contained">Створити нову
+                доставку <ArrowForward/></Button>
         </Box>
 
         <Box sx={{mt: 2}}>

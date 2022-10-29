@@ -2,7 +2,9 @@ package com.goodspartner.service;
 
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.entity.Car;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,4 +19,6 @@ public interface OrderExternalService {
     List<OrderDto> getOrdersFromCache(UUID deliveryId);
 
     void evictCache(UUID deliveryId);
+
+    List<OrderDto> findOrdersByDeliveryAndCar(Delivery delivery, Car car);
 }

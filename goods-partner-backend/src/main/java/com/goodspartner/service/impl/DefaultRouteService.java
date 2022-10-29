@@ -2,6 +2,8 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.action.RouteAction;
 import com.goodspartner.action.RoutePointAction;
+import com.goodspartner.dto.RouteDto;
+import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
@@ -13,6 +15,7 @@ import com.goodspartner.exception.IllegalRoutePointStatusForOperation;
 import com.goodspartner.exception.IllegalRouteStatusForOperation;
 import com.goodspartner.exception.RouteNotFoundException;
 import com.goodspartner.exception.RoutePointNotFoundException;
+import com.goodspartner.mapper.RouteMapper;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.RouteRepository;
 import com.goodspartner.service.RouteService;
@@ -40,6 +43,7 @@ public class DefaultRouteService implements RouteService {
     private final DeliveryRepository deliveryRepository;
     private final DefaultRouteCalculationService routeCalculationService;
     private final DefaultDeliveryHistoryService deliveryHistoryService;
+    private final RouteMapper routeMapper;
 
     @Override
     @Transactional
@@ -147,6 +151,14 @@ public class DefaultRouteService implements RouteService {
         } else {
             throw new IllegalRoutePointStatusForOperation(routePoints, "reorder");
         }
+    }
+
+    @Override
+    public List<RouteDto> findRoutesByDeliveryAndCar(Delivery delivery, Car car) {
+        return routeRepository.findByDeliveryAndCar(delivery, car)
+                .stream()
+                .map(routeMapper::routeToRouteDto)
+                .toList();
     }
 
     private boolean isAllRoutePointsDone(List<RoutePoint> routePoints) {

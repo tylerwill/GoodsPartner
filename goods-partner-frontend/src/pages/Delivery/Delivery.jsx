@@ -3,7 +3,12 @@ import {Box, Breadcrumbs, Button, Tooltip, Typography} from "@mui/material";
 import DeliveryStatusChip from "../../components/DeliveryStatusChip/DeliveryStatusChip";
 import {Link, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {approveDelivery, calculateDelivery, fetchDelivery} from "../../features/currentDelivery/currentDeliverySlice";
+import {
+    approveDelivery,
+    calculateDelivery,
+    fetchDelivery,
+    fetchDeliveryForDriver
+} from "../../features/currentDelivery/currentDeliverySlice";
 
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import RouteIcon from '@mui/icons-material/Route';
@@ -21,20 +26,26 @@ import Routes from "./Routes/Routes";
 import History from "./History/History";
 import Shipping from "./Shipping/Shipping";
 import {reformatDate} from "../../util/util";
+import useAuth from "../../auth/AuthProvider";
+import CarLoad from "./CarLoad/CarLoad";
 
 
 const Delivery = () => {
     const {id} = useParams();
     const dispatch = useDispatch();
     const {delivery, loading, error} = useSelector(state => state.currentDelivery);
-
+    const {user} = useAuth();
 
     const calculateHandler = () => dispatch(calculateDelivery(delivery));
     const approveHandler = () => dispatch(approveDelivery(id));
 
     useEffect(() => {
         if (!delivery || delivery.id !== id) {
-            dispatch(fetchDelivery(id));
+            if (user.role === 'DRIVER') {
+                dispatch(fetchDeliveryForDriver(id));
+            } else {
+                dispatch(fetchDelivery(id));
+            }
         }
 
     }, [delivery, dispatch, id]);
@@ -59,7 +70,6 @@ const Delivery = () => {
         {name: 'Завантаження', enabled: calculated, icon: <InventoryIcon sx={{mr: 1}}/>},
         {name: 'Історія', enabled: true, icon: <HistorySharpIcon sx={{mr: 1}}/>}
     ];
-
 
     return <section>
         {error && <ErrorAlert error={error}/>}
@@ -100,7 +110,7 @@ const Delivery = () => {
             <BasicTabs labels={tabLabels} fullWidth={true}>
                 <Orders/>
                 <Routes/>
-                <Shipping productsShipping={delivery.productsShipping}/>
+                {user.role === 'DRIVER' ? <CarLoad/> : <Shipping productsShipping={delivery.productsShipping}/>}
                 <History/>
             </BasicTabs>
 

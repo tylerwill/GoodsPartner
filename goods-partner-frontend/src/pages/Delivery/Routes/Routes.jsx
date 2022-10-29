@@ -27,7 +27,7 @@ const Routes = () => {
             <RouteContent deliveryDate={deliveryDate}
                           route={currentRoute}
                           updateRoute={updateRouteStatusHandler}
-                updateRoutePoint={updateRoutePointStatusHandler}
+                          updateRoutePoint={updateRoutePointStatusHandler}
             />
         </Grid>
     </Grid>);

@@ -4,6 +4,7 @@ import com.goodspartner.cache.OrderCache;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal;
+import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.OrderExternal;
@@ -132,6 +133,15 @@ public class DefaultOrderExternalService implements OrderExternalService {
         } else {
             log.info("Orders removed from cache for Delivery: {}", deliveryId);
         }
+    }
+
+    @Override
+    public List<OrderDto> findOrdersByDeliveryAndCar(Delivery delivery, Car car) {
+        return orderExternalRepository.findAllByDeliveryAndCar(delivery, car)
+                .stream()
+                .map(orderExternalMapper::mapOrderExternalToOrderDto)
+                .toList();
+
     }
 
     private void validateOrderAddresses(List<OrderDto> orderDtos) {

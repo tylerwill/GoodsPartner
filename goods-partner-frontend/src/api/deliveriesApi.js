@@ -5,12 +5,20 @@ export const deliveriesApi = {
         return axiosWithSetting.get('/deliveries');
     },
 
+    findAllForDriver() {
+        return axiosWithSetting.get('/deliveries/by-driver');
+    },
+
     create(delivery) {
         return axiosWithSetting.post('/deliveries', delivery)
     },
 
     findById(id) {
         return axiosWithSetting.get(`/deliveries/${id}`);
+    },
+
+    findByIdForDriver(id) {
+        return axiosWithSetting.get(`/deliveries/${id}/by-driver`);
     },
 
 

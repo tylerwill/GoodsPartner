@@ -15,5 +15,9 @@ export const usersApi = {
 
     update(user) {
         return axiosWithSetting.put(`/users/${user.id}`, user);
+    },
+
+    getCurrentUser() {
+        return axiosWithSetting.get(`/users/auth`);
     }
 }

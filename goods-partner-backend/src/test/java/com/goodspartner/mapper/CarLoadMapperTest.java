@@ -79,7 +79,7 @@ public class CarLoadMapperTest {
 
         CarLoadDto carLoadDto = new CarLoadDto(carDto, List.of(orderDto));
 
-        CarLoad carLoad = carLoadMapper.carLoadDtoToCarLoad(carLoadDto);
+        CarLoad carLoad = carLoadMapper.mapDtoToEntity(carLoadDto);
 
         Assertions.assertNull(carLoad.getId());
 

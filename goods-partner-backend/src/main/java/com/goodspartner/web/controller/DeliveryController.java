@@ -1,8 +1,10 @@
 package com.goodspartner.web.controller;
 
+import com.goodspartner.dto.CarDeliveryDto;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.DeliveryHistoryDto;
 import com.goodspartner.dto.DeliveryShortDto;
+import com.goodspartner.dto.OrderDto;
 import com.goodspartner.service.DeliveryHistoryService;
 import com.goodspartner.service.DeliveryService;
 import com.goodspartner.service.OrderExternalService;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -96,4 +99,28 @@ public class DeliveryController {
                                                              @PathVariable("id") UUID id) {
         return deliveryHistoryService.findByDelivery(id);
     }
+
+
+    // DriverRelated TODO think about /driver/deliveries
+
+    @PreAuthorize("hasAnyRole('DRIVER')")
+    @GetMapping("/by-driver")
+    @ApiOperation(value = "Get all Deliveries by authorisation",
+            notes = "Return list of Deliveries by respective user",
+            response = List.class)
+    public List<DeliveryShortDto> getAllRelated(OAuth2AuthenticationToken authentication) {
+        return deliveryService.findAll(authentication);
+    }
+
+    @PreAuthorize("hasAnyRole('DRIVER')")
+    @GetMapping("/{id}/by-driver")
+    @ApiOperation(value = "Find Delivery by id for authenticated driver",
+            notes = "Provide an id to look up specific delivery",
+            response = DeliveryDto.class)
+    public CarDeliveryDto getByCarDeliveryById(@ApiParam(value = "ID value for the delivery you need to retrieve", required = true)
+                                                   @PathVariable("id") UUID id,
+                                               OAuth2AuthenticationToken authentication) {
+        return deliveryService.findById(id, authentication);
+    }
+
 }

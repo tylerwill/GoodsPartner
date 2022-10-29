@@ -2,15 +2,14 @@ package com.goodspartner.mapper;
 
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.DeliveryShortDto;
+import com.goodspartner.dto.CarDeliveryDto;
 import com.goodspartner.entity.Delivery;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import java.util.List;
-
 @Mapper(componentModel = "spring",
-        uses = {RouteMapper.class, OrderExternalMapper.class, ProductShippingMapper.class})
+        uses = {RouteMapper.class, OrderExternalMapper.class, ProductShippingMapper.class, CarLoadMapper.class})
 public interface DeliveryMapper {
 
     @Mapping(target = "id", ignore = true)
@@ -35,9 +34,13 @@ public interface DeliveryMapper {
     @Mapping(target = "carLoads", ignore = true)
     Delivery deliveryDtoToDelivery(DeliveryDto deliveryDto);
 
-    List<DeliveryDto> deliveriesToDeliveryDtos(List<Delivery> deliveries);
-
+    // TODO Due to mapper fetching collections in lazy mode we facing N+1 here
     @Mapping(target = "orderCount", expression = "java(delivery.getOrders().size())")
     @Mapping(target = "routeCount", expression = "java(delivery.getRoutes().size())")
     DeliveryShortDto deliveryToDeliveryShortDto(Delivery delivery);
+
+    @Mapping(target = "routes", ignore = true)
+    @Mapping(target = "orders", ignore = true)
+    @Mapping(target = "carLoads", ignore = true)
+    CarDeliveryDto deliveryToCarDeliveryDto(Delivery delivery);
 }

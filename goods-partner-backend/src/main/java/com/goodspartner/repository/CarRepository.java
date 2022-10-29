@@ -13,4 +13,5 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
 
     List<Car> findByAvailableTrueAndCoolerIs(boolean coolerRequired);
 
+    Car findCarByDriver(String userName);
 }

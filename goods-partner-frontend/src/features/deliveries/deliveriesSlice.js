@@ -10,6 +10,9 @@ const initialState = {
 export const fetchDeliveries = createAsyncThunk('deliveries/fetch',
     () => deliveriesApi.findAll().then(response => response.data))
 
+export const fetchDeliveriesForDriver = createAsyncThunk('deliveries/fetchForDriver',
+    () => deliveriesApi.findAllForDriver().then(response => response.data))
+
 export const createDelivery = createAsyncThunk('deliveries/create',
     (date) => {
         const newDelivery = {deliveryDate: date};
@@ -45,6 +48,20 @@ const deliveriesSlice = createSlice({
             state.error = action.error.message
         })
 
+        // load deliveries for driver
+        builder.addCase(fetchDeliveriesForDriver.pending, state => {
+            state.loading = true
+        })
+        builder.addCase(fetchDeliveriesForDriver.fulfilled, (state, action) => {
+            state.loading = false
+            state.deliveries = action.payload
+            state.error = ''
+        })
+        builder.addCase(fetchDeliveriesForDriver.rejected, (state, action) => {
+            state.loading = false
+            state.deliveries = []
+            state.error = action.error.message
+        })
 
     }
 })

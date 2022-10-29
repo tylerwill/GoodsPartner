@@ -1,11 +1,14 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.action.DeliveryAction;
-import com.goodspartner.entity.DeliveryType;
-import com.goodspartner.web.controller.response.DeliveryActionResponse;
+import com.goodspartner.dto.CarDeliveryDto;
+import com.goodspartner.dto.CarLoadDto;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.DeliveryShortDto;
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.dto.RouteDto;
+import com.goodspartner.dto.UserDto;
+import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
@@ -18,15 +21,20 @@ import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exception.NoOrdersFoundForDelivery;
 import com.goodspartner.mapper.DeliveryMapper;
+import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
+import com.goodspartner.service.CarLoadService;
 import com.goodspartner.service.DeliveryHistoryService;
 import com.goodspartner.service.DeliveryService;
 import com.goodspartner.service.OrderExternalService;
+import com.goodspartner.service.RouteService;
+import com.goodspartner.service.UserService;
 import com.goodspartner.service.util.DeliveryCalculationHelper;
 import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,11 +52,18 @@ import static com.goodspartner.entity.DeliveryStatus.DRAFT;
 public class DefaultDeliveryService implements DeliveryService {
 
     private final DeliveryMapper deliveryMapper;
+
     private final DeliveryRepository deliveryRepository;
+    private final CarRepository carRepository;
+
+    private final DeliveryCalculationHelper deliveryCalculationHelper;
     private final DeliveryHistoryService deliveryHistoryService;
     private final OrderExternalService orderExternalService;
-    private final DeliveryCalculationHelper deliveryCalculationHelper;
+    private final CarLoadService carLoadService;
+    private final RouteService routeService;
+    private final UserService userService;
 
+    // TODO N+1 issue when Lazy fetching orders for each delivery
     @Override
     @Transactional(readOnly = true)
     public List<DeliveryShortDto> findAll() {
@@ -193,6 +208,42 @@ public class DefaultDeliveryService implements DeliveryService {
         deliveryRepository.save(delivery);
 
         return mapDeliveryActionResponse(delivery, routes);
+    }
+
+    // TODO N+1 issue when Lazy fetching orders for each delivery
+    // TODO required entity relation between Car and User
+    @Transactional(readOnly = true)
+    @Override
+    public List<DeliveryShortDto> findAll(OAuth2AuthenticationToken authentication) {
+        UserDto driver = userService.findByAuthentication(authentication);
+        Car car = carRepository.findCarByDriver(driver.getUserName());
+        return deliveryRepository.findDeliveriesByCar(car)
+                .stream()
+                .map(deliveryMapper::deliveryToDeliveryShortDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public CarDeliveryDto findById(UUID deliveryId, OAuth2AuthenticationToken authentication) {
+        UserDto driver = userService.findByAuthentication(authentication);
+        Car car = carRepository.findCarByDriver(driver.getUserName());
+
+        Delivery delivery = deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
+
+        CarDeliveryDto carDelivery = deliveryMapper.deliveryToCarDeliveryDto(delivery);
+
+        List<OrderDto> carOrders = orderExternalService.findOrdersByDeliveryAndCar(delivery, car);
+        carDelivery.setOrders(carOrders);
+
+        List<RouteDto> carRoutes = routeService.findRoutesByDeliveryAndCar(delivery, car);
+        carDelivery.setRoutes(carRoutes);
+
+        List<CarLoadDto> carLoads = carLoadService.findCarLoad(delivery, car);
+        carDelivery.setCarLoads(carLoads);
+
+        return carDelivery;
     }
 
     private DeliveryActionResponse mapDeliveryActionResponse(Delivery delivery, List<Route> routes) {
