@@ -3,26 +3,18 @@ package com.goodspartner.service.impl;
 import com.goodspartner.dto.DeliveryHistoryDto;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryHistory;
-import com.goodspartner.entity.DeliveryHistoryTemplate;
-import com.goodspartner.entity.Route;
-import com.goodspartner.entity.RoutePoint;
-import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.event.DeliveryAuditEvent;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.mapper.DeliveryHistoryMapper;
 import com.goodspartner.repository.DeliveryHistoryRepository;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.service.DeliveryHistoryService;
-import com.goodspartner.util.AuditorBuilder;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.text.StringSubstitutor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -50,6 +42,11 @@ public class DefaultDeliveryHistoryService implements DeliveryHistoryService {
     }
 
     @Override
+    public void publish(DeliveryAuditEvent event) {
+        applicationEventPublisher.publishEvent(event);
+    }
+
+    /*@Override
     public void publishDeliveryEvent(DeliveryHistoryTemplate template, UUID deliverId) {
         String action = fillActionWithAuditor(template.getTemplate());
         applicationEventPublisher.publishEvent(new DeliveryAuditEvent(action, deliverId));
@@ -122,5 +119,5 @@ public class DefaultDeliveryHistoryService implements DeliveryHistoryService {
     private String fillActionWithAuditor(String template) {
         Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
         return StringSubstitutor.replace(template, values, "{", "}");
-    }
+    }*/
 }

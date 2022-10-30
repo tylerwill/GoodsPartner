@@ -1,11 +1,8 @@
 package com.goodspartner.service;
 
 import com.goodspartner.dto.DeliveryHistoryDto;
-import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryHistory;
-import com.goodspartner.entity.DeliveryHistoryTemplate;
-import com.goodspartner.entity.Route;
-import com.goodspartner.entity.RoutePoint;
+import com.goodspartner.event.DeliveryAuditEvent;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,13 +13,5 @@ public interface DeliveryHistoryService {
 
     List<DeliveryHistoryDto> findByDelivery(UUID id);
 
-    void publishDeliveryEvent(DeliveryHistoryTemplate template, UUID id);
-
-    void publishRouteStatusChangeAuto(Route route);
-
-    void publishDeliveryCompleted(Delivery delivery);
-
-    void publishRouteUpdated(Route route);
-
-    void publishRoutePointUpdated(RoutePoint routePoint, Route route);
+    void publish(DeliveryAuditEvent event);
 }

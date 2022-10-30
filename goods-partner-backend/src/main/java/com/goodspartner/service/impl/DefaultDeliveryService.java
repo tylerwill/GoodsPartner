@@ -26,6 +26,7 @@ import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.service.CarLoadService;
 import com.goodspartner.service.DeliveryHistoryService;
 import com.goodspartner.service.DeliveryService;
+import com.goodspartner.service.EventService;
 import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.service.RouteService;
 import com.goodspartner.service.UserService;
@@ -52,13 +53,12 @@ import static com.goodspartner.entity.DeliveryStatus.DRAFT;
 public class DefaultDeliveryService implements DeliveryService {
 
     private final DeliveryMapper deliveryMapper;
-
     private final DeliveryRepository deliveryRepository;
     private final CarRepository carRepository;
 
     private final DeliveryCalculationHelper deliveryCalculationHelper;
-    private final DeliveryHistoryService deliveryHistoryService;
     private final OrderExternalService orderExternalService;
+    private final EventService eventService;
     private final CarLoadService carLoadService;
     private final RouteService routeService;
     private final UserService userService;
@@ -123,7 +123,7 @@ public class DefaultDeliveryService implements DeliveryService {
 
         orderExternalService.saveToOrderCache(addedDelivery.getId(), addedDelivery.getDeliveryDate());
 
-        deliveryHistoryService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CREATED, addedDeliveryDto.getId());
+        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CREATED, addedDeliveryDto.getId());
 
         return addedDeliveryDto;
     }
@@ -139,12 +139,11 @@ public class DefaultDeliveryService implements DeliveryService {
 
         Delivery updatedDelivery = deliveryRepository.save(deliveryToUpdate);
 
-        deliveryHistoryService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_UPDATED, updatedDelivery.getId());
+        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_UPDATED, updatedDelivery.getId());
 
         return deliveryMapper.toDeliveryDtoResult(new DeliveryDto(), updatedDelivery);
     }
 
-    @Transactional
     @Override
     public DeliveryDto calculateDelivery(DeliveryDto deliveryDto) {
         Delivery delivery = saveOrders(deliveryDto);
@@ -157,6 +156,7 @@ public class DefaultDeliveryService implements DeliveryService {
         return deliveryMapper.toDeliveryDtoWithOrders(new DeliveryDto(), deliveryRepository.save(delivery));
     }
 
+    @Transactional
     private Delivery saveOrders(DeliveryDto deliveryDto) {
         UUID deliveryId = deliveryDto.getId();
 
@@ -175,6 +175,8 @@ public class DefaultDeliveryService implements DeliveryService {
             orderExternals = resetOrders(delivery.getOrders());
             validateDelivery(delivery);
         }
+
+        eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_SAVED, deliveryId);
 
         delivery.setOrders(orderExternals);
 
@@ -199,11 +201,11 @@ public class DefaultDeliveryService implements DeliveryService {
 
         action.perform(delivery);
 
-        deliveryHistoryService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_APPROVED, delivery.getId());
+        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_APPROVED, delivery.getId());
 
         List<Route> routes = delivery.getRoutes();
         routes.forEach(route -> route.setStatus(RouteStatus.APPROVED));
-        routes.forEach(deliveryHistoryService::publishRouteStatusChangeAuto);
+        routes.forEach(eventService::publishRouteStatusChangeAuto);
 
         deliveryRepository.save(delivery);
 

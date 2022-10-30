@@ -7,7 +7,6 @@ import com.goodspartner.dto.DeliveryShortDto;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.service.DeliveryHistoryService;
 import com.goodspartner.service.DeliveryService;
-import com.goodspartner.service.OrderExternalService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,6 @@ import java.util.UUID;
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
-    private final OrderExternalService orderExternalService;
     private final DeliveryHistoryService deliveryHistoryService;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")

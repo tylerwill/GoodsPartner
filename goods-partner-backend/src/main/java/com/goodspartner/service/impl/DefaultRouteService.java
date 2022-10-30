@@ -18,6 +18,7 @@ import com.goodspartner.exception.RoutePointNotFoundException;
 import com.goodspartner.mapper.RouteMapper;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.RouteRepository;
+import com.goodspartner.service.EventService;
 import com.goodspartner.service.RouteService;
 import com.goodspartner.web.controller.response.RouteActionResponse;
 import com.goodspartner.web.controller.response.RoutePointActionResponse;
@@ -42,7 +43,7 @@ public class DefaultRouteService implements RouteService {
     private final RouteRepository routeRepository;
     private final DeliveryRepository deliveryRepository;
     private final DefaultRouteCalculationService routeCalculationService;
-    private final DefaultDeliveryHistoryService deliveryHistoryService;
+    private final EventService eventService;
     private final RouteMapper routeMapper;
 
     @Override
@@ -54,7 +55,7 @@ public class DefaultRouteService implements RouteService {
 
         action.perform(route);
 
-        deliveryHistoryService.publishRouteUpdated(route);
+        eventService.publishRouteUpdated(route);
 
         processDeliveryStatus(route);
 
@@ -93,7 +94,7 @@ public class DefaultRouteService implements RouteService {
 
         action.perform(routePoint);
 
-        deliveryHistoryService.publishRoutePointUpdated(routePoint, route);
+        eventService.publishRoutePointUpdated(routePoint, route);
 
         processRouteStatus(route, routePoints);
 
@@ -129,7 +130,7 @@ public class DefaultRouteService implements RouteService {
             route.setStatus(RouteStatus.COMPLETED);
             route.setFinishTime(LocalDateTime.now());
 
-            deliveryHistoryService.publishRouteStatusChangeAuto(route);
+            eventService.publishRouteStatusChangeAuto(route);
 
             log.info("Route ID {} was automatically close due to all RoutePoints are completed", route.getId());
         }
@@ -181,7 +182,7 @@ public class DefaultRouteService implements RouteService {
         if (isAllRoutesCompleted(delivery)) {
             delivery.setStatus(DeliveryStatus.COMPLETED);
 
-            deliveryHistoryService.publishDeliveryCompleted(delivery);
+            eventService.publishDeliveryCompleted(delivery);
 
             deliveryRepository.save(delivery);
             log.info("Delivery ID {} was automatically close due to all Routes are COMPLETED", route.getId());

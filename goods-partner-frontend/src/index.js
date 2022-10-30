@@ -10,6 +10,7 @@ import {BrowserRouter} from "react-router-dom";
 import {Provider} from "react-redux";
 import store from './redux/store';
 import {createTheme, ThemeProvider} from "@mui/material";
+import {SnackbarProvider} from "notistack";
 import {AuthProvider} from "./auth/AuthProvider";
 
 const muiTheme = createTheme({
@@ -27,13 +28,18 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <ThemeProvider theme={muiTheme}>
-            <BrowserRouter>
-                <Provider store={store}>
-                    <AuthProvider>
-                        <App/>
-                    </AuthProvider>
-                </Provider>
-            </BrowserRouter>
+            <SnackbarProvider anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}>
+                <BrowserRouter>
+                    <Provider store={store}>
+                        <AuthProvider>
+                            <App/>
+                        </AuthProvider>
+                    </Provider>
+                </BrowserRouter>
+            </SnackbarProvider>
         </ThemeProvider>
     </React.StrictMode>
 );

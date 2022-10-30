@@ -7,6 +7,7 @@ import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
+import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.UnknownAddressException;
@@ -14,6 +15,7 @@ import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.OrderExternalRepository;
+import com.goodspartner.service.EventService;
 import com.goodspartner.service.GeocodeService;
 import com.goodspartner.service.IntegrationService;
 import com.goodspartner.service.OrderExternalService;
@@ -48,6 +50,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
     private final GeocodeService geocodeService;
     private final ExternalOrderPostProcessor orderCommentProcessor;
     private final OrderCache orderCache;
+    private final EventService eventService;
 
     @Override
     @Async
@@ -60,10 +63,16 @@ public class DefaultOrderExternalService implements OrderExternalService {
             return;
         }
 
-        orderCommentProcessor.processOrderComments(orders);
-        geocodeService.enrichValidAddress(orders);
-        orderCache.saveOrders(deliveryId, orders);
-        log.info("Saved to cache orders for delivery {} on {} date", deliveryId, date);
+        if (!orders.isEmpty()) {
+            eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADING, deliveryId);
+
+            orderCommentProcessor.processOrderComments(orders);
+            geocodeService.enrichValidAddress(orders);
+            orderCache.saveOrders(deliveryId, orders);
+
+            eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADED, deliveryId);
+            log.info("Saved to cache orders for delivery {} on {} date", deliveryId, date);
+        }
     }
 
     @Override

@@ -12,13 +12,8 @@ import com.goodspartner.exception.DeliveryModifyException;
 import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
-import com.goodspartner.service.CarLoadService;
-import com.goodspartner.service.DeliveryHistoryService;
-import com.goodspartner.service.DeliveryService;
-import com.goodspartner.service.OrderExternalService;
+import com.goodspartner.service.*;
 import com.goodspartner.service.util.DeliveryCalculationHelper;
-import com.goodspartner.service.RouteService;
-import com.goodspartner.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,7 +67,7 @@ class DefaultDeliveryServiceTest extends AbstractBaseITest {
 
         //add mocks to construct mock Delivery object
         DeliveryRepository deliveryRepositoryMock = mock(DeliveryRepository.class);
-        DeliveryHistoryService deliveryHistoryServiceMock = mock(DeliveryHistoryService.class);
+        EventService eventServiceMock = mock(EventService.class);
         DeliveryMapper deliveryMapperMock = mock(DeliveryMapper.class);
         CarRepository carRepositoryMock = mock(CarRepository.class);
         UserService userServiceMock = mock(UserService.class);
@@ -84,7 +79,8 @@ class DefaultDeliveryServiceTest extends AbstractBaseITest {
         //construct mock Delivery object
         DeliveryService mockService =
                 new DefaultDeliveryService(deliveryMapperMock, deliveryRepositoryMock, carRepositoryMock,
-                        deliveryCalculationHelper, deliveryHistoryServiceMock, orderExternalServiceMock,
+                        deliveryCalculationHelper,  orderExternalServiceMock,
+                        eventServiceMock,
                         carLoadService, routeServiceMock, userServiceMock);
 
         //configure mock objects

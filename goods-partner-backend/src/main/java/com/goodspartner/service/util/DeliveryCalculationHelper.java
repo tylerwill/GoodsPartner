@@ -10,7 +10,7 @@ import com.goodspartner.entity.Route;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.service.CarLoadService;
-import com.goodspartner.service.DeliveryHistoryService;
+import com.goodspartner.service.EventService;
 import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.service.RouteCalculationService;
 import com.goodspartner.service.dto.RouteMode;
@@ -31,7 +31,7 @@ public class DeliveryCalculationHelper {
 
     private final RouteCalculationService routeCalculationService;
     private final CarLoadService carLoadService;
-    private final DeliveryHistoryService deliveryHistoryService;
+    private final EventService eventService;
     private final OrderExternalService orderExternalService;
     private final DeliveryRepository deliveryRepository;
 
@@ -62,7 +62,7 @@ public class DeliveryCalculationHelper {
         delivery.setCarLoads(ListUtils.union(coolerCarLoad, regularCarLoads));
 
         delivery.setFormationStatus(DeliveryFormationStatus.COMPLETED);
-        deliveryHistoryService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, deliveryId);
+        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, deliveryId);
 
         deliveryRepository.save(delivery);
 
