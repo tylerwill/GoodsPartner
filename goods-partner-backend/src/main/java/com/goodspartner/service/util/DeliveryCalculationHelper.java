@@ -35,7 +35,7 @@ public class DeliveryCalculationHelper {
     private final OrderExternalService orderExternalService;
     private final DeliveryRepository deliveryRepository;
 
-    @Async
+    @Async("goodsPartnerThreadPoolTaskExecutor")
     @Transactional
     public void calculate(UUID deliveryId) {
 

@@ -1,7 +1,8 @@
 import Layout from "./components/Layout/Layout";
 import CssBaseline from "@mui/material/CssBaseline";
 import * as React from "react";
-import {Route, Routes, useParams} from "react-router-dom";
+import {useEffect} from "react";
+import {Route, Routes} from "react-router-dom";
 import {useJsApiLoader} from "@react-google-maps/api";
 import {Backdrop} from "@mui/material";
 import Cars from "./pages/Cars/Cars";
@@ -9,17 +10,16 @@ import Deliveries from "./pages/Deliveries/Deliveries";
 import Reports from "./pages/Reports/Reports";
 import Delivery from "./pages/Delivery/Delivery";
 import Users from "./pages/Users/Users";
-import {useEffect} from "react";
 import {currentHost} from "./util/util";
 import {useSnackbar} from 'notistack'
 import {useDispatch, useSelector} from "react-redux";
-import {approveDelivery, calculateDelivery, fetchDelivery} from "./features/currentDelivery/currentDeliverySlice";
+import {fetchDelivery} from "./features/currentDelivery/currentDeliverySlice";
 
 const libraries = ['places'];
 
 
 function App() {
-    const {enqueueSnackbar, closeSnackbar} = useSnackbar()
+    const {enqueueSnackbar} = useSnackbar()
     const dispatch = useDispatch();
     const {delivery} = useSelector(state => state.currentDelivery);
 
@@ -28,6 +28,10 @@ function App() {
 
         function getRealtimeData(data) {
             console.log('data', data);
+            if (data.type === "HEARTBEAT") {
+                return;
+            }
+
             enqueueSnackbar(data.message, {variant: data.type === 'INFO' ? 'default' : data.type.toLowerCase()})
 
             if (data.action?.type === 'DELIVERY_UPDATED') {

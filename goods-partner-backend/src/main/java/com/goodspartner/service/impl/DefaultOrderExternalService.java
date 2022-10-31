@@ -53,7 +53,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
     private final EventService eventService;
 
     @Override
-    @Async
+    @Async("goodsPartnerThreadPoolTaskExecutor")
     public void saveToOrderCache(UUID deliveryId, LocalDate date) {
         log.info("Fetching orders from 1C");
 

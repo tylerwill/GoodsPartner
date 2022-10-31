@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 import java.util.Arrays;
 import java.util.concurrent.Executor;
@@ -16,7 +17,7 @@ import java.util.concurrent.Executor;
 @Slf4j
 public class AsyncConfiguration implements AsyncConfigurer {
 
-    @Bean
+    @Bean("goodsPartnerThreadPoolTaskExecutor")
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(5);
@@ -24,7 +25,8 @@ public class AsyncConfiguration implements AsyncConfigurer {
         executor.setQueueCapacity(500);
         executor.setThreadNamePrefix("goods-partner-calculation-");
         executor.initialize();
-        return executor;
+
+        return new DelegatingSecurityContextAsyncTaskExecutor(executor);
     }
 
     @Override

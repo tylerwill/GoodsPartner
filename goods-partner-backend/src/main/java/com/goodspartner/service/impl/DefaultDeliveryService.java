@@ -24,7 +24,6 @@ import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.service.CarLoadService;
-import com.goodspartner.service.DeliveryHistoryService;
 import com.goodspartner.service.DeliveryService;
 import com.goodspartner.service.EventService;
 import com.goodspartner.service.OrderExternalService;

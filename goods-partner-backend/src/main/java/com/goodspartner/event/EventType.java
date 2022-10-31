@@ -7,7 +7,8 @@ import lombok.Getter;
 public enum EventType {
     INFO("INFO"),
     SUCCESS("SUCCESS"),
-    ERROR("ERROR");
+    ERROR("ERROR"),
+    HEARTBEAT("HEARTBEAT");
 
     @Getter
     private final String type;
