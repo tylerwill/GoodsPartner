@@ -66,6 +66,9 @@ public class OrderExternal {
     @Column(name = "delivery_type")
     private DeliveryType deliveryType;
 
+    @Column(name = "delivery_date")
+    private LocalDate deliveryDate;
+
     @Column(name = "excluded")
     private boolean excluded;
 

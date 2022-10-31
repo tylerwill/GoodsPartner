@@ -76,7 +76,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
 
         Map<String, List<ODataProductDto>> allProducts = parseAllProducts(partitionedOrders);
 
-        enrichOrders(oDataOrderDtosList, allProducts);
+        enrichOrders(oDataOrderDtosList, allProducts, date);
 
         List<OrderDto> orderDtosList = odataOrderMapper.toOrderDtosList(oDataOrderDtosList);
 
@@ -191,12 +191,13 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     /**
      * Insert into OrderDto its List of products and total weight of order
      */
-    void enrichOrders(List<ODataOrderDto> orders, Map<String, List<ODataProductDto>> allProducts) {
+    void enrichOrders(List<ODataOrderDto> orders, Map<String, List<ODataProductDto>> allProducts, LocalDate date) {
         for (ODataOrderDto order : orders) {
             String refKey = order.getRefKey();
             List<ODataProductDto> products = allProducts.get(refKey);
             order.setProducts(productMapper.toProductDtosList(products));
             order.setOrderWeight(getTotalOrderWeight(products));
+            order.setDeliveryDate(date);
         }
     }
 

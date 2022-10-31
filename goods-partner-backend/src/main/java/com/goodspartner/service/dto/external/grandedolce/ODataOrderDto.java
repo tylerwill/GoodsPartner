@@ -34,6 +34,7 @@ public class ODataOrderDto {
     @JsonAlias("Комментарий")
     private String comment;
 
+    private LocalDate deliveryDate;
     private String clientName;
     private String managerFullName;
 

@@ -1,5 +1,6 @@
 package com.goodspartner.service.impl;
 
+import com.goodspartner.action.OrderAction;
 import com.goodspartner.cache.OrderCache;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.OrderDto;
@@ -8,8 +9,10 @@ import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
+import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.exception.DeliveryNotFoundException;
+import com.goodspartner.exception.OrderNotFoundException;
 import com.goodspartner.exception.UnknownAddressException;
 import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.repository.AddressExternalRepository;
@@ -151,6 +154,29 @@ public class DefaultOrderExternalService implements OrderExternalService {
                 .map(orderExternalMapper::mapOrderExternalToOrderDto)
                 .toList();
 
+    }
+
+    @Override
+    public List<OrderDto> getFilteredOrders(boolean excluded, boolean dropped) {
+        return orderExternalRepository.findAllByExcludedAndDropped(excluded, dropped)
+                .stream()
+                .map(orderExternalMapper::mapOrderExternalToOrderDto)
+                .toList();
+    }
+
+    @Transactional
+    @Override
+    public OrderDto updateDeliveryDate(int orderId, LocalDate deliveryDate, OrderAction action) {
+        OrderExternal orderExternal = orderExternalRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException(orderId));
+
+        orderExternal.setDeliveryDate(deliveryDate);
+        action.perform(orderExternal);
+
+        Optional<Delivery> delivery = deliveryRepository.findByStatusAndDeliveryDate(DeliveryStatus.DRAFT, deliveryDate);
+        delivery.ifPresent(orderExternal::setDelivery);
+
+        return orderExternalMapper.mapOrderExternalToOrderDto(orderExternalRepository.save(orderExternal));
     }
 
     private void validateOrderAddresses(List<OrderDto> orderDtos) {
