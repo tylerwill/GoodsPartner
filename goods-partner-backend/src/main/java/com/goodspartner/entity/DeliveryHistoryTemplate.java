@@ -5,18 +5,18 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public enum DeliveryHistoryTemplate {
-    DELIVERY_CREATED("{role} {userEmail} створив(ла) доставку"),
-    DELIVERY_UPDATED("{role} {userEmail} оновив(ла) доставку"),
-    DELIVERY_APPROVED("{role} {userEmail} підтвердив(ла) доставку"),
-    DELIVERY_CALCULATED("{role} {userEmail} розрахував(ла) доставку"),
+    DELIVERY_CREATED("${roleTranslated} ${userName} створив(ла) доставку"),
+    DELIVERY_UPDATED("${roleTranslated} ${userName} оновив(ла) доставку"),
+    DELIVERY_APPROVED("${roleTranslated} ${userName} підтвердив(ла) доставку"),
+    DELIVERY_CALCULATED("${roleTranslated} ${userName} розрахував(ла) доставку"),
     DELIVERY_COMPLETED("Доставка переведена в статус виконана"),
-    ROUTE_POINT_STATUS("${role} ${userEmail} змінив(ла) статус точки маршрута до авто ${carName} ${carLicensePlate}, клієнт ${clientName}, адреса ${clientAddress} на ${routePointStatus}"),
-    ROUTE_STATUS("${role} ${userEmail} змінив(ла) статус маршрута до авто ${carName} ${carLicensePlate} на ${routeStatus}"),
+    ROUTE_POINT_STATUS("${roleTranslated} ${userName} змінив(ла) статус точки маршрута до авто ${carName} ${carLicensePlate}, клієнт ${clientName}, адреса ${clientAddress} на ${routePointStatus}"),
+    ROUTE_STATUS("${roleTranslated} ${userName} змінив(ла) статус маршрута до авто ${carName} ${carLicensePlate} на ${routeStatus}"),
     ROUTE_STATUS_AUTO("Змінився статус маршрута до авто ${carName} ${carLicensePlate} на ${routeStatus}"),
-    ROUTE_START("${role} ${userEmail} розпочав(ла) маршрут до авто ${carName} ${carLicensePlate}"),
-    ORDERS_LOADING("{role} {userEmail} вивантажує замовлення замовлення з 1С"),
-    ORDERS_LOADED("{role} {userEmail} вивантажив(ла) замовлення з 1С"),
-    ORDERS_SAVED("{role} {userEmail} зберіг(ла) замовлення");
+    ROUTE_START("${roleTranslated} ${userName} розпочав(ла) маршрут до авто ${carName} ${carLicensePlate}"),
+    ORDERS_LOADING("${roleTranslated} ${userName} вивантажує замовлення замовлення з 1С"),
+    ORDERS_LOADED("${roleTranslated} ${userName} вивантажив(ла) замовлення з 1С"),
+    ORDERS_SAVED("${roleTranslated} ${userName} зберіг(ла) замовлення");
 
     @Getter
     private final String template;

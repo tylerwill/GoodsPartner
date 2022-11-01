@@ -7,11 +7,11 @@ import java.util.UUID;
 @Getter
 public class DeliveryAuditEvent {
 
-    private final String name;
-    private final UUID id;
+    private final UUID deliveryId;
+    private final String action;
 
-    public DeliveryAuditEvent(String name, UUID id) {
-        this.name = name;
-        this.id = id;
+    public DeliveryAuditEvent(String action, UUID deliveryId) {
+        this.action = action;
+        this.deliveryId = deliveryId;
     }
 }

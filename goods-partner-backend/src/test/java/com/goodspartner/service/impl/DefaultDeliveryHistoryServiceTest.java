@@ -155,9 +155,13 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
 
         deliveryService.add(deliveryDto);
 
+        applicationEvents
+                .stream(DeliveryAuditEvent.class)
+                        .forEach(deliveryAuditEvent -> System.out.println(deliveryAuditEvent.getAction()));
+
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
-                .filter(event -> event.getName().equals("SECURITY OFF створив(ла) доставку"))
+                .filter(event -> event.getAction().equals("Анонім Anonymous створив(ла) доставку"))
                 .count());
     }
 
@@ -175,7 +179,7 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
-                .filter(event -> event.getName().equals("SECURITY OFF оновив(ла) доставку"))
+                .filter(event -> event.getAction().equals("Анонім Anonymous оновив(ла) доставку"))
                 .count());
     }
 
@@ -227,7 +231,7 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
-                .filter(event -> event.getName().equals("Доставка переведена в статус виконана"))
+                .filter(event -> event.getAction().equals("Доставка переведена в статус виконана"))
                 .count());
     }
 
@@ -240,7 +244,7 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
-                .filter(event -> event.getName().equals("Доставка переведена в статус виконана"))
+                .filter(event -> event.getAction().equals("Доставка переведена в статус виконана"))
                 .count());
     }
 
@@ -254,7 +258,7 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
-                .filter(event -> event.getName().equals("SECURITY OFF змінив(ла) статус точки маршрута до авто Mercedes Sprinter AA 1111 CT, " +
+                .filter(event -> event.getAction().equals("Анонім Anonymous змінив(ла) статус точки маршрута до авто Mercedes Sprinter AA 1111 CT, " +
                         "клієнт ТОВ ПЕКАРНЯ, адреса Хрещатик 1А на DONE"))
                 .count());
     }
@@ -269,7 +273,7 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
-                .filter(event -> event.getName().equals("SECURITY OFF змінив(ла) статус маршрута до авто Mercedes Sprinter AA 1111 CT на COMPLETED"))
+                .filter(event -> event.getAction().equals("Анонім Anonymous змінив(ла) статус маршрута до авто Mercedes Sprinter AA 1111 CT на COMPLETED"))
                 .count());
     }
 
@@ -284,7 +288,7 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
-                .filter(event -> event.getName().equals("Змінився статус маршрута до авто MAN AA 2455 CT на COMPLETED"))
+                .filter(event -> event.getAction().equals("Змінився статус маршрута до авто MAN AA 2455 CT на COMPLETED"))
                 .count());
     }
 
@@ -301,7 +305,7 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
-                .filter(event -> event.getName().equals("SECURITY OFF розпочав(ла) маршрут до авто MAN AA 2455 CT"))
+                .filter(event -> event.getAction().equals("Анонім Anonymous розпочав(ла) маршрут до авто MAN AA 2455 CT"))
                 .count());
     }
 
@@ -317,11 +321,11 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)
-                .filter(event -> event.getName().equals("SECURITY OFF підтвердив(ла) доставку"))
+                .filter(event -> event.getAction().equals("Анонім Anonymous підтвердив(ла) доставку"))
                 .count());
 
         assertEquals(1, applicationEvents.stream(DeliveryAuditEvent.class)
-                .filter(event -> event.getName().equals("Змінився статус маршрута до авто Mercedes Sprinter AA 1111 CT на APPROVED"))
+                .filter(event -> event.getAction().equals("Змінився статус маршрута до авто Mercedes Sprinter AA 1111 CT на APPROVED"))
                 .count());
     }
 

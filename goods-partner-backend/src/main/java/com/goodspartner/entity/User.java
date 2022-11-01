@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,10 +35,20 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "role")
-    private String role;
+    private UserRole role;
 
     @Column(name = "enabled")
     private boolean enabled = false;
 
+    @AllArgsConstructor
+    @Getter
+    public enum UserRole {
+        ADMIN("ADMIN"),
+        DRIVER("DRIVER"),
+        LOGIST("LOGIST");
+
+        private final String name;
+    }
 }

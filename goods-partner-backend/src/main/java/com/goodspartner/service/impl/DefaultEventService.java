@@ -58,48 +58,44 @@ public class DefaultEventService implements EventService {
         if (template.equals(DELIVERY_UPDATED)) {
             eventAction = new Action(ActionType.DELIVERY_UPDATED, deliverId);
         }
-        liveEventService.publish(new LiveEvent(deliveryAuditEvent.getName(), type, eventAction));
+        liveEventService.publish(new LiveEvent(deliveryAuditEvent.getAction(), type, eventAction));
     }
 
     @Override
     public void publishDeliveryCompleted(Delivery delivery) {
-        DeliveryHistoryTemplate template = DELIVERY_COMPLETED;
-        String action = template.getTemplate();
+        String action = DELIVERY_COMPLETED.getTemplate();
 
         DeliveryAuditEvent deliveryAuditEvent = new DeliveryAuditEvent(action, delivery.getId());
 
         deliveryHistoryService.publish(deliveryAuditEvent);
-        liveEventService.publish(new LiveEvent(deliveryAuditEvent.getName(), EventType.INFO));
+        liveEventService.publish(new LiveEvent(deliveryAuditEvent.getAction(), EventType.INFO));
     }
 
     @Override
     public void publishRouteUpdated(Route updateRoute) {
         if (updateRoute.getStatus().equals(RouteStatus.INPROGRESS)) {
-            DeliveryHistoryTemplate template = ROUTE_START;
 
             Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
             values.put("carLicensePlate", updateRoute.getCar().getLicencePlate());
             values.put("routeStatus", updateRoute.getStatus().toString());
             values.put("carName", updateRoute.getCar().getName());
 
-            publishPreparedEvent(values, template, updateRoute.getDelivery().getId());
+            publishPreparedEvent(values, ROUTE_START, updateRoute.getDelivery().getId());
 
         } else {
-            DeliveryHistoryTemplate template = ROUTE_STATUS;
 
             Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
             values.put("carName", updateRoute.getCar().getName());
             values.put("carLicensePlate", updateRoute.getCar().getLicencePlate());
             values.put("routeStatus", updateRoute.getStatus().toString());
 
-            publishPreparedEvent(values, template, updateRoute.getDelivery().getId());
+            publishPreparedEvent(values, ROUTE_STATUS, updateRoute.getDelivery().getId());
         }
 
     }
 
     @Override
     public void publishRoutePointUpdated(RoutePoint routePoint, Route route) {
-        DeliveryHistoryTemplate template = ROUTE_POINT_STATUS;
 
         Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
         values.put("carName", route.getCar().getName());
@@ -108,7 +104,7 @@ public class DefaultEventService implements EventService {
         values.put("clientAddress", routePoint.getAddress());
         values.put("routePointStatus", routePoint.getStatus().toString());
 
-        publishPreparedEvent(values, template, route.getDelivery().getId());
+        publishPreparedEvent(values, ROUTE_POINT_STATUS, route.getDelivery().getId());
     }
 
     @Override
@@ -159,11 +155,11 @@ public class DefaultEventService implements EventService {
         }
 
         deliveryHistoryService.publish(deliveryAuditEvent);
-        liveEventService.publish(new LiveEvent(deliveryAuditEvent.getName(), type, eventAction));
+        liveEventService.publish(new LiveEvent(deliveryAuditEvent.getAction(), type, eventAction));
     }
 
     private String fillActionWithAuditor(String template) {
         Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
-        return StringSubstitutor.replace(template, values, "{", "}");
+        return StringSubstitutor.replace(template, values);
     }
 }
