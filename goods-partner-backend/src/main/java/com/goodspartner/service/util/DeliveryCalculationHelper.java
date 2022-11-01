@@ -7,6 +7,8 @@ import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
+import com.goodspartner.event.EventType;
+import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.service.CarLoadService;
@@ -38,38 +40,43 @@ public class DeliveryCalculationHelper {
     @Async("goodsPartnerThreadPoolTaskExecutor")
     @Transactional
     public void calculate(UUID deliveryId) {
+        try {
+            Delivery delivery = deliveryRepository.findById(deliveryId)
+                    .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
 
-        Delivery delivery = deliveryRepository.findById(deliveryId)
-                .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
+            List<OrderExternal> orderExternals = delivery.getOrders();
 
-        List<OrderExternal> orderExternals = delivery.getOrders();
+            List<OrderExternal> includedOrders = orderExternals.stream()
+                    .filter(orderExternal -> !orderExternal.isExcluded())
+                    .filter(orderExternal -> DeliveryType.REGULAR.equals(orderExternal.getDeliveryType()))
+                    .toList();
 
-        List<OrderExternal> includedOrders = orderExternals.stream()
-                .filter(orderExternal -> !orderExternal.isExcluded())
-                .filter(orderExternal -> DeliveryType.REGULAR.equals(orderExternal.getDeliveryType()))
-                .toList();
+            // Routes
+            List<Route> coolerRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.COOLER);
+            List<Route> regularRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.REGULAR);
 
-        // Routes
-        List<Route> coolerRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.COOLER);
-        List<Route> regularRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.REGULAR);
+            // CarLoad
+            List<CarLoad> coolerCarLoad = carLoadService.buildCarLoad(coolerRoutes, includedOrders);
+            List<CarLoad> regularCarLoads = carLoadService.buildCarLoad(regularRoutes, includedOrders);
 
-        // CarLoad
-        List<CarLoad> coolerCarLoad = carLoadService.buildCarLoad(coolerRoutes, includedOrders);
-        List<CarLoad> regularCarLoads = carLoadService.buildCarLoad(regularRoutes, includedOrders);
+            // Update Delivery
+            delivery.setRoutes(ListUtils.union(coolerRoutes, regularRoutes));
+            delivery.setCarLoads(ListUtils.union(coolerCarLoad, regularCarLoads));
 
-        // Update Delivery
-        delivery.setRoutes(ListUtils.union(coolerRoutes, regularRoutes));
-        delivery.setCarLoads(ListUtils.union(coolerCarLoad, regularCarLoads));
+            delivery.setFormationStatus(DeliveryFormationStatus.COMPLETED);
+            eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, deliveryId);
 
-        delivery.setFormationStatus(DeliveryFormationStatus.COMPLETED);
-        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, deliveryId);
+            deliveryRepository.save(delivery);
 
-        deliveryRepository.save(delivery);
+            log.info("Delivery: {} has been calculated", deliveryId);
 
-        log.info("Delivery: {} has been calculated", deliveryId);
+            orderExternalService.evictCache(deliveryId);
 
-        orderExternalService.evictCache(deliveryId);
+            log.info("Cache has been evicted for Delivery: {}", deliveryId);
+        } catch (Exception exception) {
+            eventService.publishEvent(new LiveEvent("Помилка розрахування доставки", EventType.ERROR));
 
-        log.info("Cache has been evicted for Delivery: {}", deliveryId);
+            throw new RuntimeException(exception);
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
+import com.goodspartner.event.LiveEvent;
 
 import java.util.UUID;
 
@@ -21,4 +22,5 @@ public interface EventService {
 
     void publishOrdersStatus(DeliveryHistoryTemplate template, UUID id);
 
+    void publishEvent(LiveEvent event);
 }

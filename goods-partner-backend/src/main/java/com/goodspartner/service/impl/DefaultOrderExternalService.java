@@ -11,6 +11,8 @@ import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.event.EventType;
+import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.OrderNotFoundException;
 import com.goodspartner.exception.UnknownAddressException;
@@ -60,21 +62,27 @@ public class DefaultOrderExternalService implements OrderExternalService {
     public void saveToOrderCache(UUID deliveryId, LocalDate date) {
         log.info("Fetching orders from 1C");
 
-        List<OrderDto> orders = integrationService.findAllByShippingDate(date);
-        if (orders.isEmpty()) {
-            log.warn("No orders where found in 1C for date: {}", date);
-            return;
-        }
+        try {
+            List<OrderDto> orders = integrationService.findAllByShippingDate(date);
+            if (orders.isEmpty()) {
+                log.warn("No orders where found in 1C for date: {}", date);
+                return;
+            }
 
-        if (!orders.isEmpty()) {
-            eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADING, deliveryId);
+            if (!orders.isEmpty()) {
+                eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADING, deliveryId);
 
-            orderCommentProcessor.processOrderComments(orders);
-            geocodeService.enrichValidAddress(orders);
-            orderCache.saveOrders(deliveryId, orders);
+                orderCommentProcessor.processOrderComments(orders);
+                geocodeService.enrichValidAddress(orders);
+                orderCache.saveOrders(deliveryId, orders);
 
-            eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADED, deliveryId);
-            log.info("Saved to cache orders for delivery {} on {} date", deliveryId, date);
+                eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADED, deliveryId);
+                log.info("Saved to cache orders for delivery {} on {} date", deliveryId, date);
+            }
+        } catch (Exception exception) {
+            eventService.publishEvent(new LiveEvent("Помилка під час вивантаження замовлень з 1С", EventType.ERROR));
+
+            throw new RuntimeException(exception);
         }
     }
 

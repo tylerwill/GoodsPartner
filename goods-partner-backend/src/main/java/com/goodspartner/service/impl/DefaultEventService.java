@@ -128,6 +128,11 @@ public class DefaultEventService implements EventService {
     }
 
     @Override
+    public void publishEvent(LiveEvent event) {
+        liveEventService.publish(event);
+    }
+
+    @Override
     public void publishRouteStatusChangeAuto(Route route) {
         Map<String, String> values = new HashMap<>();
         values.put("carName", route.getCar().getName());
