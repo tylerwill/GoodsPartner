@@ -55,11 +55,11 @@ public class DefaultRouteService implements RouteService {
 
         action.perform(route);
 
-        eventService.publishRouteUpdated(route);
-
         processDeliveryStatus(route);
 
         routeRepository.save(route);
+
+        eventService.publishRouteUpdated(route);
 
         return getRouteActionResponse(route);
     }
@@ -94,13 +94,13 @@ public class DefaultRouteService implements RouteService {
 
         action.perform(routePoint);
 
-        eventService.publishRoutePointUpdated(routePoint, route);
-
         processRouteStatus(route, routePoints);
 
         processDeliveryStatus(route);
 
         routeRepository.save(route);
+
+        eventService.publishRoutePointUpdated(routePoint, route);
 
         return getRoutePointActionResponse(route, routePoint);
     }

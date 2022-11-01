@@ -152,6 +152,8 @@ public class DefaultDeliveryService implements DeliveryService {
         //Calculated in async method
         deliveryCalculationHelper.calculate(delivery.getId());
 
+        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, delivery.getId());
+
         return deliveryMapper.toDeliveryDtoWithOrders(new DeliveryDto(), deliveryRepository.save(delivery));
     }
 

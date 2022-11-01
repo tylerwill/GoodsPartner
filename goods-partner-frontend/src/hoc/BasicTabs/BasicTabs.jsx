@@ -32,8 +32,7 @@ function a11yProps(index) {
     };
 }
 
-export default function BasicTabs({children, labels, fullWidth}) {
-    const [tabIndex, setTabIndex] = React.useState(0);
+export default function BasicTabs({children, labels, fullWidth, tabIndex, setTabIndex}) {
 
     const handleChange = (event, newValue) => {
         setTabIndex(newValue);

@@ -15,6 +15,7 @@ const Deliveries = () => {
     const {deliveries, loading, error} = useSelector(state => state.deliveriesList);
     const dispatch = useDispatch();
     const {user} = useAuth();
+    const isDriver = user.role === 'DRIVER';
 
     useEffect(() => {
         if (user.role === 'DRIVER') {
@@ -33,8 +34,8 @@ const Deliveries = () => {
             <Typography variant="h6" component="h2">
                 Доставки
             </Typography>
-            <Button onClick={() => setOpenNewDeliveryDialog(true)} variant="contained">Створити нову
-                доставку <ArrowForward/></Button>
+            {!isDriver && <Button onClick={() => setOpenNewDeliveryDialog(true)} variant="contained">Створити нову
+                доставку <ArrowForward/></Button>}
         </Box>
 
         <Box sx={{mt: 2}}>

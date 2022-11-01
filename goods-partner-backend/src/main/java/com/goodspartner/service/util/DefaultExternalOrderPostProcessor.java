@@ -15,9 +15,12 @@ import java.util.Optional;
 public class DefaultExternalOrderPostProcessor implements ExternalOrderPostProcessor {
 
     private static final String FROZEN = "заморозка";
+
     private static final String POSTAL = "нова пошта";
     private static final String POSTAL_BINDED = "новапошта";
-    private static final String PRE_PACKING = "фасовка";
+    private static final String POSTAL_SHORT = " НП ";
+
+    private static final String PRE_PACKING = "фасовк"; // Include "фасовка"
     private static final String SELF_SERVICE = "самовивіз";
 
     private final GrandeDolceBusinessProperties grandeDolceBusinessProperties;
@@ -70,7 +73,9 @@ public class DefaultExternalOrderPostProcessor implements ExternalOrderPostProce
         return Optional.ofNullable(orderDto.getComment())
                 .map(String::toLowerCase)
                 .map(orderCommentLowerCase ->
-                        orderCommentLowerCase.contains(POSTAL) || orderCommentLowerCase.contains(POSTAL_BINDED))
+                        orderCommentLowerCase.contains(POSTAL)
+                                || orderCommentLowerCase.contains(POSTAL_BINDED)
+                                || orderCommentLowerCase.contains(POSTAL_SHORT))
                 .orElse(false);
     }
 

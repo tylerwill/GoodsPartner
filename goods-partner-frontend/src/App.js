@@ -1,7 +1,6 @@
 import Layout from "./components/Layout/Layout";
 import CssBaseline from "@mui/material/CssBaseline";
 import * as React from "react";
-import {useEffect} from "react";
 import {Route, Routes} from "react-router-dom";
 import {useJsApiLoader} from "@react-google-maps/api";
 import {Backdrop} from "@mui/material";
@@ -10,51 +9,14 @@ import Deliveries from "./pages/Deliveries/Deliveries";
 import Reports from "./pages/Reports/Reports";
 import Delivery from "./pages/Delivery/Delivery";
 import Users from "./pages/Users/Users";
-import {currentHost} from "./util/util";
-import {useSnackbar} from 'notistack'
-import {useDispatch, useSelector} from "react-redux";
-import {fetchDelivery} from "./features/currentDelivery/currentDeliverySlice";
+import Notifications from "./hoc/Notifications/Notifications";
 
 const libraries = ['places'];
 
 
 function App() {
-    const {enqueueSnackbar} = useSnackbar()
-    const dispatch = useDispatch();
-    const {delivery} = useSelector(state => state.currentDelivery);
-
-    useEffect(() => {
-        const sse = new EventSource(`${currentHost()}api/v1/live-event`);
-
-        function getRealtimeData(data) {
-            console.log('data', data);
-            if (data.type === "HEARTBEAT") {
-                return;
-            }
-
-            enqueueSnackbar(data.message, {variant: data.type === 'INFO' ? 'default' : data.type.toLowerCase()})
-
-            if (data.action?.type === 'DELIVERY_UPDATED') {
-                if (delivery && delivery.id === data.action.deliveryId) {
-                    dispatch(fetchDelivery(delivery.id));
-                }
-            }
-            // process the data here,
-            // then pass it to state to be rendered
-        }
-
-        sse.onmessage = e => getRealtimeData(JSON.parse(e.data));
-        sse.onerror = (error) => {
-            // error log here
-            console.log("error in live events", error);
-            sse.close();
-        }
-        return () => {
-            sse.close();
-        };
-    }, []);
-
-    const key = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    // const key = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    const key = 'AIzaSyBFrgUuPeJTo4ssCRhE04ib1qBp4Rhyykw';
     console.log("Loading with apiKey", key);
 
     //TODO: [UI] check if we are using specific region
@@ -75,18 +37,19 @@ function App() {
 
 
     return (
-        <>
+        <Notifications>
             <CssBaseline/>
             <Layout>
                 <Routes>
                     <Route path="/cars" element={<Cars/>}/>
                     <Route path="/users" element={<Users/>}/>
                     <Route path="/deliveries" element={<Deliveries/>}/>
+                    <Route path="/" element={<Deliveries/>}/>
                     <Route path="/delivery/:id" element={<Delivery/>}/>
                     <Route path="/reports/" element={<Reports/>}/>
                 </Routes>
             </Layout>
-        </>
+        </Notifications>
     );
 }
 

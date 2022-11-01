@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Box, Breadcrumbs, Button, Tooltip, Typography} from "@mui/material";
+import {Box, Breadcrumbs, Button, LinearProgress, Tooltip, Typography} from "@mui/material";
 import DeliveryStatusChip from "../../components/DeliveryStatusChip/DeliveryStatusChip";
 import {Link, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
@@ -7,7 +7,7 @@ import {
     approveDelivery,
     calculateDelivery,
     fetchDelivery,
-    fetchDeliveryForDriver
+    fetchDeliveryForDriver, setCurrentRouteIndex, setTabIndex
 } from "../../features/currentDelivery/currentDeliverySlice";
 
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -33,7 +33,7 @@ import CarLoad from "./CarLoad/CarLoad";
 const Delivery = () => {
     const {id} = useParams();
     const dispatch = useDispatch();
-    const {delivery, loading, error} = useSelector(state => state.currentDelivery);
+    const {delivery, loading, error, tabIndex} = useSelector(state => state.currentDelivery);
     const {user} = useAuth();
 
     const calculateHandler = () => dispatch(calculateDelivery(delivery));
@@ -46,6 +46,8 @@ const Delivery = () => {
             } else {
                 dispatch(fetchDelivery(id));
             }
+            dispatch(setTabIndex(0));
+            dispatch(setCurrentRouteIndex(0));
         }
 
     }, [delivery, dispatch, id]);
@@ -53,12 +55,12 @@ const Delivery = () => {
     if (loading) {
         return <Loading/>
     }
-
+    const isDriver = user.role === 'DRIVER';
 
     const hasInvalidOrders = delivery.orders.some(order => order.mapPoint.status === "UNKNOWN");
 
-    const isPreCalculationStatus = delivery.formationStatus === 'ORDERS_LOADED';
-    const isPreApprove = delivery.formationStatus === 'COMPLETED';
+    const isPreCalculationStatus = delivery.formationStatus === 'ORDERS_LOADED' && !isDriver;
+    const isPreApprove = delivery.formationStatus === 'COMPLETED' && !isDriver;
 
     const isApproveEnabled = delivery.status !== 'APPROVED';
 
@@ -71,8 +73,14 @@ const Delivery = () => {
         {name: 'Історія', enabled: true, icon: <HistorySharpIcon sx={{mr: 1}}/>}
     ];
 
+    const isLoadingBar = delivery.formationStatus === 'ORDERS_LOADING' || delivery.formationStatus === 'ROUTE_CALCULATION';
+
+    const setTabIndexHandler = (index) => {
+        dispatch(setTabIndex(index));
+    }
 
     return <section>
+        {isLoadingBar && loadingBar(delivery.formationStatus)}
         {error && <ErrorAlert error={error}/>}
         <Box sx={{mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
             <Box sx={{display: 'flex'}}>
@@ -108,7 +116,7 @@ const Delivery = () => {
         <Box sx={{marginTop: '16px'}}>
             {/*TODO: [UI] Add icons */}
             {/*TODO: [UI Max] disable some labels if route is not in calculated status */}
-            <BasicTabs labels={tabLabels} fullWidth={true}>
+            <BasicTabs labels={tabLabels} fullWidth={true} tabIndex={tabIndex} setTabIndex={setTabIndexHandler}>
                 <Orders/>
                 <Routes/>
                 {user.role === 'DRIVER' ? <CarLoad/> : <Shipping productsShipping={delivery.productsShipping}/>}
@@ -118,6 +126,16 @@ const Delivery = () => {
         </Box>
 
     </section>
+}
+
+function loadingBar(formationStatus) {
+    let message = 'Розрахування маршрутів'
+    if (formationStatus === 'ORDERS_LOADING') {
+        message = 'Завантаження замовлень';
+    }
+
+    return <Box sx={{mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <Box>{message}</Box> <Box sx={{width: '80%'}}><LinearProgress/></Box></Box>
 }
 
 function ApproveButton({enabled, approve}) {

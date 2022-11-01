@@ -4,7 +4,10 @@ import {deliveriesApi} from "../../api/deliveriesApi";
 const initialState = {
     delivery: null,
     loading: true,
-    error: ''
+    error: '',
+    tabIndex: 0,
+    orderTabIndex: 0,
+    currentRouteIndex: 0
 };
 
 export const fetchDelivery = createAsyncThunk('currentDelivery/fetch',
@@ -103,6 +106,15 @@ const currentDeliverySlice = createSlice({
             updatedOrder.address = orderAddressInfo.address;
             updatedOrder.mapPoint = orderAddressInfo.mapPoint;
             updatedOrder.mapPoint.status = 'AUTOVALIDATED';
+        },
+        setTabIndex: (state, action) => {
+            state.tabIndex = action.payload;
+        },
+        setOrderTabIndex: (state, action) => {
+            state.orderTabIndex = action.payload;
+        },
+        setCurrentRouteIndex: (state, action) => {
+            state.currentRouteIndex = action.payload;
         }
     },
     extraReducers: builder => {
@@ -176,4 +188,10 @@ const currentDeliverySlice = createSlice({
 })
 
 export default currentDeliverySlice.reducer
-export const {updateOrder, updateAddressForOrder} = currentDeliverySlice.actions
+export const {
+    updateOrder,
+    updateAddressForOrder,
+    setTabIndex,
+    setOrderTabIndex,
+    setCurrentRouteIndex
+} = currentDeliverySlice.actions

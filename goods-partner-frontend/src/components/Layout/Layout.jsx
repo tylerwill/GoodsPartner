@@ -32,14 +32,7 @@ const Main = styled('main', {shouldForwardProp: (prop) => prop !== 'open'})(
 
 export default function Layout(props) {
 
-    const [open, setOpen] = React.useState(true);
-    const [subMenuOpen, setSubMenuOpen] = React.useState(true);
-
-
-
-    const changeCollapsedSubmenu = () => {
-        setSubMenuOpen(!subMenuOpen);
-    }
+    const [open, setOpen] = React.useState(false);
 
     return (
         <Box sx={{display: 'flex'}}>

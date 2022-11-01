@@ -4,6 +4,7 @@ import deliveriesReducer from "../features/deliveries/deliveriesSlice";
 import currentDeliveryReducer from "../features/currentDelivery/currentDeliverySlice";
 import reportsReducer from "../features/reports/reportsSlice";
 import historyReducer from "../features/history/historySlice";
+import notificationsReducer from "../features/notifications/notificationsSlice";
 
 import {configureStore} from "@reduxjs/toolkit";
 
@@ -15,6 +16,7 @@ const store = configureStore({
         reports: reportsReducer,
         currentDelivery: currentDeliveryReducer,
         history: historyReducer,
+        notifications: notificationsReducer
     }
 })
 

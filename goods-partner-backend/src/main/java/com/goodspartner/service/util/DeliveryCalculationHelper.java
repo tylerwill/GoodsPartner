@@ -64,7 +64,6 @@ public class DeliveryCalculationHelper {
             delivery.setCarLoads(ListUtils.union(coolerCarLoad, regularCarLoads));
 
             delivery.setFormationStatus(DeliveryFormationStatus.COMPLETED);
-            eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, deliveryId);
 
             deliveryRepository.save(delivery);
 

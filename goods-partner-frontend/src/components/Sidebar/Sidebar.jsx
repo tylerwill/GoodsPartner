@@ -13,6 +13,7 @@ import {ContentPasteSharp, Inventory2Sharp} from "@mui/icons-material";
 import SupervisedUserCircle from "@mui/icons-material/SupervisedUserCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import GrandeDolceLogo from "../Logo/GrandeDolceLogo";
+import useAuth from "../../auth/AuthProvider";
 
 
 const ListButton = (icon, name, paddingLeft) => {
@@ -29,6 +30,8 @@ const ListButton = (icon, name, paddingLeft) => {
 const drawerWidth = 256;
 
 const Sidebar = ({open}) => {
+    const {user} = useAuth();
+
     return (
         <div className="sidebar">
             <Drawer sx={{
@@ -56,15 +59,19 @@ const Sidebar = ({open}) => {
                     <ListItem disablePadding component={Link} to={"/deliveries"}>
                         {ListButton(<Inventory2Sharp/>, 'Доставки')}
                     </ListItem>
-                    <ListItem disablePadding component={Link} to={"/cars"}>
-                        {ListButton(<LocalShippingIcon/>, 'Автомобілі')}
-                    </ListItem>
-                    <ListItem disablePadding component={Link} to={"/users"}>
-                        {ListButton(<SupervisedUserCircle/>, 'Користувачі')}
-                    </ListItem>
-                    <ListItem disablePadding component={Link} to={"/reports"}>
-                        {ListButton(<ContentPasteSharp/>, 'Звітність')}
-                    </ListItem>
+                    {user.role !== 'DRIVER' &&
+                        <>
+                            <ListItem disablePadding component={Link} to={"/cars"}>
+                                {ListButton(<LocalShippingIcon/>, 'Автомобілі')}
+                            </ListItem>
+                            <ListItem disablePadding component={Link} to={"/users"}>
+                                {ListButton(<SupervisedUserCircle/>, 'Користувачі')}
+                            </ListItem>
+                            <ListItem disablePadding component={Link} to={"/reports"}>
+                                {ListButton(<ContentPasteSharp/>, 'Звітність')}
+                            </ListItem>
+                        </>
+                    }
                     <Divider/>
 
                 </List>

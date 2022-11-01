@@ -120,6 +120,7 @@ const RouteStatusSelect = ({route, updateRoute}) => {
             <CustomSelect
                 value={status}
                 onChange={handleChange}
+                disabled={status==='COMPLETED'}
                 autoWidth
                 MenuProps={{MenuListProps: {disablePadding: true}}}
             >

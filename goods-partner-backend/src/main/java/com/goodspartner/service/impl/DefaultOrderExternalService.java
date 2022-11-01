@@ -4,13 +4,7 @@ import com.goodspartner.action.OrderAction;
 import com.goodspartner.cache.OrderCache;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.entity.AddressExternal;
-import com.goodspartner.entity.Car;
-import com.goodspartner.entity.Delivery;
-import com.goodspartner.entity.DeliveryFormationStatus;
-import com.goodspartner.entity.DeliveryHistoryTemplate;
-import com.goodspartner.entity.DeliveryStatus;
-import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.entity.*;
 import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.DeliveryNotFoundException;
@@ -32,12 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.goodspartner.dto.MapPoint.AddressStatus.UNKNOWN;
@@ -61,7 +50,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
     @Async("goodsPartnerThreadPoolTaskExecutor")
     public void saveToOrderCache(UUID deliveryId, LocalDate date) {
         log.info("Fetching orders from 1C");
-
+        eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADING, deliveryId);
         try {
             List<OrderDto> orders = integrationService.findAllByShippingDate(date);
             if (orders.isEmpty()) {
@@ -69,16 +58,12 @@ public class DefaultOrderExternalService implements OrderExternalService {
                 return;
             }
 
-            if (!orders.isEmpty()) {
-                eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADING, deliveryId);
+            orderCommentProcessor.processOrderComments(orders);
+            geocodeService.enrichValidAddress(orders);
+            orderCache.saveOrders(deliveryId, orders);
 
-                orderCommentProcessor.processOrderComments(orders);
-                geocodeService.enrichValidAddress(orders);
-                orderCache.saveOrders(deliveryId, orders);
-
-                eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADED, deliveryId);
-                log.info("Saved to cache orders for delivery {} on {} date", deliveryId, date);
-            }
+            eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADED, deliveryId);
+            log.info("Saved to cache orders for delivery {} on {} date", deliveryId, date);
         } catch (Exception exception) {
             eventService.publishEvent(new LiveEvent("Помилка під час вивантаження замовлень з 1С", EventType.ERROR));
 

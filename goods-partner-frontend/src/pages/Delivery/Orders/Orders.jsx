@@ -2,13 +2,21 @@ import React, {useCallback} from "react";
 import {Box} from "@mui/material";
 import OrdersTable from "./OrdersContent/OrdersTable";
 import {useDispatch, useSelector} from "react-redux";
-import {updateAddressForOrder, updateOrder} from "../../../features/currentDelivery/currentDeliverySlice";
+import {
+    setOrderTabIndex,
+    updateAddressForOrder,
+    updateOrder
+} from "../../../features/currentDelivery/currentDeliverySlice";
 import BasicTabs from "../../../hoc/BasicTabs/BasicTabs";
 import ChooseAddressDialog from "./OrdersContent/ChooseAddressDialog/ChooseAddressDialog";
 
 const Orders = () => {
     const {orders} = useSelector(state => state.currentDelivery.delivery);
+    const {orderTabIndex} = useSelector(state => state.currentDelivery);
     const dispatch = useDispatch();
+
+    const setOrdersTabHandler =(index)=> dispatch(setOrderTabIndex(index));
+
     const updateOrderHandler = useCallback((updatedOrder) => {
         dispatch(updateOrder(updatedOrder));
     }, []);
@@ -29,7 +37,7 @@ const Orders = () => {
         {name: `потребують уточнення (${invalidOrders.length})`, enabled: true}
     ];
     return <Box sx={{padding: '0 24px'}}>
-        <BasicTabs labels={tabLabels}>
+        <BasicTabs labels={tabLabels} setTabIndex={setOrdersTabHandler} tabIndex={orderTabIndex}>
             <OrdersTable orders={orders} keyPrefix={"all"}
                          setEditedOrder={setEditedOrder} updateOrder={updateOrderHandler}
                          setOrderAddressDialogOpen={updateOrderAddressHandler}/>
