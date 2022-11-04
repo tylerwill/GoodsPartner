@@ -36,10 +36,18 @@ public class DeliveryCalculationHelper {
     private final EventService eventService;
     private final OrderExternalService orderExternalService;
     private final DeliveryRepository deliveryRepository;
+    private final TxWrapper txWrapper;
 
     @Async("goodsPartnerThreadPoolTaskExecutor")
-    @Transactional
     public void calculate(UUID deliveryId) {
+        log.info("Start calculation");
+
+        txWrapper.runInTransaction(this::calculateAndSave, deliveryId);
+
+        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, deliveryId);
+    }
+
+    private void calculateAndSave(UUID deliveryId) {
         try {
             Delivery delivery = deliveryRepository.findById(deliveryId)
                     .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));

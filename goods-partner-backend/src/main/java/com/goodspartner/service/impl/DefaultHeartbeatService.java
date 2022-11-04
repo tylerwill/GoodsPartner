@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @EnableScheduling
 public class DefaultHeartbeatService implements HeartbeatService {
 
-    private static final int SSE_HEART_BEAT_FIXED_RATE = 20000;
+    private static final int SSE_HEART_BEAT_FIXED_RATE = 15000;
 
     private final LiveEventService eventService;
 
