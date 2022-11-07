@@ -47,7 +47,7 @@ public class User {
     public enum UserRole {
         ADMIN("ADMIN"),
         DRIVER("DRIVER"),
-        LOGIST("LOGIST");
+        LOGISTICIAN("LOGISTICIAN");
 
         private final String name;
     }
