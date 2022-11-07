@@ -25,7 +25,7 @@ public class AuditorBuilder {
     private static final Map<String,String> ROLES_TRANSLATION = Map.ofEntries(
             Map.entry("ROLE_ADMIN", "Адміністратор"),
             Map.entry("ROLE_DRIVER", "Водій"),
-            Map.entry("ROLE_LOGIST", "Логіст"),
+            Map.entry("ROLE_LOGISTICIAN", "Логістик"),
             Map.entry("ROLE_ANONYMOUS", "Анонім")
     );
 
