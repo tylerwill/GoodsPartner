@@ -2,6 +2,7 @@ package com.goodspartner.web.controller;
 
 import com.goodspartner.action.OrderAction;
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.dto.UpdateDto;
 import com.goodspartner.service.OrderExternalService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -9,14 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -38,18 +33,18 @@ public class OrderController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
-    @PostMapping("/{id}/{action}/{deliveryDate}")
-    @ApiOperation(value = "Update order delivery date",
-            notes = "Return updated order",
-            response = OrderDto.class
+    @PostMapping("/{action}")
+    @ApiOperation(value = "Update orders delivery date",
+            notes = "Return updated orders",
+            response = OrderDto.class,
+            responseContainer = "List"
     )
-    public OrderDto updateDeliveryDate(
-            @ApiParam(value = "ID value for the order you need to update", required = true)
-            @PathVariable int id,
-            @ApiParam(value = "New delivery date value", required = true)
-            @PathVariable String deliveryDate,
+    public List<OrderDto> updateDeliveryDate(
+            @ApiParam(value = "UpdateDto with new date and orders id", type = "UpdateDto", required = true)
+            @RequestBody UpdateDto updateDto,
             @PathVariable String action) {
-        return orderExternalService.updateDeliveryDate(id, LocalDate.parse(deliveryDate), OrderAction.of(action));
+        return orderExternalService.updateDeliveryDate(updateDto, OrderAction.of(action));
     }
 
 }
+

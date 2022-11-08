@@ -4,6 +4,7 @@ import com.goodspartner.action.OrderAction;
 import com.goodspartner.cache.OrderCache;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.dto.UpdateDto;
 import com.goodspartner.entity.*;
 import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
@@ -159,17 +160,20 @@ public class DefaultOrderExternalService implements OrderExternalService {
 
     @Transactional
     @Override
-    public OrderDto updateDeliveryDate(int orderId, LocalDate deliveryDate, OrderAction action) {
-        OrderExternal orderExternal = orderExternalRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException(orderId));
+    public List<OrderDto> updateDeliveryDate(UpdateDto updateDto, OrderAction orderAction) {
+        List<Integer> ordersIdList = updateDto.getOrdersIdList();
+        List<OrderExternal> ordersExternalsList = orderExternalRepository.findAllById(ordersIdList);
+        ordersExternalsList.stream().findFirst().orElseThrow(OrderNotFoundException::new);
 
-        orderExternal.setDeliveryDate(deliveryDate);
-        action.perform(orderExternal);
+        LocalDate date = updateDto.getDeliveryDate();
+        ordersExternalsList.forEach(order -> order.setDeliveryDate(date));
 
-        Optional<Delivery> delivery = deliveryRepository.findByStatusAndDeliveryDate(DeliveryStatus.DRAFT, deliveryDate);
-        delivery.ifPresent(orderExternal::setDelivery);
+        orderAction.performForList(ordersExternalsList);
 
-        return orderExternalMapper.mapOrderExternalToOrderDto(orderExternalRepository.save(orderExternal));
+        Optional<Delivery> delivery = deliveryRepository.findByStatusAndDeliveryDate(DeliveryStatus.DRAFT, date);
+        delivery.ifPresent(deliveryValue -> ordersExternalsList.forEach(order -> order.setDelivery(deliveryValue)));
+
+        return orderExternalMapper.mapExternalOrdersToOrderDtos(orderExternalRepository.saveAll(ordersExternalsList));
     }
 
     private void validateOrderAddresses(List<OrderDto> orderDtos) {
