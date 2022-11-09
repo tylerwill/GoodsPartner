@@ -9,7 +9,6 @@ import com.goodspartner.entity.*;
 import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.DeliveryNotFoundException;
-import com.goodspartner.exception.OrderNotFoundException;
 import com.goodspartner.exception.UnknownAddressException;
 import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.repository.AddressExternalRepository;
@@ -163,15 +162,14 @@ public class DefaultOrderExternalService implements OrderExternalService {
     public List<OrderDto> updateDeliveryDate(UpdateDto updateDto, OrderAction orderAction) {
         List<Integer> ordersIdList = updateDto.getOrdersIdList();
         List<OrderExternal> ordersExternalsList = orderExternalRepository.findAllById(ordersIdList);
-        ordersExternalsList.stream().findFirst().orElseThrow(OrderNotFoundException::new);
 
-        LocalDate date = updateDto.getDeliveryDate();
-        ordersExternalsList.forEach(order -> order.setDeliveryDate(date));
+        ordersExternalsList.forEach(order -> {
+            orderAction.perform(order);
+            order.setDeliveryDate(updateDto.getDeliveryDate());
+        });
 
-        orderAction.performForList(ordersExternalsList);
-
-        Optional<Delivery> delivery = deliveryRepository.findByStatusAndDeliveryDate(DeliveryStatus.DRAFT, date);
-        delivery.ifPresent(deliveryValue -> ordersExternalsList.forEach(order -> order.setDelivery(deliveryValue)));
+        deliveryRepository.findByStatusAndDeliveryDate(DeliveryStatus.DRAFT, updateDto.getDeliveryDate())
+                .ifPresent(deliveryValue -> ordersExternalsList.forEach(order -> order.setDelivery(deliveryValue)));
 
         return orderExternalMapper.mapExternalOrdersToOrderDtos(orderExternalRepository.saveAll(ordersExternalsList));
     }

@@ -4,7 +4,6 @@ import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.exception.InvalidActionType;
 
 import java.util.Arrays;
-import java.util.List;
 
 public enum OrderAction {
 
@@ -18,11 +17,6 @@ public enum OrderAction {
             order.setDropped(false);
             order.setExcluded(false);
         }
-
-        @Override
-        public void performForList(List<OrderExternal> orderExternals) {
-            orderExternals.forEach(this::perform);
-        }
     };
 
     public static OrderAction of(String action) {
@@ -33,6 +27,4 @@ public enum OrderAction {
     }
 
     public abstract void perform(OrderExternal order);
-
-    public abstract void performForList(List<OrderExternal> orderExternals);
 }
