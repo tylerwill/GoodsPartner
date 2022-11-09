@@ -4,6 +4,7 @@ import com.goodspartner.action.DeliveryAction;
 import com.goodspartner.action.RouteAction;
 import com.goodspartner.action.RoutePointAction;
 import com.goodspartner.dto.DeliveryDto;
+import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import com.goodspartner.web.controller.response.RouteActionResponse;
@@ -55,7 +56,7 @@ public class DeliveryActionController {
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
     @PostMapping("/{id}/routes/{routeId}/route-points/{routePointId}/{action}")
     public RoutePointActionResponse updateRoutePoint(@PathVariable int routeId,
-                                                     @PathVariable UUID routePointId,
+                                                     @PathVariable long routePointId,
                                                      @PathVariable String action) {
         return routeService.updatePoint(routeId, routePointId, RoutePointAction.of(action)); // TODO think about method name
     }
@@ -78,8 +79,8 @@ public class DeliveryActionController {
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
     @PutMapping("/{id}/routes/{routeId}/reorder")
     public void reorderRoutePoints(@PathVariable("id") UUID deliveryId, @PathVariable int routeId,
-                                   @RequestBody LinkedList<RoutePoint> routePoints) {
-        routeService.reorderRoutePoints(deliveryId, routeId, routePoints);
+                                   @RequestBody LinkedList<RoutePointDto> routePointDtos) {
+        routeService.reorderRoutePoints(deliveryId, routeId, routePointDtos);
     }
 
 }

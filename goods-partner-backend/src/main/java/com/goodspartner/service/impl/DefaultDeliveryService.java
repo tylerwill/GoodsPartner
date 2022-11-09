@@ -155,14 +155,13 @@ public class DefaultDeliveryService implements DeliveryService {
         return deliveryMapper.toDeliveryDtoWithOrders(new DeliveryDto(), deliveryRepository.save(delivery));
     }
 
-    @Transactional
     private Delivery saveOrders(DeliveryDto deliveryDto) {
         UUID deliveryId = deliveryDto.getId();
 
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new DeliveryNotFoundException(deliveryDto.getId()));
 
-        List<OrderExternal> orderExternals;
+        List<OrderExternal> orderExternals = null;
 
         if (delivery.getOrders().isEmpty()) {
             orderExternals = orderExternalService.saveValidOrdersAndEnrichKnownAddressesCache(deliveryDto);

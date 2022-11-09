@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring",
-        uses = StoreMapper.class)
+        uses = {StoreMapper.class, RoutePointMapper.class})
 public interface RouteMapper {
     Route routeDtoToRoute(RouteDto routeDto);
 
     @Mapping(target = "car", source = "car")
     @Mapping(target = "car.loadSize", source = "routePoints", qualifiedByName = "mapCarLoadSize")
-    RouteDto routeToRouteDto(Route routeDto);
+    RouteDto routeToRouteDto(Route route);
 
     @Named("mapCarLoadSize")
     default double mapCarLoadSize(List<RoutePoint> routePoints) {

@@ -6,7 +6,7 @@ public class RoutePointNotFoundException extends RuntimeException {
 
     private static final String MESSAGE = " %s";
 
-    public RoutePointNotFoundException(UUID routePointId) {
+    public RoutePointNotFoundException(long routePointId) {
         super(String.format(MESSAGE, routePointId));
     }
 }

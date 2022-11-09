@@ -30,7 +30,7 @@ public class RoutePointActionResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalDateTime routeFinishTime;
 
-    private UUID routePointId;
+    private long routePointId;
     private RoutePointStatus routePointStatus;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")

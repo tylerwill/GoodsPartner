@@ -3,6 +3,7 @@ package com.goodspartner.service;
 import com.goodspartner.action.RouteAction;
 import com.goodspartner.action.RoutePointAction;
 import com.goodspartner.dto.RouteDto;
+import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.RoutePoint;
@@ -17,9 +18,9 @@ public interface RouteService {
 
     RouteActionResponse update(int routeId, RouteAction action);
 
-    RoutePointActionResponse updatePoint(int routeId, UUID routePointId, RoutePointAction action);
+    RoutePointActionResponse updatePoint(int routeId, long routePointId, RoutePointAction action);
 
-    void reorderRoutePoints(UUID deliveryId, int routeId, LinkedList<RoutePoint> routePoints);
+    void reorderRoutePoints(UUID deliveryId, int routeId, LinkedList<RoutePointDto> routePointDtos);
 
     List<RouteDto> findRoutesByDeliveryAndCar(Delivery delivery, Car car);
 }

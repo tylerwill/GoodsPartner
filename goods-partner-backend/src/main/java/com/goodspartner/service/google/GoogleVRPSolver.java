@@ -2,8 +2,12 @@ package com.goodspartner.service.google;
 
 import com.goodspartner.dto.DistanceMatrix;
 import com.goodspartner.dto.MapPoint;
+import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.Car;
+import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.RoutePoint;
+import com.goodspartner.entity.Store;
+import com.goodspartner.mapper.StoreMapper;
 import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.VRPSolver;
 import com.goodspartner.service.dto.GoogleVRPSolverStatus;
@@ -58,6 +62,7 @@ public class GoogleVRPSolver implements VRPSolver {
     private static final long NORMALIZATION_TIME_SHIFT_MINUTES = DEFAULT_DEPOT_START_TIME.getHour() * 60L; // 0 start of a day
 
     private final GraphhopperService graphhopperService;
+    private final StoreMapper storeMapper;
 
     @PostConstruct
     public void init() {
@@ -66,16 +71,28 @@ public class GoogleVRPSolver implements VRPSolver {
     }
 
     @Override
-    public VRPSolution optimize(List<Car> cars, MapPoint storeMapPoint, List<RoutePoint> routePoints) {
+    public VRPSolution optimize(List<Car> cars, Store store, List<RoutePoint> routePoints) {
 
         List<MapPoint> mapPoints = new ArrayList<>();
-        mapPoints.add(storeMapPoint);
-        mapPoints.addAll(routePoints.stream().map(RoutePoint::getMapPoint).toList());
+        mapPoints.add(storeMapper.getMapPoint(store));
+        mapPoints.addAll(routePoints.stream().map(this::getMapPoint).toList());
 
         DistanceMatrix matrix = graphhopperService.getMatrix(mapPoints);
         log.info("DistanceMatrix has been calculated for {} route points", routePoints.size());
 
         return solve(cars, routePoints, matrix);
+    }
+
+    private MapPoint getMapPoint(RoutePoint routePoint) {
+        List<OrderExternal> orders = routePoint.getOrders();
+        // TODO Address external is the same for all orders for RoutePoint
+        AddressExternal addressExternal = orders.get(0).getAddressExternal();
+        return MapPoint.builder()
+                .status(MapPoint.AddressStatus.KNOWN)
+                .address(addressExternal.getValidAddress())
+                .longitude(addressExternal.getLongitude())
+                .latitude(addressExternal.getLatitude())
+                .build();
     }
 
     private VRPSolution solve(List<Car> cars,

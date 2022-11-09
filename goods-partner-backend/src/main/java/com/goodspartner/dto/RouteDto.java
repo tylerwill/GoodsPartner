@@ -1,7 +1,5 @@
 package com.goodspartner.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RouteStatus;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -34,7 +32,7 @@ public class RouteDto {
 
     private long spentTime;
     private boolean optimization;
-    private List<RoutePoint> routePoints;
+    private List<RoutePointDto> routePoints;
     private CarDto car;
     private StoreDto store;
 }

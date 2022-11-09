@@ -1,9 +1,8 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.MapPoint;
-import com.goodspartner.dto.Product;
-import com.goodspartner.service.dto.VRPSolution;
-import com.goodspartner.service.dto.RoutingSolution;
+import com.goodspartner.dto.OrderDto;
+import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.OrderExternal;
@@ -12,6 +11,8 @@ import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.entity.Store;
+import com.goodspartner.mapper.OrderExternalMapper;
+import com.goodspartner.mapper.RoutePointMapper;
 import com.goodspartner.mapper.StoreMapper;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.service.GraphhopperService;
@@ -19,6 +20,8 @@ import com.goodspartner.service.RouteCalculationService;
 import com.goodspartner.service.StoreService;
 import com.goodspartner.service.VRPSolver;
 import com.goodspartner.service.dto.RouteMode;
+import com.goodspartner.service.dto.RoutingSolution;
+import com.goodspartner.service.dto.VRPSolution;
 import com.google.common.annotations.VisibleForTesting;
 import com.graphhopper.ResponsePath;
 import com.graphhopper.util.Instruction;
@@ -37,7 +40,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -53,6 +55,8 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     private final VRPSolver vrpSolver;
     private final GraphhopperService graphhopperService;
     private final CarRepository carRepository;
+    private final RoutePointMapper routePointMapper;
+    private final OrderExternalMapper orderExternalMapper;
     private final int ARRIVAL_SIGN = 5;
     private final int FINISH_SIGN = 4;
 
@@ -80,12 +84,13 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
         List<RoutePoint> routePoints = mapToRoutePoints(filteredOrders);
 
         log.info("Start route optimisation for {} orders", orders.size());
-        VRPSolution solution = vrpSolver.optimize(cars, storeMapper.getMapPoint(store), routePoints);
+        VRPSolution solution = vrpSolver.optimize(cars, store, routePoints);
         log.info("Finished route optimisation for {} orders", orders.size());
 
         updateDroppedOrders(filteredOrders, solution);
 
-        return solution.getRoutings().stream()
+        return solution.getRoutings()
+                .stream()
                 .map(vrpSolution -> mapToRoute(vrpSolution, store))
                 .collect(Collectors.toList());
 
@@ -103,45 +108,58 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                 .stream()
                 .map(RoutePoint::getOrders)
                 .flatMap(Collection::stream)
-                .map(orderReference -> orderMap.get(orderReference.getId()))
+                .map(orderDto -> orderMap.get(orderDto.getId()))
                 .forEach(orderExternal -> orderExternal.setDropped(true));
     }
 
     @VisibleForTesting
-    Route mapToRoute(RoutingSolution RoutingSolution, Store store) {
+    Route mapToRoute(RoutingSolution routingSolution, Store store) {
 
         List<MapPoint> mapPoints = new ArrayList<>();
         mapPoints.add(storeMapper.getMapPoint(store));
-        mapPoints.addAll(RoutingSolution.getRoutePoints().stream().map(RoutePoint::getMapPoint).toList());
+        mapPoints.addAll(routingSolution.getRoutePoints()
+                .stream()
+                .map(this::getMapPoint)
+                .toList());
         mapPoints.add(storeMapper.getMapPoint(store)); // Return back to Store
-
         ResponsePath routePath = graphhopperService.getRoute(mapPoints);
 
-        List<RoutePoint> routePoints = RoutingSolution.getRoutePoints();
+        List<RoutePoint> routePoints = routingSolution.getRoutePoints();
 
         Route route = new Route();
         route.setStatus(RouteStatus.DRAFT);
         route.setTotalWeight(getRouteOrdersTotalWeight(routePoints));
         route.setTotalPoints(routePoints.size());
         route.setTotalOrders(getTotalOrders(routePoints));
+        route.setRoutePoints(routePoints);
+        route.setOptimization(true);
+        route.setCar(routingSolution.getCar());
+        route.setStore(store);
         route.setDistance(BigDecimal.valueOf(routePath.getDistance() / 1000)
                 .setScale(2, RoundingMode.HALF_UP)
                 .doubleValue());
-
         int totalWaitTimeMin = SERVICE_TIME_AT_LOCATION_MIN * routePoints.size();
         route.setEstimatedTime(Duration.ofMillis(routePath.getTime()).toMinutes() + totalWaitTimeMin);
-
-        route.setRoutePoints(routePoints);
-        route.setOptimization(true);
-        route.setCar(RoutingSolution.getCar());
-        route.setStore(store);
 
         return route;
     }
 
+    // TODO method duplication
+    private MapPoint getMapPoint(RoutePoint routePoint) {
+        List<OrderExternal> orders = routePoint.getOrders();
+        // TODO Address external is the same for all orders for RoutePoint
+        AddressExternal addressExternal = orders.get(0).getAddressExternal();
+        return MapPoint.builder()
+                .status(MapPoint.AddressStatus.KNOWN)
+                .address(addressExternal.getValidAddress())
+                .longitude(addressExternal.getLongitude())
+                .latitude(addressExternal.getLatitude())
+                .build();
+    }
+
     @VisibleForTesting
-    Route recalculateRoute(Route route, LinkedList<RoutePoint> routePoints) {
-        List<MapPoint> mapPoints = routePoints.stream().map(RoutePoint::getMapPoint).toList();
+    Route recalculateRoute(Route route, LinkedList<RoutePointDto> routePointDtos) {
+        List<MapPoint> mapPoints = routePointDtos.stream().map(RoutePointDto::getMapPoint).toList();
 
         ResponsePath routePath = graphhopperService.getRoute(mapPoints);
 
@@ -162,18 +180,19 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                 long arrivedTimeInMinutes = Duration.ofMillis(arrivedTime).toMinutes();
                 legTimes.clear();
 
-                routePoints.get(index).setRoutePointDistantTime(arrivedTimeInMinutes);
+                routePointDtos.get(index).setRoutePointDistantTime(arrivedTimeInMinutes);
                 index++;
             }
         }
-        route.setRoutePoints(routePoints);
+        route.setRoutePoints(routePointMapper.toRoutePointList(routePointDtos));
+
         return route;
     }
 
     @VisibleForTesting
     int getTotalOrders(List<RoutePoint> routePoints) {
         return routePoints.stream()
-                .map(routePointDto -> routePointDto.getOrders().size())
+                .map(routePoint -> routePoint.getOrders().size())
                 .mapToInt(size -> size).sum();
     }
 
@@ -197,65 +216,29 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                         Collectors.toList()));
 
         addressOrderMap.forEach((addressExternal, orderList) -> {
-            List<RoutePoint.OrderReference> orderReferences = mapOrdersAddress(orderList);
 
-            double addressTotalWeight = orderReferences.stream()
-                    .map(RoutePoint.OrderReference::getOrderTotalWeight)
+            double addressTotalWeight = orderList.stream()
+                    .map(OrderExternal::getOrderWeight)
                     .collect(Collectors.summarizingDouble(amount -> amount)).getSum();
 
             AddressExternal.OrderAddressId orderAddressId = addressExternal.getOrderAddressId();
+            List<OrderDto> orderDtos = orderExternalMapper.mapExternalOrdersToOrderDtos(orderList);
 
             RoutePoint routePoint = new RoutePoint();
-            routePoint.setId(UUID.randomUUID());
             routePoint.setStatus(RoutePointStatus.PENDING);
             routePoint.setAddress(orderAddressId.getOrderAddress());
             routePoint.setClientName(orderAddressId.getClientName());
-            routePoint.setOrders(orderReferences);
+            routePoint.setOrders(orderList);
             routePoint.setAddressTotalWeight(addressTotalWeight);
-            routePoint.setMapPoint(getMapPoint(addressExternal));
-
             // TODO : issue #205 how to represent several orders per one client. Now we take first
-            OrderExternal firstOrder = orderList.get(0);
-            routePoint.setDeliveryStart(firstOrder.getDeliveryStart());
-            routePoint.setDeliveryEnd(firstOrder.getDeliveryFinish());
+            // TODO : stream over all order and choose the one where the values are not default one
+            OrderDto firstOrderDto = orderDtos.get(0);
+            routePoint.setDeliveryStart(firstOrderDto.getDeliveryStart());
+            routePoint.setDeliveryEnd(firstOrderDto.getDeliveryFinish());
 
             routePointList.add(routePoint);
         });
+
         return routePointList;
-    }
-
-    private MapPoint getMapPoint(AddressExternal addressExternal) {
-        return MapPoint.builder()
-                .status(MapPoint.AddressStatus.KNOWN)
-                .address(addressExternal.getValidAddress())
-                .longitude(addressExternal.getLongitude())
-                .latitude(addressExternal.getLatitude())
-                .build();
-    }
-
-    private List<RoutePoint.OrderReference> mapOrdersAddress(List<OrderExternal> orders) {
-        return orders.stream()
-                .map(this::mapOrderAddress)
-                .collect(Collectors.toList());
-    }
-
-    private RoutePoint.OrderReference mapOrderAddress(OrderExternal order) {
-        List<Product> products = order.getProducts();
-        double orderTotalWeight = getOrderTotalWeight(products);
-
-        RoutePoint.OrderReference orderReference = new RoutePoint.OrderReference();
-        orderReference.setId(order.getId());
-        orderReference.setOrderNumber(String.valueOf(order.getOrderNumber()));
-        orderReference.setComment(order.getComment());
-        orderReference.setOrderTotalWeight(orderTotalWeight);
-
-        return orderReference;
-    }
-
-    private double getOrderTotalWeight(List<Product> orderedProducts) {
-        return BigDecimal.valueOf(orderedProducts.stream()
-                        .map(Product::getTotalProductWeight)
-                        .collect(Collectors.summarizingDouble(weight -> weight)).getSum())
-                .setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 }

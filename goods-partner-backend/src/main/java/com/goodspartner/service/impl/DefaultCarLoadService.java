@@ -45,7 +45,7 @@ public class DefaultCarLoadService implements CarLoadService {
                 .map(routePoint -> {
                     List<String> routeOrderNumbers = routePoint.getOrders()
                             .stream()
-                            .map(RoutePoint.OrderReference::getOrderNumber)
+                            .map(OrderExternal::getOrderNumber)
                             .toList();
                     return orders
                             .stream()

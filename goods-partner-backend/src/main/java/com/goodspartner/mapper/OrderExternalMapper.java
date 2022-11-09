@@ -2,6 +2,7 @@ package com.goodspartner.mapper;
 
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.dto.OrderShortDto;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.OrderExternal;
 import org.mapstruct.Mapper;
@@ -40,4 +41,6 @@ public interface OrderExternalMapper {
                 .status(MapPoint.AddressStatus.KNOWN)
                 .build();
     }
+
+    OrderShortDto toOrderShortDto(OrderExternal orderExternal);
 }

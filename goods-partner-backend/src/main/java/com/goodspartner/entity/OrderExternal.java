@@ -2,6 +2,7 @@ package com.goodspartner.entity;
 
 import com.goodspartner.dto.Product;
 import com.vladmihalcea.hibernate.type.json.JsonType;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +26,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -96,5 +96,9 @@ public class OrderExternal {
     @ManyToOne
     @JoinColumn(name = "car_load_id", referencedColumnName = "id")
     private CarLoad carLoad;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "route_point_id", referencedColumnName = "id")
+    private RoutePoint routePoint;
 }
 

@@ -48,7 +48,7 @@ public class Delivery {
     @OrderBy("id ASC")
     private List<Route> routes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "delivery", orphanRemoval = true)
     private List<OrderExternal> orders = new ArrayList<>();
 
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
