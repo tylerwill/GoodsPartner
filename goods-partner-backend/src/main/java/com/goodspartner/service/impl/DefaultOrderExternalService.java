@@ -4,11 +4,11 @@ import com.goodspartner.action.OrderAction;
 import com.goodspartner.cache.OrderCache;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.dto.UpdateDto;
 import com.goodspartner.entity.*;
 import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.DeliveryNotFoundException;
-import com.goodspartner.exception.OrderNotFoundException;
 import com.goodspartner.exception.UnknownAddressException;
 import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.repository.AddressExternalRepository;
@@ -159,17 +159,19 @@ public class DefaultOrderExternalService implements OrderExternalService {
 
     @Transactional
     @Override
-    public OrderDto updateDeliveryDate(int orderId, LocalDate deliveryDate, OrderAction action) {
-        OrderExternal orderExternal = orderExternalRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException(orderId));
+    public List<OrderDto> updateDeliveryDate(UpdateDto updateDto, OrderAction orderAction) {
+        List<Integer> ordersIdList = updateDto.getOrdersIdList();
+        List<OrderExternal> ordersExternalsList = orderExternalRepository.findAllById(ordersIdList);
 
-        orderExternal.setDeliveryDate(deliveryDate);
-        action.perform(orderExternal);
+        ordersExternalsList.forEach(order -> {
+            orderAction.perform(order);
+            order.setDeliveryDate(updateDto.getDeliveryDate());
+        });
 
-        Optional<Delivery> delivery = deliveryRepository.findByStatusAndDeliveryDate(DeliveryStatus.DRAFT, deliveryDate);
-        delivery.ifPresent(orderExternal::setDelivery);
+        deliveryRepository.findByStatusAndDeliveryDate(DeliveryStatus.DRAFT, updateDto.getDeliveryDate())
+                .ifPresent(deliveryValue -> ordersExternalsList.forEach(order -> order.setDelivery(deliveryValue)));
 
-        return orderExternalMapper.mapOrderExternalToOrderDto(orderExternalRepository.save(orderExternal));
+        return orderExternalMapper.mapExternalOrdersToOrderDtos(orderExternalRepository.saveAll(ordersExternalsList));
     }
 
     private void validateOrderAddresses(List<OrderDto> orderDtos) {

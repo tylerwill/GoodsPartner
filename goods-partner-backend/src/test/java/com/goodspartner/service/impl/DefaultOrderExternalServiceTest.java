@@ -5,8 +5,8 @@ import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractBaseITest;
 import com.goodspartner.action.OrderAction;
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.dto.UpdateDto;
 import com.goodspartner.entity.OrderExternal;
-import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.repository.OrderExternalRepository;
 import com.goodspartner.service.OrderExternalService;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +19,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DBRider
 class DefaultOrderExternalServiceTest extends AbstractBaseITest {
@@ -71,6 +70,13 @@ class DefaultOrderExternalServiceTest extends AbstractBaseITest {
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("Update delivery date")
     void updateDeliveryDate() {
+
+        UpdateDto updateDto = new UpdateDto();
+        List<Integer> list = List.of(251);
+        LocalDate date = LocalDate.of(2022, 2, 20);
+        updateDto.setDeliveryDate(date);
+        updateDto.setOrdersIdList(list);
+
         List<OrderDto> skippedOrders = orderExternalService.getFilteredOrders(false, false);
         assertEquals(1, skippedOrders.size());
         OrderDto orderDto = skippedOrders.get(0);
@@ -78,7 +84,7 @@ class DefaultOrderExternalServiceTest extends AbstractBaseITest {
         assertEquals(UUID.fromString("70574dfd-48a3-40c7-8b0c-3e5defe7d080"), orderDto.getDeliveryId());
         assertEquals(251, orderDto.getId());
 
-        orderExternalService.updateDeliveryDate(251, LocalDate.of(2022, 2, 20), OrderAction.of("schedule"));
+        orderExternalService.updateDeliveryDate(updateDto, OrderAction.of("schedule"));
 
         Optional<OrderExternal> orderExternal = orderExternalRepository.findById(251);
 

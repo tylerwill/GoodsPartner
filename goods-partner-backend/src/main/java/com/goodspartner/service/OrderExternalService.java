@@ -3,6 +3,7 @@ package com.goodspartner.service;
 import com.goodspartner.action.OrderAction;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.dto.UpdateDto;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Car;
@@ -23,7 +24,7 @@ public interface OrderExternalService {
 
     List<OrderDto> findOrdersByDeliveryAndCar(Delivery delivery, Car car);
 
-    OrderDto updateDeliveryDate(int orderId, LocalDate deliveryDate, OrderAction action);
+    List<OrderDto> updateDeliveryDate(UpdateDto updateDto, OrderAction orderAction);
 
     List<OrderDto> getFilteredOrders(boolean excluded, boolean dropped);
 
