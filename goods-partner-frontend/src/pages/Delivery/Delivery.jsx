@@ -87,7 +87,6 @@ const Delivery = () => {
                 <Typography
                     sx={{mr: 2}}
                     variant="h6" component="h2">
-                    {/*TODO: [UI Max] Format date to be same as in design*/}
                     Доставка на {reformatDate(delivery.deliveryDate)}
                 </Typography>
                 <DeliveryStatusChip status={delivery.status}/>
@@ -114,8 +113,6 @@ const Delivery = () => {
 
 
         <Box sx={{marginTop: '16px'}}>
-            {/*TODO: [UI] Add icons */}
-            {/*TODO: [UI Max] disable some labels if route is not in calculated status */}
             <BasicTabs labels={tabLabels} fullWidth={true} tabIndex={tabIndex} setTabIndex={setTabIndexHandler}>
                 <Orders/>
                 <Routes/>

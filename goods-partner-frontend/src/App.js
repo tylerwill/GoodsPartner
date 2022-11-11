@@ -4,7 +4,6 @@ import * as React from "react";
 import {Route, Routes} from "react-router-dom";
 import {useJsApiLoader} from "@react-google-maps/api";
 import {Backdrop} from "@mui/material";
-import Cars from "./pages/Cars/Cars";
 import Deliveries from "./pages/Deliveries/Deliveries";
 import Reports from "./pages/Reports/Reports";
 import Delivery from "./pages/Delivery/Delivery";
@@ -41,7 +40,7 @@ function App() {
             <CssBaseline/>
             <Layout>
                 <Routes>
-                    <Route path="/cars" element={<Cars/>}/>
+                    {/*<Route path="/cars" element={<Cars/>}/>*/}
                     <Route path="/users" element={<Users/>}/>
                     <Route path="/deliveries" element={<Deliveries/>}/>
                     <Route path="/" element={<Deliveries/>}/>

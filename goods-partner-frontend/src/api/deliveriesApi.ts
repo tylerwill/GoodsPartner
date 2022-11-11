@@ -1,4 +1,6 @@
 import {axiosWithSetting} from "./api";
+import Delivery from "../model/Delivery";
+import {RouteAction, RoutePointAction} from "../model/Actions";
 
 export const deliveriesApi = {
     findAll() {
@@ -9,36 +11,36 @@ export const deliveriesApi = {
         return axiosWithSetting.get('/deliveries/by-driver');
     },
 
-    create(delivery) {
+    create(delivery: Delivery) {
         return axiosWithSetting.post('/deliveries', delivery)
     },
 
-    findById(id) {
+    findById(id: number) {
         return axiosWithSetting.get(`/deliveries/${id}`);
     },
 
-    findByIdForDriver(id) {
+    findByIdForDriver(id: number) {
         return axiosWithSetting.get(`/deliveries/${id}/by-driver`);
     },
 
 
-    calculate(delivery) {
+    calculate(delivery: Delivery) {
         return axiosWithSetting.post(`/deliveries/${delivery.id}/calculate`, delivery);
     },
 
-    approve(id) {
+    approve(id: number) {
         return axiosWithSetting.post(`/deliveries/${id}/approve`);
     },
 
-    applyRoutePointAction(deliveryId, routeId, routePointId, action) {
+    applyRoutePointAction(deliveryId: number, routeId: number, routePointId: number, action: RoutePointAction) {
         return axiosWithSetting.post(`/deliveries/${deliveryId}/routes/${routeId}/route-points/${routePointId}/${action}`);
     },
 
-    applyRouteAction(deliveryId, routeId, action) {
+    applyRouteAction(deliveryId: number, routeId: number, action: RouteAction) {
         return axiosWithSetting.post(`/deliveries/${deliveryId}/routes/${routeId}/${action}`);
     },
 
-    findHistory(deliveryId) {
+    findHistory(deliveryId: number) {
         return axiosWithSetting.get(`/deliveries/${deliveryId}/histories`);
     }
 }

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Box, Button, ListItemIcon, ListItemText, Menu, MenuItem, Typography} from "@mui/material";
+import {Box, Button, Typography} from "@mui/material";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -10,19 +10,17 @@ import Paper from '@mui/material/Paper';
 
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import IconButton from "@mui/material/IconButton";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import UserFormDialog from "./UserFormDialog/UserFormDialog";
-import {useDispatch, useSelector} from "react-redux";
-import {fetchUsers, addUser, updateUser, deleteUser} from "../../features/users/usersSlice";
+import {addUser, deleteUser, fetchUsers, updateUser} from "../../features/users/usersSlice";
 import Loading from "../../components/Loading/Loading";
 import ErrorAlert from "../../components/ErrorAlert/ErrorAlert";
+import {useAppDispatch, useAppSelector} from "../../hooks/redux-hooks";
+import {User, UserRole} from "../../model/User";
+import ActionMenu from "../../components/ActionMenu/ActionMenu";
 
 const Users = () => {
-    const {users, loading, error} = useSelector(state => state.users);
-    const dispatch = useDispatch();
+    const {users, loading, error} = useAppSelector(state => state.users);
+    const dispatch = useAppDispatch();
 
     const defaultNewUserState = {
         id: null,
@@ -37,17 +35,17 @@ const Users = () => {
     const [editedUser, setEditedUser] = useState({});
     const [newUser, setNewUser] = useState(defaultNewUserState);
 
-    const addUserHandler = (user) => {
+    const addUserHandler = (user: User) => {
         dispatch(addUser(user));
         setNewUser(defaultNewUserState);
     }
 
-    const updateUserHandler = (user) => {
+    const updateUserHandler = (user: User) => {
         dispatch(updateUser(user));
         setNewUser(defaultNewUserState);
     }
 
-    const deleteUserHandler = (id) => {
+    const deleteUserHandler = (id: number) => {
         dispatch(deleteUser(id));
     }
 
@@ -85,12 +83,12 @@ const Users = () => {
                             <TableRow key={"tableUserId " + user.id}>
                                 <TableCell>{user.userName}</TableCell>
                                 <TableCell>{user.email}</TableCell>
-                                <TableCell>{toRoleString(user.role)}</TableCell>
+                                <TableCell>{user.role}</TableCell>
                                 <TableCell align="center">{user.enabled ? <CheckIcon/> : <CloseIcon/>}</TableCell>
-                                <TableCell align="center"><BasicMenu user={user}
-                                                      setEditedUser={setEditedUser}
-                                                      deleteUser={deleteUserHandler}
-                                                      openEditDialog={setIsEditUserDialogOpen}
+                                <TableCell align="center"><ActionMenu user={user}
+                                                                      setEditedUser={setEditedUser}
+                                                                      deleteUser={deleteUserHandler}
+                                                                      openEditDialog={setIsEditUserDialogOpen}
                                 /></TableCell>
                             </TableRow>
                         ))}
@@ -116,78 +114,19 @@ const Users = () => {
     </section>
 }
 
-function toRoleString(role) {
-    switch (role) {
-        case 'ADMIN': {
-            return 'Адміністратор'
-        }
-        case 'LOGIST': {
-            return 'Логіст'
-        }
-        case 'DRIVER': {
-            return 'Водій'
-        }
-    }
-}
+// function toRoleString(role: UserRole) {
+//     switch (role) {
+//         case 'ADMIN': {
+//             return 'Адміністратор'
+//         }
+//         case 'LOGIST': {
+//             return 'Логіст'
+//         }
+//         case 'DRIVER': {
+//             return 'Водій'
+//         }
+//     }
+// }
 
-function BasicMenu({user, deleteUser, setEditedUser, openEditDialog}) {
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-    const handleDelete = () => {
-        // TODO:replace confirm dialog
-        if (window.confirm(`Are you sure wanted to delete user: ${user} ?`)) {
-            deleteUser(user.id);
-        }
-    }
-
-    const handleEdit = () => {
-        setEditedUser(user);
-        openEditDialog(true);
-        handleClose();
-    }
-
-    return (
-        <div>
-            <IconButton
-                aria-label="more"
-                id="long-button"
-                aria-controls={open ? 'long-menu' : undefined}
-                aria-expanded={open ? 'true' : undefined}
-                aria-haspopup="true"
-                onClick={handleClick}
-            >
-                <MoreVertIcon/>
-            </IconButton>
-            <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                    'aria-labelledby': 'basic-button',
-                }}
-            >
-                <MenuItem onClick={handleEdit}>
-                    <ListItemIcon>
-                        <EditOutlinedIcon/>
-                    </ListItemIcon>
-                    <ListItemText>Редагувати</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                        <DeleteForeverOutlinedIcon sx={{color: '#D32F2F'}}/>
-                    </ListItemIcon>
-                    <ListItemText sx={{color: '#D32F2F'}} onClick={handleDelete}>Видалити</ListItemText>
-                </MenuItem>
-            </Menu>
-        </div>
-    );
-}
 
 export default Users;

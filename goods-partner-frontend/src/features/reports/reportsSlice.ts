@@ -7,13 +7,19 @@ const initialState = {
     error: ''
 };
 
+interface DateRange {
+    dateFrom: string,
+    dateTo: string
+}
+
 export const fetchDeliveriesStatistics = createAsyncThunk('reports/deliveriesStatisticsFetch',
-    ({dateFrom, dateTo}) => {
+    ({dateFrom, dateTo}: DateRange) => {
         return reportsApi.getDeliveriesStatistics(dateFrom, dateTo)
             .then(response => response.data);
     })
 
 const reportsSlice = createSlice({
+    reducers: {},
     name: 'reports',
     initialState,
     extraReducers: builder => {
@@ -29,7 +35,8 @@ const reportsSlice = createSlice({
         builder.addCase(fetchDeliveriesStatistics.rejected, (state, action) => {
             state.loading = false
             state.deliveriesStatistics = []
-            state.error = action.error.message
+            // TODO: Pfff.....
+            // state.error = action.error.message
         })
     }
 })

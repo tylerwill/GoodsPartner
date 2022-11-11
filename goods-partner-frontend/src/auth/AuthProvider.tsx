@@ -1,11 +1,17 @@
 import * as React from 'react'
-import {useState, useEffect, useMemo, useContext} from "react";
+import {useState, useEffect, useMemo, useContext, ReactNode} from "react";
 import {usersApi} from "../api/usersApi";
+import {AuthUserContext} from "./AuthUserContext";
+import {User} from "../model/User";
 
-const AuthContext = React.createContext()
+const AuthContext = React.createContext<AuthUserContext | null>(null);
 
-export const AuthProvider = ({children}) => {
-    const [user, setUser] = useState('');
+interface Props {
+    children: ReactNode[]
+}
+
+export const AuthProvider = ({children}: Props) => {
+    const [user, setUser] = useState<User | null>(null);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
 
@@ -16,7 +22,7 @@ export const AuthProvider = ({children}) => {
             .finally(() => setLoading(false));
     }, []);
 
-    const memoedValue = useMemo(
+    const memoedValue = useMemo<AuthUserContext>(
         () => ({
             user,
             loading,
