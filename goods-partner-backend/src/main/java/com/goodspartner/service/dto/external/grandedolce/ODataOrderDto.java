@@ -20,7 +20,6 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-// common
 public class ODataOrderDto {
 
     @JsonAlias("Ref_Key")
@@ -28,16 +27,14 @@ public class ODataOrderDto {
     @JsonAlias("Number")
     private String orderNumber;
     @JsonAlias("Date")
-    private LocalDate createdDate;
+    private LocalDate shippingDate;
     @JsonAlias("АдресДоставки")
     private String address;
     @JsonAlias("Комментарий")
     private String comment;
 
-    private LocalDate deliveryDate;
     private String clientName;
     private String managerFullName;
-
     //Enrichment
     private List<Product> products;
     private double orderWeight;

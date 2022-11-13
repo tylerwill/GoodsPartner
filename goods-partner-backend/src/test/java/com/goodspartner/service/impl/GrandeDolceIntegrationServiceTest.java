@@ -14,7 +14,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +52,7 @@ class GrandeDolceIntegrationServiceTest {
 
     @Test
     void testEnrichOrders() {
-        orderService.enrichOrders(orderList, productMap, LocalDate.of(2000,2,2));
+        orderService.enrichOrders(orderList, productMap);
 
         ODataOrderDto order_5c7c3687_84f2 = orderList.stream().
                 filter(orderDto -> "5c7c3687-84f2-11ec-b3ce-00155dd72305".equals(orderDto.getRefKey())).findFirst().get();
@@ -114,8 +113,8 @@ class GrandeDolceIntegrationServiceTest {
         var productsFilter = orderService.createProductsFilter(keyList);
         var expectedProductFilter =
                 "Ref_Key eq guid'ecdc9069-84f4-11ec-b3ce-00155dd72305' or " +
-                "Ref_Key eq guid'5c7c3687-84f2-11ec-b3ce-00155dd72305' or " +
-                "Ref_Key eq guid'e1759d35-84cd-11ec-b3ce-00155dd72305'";
+                        "Ref_Key eq guid'5c7c3687-84f2-11ec-b3ce-00155dd72305' or " +
+                        "Ref_Key eq guid'e1759d35-84cd-11ec-b3ce-00155dd72305'";
 
         assertEquals(expectedProductFilter, productsFilter);
     }

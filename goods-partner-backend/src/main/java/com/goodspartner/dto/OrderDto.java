@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -29,9 +28,7 @@ public class OrderDto {
     private UUID deliveryId;
     @ApiModelProperty(notes = "The unique uuid of order from 1C")
     private String refKey;
-
     private String orderNumber;
-    private LocalDate createdDate;
     private String comment;
     private String managerFullName;
     private boolean isFrozen;
@@ -39,8 +36,9 @@ public class OrderDto {
     private boolean excluded;
     private boolean dropped;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate deliveryDate;
+    private LocalDate shippingDate;
+    private LocalDate rescheduleDate;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime deliveryStart;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
@@ -51,7 +49,7 @@ public class OrderDto {
     private String address;
     private MapPoint mapPoint;
 
-    //Enrichment
+    // Enrichment
     private List<Product> products;
     private double orderWeight;
 }

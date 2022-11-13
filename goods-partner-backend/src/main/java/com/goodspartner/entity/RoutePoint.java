@@ -9,6 +9,8 @@ import lombok.Setter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,6 +40,7 @@ public class RoutePoint {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "route_points_sequence")
     @SequenceGenerator(name = "route_points_sequence", sequenceName = "route_points_sequence")
     private long id;
+    @Enumerated(value = EnumType.STRING)
     private RoutePointStatus status;
     @Column(name = "client_name")
     private String clientName;

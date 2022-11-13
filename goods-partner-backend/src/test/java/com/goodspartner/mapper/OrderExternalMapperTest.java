@@ -44,7 +44,7 @@ class OrderExternalMapperTest {
                 .id(1)
                 .refKey("refKey")
                 .orderNumber("45678")
-                .createdDate(LocalDate.of(2022, 2, 17))
+                .shippingDate(LocalDate.of(2022, 2, 17))
                 .comment("comment")
                 .managerFullName("Балашова Лариса")
                 .isFrozen(true)
@@ -65,7 +65,7 @@ class OrderExternalMapperTest {
         assertEquals(1, orderExternal.getId());
         assertEquals("refKey", orderExternal.getRefKey());
         assertEquals("45678", orderExternal.getOrderNumber());
-        assertEquals(LocalDate.of(2022, 2, 17), orderExternal.getCreatedDate());
+        assertEquals(LocalDate.of(2022, 2, 17), orderExternal.getShippingDate());
         assertEquals("comment", orderExternal.getComment());
         assertEquals("Балашова Лариса", orderExternal.getManagerFullName());
         assertTrue(orderExternal.isFrozen());

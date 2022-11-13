@@ -14,6 +14,7 @@ import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.service.*;
 import com.goodspartner.service.util.DeliveryCalculationHelper;
+import com.goodspartner.service.util.TxWrapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -79,12 +80,13 @@ class DefaultDeliveryServiceTest extends AbstractBaseITest {
         DeliveryCalculationHelper deliveryCalculationHelper = mock(DeliveryCalculationHelper.class);
         CarLoadService carLoadService = mock(CarLoadService.class);
 
+        TxWrapper txWrapper = new TxWrapper();
+
         //construct mock Delivery object
         DeliveryService mockService =
                 new DefaultDeliveryService(deliveryMapperMock, deliveryRepositoryMock, carRepositoryMock,
-                        deliveryCalculationHelper,  orderExternalServiceMock,
-                        eventServiceMock,
-                        carLoadService, routeServiceMock, userServiceMock);
+                        deliveryCalculationHelper,  orderExternalServiceMock, eventServiceMock,
+                        carLoadService, routeServiceMock, userServiceMock, txWrapper);
 
         //configure mock objects
         Delivery mockDelivery = mock(Delivery.class);

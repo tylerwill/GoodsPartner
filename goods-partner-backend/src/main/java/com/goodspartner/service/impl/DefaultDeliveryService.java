@@ -19,7 +19,6 @@ import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.exception.DeliveryModifyException;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
-import com.goodspartner.exception.NoOrdersFoundForDelivery;
 import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
@@ -30,6 +29,7 @@ import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.service.RouteService;
 import com.goodspartner.service.UserService;
 import com.goodspartner.service.util.DeliveryCalculationHelper;
+import com.goodspartner.service.util.TxWrapper;
 import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +61,7 @@ public class DefaultDeliveryService implements DeliveryService {
     private final CarLoadService carLoadService;
     private final RouteService routeService;
     private final UserService userService;
+    private final TxWrapper txWrapper;
 
     // TODO N+1 issue when Lazy fetching orders for each delivery
     @Override
@@ -108,23 +109,25 @@ public class DefaultDeliveryService implements DeliveryService {
     @Override
     @Transactional
     public DeliveryDto add(DeliveryDto deliveryDto) {
-        Optional<Delivery> optionalDelivery = deliveryRepository.findByDeliveryDate(deliveryDto.getDeliveryDate());
-        if (optionalDelivery.isPresent()) {
-            throw new IllegalArgumentException("There is already delivery on date: " + deliveryDto.getDeliveryDate());
-        }
+        validateExistence(deliveryDto);
 
         deliveryDto.setStatus(DRAFT);
         deliveryDto.setFormationStatus(ORDERS_LOADING);
 
         Delivery addedDelivery = deliveryRepository.save(deliveryMapper.deliveryDtoToDelivery(deliveryDto));
 
-        DeliveryDto addedDeliveryDto = deliveryMapper.toDeliveryDtoResult(new DeliveryDto(), addedDelivery);
-
         orderExternalService.saveToOrderCache(addedDelivery.getId(), addedDelivery.getDeliveryDate());
 
-        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CREATED, addedDeliveryDto.getId());
+        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CREATED, addedDelivery.getId());
 
-        return addedDeliveryDto;
+        return deliveryMapper.toDeliveryDtoResult(new DeliveryDto(), addedDelivery);
+    }
+
+    private void validateExistence(DeliveryDto deliveryDto) {
+        Optional<Delivery> optionalDelivery = deliveryRepository.findByDeliveryDate(deliveryDto.getDeliveryDate());
+        if (optionalDelivery.isPresent()) {
+            throw new IllegalArgumentException("There is already delivery on date: " + deliveryDto.getDeliveryDate());
+        }
     }
 
     @Override
@@ -145,12 +148,13 @@ public class DefaultDeliveryService implements DeliveryService {
 
     @Override
     public DeliveryDto calculateDelivery(DeliveryDto deliveryDto) {
-        Delivery delivery = saveOrders(deliveryDto);
+        Delivery delivery = txWrapper.runInTransaction(this::saveOrders, deliveryDto);
 
         delivery.setFormationStatus(DeliveryFormationStatus.ROUTE_CALCULATION);
 
-        //Calculated in async method
-        deliveryCalculationHelper.calculate(delivery.getId());
+        deliveryCalculationHelper.calculate(delivery.getId());  //Calculated in async method
+
+        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, delivery.getId());
 
         return deliveryMapper.toDeliveryDtoWithOrders(new DeliveryDto(), deliveryRepository.save(delivery));
     }
@@ -161,33 +165,35 @@ public class DefaultDeliveryService implements DeliveryService {
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new DeliveryNotFoundException(deliveryDto.getId()));
 
-        List<OrderExternal> orderExternals = null;
-
-        if (delivery.getOrders().isEmpty()) {
-            orderExternals = orderExternalService.saveValidOrdersAndEnrichKnownAddressesCache(deliveryDto);
-
-            log.info("Orders for Delivery: {} have been saved to DB", delivery.getId());
-
-            orderExternalService.evictCache(deliveryId);
-        } else {
-            orderExternals = resetOrders(delivery.getOrders());
-            validateDelivery(delivery);
+        // If delivery already have order silently reset and exit for recalculation
+        if (!delivery.getOrders().isEmpty()) {
+            log.info("Delivery: {} already contains orders. Reseting them", delivery.getId());
+            resetOrders(delivery);
+            return delivery;
         }
+
+        List<OrderExternal> orderExternals = // Persist orders which sent from FE
+                orderExternalService.saveValidOrdersAndEnrichKnownAddressesCache(deliveryDto.getOrders());
+        log.info("Orders for Delivery: {} have been saved to DB", deliveryId);
+
+        orderExternalService.evictCache(deliveryId);
+        log.info("Cache has been evicted for Delivery: {}", deliveryId);
 
         eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_SAVED, deliveryId);
 
         delivery.setOrders(orderExternals);
+        delivery.setFormationStatus(DeliveryFormationStatus.ORDERS_LOADED);
+        deliveryRepository.save(delivery);
 
         return delivery;
     }
 
-    // Cleanup calculated order state in case of recalculation
-    private List<OrderExternal> resetOrders(List<OrderExternal> orders) {
-        orders.forEach(orderExternal -> {
+    private void resetOrders(Delivery delivery) {
+        delivery.getOrders().forEach(orderExternal -> {
             orderExternal.setCarLoad(null);
+            orderExternal.setRoutePoint(null);
             orderExternal.setDropped(false);
         });
-        return orders;
     }
 
     @Override
@@ -259,16 +265,6 @@ public class DefaultDeliveryService implements DeliveryService {
         return deliveryActionResponse;
     }
 
-
-    private void validateDelivery(Delivery delivery) {
-        if (delivery.getStatus() != DRAFT) {
-            throw new IllegalDeliveryStatusForOperation(delivery, "calculate");
-        }
-
-        if (delivery.getOrders().isEmpty()) {
-            throw new NoOrdersFoundForDelivery(delivery.getId());
-        }
-    }
 
     private void checkStatus(DeliveryDto deliveryDto) {
         if (deliveryDto.getStatus().equals(DeliveryStatus.COMPLETED)) {

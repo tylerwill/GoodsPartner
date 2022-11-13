@@ -54,7 +54,7 @@ public class CarLoadMapperTest {
                 .id(2)
                 .refKey("2221111-3344-5555-0000-444466669999")
                 .orderNumber("1232")
-                .createdDate(LocalDate.of(2022, 2, 17))
+                .shippingDate(LocalDate.of(2022, 2, 17))
                 .comment("Urgent")
                 .managerFullName("Georg")
                 .clientName("ABS")
@@ -96,7 +96,7 @@ public class CarLoadMapperTest {
         List<OrderExternal> mappedOrderExternals = orderExternalMapper.mapOrderDtosToOrdersExternal(carLoadDto.getOrders());
         assertEquals(2, mappedOrderExternals.get(0).getId());
         assertEquals("1232", mappedOrderExternals.get(0).getOrderNumber());
-        assertEquals(LocalDate.of(2022, 2, 17), mappedOrderExternals.get(0).getCreatedDate());
+        assertEquals(LocalDate.of(2022, 2, 17), mappedOrderExternals.get(0).getShippingDate());
         assertEquals("ABS", mappedOrderExternals.get(0).getAddressExternal().getOrderAddressId().getClientName());
         assertEquals("Бровари, Марії Лагунової, 11", mappedOrderExternals.get(0).getAddressExternal().getOrderAddressId().getOrderAddress());
         assertEquals("Georg", mappedOrderExternals.get(0).getManagerFullName());

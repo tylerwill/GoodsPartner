@@ -2,7 +2,7 @@ package com.goodspartner.web.controller;
 
 import com.goodspartner.action.OrderAction;
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.dto.UpdateDto;
+import com.goodspartner.dto.RescheduleOrdersDto;
 import com.goodspartner.service.OrderExternalService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -21,16 +21,25 @@ public class OrderController {
     private final OrderExternalService orderExternalService;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
-    @GetMapping()
+    @GetMapping("/skipped")
     @ApiOperation(value = "Get orders",
             notes = "Return orders filtered by excluded/dropped attribute",
             response = Page.class
     )
-    public List<OrderDto> getFilteredOrdersPage(
-            @RequestParam(value = "excluded", defaultValue = "false") boolean excluded,
-            @RequestParam(value = "dropped", defaultValue = "false") boolean dropped) {
-        return orderExternalService.getFilteredOrders(excluded, dropped);
+    public List<OrderDto> getSkippedOrders() {
+        return orderExternalService.getSkippedOrders();
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @GetMapping("/completed")
+    @ApiOperation(value = "Get orders",
+            notes = "Return orders filtered by excluded/dropped attribute",
+            response = Page.class
+    )
+    public List<OrderDto> getCompletedOrders() {
+        return orderExternalService.getCompletedOrders();
+    }
+
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PostMapping("/{action}")
@@ -39,11 +48,11 @@ public class OrderController {
             response = OrderDto.class,
             responseContainer = "List"
     )
-    public List<OrderDto> updateDeliveryDate(
+    public List<OrderDto> rescheduleOrders(
             @ApiParam(value = "UpdateDto with new date and orders id", type = "UpdateDto", required = true)
-            @RequestBody UpdateDto updateDto,
+            @RequestBody RescheduleOrdersDto rescheduleOrdersDto,
             @PathVariable String action) {
-        return orderExternalService.updateDeliveryDate(updateDto, OrderAction.of(action));
+        return orderExternalService.rescheduleOrders(rescheduleOrdersDto, OrderAction.of(action));
     }
 
 }

@@ -1,7 +1,6 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.MapPoint;
-import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.Car;
@@ -50,6 +49,9 @@ import static com.goodspartner.service.google.GoogleVRPSolver.SERVICE_TIME_AT_LO
 @RequiredArgsConstructor
 public class DefaultRouteCalculationService implements RouteCalculationService {
 
+    private static final int ARRIVAL_SIGN = 5;
+    private static final int FINISH_SIGN = 4;
+
     private final StoreService storeService;
     private final StoreMapper storeMapper;
     private final VRPSolver vrpSolver;
@@ -57,8 +59,6 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     private final CarRepository carRepository;
     private final RoutePointMapper routePointMapper;
     private final OrderExternalMapper orderExternalMapper;
-    private final int ARRIVAL_SIGN = 5;
-    private final int FINISH_SIGN = 4;
 
     @Override
     public List<Route> calculateRoutes(List<OrderExternal> orders, RouteMode routeMode) {
@@ -221,20 +221,20 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                     .map(OrderExternal::getOrderWeight)
                     .collect(Collectors.summarizingDouble(amount -> amount)).getSum();
 
-            AddressExternal.OrderAddressId orderAddressId = addressExternal.getOrderAddressId();
-            List<OrderDto> orderDtos = orderExternalMapper.mapExternalOrdersToOrderDtos(orderList);
-
             RoutePoint routePoint = new RoutePoint();
             routePoint.setStatus(RoutePointStatus.PENDING);
-            routePoint.setAddress(orderAddressId.getOrderAddress());
-            routePoint.setClientName(orderAddressId.getClientName());
             routePoint.setOrders(orderList);
             routePoint.setAddressTotalWeight(addressTotalWeight);
+
             // TODO : issue #205 how to represent several orders per one client. Now we take first
             // TODO : stream over all order and choose the one where the values are not default one
-            OrderDto firstOrderDto = orderDtos.get(0);
-            routePoint.setDeliveryStart(firstOrderDto.getDeliveryStart());
-            routePoint.setDeliveryEnd(firstOrderDto.getDeliveryFinish());
+            OrderExternal orderExternal = orderList.get(0);
+            routePoint.setDeliveryStart(orderExternal.getDeliveryStart());
+            routePoint.setDeliveryEnd(orderExternal.getDeliveryFinish());
+
+            AddressExternal.OrderAddressId orderAddressId = addressExternal.getOrderAddressId();
+            routePoint.setAddress(orderAddressId.getOrderAddress());
+            routePoint.setClientName(orderAddressId.getClientName());
 
             routePointList.add(routePoint);
         });

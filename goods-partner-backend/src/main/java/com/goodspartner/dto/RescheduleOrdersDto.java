@@ -8,9 +8,10 @@ import java.util.List;
 
 @Setter
 @Getter
-public class UpdateDto {
+public class RescheduleOrdersDto {
 
-    private List<Integer> ordersIdList;
-    private LocalDate deliveryDate;
+    private LocalDate rescheduleDate;
+
+    private List<Integer> orderIds;
 
 }

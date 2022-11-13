@@ -4,7 +4,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestSecurityDisableConfig;
-import com.goodspartner.dto.UpdateDto;
+import com.goodspartner.dto.RescheduleOrdersDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
@@ -23,28 +23,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class OrderControllerITest extends AbstractWebITest {
 
     @Test
-    @DataSet(value = "response/order-controller-filter.json",
+    @DataSet(value = "datasets/order-controller/order-controller-filter.json",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void getOrders() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/orders/")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/orders/completed")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @DataSet(value = "response/order-controller-filter.json",
+    @DataSet(value = "datasets/order-controller/order-controller-filter.json",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void getUpdateDeliveryDate() throws Exception {
 
-        UpdateDto updateDto = new UpdateDto();
+        RescheduleOrdersDto rescheduleOrdersDto = new RescheduleOrdersDto();
         List<Integer> list = List.of(251);
         LocalDate date = LocalDate.of(2022, 2, 20);
-        updateDto.setDeliveryDate(date);
-        updateDto.setOrdersIdList(list);
+        rescheduleOrdersDto.setRescheduleDate(date);
+        rescheduleOrdersDto.setOrderIds(list);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/orders/schedule")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/orders/reschedule")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto)))
+                        .content(objectMapper.writeValueAsString(rescheduleOrdersDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/order-controller-update-delivery.json")));
     }

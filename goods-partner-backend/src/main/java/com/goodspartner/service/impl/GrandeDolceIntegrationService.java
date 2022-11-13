@@ -63,10 +63,10 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     }
 
     @Override
-    public List<OrderDto> findAllByShippingDate(LocalDate date) {
+    public List<OrderDto> findAllByShippingDate(LocalDate deliveryDate) {
         long startTime = System.currentTimeMillis();
 
-        URI orderUri = buildOrderUri(createOrderByDateFilter(date.atStartOfDay().toString()));
+        URI orderUri = buildOrderUri(createOrderByDateFilter(deliveryDate.atStartOfDay().toString()));
 
         ODataWrapperDto<ODataOrderDto> oDataWrappedOrderDtos = getOrders(orderUri);
 
@@ -76,12 +76,12 @@ public class GrandeDolceIntegrationService implements IntegrationService {
 
         Map<String, List<ODataProductDto>> allProducts = parseAllProducts(partitionedOrders);
 
-        enrichOrders(oDataOrderDtosList, allProducts, date);
+        enrichOrders(oDataOrderDtosList, allProducts);
 
         List<OrderDto> orderDtosList = odataOrderMapper.toOrderDtosList(oDataOrderDtosList);
 
         log.info("{} Orders has been fetched from 1C for date: {} in {}",
-                orderDtosList.size(), date, System.currentTimeMillis() - startTime);
+                orderDtosList.size(), deliveryDate, System.currentTimeMillis() - startTime);
 
         return orderDtosList;
     }
@@ -191,13 +191,13 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     /**
      * Insert into OrderDto its List of products and total weight of order
      */
-    void enrichOrders(List<ODataOrderDto> orders, Map<String, List<ODataProductDto>> allProducts, LocalDate date) {
+    void enrichOrders(List<ODataOrderDto> orders,
+                      Map<String, List<ODataProductDto>> allProducts) {
         for (ODataOrderDto order : orders) {
             String refKey = order.getRefKey();
             List<ODataProductDto> products = allProducts.get(refKey);
             order.setProducts(productMapper.toProductDtosList(products));
             order.setOrderWeight(getTotalOrderWeight(products));
-            order.setDeliveryDate(date);
         }
     }
 

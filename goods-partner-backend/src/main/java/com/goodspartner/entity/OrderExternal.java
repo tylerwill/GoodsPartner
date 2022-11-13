@@ -2,9 +2,7 @@ package com.goodspartner.entity;
 
 import com.goodspartner.dto.Product;
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -36,7 +34,7 @@ public class OrderExternal {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orders_external_id_sequence")
     @SequenceGenerator(name = "orders_external_id_sequence", sequenceName = "orders_external_id_sequence")
-    private int id;
+    private Integer id;
 
     @Column(name = "ref_key")
     private String refKey;
@@ -44,8 +42,8 @@ public class OrderExternal {
     @Column(name = "order_number")
     private String orderNumber;
 
-    @Column(name = "created_date")
-    private LocalDate createdDate;
+    @Column(name = "shipping_date")
+    private LocalDate shippingDate;
 
     @Column(name = "comment")
     private String comment;
@@ -66,8 +64,8 @@ public class OrderExternal {
     @Column(name = "delivery_type")
     private DeliveryType deliveryType;
 
-    @Column(name = "delivery_date")
-    private LocalDate deliveryDate;
+    @Column(name = "reschedule_date")
+    private LocalDate rescheduleDate;
 
     @Column(name = "excluded")
     private boolean excluded;

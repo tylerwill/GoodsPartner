@@ -15,7 +15,6 @@ import com.goodspartner.service.dto.RoutingSolution;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
-import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.StoreService;
@@ -41,7 +40,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -148,7 +146,7 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .id(0)
                 .refKey("43cd2b8a-84c0-11ec-b3ce-00155dd72305")
                 .orderNumber("00000002535")
-                .createdDate(LocalDate.of(2022, 2, 3))
+                .shippingDate(LocalDate.of(2022, 2, 3))
                 .comment("comment")
                 .managerFullName("Шевцова Галина")
                 .isFrozen(false)
@@ -165,7 +163,7 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .id(0)
                 .refKey("f6bc11b6-8264-11ec-b3ce-00155dd72305")
                 .orderNumber("00000002124")
-                .createdDate(LocalDate.of(2022, 1, 31))
+                .shippingDate(LocalDate.of(2022, 1, 31))
                 .comment("нал без оплати  0675438404 Світлана")
                 .managerFullName("Шевцова Галина")
                 .isFrozen(false)

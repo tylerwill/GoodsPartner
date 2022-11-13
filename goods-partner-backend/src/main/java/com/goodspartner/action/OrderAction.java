@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public enum OrderAction {
 
-    SCHEDULE {
+    RESCHEDULE {
         @Override
         public void perform(OrderExternal order) {
             order.setDelivery(null);
