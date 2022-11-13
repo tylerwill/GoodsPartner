@@ -1,6 +1,6 @@
 package com.goodspartner.service;
 
-import com.goodspartner.action.OrderAction;
+import com.goodspartner.action.ExcludedOrderAction;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RescheduleOrdersDto;
 import com.goodspartner.entity.Car;
@@ -23,7 +23,7 @@ public interface OrderExternalService {
 
     List<OrderDto> findOrdersByDeliveryAndCar(Delivery delivery, Car car);
 
-    List<OrderDto> rescheduleOrders(RescheduleOrdersDto rescheduleOrdersDto, OrderAction orderAction);
+    List<OrderDto> rescheduleOrders(RescheduleOrdersDto rescheduleOrdersDto, ExcludedOrderAction excludedOrderAction);
 
     List<OrderDto> getSkippedOrders();
 

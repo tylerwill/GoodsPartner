@@ -1,6 +1,6 @@
 package com.goodspartner.web.controller;
 
-import com.goodspartner.action.OrderAction;
+import com.goodspartner.action.ExcludedOrderAction;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RescheduleOrdersDto;
 import com.goodspartner.service.OrderExternalService;
@@ -52,7 +52,7 @@ public class OrderController {
             @ApiParam(value = "UpdateDto with new date and orders id", type = "UpdateDto", required = true)
             @RequestBody RescheduleOrdersDto rescheduleOrdersDto,
             @PathVariable String action) {
-        return orderExternalService.rescheduleOrders(rescheduleOrdersDto, OrderAction.of(action));
+        return orderExternalService.rescheduleOrders(rescheduleOrdersDto, ExcludedOrderAction.of(action));
     }
 
 }

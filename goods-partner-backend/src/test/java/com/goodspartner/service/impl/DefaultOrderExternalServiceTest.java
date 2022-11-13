@@ -3,7 +3,7 @@ package com.goodspartner.service.impl;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractBaseITest;
-import com.goodspartner.action.OrderAction;
+import com.goodspartner.action.ExcludedOrderAction;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RescheduleOrdersDto;
 import com.goodspartner.entity.OrderExternal;
@@ -68,7 +68,7 @@ class DefaultOrderExternalServiceTest extends AbstractBaseITest {
         assertEquals(UUID.fromString("70574dfd-48a3-40c7-8b0c-3e5defe7d080"), orderDto.getDeliveryId());
         assertEquals(251, orderDto.getId());
 
-        orderExternalService.rescheduleOrders(rescheduleOrdersDto, OrderAction.of("schedule"));
+        orderExternalService.rescheduleOrders(rescheduleOrdersDto, ExcludedOrderAction.of("reschedule"));
 
         Optional<OrderExternal> orderExternal = orderExternalRepository.findById(251);
 

@@ -1,6 +1,6 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.action.OrderAction;
+import com.goodspartner.action.ExcludedOrderAction;
 import com.goodspartner.cache.OrderCache;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RescheduleOrdersDto;
@@ -169,13 +169,12 @@ public class DefaultOrderExternalService implements OrderExternalService {
 
     @Transactional
     @Override
-    public List<OrderDto> rescheduleOrders(RescheduleOrdersDto rescheduleOrdersDto, OrderAction orderAction) {
+    public List<OrderDto> rescheduleOrders(RescheduleOrdersDto rescheduleOrdersDto, ExcludedOrderAction excludedOrderAction) {
         List<Integer> ordersIds = rescheduleOrdersDto.getOrderIds();
         List<OrderExternal> ordersExternals = orderExternalRepository.findAllById(ordersIds);
 
         ordersExternals.forEach(order -> {
-            orderAction.perform(order);
-            order.setRescheduleDate(rescheduleOrdersDto.getRescheduleDate());
+            excludedOrderAction.perform(order, rescheduleOrdersDto);
         });
 
         return orderExternalRepository.saveAll(ordersExternals)
