@@ -5,7 +5,6 @@ import com.goodspartner.action.RouteAction;
 import com.goodspartner.action.RoutePointAction;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.RoutePointDto;
-import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import com.goodspartner.web.controller.response.RouteActionResponse;
 import com.goodspartner.web.controller.response.RoutePointActionResponse;
@@ -50,7 +49,7 @@ public class DeliveryActionController {
     @PostMapping("/{id}/routes/{routeId}/{action}")
     public RouteActionResponse updateRoute(@PathVariable int routeId,
                                            @PathVariable String action) {
-        return routeService.update(routeId, RouteAction.of(action)); // TODO think about method name
+        return routeService.updateRoute(routeId, RouteAction.of(action));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
@@ -58,7 +57,7 @@ public class DeliveryActionController {
     public RoutePointActionResponse updateRoutePoint(@PathVariable int routeId,
                                                      @PathVariable long routePointId,
                                                      @PathVariable String action) {
-        return routeService.updatePoint(routeId, routePointId, RoutePointAction.of(action)); // TODO think about method name
+        return routeService.updateRoutePoint(routeId, routePointId, RoutePointAction.of(action));
     }
 
     /**

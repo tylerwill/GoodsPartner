@@ -6,7 +6,6 @@ import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
-import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.web.controller.response.RouteActionResponse;
 import com.goodspartner.web.controller.response.RoutePointActionResponse;
 
@@ -16,9 +15,9 @@ import java.util.UUID;
 
 public interface RouteService {
 
-    RouteActionResponse update(int routeId, RouteAction action);
+    RouteActionResponse updateRoute(int routeId, RouteAction action);
 
-    RoutePointActionResponse updatePoint(int routeId, long routePointId, RoutePointAction action);
+    RoutePointActionResponse updateRoutePoint(int routeId, long routePointId, RoutePointAction action);
 
     void reorderRoutePoints(UUID deliveryId, int routeId, LinkedList<RoutePointDto> routePointDtos);
 

@@ -49,7 +49,7 @@ public class DefaultRouteService implements RouteService {
 
     @Override
     @Transactional
-    public RouteActionResponse update(int routeId, RouteAction action) {
+    public RouteActionResponse updateRoute(int routeId, RouteAction action) {
 
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new RouteNotFoundException("Route not found"));
@@ -82,7 +82,7 @@ public class DefaultRouteService implements RouteService {
 
     @Override
     @Transactional
-    public RoutePointActionResponse updatePoint(int routeId, long routePointId, RoutePointAction action) {
+    public RoutePointActionResponse updateRoutePoint(int routeId, long routePointId, RoutePointAction action) {
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new RouteNotFoundException("Route not found"));
 

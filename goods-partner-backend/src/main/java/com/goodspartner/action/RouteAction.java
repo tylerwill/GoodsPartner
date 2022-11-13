@@ -9,6 +9,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import static com.goodspartner.entity.RoutePointStatus.DONE;
+import static com.goodspartner.entity.RoutePointStatus.PENDING;
+
 public enum RouteAction {
 
     START {
@@ -37,6 +40,10 @@ public enum RouteAction {
 
             Duration duration = Duration.between(route.getStartTime(), route.getFinishTime());
             route.setSpentTime(duration.toMinutes());
+
+            route.getRoutePoints().stream()
+                    .filter(routePoint -> PENDING.equals(routePoint.getStatus()))
+                    .forEach(routePoint -> routePoint.setStatus(DONE));
         }
     };
 
