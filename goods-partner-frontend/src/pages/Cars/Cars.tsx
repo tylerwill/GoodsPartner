@@ -20,39 +20,40 @@ import {fetchCars, addCar, updateCar, deleteCar} from "../../features/cars/carsS
 import Loading from "../../components/Loading/Loading";
 import ErrorAlert from "../../components/ErrorAlert/ErrorAlert";
 import {useAppDispatch, useAppSelector} from "../../hooks/redux-hooks";
+import {Car} from "../../model/Car";
 
 const Cars = () => {
-    // const {cars, loading, error} = useAppSelector(state => state.cars);
-    // const dispatch = useAppDispatch();
-    //
-    //
-    // const defaultNewCarState = {
-    //     id: null,
-    //     name: '',
-    //     licencePlate: '',
-    //     driver: '',
-    //     weightCapacity: '',
-    //     travelCost: '',
-    //     available: true,
-    //     cooler: false
-    // };
-    //
-    // const [isAddCarDialogOpen, setIsAddCarDialogOpen] = useState(false);
-    // const [isEditCarDialogOpen, setIsEditCarDialogOpen] = useState(false);
-    // const [editedCar, setEditedCar] = useState({});
-    // const [newCar, setNewCar] = useState(defaultNewCarState);
-    //
-    // const addCarHandler = (car) => {
+    const {cars, loading, error} = useAppSelector(state => state.cars);
+    const dispatch = useAppDispatch();
+
+
+    const defaultNewCarState = {
+        id: null,
+        name: '',
+        licencePlate: '',
+        driver: '',
+        weightCapacity: '',
+        travelCost: '',
+        available: true,
+        cooler: false
+    };
+
+    const [isAddCarDialogOpen, setIsAddCarDialogOpen] = useState(false);
+    const [isEditCarDialogOpen, setIsEditCarDialogOpen] = useState(false);
+    const [editedCar, setEditedCar] = useState({});
+    const [newCar, setNewCar] = useState(defaultNewCarState);
+
+    // const addCarHandler = (car: Car) => {
     //     dispatch(addCar(car));
     //     setNewCar(defaultNewCarState);
     // }
     //
-    // const updateCarHandler = (car) => {
+    // const updateCarHandler = (car: Car) => {
     //     dispatch(updateCar(car));
     //     setNewCar(defaultNewCarState);
     // }
     //
-    // const deleteCarHandler = (id) => {
+    // const deleteCarHandler = (id: number) => {
     //     dispatch(deleteCar(id));
     // }
     //
@@ -65,127 +66,127 @@ const Cars = () => {
     // }
 
     return <section>
-        {/*<Box sx={{display: 'flex', justifyContent: 'space-between'}}>*/}
-        {/*    <Typography variant="h6" component="h2">*/}
-        {/*        Автомобілі*/}
-        {/*    </Typography>*/}
+        <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+            <Typography variant="h6" component="h2">
+                Автомобілі
+            </Typography>
 
-        {/*    <Button onClick={() => setIsAddCarDialogOpen(true)} variant="contained">Додати авто</Button>*/}
-        {/*</Box>*/}
-        {/*<Box mt={2}>*/}
-        {/*    <TableContainer component={Paper}>*/}
-        {/*        <Table sx={{minWidth: 650}} aria-label="simple table">*/}
-        {/*            <TableHead sx={{fontWeight: 'bold'}}>*/}
-        {/*                <TableRow>*/}
-        {/*                    <TableCell>Модель авто</TableCell>*/}
-        {/*                    <TableCell align="center">Номер авто</TableCell>*/}
-        {/*                    <TableCell align="left">Водій</TableCell>*/}
-        {/*                    <TableCell align="center">Вантажопідйомність, кг</TableCell>*/}
-        {/*                    <TableCell align="center">Витрати палива, л/100км</TableCell>*/}
-        {/*                    <TableCell align="center">Морозильна камера</TableCell>*/}
-        {/*                    <TableCell align="center">Доступність</TableCell>*/}
-        {/*                    <TableCell/>*/}
-        {/*                </TableRow>*/}
-        {/*            </TableHead>*/}
-        {/*            <TableBody>*/}
-        {/*                /!* TODO: [Tolik] Fix key*!/*/}
-        {/*                {cars.map((car) => (*/}
-        {/*                    <TableRow key={"tableCarId " + car.id}>*/}
-        {/*                        <TableCell>{car.name}</TableCell>*/}
-        {/*                        <TableCell align="center">{car.licencePlate}</TableCell>*/}
-        {/*                        <TableCell>{car.driver}</TableCell>*/}
-        {/*                        <TableCell align="center">{car.weightCapacity}</TableCell>*/}
-        {/*                        <TableCell align="center">{car.travelCost}</TableCell>*/}
-        {/*                        <TableCell align="center">{car.cooler ? <CheckIcon/> : <CloseIcon/>}</TableCell>*/}
-        {/*                        <TableCell align="center">{car.available ? <CheckIcon/> : <CloseIcon/>}</TableCell>*/}
-        {/*                        <TableCell><BasicMenu car={car}*/}
-        {/*                                              setEditedCar={setEditedCar}*/}
-        {/*                                              deleteCar={deleteCarHandler}*/}
-        {/*                                              openEditDialog={setIsEditCarDialogOpen}*/}
-        {/*                        /></TableCell>*/}
-        {/*                    </TableRow>*/}
-        {/*                ))}*/}
-        {/*            </TableBody>*/}
-        {/*        </Table>*/}
-        {/*    </TableContainer>*/}
-        {/*</Box>*/}
-        {/*/!*Dialog for adding new car*!/*/}
+            <Button onClick={() => setIsAddCarDialogOpen(true)} variant="contained">Додати авто</Button>
+        </Box>
+        <Box mt={2}>
+            <TableContainer component={Paper}>
+                <Table sx={{minWidth: 650}} aria-label="simple table">
+                    <TableHead sx={{fontWeight: 'bold'}}>
+                        <TableRow>
+                            <TableCell>Модель авто</TableCell>
+                            <TableCell align="center">Номер авто</TableCell>
+                            <TableCell align="left">Водій</TableCell>
+                            <TableCell align="center">Вантажопідйомність, кг</TableCell>
+                            <TableCell align="center">Витрати палива, л/100км</TableCell>
+                            <TableCell align="center">Морозильна камера</TableCell>
+                            <TableCell align="center">Доступність</TableCell>
+                            <TableCell/>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {/*TODO: [Tolik] Fix key*/}
+                        {/*{cars.map((car) => (*/}
+                        {/*    <TableRow key={"tableCarId " + car.id}>*/}
+                        {/*        <TableCell>{car.name}</TableCell>*/}
+                        {/*        <TableCell align="center">{car.licencePlate}</TableCell>*/}
+                        {/*        <TableCell>{car.driver}</TableCell>*/}
+                        {/*        <TableCell align="center">{car.weightCapacity}</TableCell>*/}
+                        {/*        <TableCell align="center">{car.travelCost}</TableCell>*/}
+                        {/*        <TableCell align="center">{car.cooler ? <CheckIcon/> : <CloseIcon/>}</TableCell>*/}
+                        {/*        <TableCell align="center">{car.available ? <CheckIcon/> : <CloseIcon/>}</TableCell>*/}
+                        {/*        <TableCell><BasicMenu car={car}*/}
+                        {/*                              setEditedCar={setEditedCar}*/}
+                        {/*                              deleteCar={deleteCarHandler}*/}
+                        {/*                              openEditDialog={setIsEditCarDialogOpen}*/}
+                        {/*        /></TableCell>*/}
+                        {/*    </TableRow>*/}
+                        {/*))}*/}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Box>
+        Dialog for adding new car
         {/*<CarFormDialog closeDialog={() => setIsAddCarDialogOpen(false)} open={isAddCarDialogOpen}*/}
         {/*               car={newCar}*/}
         {/*               title={"Додати авто"}*/}
         {/*               setCar={setNewCar}*/}
         {/*               actionHandler={addCarHandler}/>*/}
 
-        {/*/!*Dialog for editing existing car*!/*/}
+        {/*Dialog for editing existing car*/}
         {/*<CarFormDialog closeDialog={() => setIsEditCarDialogOpen(false)} open={isEditCarDialogOpen}*/}
         {/*               actionHandler={updateCarHandler}*/}
         {/*               car={editedCar}*/}
         {/*               title={"Редагувати авто"}*/}
         {/*               setCar={setEditedCar}*/}
         {/*/>*/}
-        {/*{error && <ErrorAlert error={error}/>}*/}
+        {error && <ErrorAlert error={error}/>}
     </section>
 }
 
-
-{/*function BasicMenu({car, deleteCar, setEditedCar, openEditDialog}) {*/}
-{/*    const [anchorEl, setAnchorEl] = React.useState(null);*/}
-{/*    const open = Boolean(anchorEl);*/}
-{/*    const handleClick = (event) => {*/}
-{/*        setAnchorEl(event.currentTarget);*/}
-{/*    };*/}
-{/*    const handleClose = () => {*/}
-{/*        setAnchorEl(null);*/}
-{/*    };*/}
-{/*    const handleDelete = () => {*/}
-{/*        // TODO:replace confirm dialog*/}
-{/*        if (window.confirm(`Are you sure wanted to delete car: ${car} ?`)) {*/}
-{/*            deleteCar(car.id);*/}
-{/*        }*/}
-{/*    }*/}
-
-{/*    const handleEdit = () => {*/}
-{/*        setEditedCar(car);*/}
-{/*        openEditDialog(true);*/}
-{/*        handleClose();*/}
-{/*    }*/}
-
-{/*    return (*/}
-{/*        <div>*/}
-{/*            <IconButton*/}
-{/*                aria-label="more"*/}
-{/*                id="long-button"*/}
-{/*                aria-controls={open ? 'long-menu' : undefined}*/}
-{/*                aria-expanded={open ? 'true' : undefined}*/}
-{/*                aria-haspopup="true"*/}
-{/*                onClick={handleClick}*/}
-{/*            >*/}
-{/*                <MoreVertIcon/>*/}
-{/*            </IconButton>*/}
-{/*            <Menu*/}
-{/*                id="basic-menu"*/}
-{/*                anchorEl={anchorEl}*/}
-{/*                open={open}*/}
-{/*                onClose={handleClose}*/}
-{/*                MenuListProps={{*/}
-{/*                    'aria-labelledby': 'basic-button',*/}
-{/*                }}*/}
-{/*            >*/}
-{/*                <MenuItem onClick={handleEdit}>*/}
-{/*                    <ListItemIcon>*/}
-{/*                        <EditOutlinedIcon/>*/}
-{/*                    </ListItemIcon>*/}
-{/*                    <ListItemText>Редагувати</ListItemText>*/}
-{/*                </MenuItem>*/}
-{/*                <MenuItem onClick={handleClose}>*/}
-{/*                    <ListItemIcon>*/}
-{/*                        <DeleteForeverOutlinedIcon sx={{color: '#D32F2F'}}/>*/}
-{/*                    </ListItemIcon>*/}
-{/*                    <ListItemText sx={{color: '#D32F2F'}} onClick={handleDelete}>Видалити</ListItemText>*/}
-{/*                </MenuItem>*/}
-{/*            </Menu>*/}
-{/*        </div>*/}
-{/*    );*/}
-{/*}*/}
+//
+// function BasicMenu({car, deleteCar, setEditedCar, openEditDialog}) {
+//     const [anchorEl, setAnchorEl] = React.useState(null);
+//     const open = Boolean(anchorEl);
+//     const handleClick = (event) => {
+//         setAnchorEl(event.currentTarget);
+//     };
+//     const handleClose = () => {
+//         setAnchorEl(null);
+//     };
+//     const handleDelete = () => {
+//         // TODO:replace confirm dialog
+//         if (window.confirm(`Are you sure wanted to delete car: ${car} ?`)) {
+//             deleteCar(car.id);
+//         }
+//     }
+//
+//     const handleEdit = () => {
+//         setEditedCar(car);
+//         openEditDialog(true);
+//         handleClose();
+//     }
+//
+//     return (
+//         <div>
+//             <IconButton
+//                 aria-label="more"
+//                 id="long-button"
+//                 aria-controls={open ? 'long-menu' : undefined}
+//                 aria-expanded={open ? 'true' : undefined}
+//                 aria-haspopup="true"
+//                 onClick={handleClick}
+//             >
+//                 <MoreVertIcon/>
+//             </IconButton>
+//             <Menu
+//                 id="basic-menu"
+//                 anchorEl={anchorEl}
+//                 open={open}
+//                 onClose={handleClose}
+//                 MenuListProps={{
+//                     'aria-labelledby': 'basic-button',
+//                 }}
+//             >
+//                 <MenuItem onClick={handleEdit}>
+//                     <ListItemIcon>
+//                         <EditOutlinedIcon/>
+//                     </ListItemIcon>
+//                     <ListItemText>Редагувати</ListItemText>
+//                 </MenuItem>
+//                 <MenuItem onClick={handleClose}>
+//                     <ListItemIcon>
+//                         <DeleteForeverOutlinedIcon sx={{color: '#D32F2F'}}/>
+//                     </ListItemIcon>
+//                     <ListItemText sx={{color: '#D32F2F'}} onClick={handleDelete}>Видалити</ListItemText>
+//                 </MenuItem>
+//             </Menu>
+//         </div>
+//     );
+// }
 
 export default Cars;

@@ -56,7 +56,7 @@ const OrdersTable = ({orders, keyPrefix, setOrderAddressDialogOpen, setEditedOrd
 
     return (
         <Box>
-            <Box sx={{display: "flex", justifyContent: 'flex-end', mb: 2}}>
+            <Box sx={{display: "flex", mb: 2}}>
                 <Button onClick={expandAllHandler}>
                     <UnfoldMoreIcon sx={{mr: 1, transform: 'rotate(45deg)', width: '0.75em'}}/> розгорнути всі
                 </Button>

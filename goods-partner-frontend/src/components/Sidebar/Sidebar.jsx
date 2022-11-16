@@ -14,6 +14,7 @@ import SupervisedUserCircle from "@mui/icons-material/SupervisedUserCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import GrandeDolceLogo from "../Logo/GrandeDolceLogo";
 import useAuth from "../../auth/AuthProvider";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 
 const ListButton = (icon, name, paddingLeft) => {
@@ -59,14 +60,21 @@ const Sidebar = ({open}) => {
                     <ListItem disablePadding component={Link} to={"/deliveries"}>
                         {ListButton(<Inventory2Sharp/>, 'Доставки')}
                     </ListItem>
+
                     {user.role !== 'DRIVER' &&
                         <>
+                            <ListItem disablePadding component={Link} to={"/orders"}>
+                                {ListButton(<ShoppingCartIcon/>, 'Замовлення')}
+                            </ListItem>
+
                             <ListItem disablePadding component={Link} to={"/cars"}>
                                 {ListButton(<LocalShippingIcon/>, 'Автомобілі')}
                             </ListItem>
+
                             <ListItem disablePadding component={Link} to={"/users"}>
                                 {ListButton(<SupervisedUserCircle/>, 'Користувачі')}
                             </ListItem>
+
                             <ListItem disablePadding component={Link} to={"/reports"}>
                                 {ListButton(<ContentPasteSharp/>, 'Звітність')}
                             </ListItem>

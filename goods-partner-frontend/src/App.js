@@ -9,6 +9,8 @@ import Reports from "./pages/Reports/Reports";
 import Delivery from "./pages/Delivery/Delivery";
 import Users from "./pages/Users/Users";
 import Notifications from "./hoc/Notifications/Notifications";
+import Orders from "./pages/Orders/Orders";
+import Cars from "./pages/Cars/Cars";
 
 const libraries = ['places'];
 
@@ -40,12 +42,13 @@ function App() {
             <CssBaseline/>
             <Layout>
                 <Routes>
-                    {/*<Route path="/cars" element={<Cars/>}/>*/}
+                    <Route path="/cars" element={<Cars/>}/>
                     <Route path="/users" element={<Users/>}/>
                     <Route path="/deliveries" element={<Deliveries/>}/>
                     <Route path="/" element={<Deliveries/>}/>
                     <Route path="/delivery/:id" element={<Delivery/>}/>
                     <Route path="/reports/" element={<Reports/>}/>
+                    <Route path="/orders/" element={<Orders/>}/>
                 </Routes>
             </Layout>
         </Notifications>

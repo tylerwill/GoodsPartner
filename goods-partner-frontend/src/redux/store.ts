@@ -7,6 +7,7 @@ import historyReducer from "../features/history/historySlice";
 import notificationsReducer from "../features/notifications/notificationsSlice";
 
 import {configureStore} from "@reduxjs/toolkit";
+import ordersSlice from "../features/orders/ordersSlice";
 
 const store = configureStore({
     reducer: {
@@ -16,7 +17,8 @@ const store = configureStore({
         reports: reportsReducer,
         currentDelivery: currentDeliveryReducer,
         history: historyReducer,
-        notifications: notificationsReducer
+        notifications: notificationsReducer,
+        orders: ordersSlice
     }
 })
 

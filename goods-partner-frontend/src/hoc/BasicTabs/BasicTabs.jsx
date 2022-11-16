@@ -32,13 +32,13 @@ function a11yProps(index) {
     };
 }
 
-export default function BasicTabs({children, labels, fullWidth, tabIndex, setTabIndex}) {
+export default function BasicTabs({children, labels, fullWidth, tabIndex, setTabIndex, styles}) {
 
     const handleChange = (event, newValue) => {
         setTabIndex(newValue);
     };
     return (
-        <Box sx={{bgcolor: 'background.paper'}}>
+        <Box sx={{bgcolor: 'background.paper', ...styles}}>
             {createTabsPanel(tabIndex, handleChange, labels, fullWidth)}
             {
                 children.map((element, index) => {
