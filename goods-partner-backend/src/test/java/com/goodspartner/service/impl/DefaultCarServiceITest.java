@@ -24,7 +24,8 @@ class DefaultCarServiceITest extends AbstractBaseITest {
     private DefaultCarService carService;
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("validate Queries After Add Car")
     void validateQueriesAfterAddCar() {
         SQLStatementCountValidator.reset();
@@ -43,7 +44,8 @@ class DefaultCarServiceITest extends AbstractBaseITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("validate Queries After Delete Car")
     void validateQueriesAfterDeleteCar() {
         SQLStatementCountValidator.reset();
@@ -54,7 +56,8 @@ class DefaultCarServiceITest extends AbstractBaseITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("validate Queries after Find Al lCars")
     void validateQueries_afterFindAllCars() {
         SQLStatementCountValidator.reset();
@@ -65,7 +68,8 @@ class DefaultCarServiceITest extends AbstractBaseITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("validate Queries AfterUpdate Car Status")
     void validateQueries_afterUpdateCarStatus() {
         // Given

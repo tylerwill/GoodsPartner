@@ -6,7 +6,6 @@ import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
-import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.mapper.CarLoadMapper;
 import com.goodspartner.repository.CarLoadRepository;
 import com.goodspartner.service.CarLoadService;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,7 +23,6 @@ public class DefaultCarLoadService implements CarLoadService {
 
     private final CarLoadRepository carLoadRepository;
     private final CarLoadMapper carLoadMapper;
-
 
     @Override
     public List<CarLoadDto> findCarLoad(Delivery delivery, Car car) {
@@ -60,5 +59,13 @@ public class DefaultCarLoadService implements CarLoadService {
         carLoad.setCar(route.getCar());
         carLoad.setOrders(carLoadOrders);
         return carLoad;
+    }
+
+    @Override
+    public List<CarLoadDto> findByDeliveryId(UUID id) {
+        return carLoadRepository.findCarLoadsByDeliveryId(id)
+                .stream()
+                .map(carLoadMapper::mapToDto)
+                .collect(Collectors.toList());
     }
 }

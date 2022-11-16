@@ -1,0 +1,52 @@
+[
+  {
+    "car": {
+      "id": 1,
+      "name": "Mercedes Sprinter",
+      "licencePlate": "AA 1111 CT",
+      "driver": "Вальдемар Кипарисович",
+      "weightCapacity": 3000,
+      "cooler": false,
+      "available": true,
+      "loadSize": 0.0,
+      "travelCost": 10
+    },
+    "orders": [
+      {
+        "id": 1,
+        "refKey": "f6f73d76-8005-11ec-b3ce-00155dd72305",
+        "orderNumber": "00000002055",
+        "comment": "реп",
+        "managerFullName": "Наталія Рябченко",
+        "deliveryType": "REGULAR",
+        "excluded": false,
+        "dropped": false,
+        "shippingDate": "2022-01-28",
+        "rescheduleDate": "2022-01-29",
+        "deliveryStart": "11:00",
+        "deliveryFinish": "13:00",
+        "clientName": "Кух Плюс ТОВ (Кухмайстер) бн",
+        "address": "вул.Єлізавети Чавдар, буд.36",
+        "mapPoint": {
+          "address": "вул.Єлізавети Чавдар, буд.36",
+          "latitude": 50.3910679,
+          "longitude": 30.6265536,
+          "status": "KNOWN"
+        },
+        "products": [
+          {
+            "productName": "Наповнювач фруктово-ягідний (декоргель) (12 кг)",
+            "amount": 1,
+            "storeName": "Склад №1",
+            "unitWeight": 12.0,
+            "totalProductWeight": 12.0,
+            "coefficient": 1.0,
+            "measure": "кг"
+          }
+        ],
+        "orderWeight": 12.0,
+        "frozen": false
+      }
+    ]
+  }
+]
