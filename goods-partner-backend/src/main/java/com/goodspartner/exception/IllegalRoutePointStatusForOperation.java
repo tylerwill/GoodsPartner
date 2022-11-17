@@ -1,7 +1,6 @@
 package com.goodspartner.exception;
 
 import com.goodspartner.dto.RoutePointDto;
-import com.goodspartner.entity.RoutePoint;
 
 import java.util.List;
 

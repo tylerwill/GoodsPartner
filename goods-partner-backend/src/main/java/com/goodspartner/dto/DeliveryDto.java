@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -23,8 +22,7 @@ public class DeliveryDto {
     private LocalDate deliveryDate;
     private DeliveryStatus status;
     private DeliveryFormationStatus formationStatus;
+    private Integer orderCount;
+    private Integer routeCount;
 
-    private List<RouteDto> routes;
-    private List<OrderDto> orders;
-    private List<ProductShippingDto> productsShipping;
 }

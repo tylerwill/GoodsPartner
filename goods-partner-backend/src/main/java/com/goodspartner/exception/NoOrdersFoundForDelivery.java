@@ -6,7 +6,7 @@ public class NoOrdersFoundForDelivery extends RuntimeException {
 
     private static final String NO_ORDERS_MESSAGE = "No orders found for delivery: %s";
 
-    public NoOrdersFoundForDelivery(UUID deliveryId) {
+    public NoOrdersFoundForDelivery(int deliveryId) {
         super(String.format(NO_ORDERS_MESSAGE, deliveryId));
     }
 }

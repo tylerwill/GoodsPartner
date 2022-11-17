@@ -11,6 +11,7 @@ import com.goodspartner.repository.DeliveryRepository;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -42,6 +43,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 @Import({TestSecurityDisableConfig.class})
 @DirtiesContext
 @AutoConfigureMockMvc(addFilters = false)
+@Disabled
 class OrdersReportGeneratorITest extends AbstractBaseITest {
 
     @LocalServerPort

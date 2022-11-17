@@ -10,7 +10,6 @@ import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.entity.Store;
-import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.mapper.RoutePointMapper;
 import com.goodspartner.mapper.StoreMapper;
 import com.goodspartner.repository.CarRepository;
@@ -58,7 +57,6 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     private final GraphhopperService graphhopperService;
     private final CarRepository carRepository;
     private final RoutePointMapper routePointMapper;
-    private final OrderExternalMapper orderExternalMapper;
 
     @Override
     public List<Route> calculateRoutes(List<OrderExternal> orders, RouteMode routeMode) {

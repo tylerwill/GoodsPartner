@@ -51,7 +51,7 @@ public class DefaultCarService implements CarService {
     }
 
     @Override
-    public CarDto getById(int id) {
+    public CarDto findById(int id) {
         return carMapper.carToCarDto(carRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No car for id: " + id)));
     }

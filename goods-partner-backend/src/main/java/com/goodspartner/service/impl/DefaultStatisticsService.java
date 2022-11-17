@@ -3,19 +3,14 @@ package com.goodspartner.service.impl;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.RouteDto;
-import com.goodspartner.entity.Car;
-import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.RoutePointStatus;
-import com.goodspartner.exception.CarNotFoundException;
-import com.goodspartner.exception.DeliveryNotFoundException;
-import com.goodspartner.mapper.CarMapper;
-import com.goodspartner.mapper.DeliveryRouteMapper;
-import com.goodspartner.repository.CarRepository;
-import com.goodspartner.repository.DeliveryRepository;
+import com.goodspartner.service.CarService;
+import com.goodspartner.service.DeliveryService;
+import com.goodspartner.service.RouteService;
 import com.goodspartner.service.StatisticsService;
-import com.goodspartner.web.controller.response.statistics.CarStatisticsCalculation;
-import com.goodspartner.web.controller.response.statistics.DailyCarStatisticsCalculation;
-import com.goodspartner.web.controller.response.statistics.StatisticsCalculation;
+import com.goodspartner.web.controller.response.statistics.CarStatisticsResponse;
+import com.goodspartner.web.controller.response.statistics.DailyCarStatisticsResponse;
+import com.goodspartner.web.controller.response.statistics.StatisticsResponse;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +19,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.goodspartner.entity.DeliveryStatus.COMPLETED;
@@ -36,13 +31,12 @@ import static com.goodspartner.entity.DeliveryStatus.COMPLETED;
 @RequiredArgsConstructor
 public class DefaultStatisticsService implements StatisticsService {
 
-    private final DeliveryRepository deliveryRepository;
-    private final CarRepository carRepository;
-    private final DeliveryRouteMapper deliveryRouteMapper;
-    private final CarMapper carMapper;
+    private final DeliveryService deliveryService;
+    private final RouteService routeService;
+    private final CarService carService;
 
     @Override
-    public StatisticsCalculation getStatistics(LocalDate dateFrom, LocalDate dateTo) {
+    public StatisticsResponse getStatistics(LocalDate dateFrom, LocalDate dateTo) {
 
         List<DeliveryDto> deliveries = getCompletedDeliveriesInRange(dateFrom, dateTo);
         long averageDeliveryDuration = getAverageDeliveryDuration(deliveries);
@@ -51,29 +45,31 @@ public class DefaultStatisticsService implements StatisticsService {
 
         CalculationRoutesResult calculationRoutesResult = calculateRoutesStatistic(routes);
 
+        Map<LocalDate, List<RouteDto>> collectedRoutesByDate = collectRoutesByDate(deliveries);
+
         // Plots data
-        Map<LocalDate, Integer> routesPerDay = deliveries.stream()
-                .collect(Collectors.toMap(DeliveryDto::getDeliveryDate, delivery -> delivery.getRoutes().size()));
+        Map<LocalDate, Integer> routesPerDay = collectedRoutesByDate.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, m -> m.getValue().size()));
 
-        Map<LocalDate, Integer> ordersPerDay = deliveries.stream()
-                .collect(Collectors.toMap(DeliveryDto::getDeliveryDate,
-                        delivery -> delivery.getRoutes().stream()
-                                .map(RouteDto::getTotalOrders)
-                                .mapToInt(Integer::intValue).sum()));
+        Map<LocalDate, Integer> ordersPerDay = collectedRoutesByDate.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, m -> m.getValue().stream()
+                        .map(RouteDto::getTotalOrders)
+                        .mapToInt(Integer::intValue)
+                        .sum()));
 
-        Map<LocalDate, Integer> weightPerDay = deliveries.stream()
-                .collect(Collectors.toMap(DeliveryDto::getDeliveryDate,
-                        delivery -> delivery.getRoutes().stream()
-                                .map(RouteDto::getTotalWeight)
-                                .mapToInt(Double::intValue).sum()));
+        Map<LocalDate, Integer> weightPerDay = collectedRoutesByDate.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, m -> m.getValue().stream()
+                        .map(RouteDto::getTotalWeight)
+                        .mapToInt(Double::intValue)
+                        .sum()));
 
-        Map<LocalDate, Integer> fuelConsumptionPerDay = deliveries.stream()
-                .collect(Collectors.toMap(DeliveryDto::getDeliveryDate,
-                        delivery -> delivery.getRoutes().stream()
-                                .map(route -> route.getCar().getTravelCost() * route.getDistance() / 100)
-                                .mapToInt(Double::intValue).sum()));
+        Map<LocalDate, Integer> fuelConsumptionPerDay = collectedRoutesByDate.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, m -> m.getValue().stream()
+                        .map(route -> route.getCar().getTravelCost() * route.getDistance() / 100)
+                        .mapToInt(Double::intValue)
+                        .sum()));
 
-        return StatisticsCalculation.builder()
+        return StatisticsResponse.builder()
                 .routeCount(routes.size())
                 .orderCount(calculationRoutesResult.ordersCount)
                 .weight(calculationRoutesResult.totalWeight)
@@ -100,7 +96,7 @@ public class DefaultStatisticsService implements StatisticsService {
     }
 
     @Override
-    public CarStatisticsCalculation getCarStatistics(LocalDate dateFrom, LocalDate dateTo, int carId) {
+    public CarStatisticsResponse getCarStatistics(LocalDate dateFrom, LocalDate dateTo, int carId) {
 
         CarDto car = getCar(carId);
         List<DeliveryDto> deliveries = getCompletedDeliveriesInRange(dateFrom, dateTo);
@@ -112,7 +108,7 @@ public class DefaultStatisticsService implements StatisticsService {
 
         CalculationRoutesResult calculationRoutesResult = calculateRoutesStatistic(routes, car);
 
-        return CarStatisticsCalculation.builder()
+        return CarStatisticsResponse.builder()
                 .routes(routes)
                 .totalTimeInRoutes(calculationRoutesResult.totalTimeInRoutes)
                 .orderCount(calculationRoutesResult.ordersCount)
@@ -124,47 +120,36 @@ public class DefaultStatisticsService implements StatisticsService {
     }
 
     @Override
-    public DailyCarStatisticsCalculation getDailyCarStatistics(LocalDate date, int carId) {
+    public DailyCarStatisticsResponse getDailyCarStatistics(LocalDate date, int carId) {
 
         CarDto car = getCar(carId);
         DeliveryDto delivery = getCompletedDelivery(date);
 
-        RouteDto routeDto = delivery.getRoutes()
-                .stream()
+        RouteDto routeResponse = routeService.findByDeliveryId(delivery.getId()).stream()
                 .filter(route -> route.getCar().getId() == carId)
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);// This car was not used at this date
 
-        return DailyCarStatisticsCalculation.builder()
+        return DailyCarStatisticsResponse.builder()
                 .car(car)
-                .orderCount(routeDto.getTotalOrders())
+                .orderCount(routeResponse.getTotalOrders())
                 .build();
     }
 
     private CarDto getCar(int carId) {
-        Car car = carRepository.findById(carId)
-                .orElseThrow(() -> new CarNotFoundException(carId));
-        return carMapper.carToCarDto(car);
+        return carService.findById(carId);
     }
 
     private List<DeliveryDto> getCompletedDeliveriesInRange(LocalDate dateFrom, LocalDate dateTo) {
-        List<Delivery> deliveries = deliveryRepository.findByStatusAndDeliveryDateBetween(COMPLETED, dateFrom, dateTo);
-        return deliveryRouteMapper.mapDeliveriesWithRoutes(deliveries);
+        return deliveryService.findByStatusAndDeliveryDateBetween(COMPLETED, dateFrom, dateTo);
     }
 
     private DeliveryDto getCompletedDelivery(LocalDate date) {
-        Optional<Delivery> optionalDelivery = deliveryRepository.findByStatusAndDeliveryDate(COMPLETED, date);
-
-        if (optionalDelivery.isEmpty()) {
-            throw new DeliveryNotFoundException(COMPLETED, date);
-        }
-
-        return deliveryRouteMapper.mapDeliveryWithRoute(optionalDelivery.get());
+        return deliveryService.findByStatusAndDeliveryDate(COMPLETED, date);
     }
 
     private long getAverageDeliveryDuration(List<DeliveryDto> deliveries) {
-        double averageDeliveryDuration = deliveries
-                .stream()
+        double averageDeliveryDuration = deliveries.stream()
                 .mapToLong(this::getDeliveryDuration)
                 .summaryStatistics()
                 .getAverage();
@@ -175,12 +160,15 @@ public class DefaultStatisticsService implements StatisticsService {
     }
 
     private List<RouteDto> getRoutes(List<DeliveryDto> deliveries) {
-        return deliveries.stream().map(DeliveryDto::getRoutes).flatMap(List::stream).toList();
+        return deliveries.stream()
+                .map(DeliveryDto::getId)
+                .map(routeService::findByDeliveryId)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     private long getDeliveryDuration(DeliveryDto delivery) {
-        return delivery.getRoutes()
-                .stream()
+        return routeService.findByDeliveryId(delivery.getId()).stream()
                 .mapToLong(RouteDto::getSpentTime)
                 .summaryStatistics()
                 .getMax();
@@ -223,6 +211,12 @@ public class DefaultStatisticsService implements StatisticsService {
         int roundedTravelCost = new BigDecimal(fuelConsumption).setScale(0, RoundingMode.HALF_UP).intValue();
 
         return new CalculationRoutesResult(ordersCount, totalWeight, roundedTravelCost);
+    }
+
+    private Map<LocalDate, List<RouteDto>> collectRoutesByDate(List<DeliveryDto> deliveries) {
+        return deliveries.stream()
+                .collect(Collectors.toMap(DeliveryDto::getDeliveryDate,
+                        delivery -> routeService.findByDeliveryId(delivery.getId())));
     }
 
     @AllArgsConstructor

@@ -1,12 +1,10 @@
 package com.goodspartner.web.controller;
 
+import com.goodspartner.action.DeliveryAction;
 import com.goodspartner.dto.CarDeliveryDto;
 import com.goodspartner.dto.DeliveryDto;
-import com.goodspartner.dto.DeliveryHistoryDto;
-import com.goodspartner.dto.DeliveryShortDto;
-import com.goodspartner.dto.OrderDto;
-import com.goodspartner.service.DeliveryHistoryService;
 import com.goodspartner.service.DeliveryService;
+import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -33,71 +30,64 @@ import java.util.UUID;
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
-    private final DeliveryHistoryService deliveryHistoryService;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ApiOperation(value = "Create new  Delivery")
+    public DeliveryDto createDelivery(
+            @ApiParam(value = "DeliveryDto that you want to create", type = "DeliveryResponse", required = true)
+            @RequestBody DeliveryDto delivery) {
+        return deliveryService.add(delivery);
+    }
+
     @GetMapping
-    @ApiOperation(value = "Get all Deliveries",
-            notes = "Return list of DeliveryDto",
-            response = List.class)
-    public List<DeliveryShortDto> getAll() {
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
+    @ApiOperation(value = "Get all Deliveries", notes = "Return list of DeliveryResponse", response = List.class)
+    public List<DeliveryDto> findAll() {
         return deliveryService.findAll();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
     @ApiOperation(value = "Find Delivery by id",
             notes = "Provide an id to look up specific delivery",
             response = DeliveryDto.class)
-    public DeliveryDto getById(@ApiParam(value = "ID value for the delivery you need to retrieve", required = true)
-                               @PathVariable("id") UUID id) {
+    public DeliveryDto findById(
+            @ApiParam(value = "ID value for the delivery you need to retrieve", required = true)
+            @PathVariable UUID id) {
         return deliveryService.findById(id);
     }
 
-    // TODO: Should return DeliveryShortDto
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
-    @PostMapping()
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    @ApiOperation(value = "Add Delivery")
-    public DeliveryDto add(@ApiParam(value = "DeliveryDto that you want to add", type = "DeliveryDto", required = true)
-                           @RequestBody DeliveryDto deliveryDto) {
-        return deliveryService.add(deliveryDto);
-    }
-
-    // TODO probably not in use anymore
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
-    @PutMapping("/{id}")
-    @ApiOperation(value = "Edit Delivery",
-            notes = "Provide an id to edit up specific delivery")
-    public DeliveryDto update(@ApiParam(value = "ID of edited Delivery", required = true)
-                              @PathVariable UUID id,
-                              @ApiParam(value = "Edited DeliveryDto", type = "DeliveryDto", required = true)
-                              @RequestBody DeliveryDto deliveryDto) {
-        return deliveryService.update(id, deliveryDto);
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "Remove Delivery by id", notes = "Provide an id to remove up specific delivery")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
+    @ApiOperation(value = "Remove Delivery by ID", notes = "Provide an ID to remove up specific delivery")
     public DeliveryDto delete(@ApiParam(value = "ID value for the delivery you need to retrieve", required = true)
-                              @PathVariable("id") UUID id) {
+                              @PathVariable UUID id) {
         return deliveryService.delete(id);
     }
 
-    /**
-     * Delivery Histories manipulation
-     */
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
-    @GetMapping("/{id}/histories")
-    @ApiOperation(value = "Find Delivery History by Delivery id",
-            notes = "Provide an id to look up specific delivery history",
-            response = DeliveryHistoryDto.class)
-    public List<DeliveryHistoryDto> getHistoriesByDeliveryId(@ApiParam(value = "ID value for the delivery which histories you need to retrieve", required = true)
-                                                             @PathVariable("id") UUID id) {
-        return deliveryHistoryService.findByDelivery(id);
+    //TODO rework on acton
+    @PostMapping("/{id}/calculate")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ApiOperation(value = "Calculate routes by delivery ID",
+            notes = "Return DeliveryResponse",
+            response = DeliveryDto.class)
+    public DeliveryDto calculateDelivery(@ApiParam(value = "ID of Delivery to be calculated", required = true)
+                                         @PathVariable UUID id) {
+        return deliveryService.calculateDelivery(id);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
+    @PostMapping("/{id}/{action}")
+    @ApiOperation(value = "Approve Delivery",
+            notes = "Provide an id to approve delivery")
+    public DeliveryActionResponse approve(@ApiParam(value = "ID of Delivery to be approved", required = true)
+                                          @PathVariable UUID id,
+                                          @PathVariable String action) {
+        return deliveryService.approve(id, DeliveryAction.of(action));
+    }
 
     // DriverRelated TODO think about /driver/deliveries
 
@@ -106,19 +96,19 @@ public class DeliveryController {
     @ApiOperation(value = "Get all Deliveries by authorisation",
             notes = "Return list of Deliveries by respective user",
             response = List.class)
-    public List<DeliveryShortDto> getAllRelated(OAuth2AuthenticationToken authentication) {
+    public List<DeliveryDto> getAllDriverRelated(OAuth2AuthenticationToken authentication) {
         return deliveryService.findAll(authentication);
     }
 
+    // TODO do we really need this endpoint since we would get carloads by separate endpoint
     @PreAuthorize("hasAnyRole('DRIVER')")
     @GetMapping("/{id}/by-driver")
     @ApiOperation(value = "Find Delivery by id for authenticated driver",
             notes = "Provide an id to look up specific delivery",
-            response = DeliveryDto.class)
+            response = CarDeliveryDto.class)
     public CarDeliveryDto getByCarDeliveryById(@ApiParam(value = "ID value for the delivery you need to retrieve", required = true)
-                                                   @PathVariable("id") UUID id,
+                                               @PathVariable("id") UUID id,
                                                OAuth2AuthenticationToken authentication) {
         return deliveryService.findById(id, authentication);
     }
-
 }

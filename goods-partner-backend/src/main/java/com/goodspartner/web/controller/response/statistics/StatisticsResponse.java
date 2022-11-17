@@ -10,7 +10,7 @@ import java.util.Map;
 @Builder
 @Getter
 @Setter
-public class StatisticsCalculation {
+public class StatisticsResponse {
 
     private int routeCount;
     private int orderCount;

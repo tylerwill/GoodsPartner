@@ -8,7 +8,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class DailyCarStatisticsCalculation {
+public class DailyCarStatisticsResponse {
 
     private int orderCount;
     private CarDto car;

@@ -58,8 +58,10 @@ public class DeliveryCalculationHelper {
             List<CarLoad> coolerCarLoad = carLoadService.buildCarLoad(coolerRoutes, includedOrders);
             List<CarLoad> regularCarLoads = carLoadService.buildCarLoad(regularRoutes, includedOrders);
 
+            List<Route> routes = ListUtils.union(coolerRoutes, regularRoutes);
             // Update Delivery
-            delivery.setRoutes(ListUtils.union(coolerRoutes, regularRoutes));
+            delivery.setRoutes(routes);
+            delivery.setRouteCount(routes.size());
             delivery.setCarLoads(ListUtils.union(coolerCarLoad, regularCarLoads));
 
             delivery.setFormationStatus(DeliveryFormationStatus.COMPLETED);

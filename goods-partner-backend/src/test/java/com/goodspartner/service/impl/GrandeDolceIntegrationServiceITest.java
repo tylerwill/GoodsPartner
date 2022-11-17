@@ -7,6 +7,7 @@ import com.goodspartner.entity.Store;
 import com.goodspartner.service.StoreService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import static org.mockito.Mockito.when;
 @Import({TestSecurityDisableConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 @DirtiesContext
+@Disabled
 class GrandeDolceIntegrationServiceITest extends AbstractBaseITest {
 
     @LocalServerPort

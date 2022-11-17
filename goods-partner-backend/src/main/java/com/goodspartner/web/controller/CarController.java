@@ -63,7 +63,7 @@ public class CarController {
             response = CarDto.class)
     public CarDto getById(@ApiParam(value = "ID value for the car you need to retrieve", required = true)
                           @PathVariable("id") int id) {
-        return carService.getById(id);
+        return carService.findById(id);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")

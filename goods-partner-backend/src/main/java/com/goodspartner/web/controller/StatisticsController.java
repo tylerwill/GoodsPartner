@@ -1,9 +1,9 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.service.StatisticsService;
-import com.goodspartner.web.controller.response.statistics.CarStatisticsCalculation;
-import com.goodspartner.web.controller.response.statistics.DailyCarStatisticsCalculation;
-import com.goodspartner.web.controller.response.statistics.StatisticsCalculation;
+import com.goodspartner.web.controller.response.statistics.CarStatisticsResponse;
+import com.goodspartner.web.controller.response.statistics.DailyCarStatisticsResponse;
+import com.goodspartner.web.controller.response.statistics.StatisticsResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +24,9 @@ public class StatisticsController {
     @GetMapping("/statistics/deliveries")
     @ApiOperation(value = "Get statistics for date range",
             notes = "Return StatisticsCalculation object",
-            response = StatisticsCalculation.class)
+            response = StatisticsResponse.class)
 
-    public StatisticsCalculation getStatistics(
+    public StatisticsResponse getStatistics(
             @ApiParam(value = "date range start", required = true)
             @RequestParam String dateFrom,
             @ApiParam(value = "date range finish", required = true)
@@ -40,8 +40,8 @@ public class StatisticsController {
     @GetMapping("/statistics/cars/{id}")
     @ApiOperation(value = "Get statistics for date range for selected car",
             notes = "Return CarStatisticsCalculation object",
-            response = CarStatisticsCalculation.class)
-    public CarStatisticsCalculation getCarStatistics(
+            response = CarStatisticsResponse.class)
+    public CarStatisticsResponse getCarStatistics(
             @ApiParam(value = "ID value for the car you need to calculate statistics", required = true)
             @PathVariable int id,
             @ApiParam(value = "Start date for the range you need to calculate statistics", required = true)
@@ -57,8 +57,8 @@ public class StatisticsController {
     @GetMapping("/daily-statistics/cars/{id}")
     @ApiOperation(value = "Get statistics for date for selected car",
             notes = "Return DailyCarStatisticsCalculation object",
-            response = CarStatisticsCalculation.class)
-    public DailyCarStatisticsCalculation getCarDailyStatistics(
+            response = CarStatisticsResponse.class)
+    public DailyCarStatisticsResponse getCarDailyStatistics(
             @ApiParam(value = "ID value for the car you need to calculate statistics", required = true)
             @PathVariable int id,
             @ApiParam(value = "Date you need to calculate statistics for", required = true)

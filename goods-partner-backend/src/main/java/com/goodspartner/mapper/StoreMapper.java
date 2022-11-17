@@ -15,12 +15,6 @@ public interface StoreMapper {
     @Mapping(target = "mapPoint", source = "store", qualifiedByName = "getMapPoint")
     StoreDto toStoreDto(Store store);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "address", expression = "java(storeDto.getMapPoint().getAddress())")
-    @Mapping(target = "latitude", expression = "java(storeDto.getMapPoint().getLatitude())")
-    @Mapping(target = "longitude", expression = "java(storeDto.getMapPoint().getLongitude())")
-    Store toStore(StoreDto storeDto);
-
     @Named("getMapPoint")
     default MapPoint getMapPoint(Store store) {
         return MapPoint.builder()

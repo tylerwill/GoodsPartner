@@ -39,15 +39,15 @@ public class RoutePoint {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "route_points_sequence")
     @SequenceGenerator(name = "route_points_sequence", sequenceName = "route_points_sequence")
-    private long id;
+    private Long id;
     @Enumerated(value = EnumType.STRING)
     private RoutePointStatus status;
     @Column(name = "client_name")
     private String clientName;
     private String address;
-    private double addressTotalWeight; //TODO check if necessary here
+    private Double addressTotalWeight; //TODO check if necessary here
     @Column(name = "route_point_distant_time")
-    private long routePointDistantTime;
+    private Long routePointDistantTime;
 
     @Column(name = "completed_at")
     private LocalDateTime completedAt;

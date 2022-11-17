@@ -8,6 +8,7 @@ import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.repository.DeliveryRepository;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,6 +23,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled
 class CarsLoadReportGeneratorITest {
     private final static String REPORTS_DESTINATION = "reports";
     private final CarLoadSheetGenerator carLoadSheetGenerator = new CarLoadSheetGenerator();

@@ -1,24 +1,12 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.MapPoint;
-import com.goodspartner.service.dto.RoutingSolution;
-import com.goodspartner.entity.Car;
-import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
-import com.goodspartner.entity.RoutePointStatus;
-import com.goodspartner.entity.RouteStatus;
-import com.goodspartner.entity.Store;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.util.List;
-import java.util.UUID;
 
-import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
@@ -26,7 +14,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 // TODO rework after moving RoutePoints to separate table
 class DefaultRouteCalculationServiceTest {
     private final DefaultRouteCalculationService routeService = new DefaultRouteCalculationService(
-            null, null, null, null, null, null, null);
+            null, null, null, null, null, null);
     private List<RoutePoint> routePoints;
     private RoutePoint firstRoutePoint;
     private RoutePoint secondRoutePoint;

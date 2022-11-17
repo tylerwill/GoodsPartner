@@ -13,7 +13,7 @@ public interface CarService {
 
     CarDto update(int id, CarDto car);
 
-    CarDto getById(int id);
+    CarDto findById(int id);
 
     List<CarDto> findAll();
 

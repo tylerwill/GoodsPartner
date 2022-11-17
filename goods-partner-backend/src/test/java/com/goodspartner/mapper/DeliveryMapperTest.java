@@ -39,13 +39,10 @@ public class DeliveryMapperTest {
         DeliveryDto deliveryDto = DeliveryDto.builder()
                 .id(UUID.fromString("2221111-3344-5555-0000-444466669999"))
                 .deliveryDate(LocalDate.of(2022, 8, 15))
-                .routes(null)
-                .orders(null)
-                .productsShipping(null)
                 .status(DeliveryStatus.COMPLETED)
                 .build();
 
-        Delivery mappedDelivery = deliveryMapper.deliveryDtoToDelivery(deliveryDto);
+        Delivery mappedDelivery = deliveryMapper.dtoToDelivery(deliveryDto);
 
         assertEquals(UUID.fromString("2221111-3344-5555-0000-444466669999"), mappedDelivery.getId());
         assertEquals(LocalDate.of(2022, 8, 15), mappedDelivery.getDeliveryDate());

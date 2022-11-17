@@ -4,7 +4,6 @@ import com.goodspartner.action.DeliveryAction;
 import com.goodspartner.dto.CarDeliveryDto;
 import com.goodspartner.dto.CarLoadDto;
 import com.goodspartner.dto.DeliveryDto;
-import com.goodspartner.dto.DeliveryShortDto;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.UserDto;
@@ -13,10 +12,8 @@ import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.DeliveryStatus;
-import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RouteStatus;
-import com.goodspartner.exception.DeliveryModifyException;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
 import com.goodspartner.mapper.DeliveryMapper;
@@ -38,11 +35,10 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import static com.goodspartner.entity.DeliveryFormationStatus.ORDERS_LOADED;
 import static com.goodspartner.entity.DeliveryFormationStatus.ORDERS_LOADING;
 import static com.goodspartner.entity.DeliveryStatus.DRAFT;
 
@@ -63,14 +59,13 @@ public class DefaultDeliveryService implements DeliveryService {
     private final UserService userService;
     private final TxWrapper txWrapper;
 
-    // TODO N+1 issue when Lazy fetching orders for each delivery
     @Override
     @Transactional(readOnly = true)
-    public List<DeliveryShortDto> findAll() {
+    public List<DeliveryDto> findAll() {
         Sort sortByDeliveryDate = Sort.by(Sort.Direction.DESC, "deliveryDate");
         return deliveryRepository.findAll(sortByDeliveryDate)
                 .stream()
-                .map(deliveryMapper::deliveryToDeliveryShortDto)
+                .map(deliveryMapper::mapToDto)
                 .toList();
     }
 
@@ -85,25 +80,30 @@ public class DefaultDeliveryService implements DeliveryService {
 
         deliveryRepository.deleteById(deliveryId);
 
-        return deliveryMapper.toDeliveryDtoResult(new DeliveryDto(), deliveryToDelete);
+        return deliveryMapper.mapToDto(deliveryToDelete);
     }
 
     @Override
     @Transactional(readOnly = true)
     public DeliveryDto findById(UUID deliveryId) {
-        DeliveryDto deliveryDto = deliveryRepository.findById(deliveryId)
-                .map(deliveryMapper::deliveryToDeliveryDto)
+        return deliveryRepository.findById(deliveryId)
+                .map(deliveryMapper::mapToDto)
                 .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
+    }
 
-        if (deliveryDto.getOrders().isEmpty()) {
-            List<OrderDto> ordersFromCache = orderExternalService.getOrdersFromCache(deliveryId);
-            if (!ordersFromCache.isEmpty()) {
-                deliveryDto.setOrders(ordersFromCache);
-                deliveryDto.setFormationStatus(ORDERS_LOADED);
-            }
-        }
+    @Override
+    public DeliveryDto findByStatusAndDeliveryDate(DeliveryStatus status, LocalDate date) {
+        Delivery delivery = deliveryRepository.findByStatusAndDeliveryDate(status, date)
+                .orElseThrow(() -> new DeliveryNotFoundException(status, date));
+        return deliveryMapper.mapToDto(delivery);
+    }
 
-        return deliveryDto;
+    @Override
+    public List<DeliveryDto> findByStatusAndDeliveryDateBetween(DeliveryStatus status, LocalDate dateFrom, LocalDate dateTo) {
+        return deliveryRepository.findByStatusAndDeliveryDateBetween(status, dateFrom, dateTo)
+                .stream()
+                .map(deliveryMapper::mapToDto)
+                .toList();
     }
 
     @Override
@@ -114,49 +114,36 @@ public class DefaultDeliveryService implements DeliveryService {
         deliveryDto.setStatus(DRAFT);
         deliveryDto.setFormationStatus(ORDERS_LOADING);
 
-        Delivery addedDelivery = deliveryRepository.save(deliveryMapper.deliveryDtoToDelivery(deliveryDto));
+        Delivery addedDelivery = deliveryRepository.save(deliveryMapper.dtoToDelivery(deliveryDto));
 
         orderExternalService.saveToOrderCache(addedDelivery.getId(), addedDelivery.getDeliveryDate());
 
         eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CREATED, addedDelivery.getId());
 
-        return deliveryMapper.toDeliveryDtoResult(new DeliveryDto(), addedDelivery);
+        return deliveryMapper.mapToDto(addedDelivery);
     }
 
     private void validateExistence(DeliveryDto deliveryDto) {
-        Optional<Delivery> optionalDelivery = deliveryRepository.findByDeliveryDate(deliveryDto.getDeliveryDate());
-        if (optionalDelivery.isPresent()) {
-            throw new IllegalArgumentException("There is already delivery on date: " + deliveryDto.getDeliveryDate());
-        }
+        deliveryRepository.findByDeliveryDate(deliveryDto.getDeliveryDate())
+                .ifPresent(delivery -> {
+                    throw new IllegalArgumentException("There is already delivery on date: " + deliveryDto.getDeliveryDate());
+                });
     }
 
     @Override
-    @Transactional
-    public DeliveryDto update(UUID deliveryId, DeliveryDto deliveryDto) {
-        checkStatus(deliveryDto);
+    public DeliveryDto calculateDelivery(UUID id) {
+//        Delivery delivery = txWrapper.runInTransaction(this::saveOrders, deliveryResponse);
 
-        Delivery deliveryToUpdate = deliveryRepository.findById(deliveryId)
-                .map(delivery -> deliveryMapper.update(delivery, deliveryDto))
-                .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
-
-        Delivery updatedDelivery = deliveryRepository.save(deliveryToUpdate);
-
-        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_UPDATED, updatedDelivery.getId());
-
-        return deliveryMapper.toDeliveryDtoResult(new DeliveryDto(), updatedDelivery);
-    }
-
-    @Override
-    public DeliveryDto calculateDelivery(DeliveryDto deliveryDto) {
-        Delivery delivery = txWrapper.runInTransaction(this::saveOrders, deliveryDto);
+        Delivery delivery = deliveryRepository.findById(id)
+                .orElseThrow(() -> new DeliveryNotFoundException(id));
 
         delivery.setFormationStatus(DeliveryFormationStatus.ROUTE_CALCULATION);
 
-        deliveryCalculationHelper.calculate(delivery.getId());  //Calculated in async method
+        deliveryCalculationHelper.calculate(id);  //Calculated in async method
 
-        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, delivery.getId());
+        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, id);
 
-        return deliveryMapper.toDeliveryDtoWithOrders(new DeliveryDto(), deliveryRepository.save(delivery));
+        return deliveryMapper.mapToDto(deliveryRepository.save(delivery));
     }
 
     private Delivery saveOrders(DeliveryDto deliveryDto) {
@@ -172,8 +159,8 @@ public class DefaultDeliveryService implements DeliveryService {
             return delivery;
         }
 
-        List<OrderExternal> orderExternals = // Persist orders which sent from FE
-                orderExternalService.saveValidOrdersAndEnrichKnownAddressesCache(deliveryDto.getOrders());
+//        List<OrderExternal> orderExternals = // Persist orders which sent from FE
+//                orderExternalService.saveValidOrdersAndEnrichKnownAddressesCache(deliveryResponse.getOrders());
         log.info("Orders for Delivery: {} have been saved to DB", deliveryId);
 
         orderExternalService.evictCache(deliveryId);
@@ -181,7 +168,7 @@ public class DefaultDeliveryService implements DeliveryService {
 
         eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_SAVED, deliveryId);
 
-        delivery.setOrders(orderExternals);
+//        delivery.setOrders(orderExternals);
         delivery.setFormationStatus(DeliveryFormationStatus.ORDERS_LOADED);
         deliveryRepository.save(delivery);
 
@@ -198,10 +185,10 @@ public class DefaultDeliveryService implements DeliveryService {
 
     @Override
     @Transactional
-    public DeliveryActionResponse approve(UUID deliveryId, DeliveryAction action) {
+    public DeliveryActionResponse approve(UUID id, DeliveryAction action) {
 
-        Delivery delivery = deliveryRepository.findById(deliveryId)
-                .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
+        Delivery delivery = deliveryRepository.findById(id)
+                .orElseThrow(() -> new DeliveryNotFoundException(id));
 
         action.perform(delivery);
 
@@ -220,12 +207,12 @@ public class DefaultDeliveryService implements DeliveryService {
     // TODO required entity relation between Car and User
     @Transactional(readOnly = true)
     @Override
-    public List<DeliveryShortDto> findAll(OAuth2AuthenticationToken authentication) {
+    public List<DeliveryDto> findAll(OAuth2AuthenticationToken authentication) {
         UserDto driver = userService.findByAuthentication(authentication);
         Car car = carRepository.findCarByDriver(driver.getUserName());
         return deliveryRepository.findDeliveriesByCar(car)
                 .stream()
-                .map(deliveryMapper::deliveryToDeliveryShortDto)
+                .map(deliveryMapper::mapToDto)
                 .toList();
     }
 
@@ -263,21 +250,5 @@ public class DefaultDeliveryService implements DeliveryService {
         deliveryActionResponse.setRoutesStatus(routeStatuses);
 
         return deliveryActionResponse;
-    }
-
-
-    private void checkStatus(DeliveryDto deliveryDto) {
-        if (deliveryDto.getStatus().equals(DeliveryStatus.COMPLETED)) {
-            if (!isAllRoutesCompleted(deliveryDto)) {
-                throw new DeliveryModifyException("Not possible to close the delivery due to not all routes have been completed");
-            }
-        }
-    }
-
-    private boolean isAllRoutesCompleted(DeliveryDto deliveryDto) {
-        return deliveryDto.getRoutes().stream()
-                .filter(route -> !route.getStatus().equals(RouteStatus.COMPLETED))
-                .findFirst()
-                .isEmpty();
     }
 }

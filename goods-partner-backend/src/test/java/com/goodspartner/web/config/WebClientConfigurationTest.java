@@ -7,6 +7,7 @@ import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
 import com.goodspartner.service.dto.external.grandedolce.ODataWrapperDto;
 import com.goodspartner.util.ODataUrlBuilder;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 @DirtiesContext
 @Import({TestSecurityDisableConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
+@Disabled
 class WebClientConfigurationTest extends AbstractBaseITest {
     @LocalServerPort
     private int port;

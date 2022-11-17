@@ -9,6 +9,7 @@ import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.Location;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @AutoConfigureMockMvc(addFilters = false)
 @Import({TestSecurityDisableConfig.class})
+@Disabled
 public class CarControllerITest extends AbstractWebITest {
 
     private static final LocalDateTime DATE_TIME = LocalDateTime.of(2022, 5, 5, 14, 35);

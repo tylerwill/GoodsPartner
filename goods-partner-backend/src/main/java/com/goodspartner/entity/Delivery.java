@@ -68,6 +68,12 @@ public class Delivery {
     @Column(name = "deleted")
     private boolean deleted = false;
 
+    @Column(name = "order_count")
+    private Integer orderCount;
+
+    @Column(name = "route_count")
+    private Integer routeCount;
+
     public void setRoutes(List<Route> routes) {
         List<Route> requiredRoutes = Optional.ofNullable(routes)
                 .orElse(Collections.emptyList());

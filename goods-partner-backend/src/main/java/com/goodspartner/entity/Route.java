@@ -34,19 +34,19 @@ public class Route {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "routes_sequence")
     @SequenceGenerator(name = "routes_sequence", sequenceName = "routes_sequence")
-    private int id;
+    private Integer id;
 
     @Enumerated(value = EnumType.STRING)
     private RouteStatus status;
     private double totalWeight;
-    private int totalPoints;
-    private int totalOrders;
-    private double distance;
-    private long estimatedTime;
+    private Integer totalPoints;
+    private Integer totalOrders;
+    private Double distance;
+    private Long estimatedTime;
     private LocalDateTime startTime;
     private LocalDateTime finishTime;
-    private long spentTime; // TODO Minutes? Only for completed so far
-    private boolean optimization;
+    private Long spentTime; // TODO Minutes? Only for completed so far
+    private Boolean optimization;
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
     private List<RoutePoint> routePoints = new ArrayList<>();

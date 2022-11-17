@@ -1,34 +1,29 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.action.RouteAction;
-import com.goodspartner.action.RoutePointAction;
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
-import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exception.IllegalRoutePointStatusForOperation;
 import com.goodspartner.exception.IllegalRouteStatusForOperation;
 import com.goodspartner.exception.RouteNotFoundException;
-import com.goodspartner.exception.RoutePointNotFoundException;
 import com.goodspartner.mapper.RouteMapper;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.RouteRepository;
 import com.goodspartner.service.EventService;
 import com.goodspartner.service.RouteService;
 import com.goodspartner.web.controller.response.RouteActionResponse;
-import com.goodspartner.web.controller.response.RoutePointActionResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -46,6 +41,14 @@ public class DefaultRouteService implements RouteService {
     private final DefaultRouteCalculationService routeCalculationService;
     private final EventService eventService;
     private final RouteMapper routeMapper;
+
+    @Override
+    public List<RouteDto> findByDeliveryId(UUID deliveryId) {
+        return routeRepository.findByDeliveryId(deliveryId)
+                .stream()
+                .map(routeMapper::mapToDto)
+                .toList();
+    }
 
     @Override
     @Transactional
@@ -81,77 +84,22 @@ public class DefaultRouteService implements RouteService {
     }
 
     @Override
-    @Transactional
-    public RoutePointActionResponse updateRoutePoint(int routeId, long routePointId, RoutePointAction action) {
-        Route route = routeRepository.findById(routeId)
-                .orElseThrow(() -> new RouteNotFoundException("Route not found"));
+    public void reorderRoutePoints(int id, LinkedList<RoutePointDto> routePointsOrdered) {
 
-        List<RoutePoint> routePoints = route.getRoutePoints();
+        Route route = routeRepository.findById(id)
+                .orElseThrow(() -> new RouteNotFoundException(id));
 
-        RoutePoint routePoint = routePoints.stream()
-                .filter(r -> r.getId() == routePointId)
-                .findFirst()
-                .orElseThrow(() -> new RoutePointNotFoundException(routePointId));
-
-        action.perform(routePoint);
-
-        processRouteStatus(route, routePoints);
-
-        processDeliveryStatus(route);
-
-        routeRepository.save(route);
-
-        eventService.publishRoutePointUpdated(routePoint, route);
-
-        return getRoutePointActionResponse(route, routePoint);
-    }
-
-    private RoutePointActionResponse getRoutePointActionResponse(Route route, RoutePoint routePoint) {
-        RoutePointActionResponse routePointActionResponse = new RoutePointActionResponse();
-
-        // RoutePoint
-        routePointActionResponse.setRoutePointId(routePoint.getId());
-        routePointActionResponse.setRoutePointStatus(routePoint.getStatus());
-        routePointActionResponse.setPointCompletedAt(routePoint.getCompletedAt());
-
-        // Route
-        routePointActionResponse.setRouteId(route.getId());
-        routePointActionResponse.setRouteStatus(route.getStatus());
-        routePointActionResponse.setRouteFinishTime(route.getFinishTime());
-
-        // Delivery
-        Delivery delivery = route.getDelivery();
-        routePointActionResponse.setDeliveryId(delivery.getId());
-        routePointActionResponse.setDeliveryStatus(delivery.getStatus());
-        return routePointActionResponse;
-    }
-
-    private void processRouteStatus(Route route, List<RoutePoint> routePoints) {
-        if (isAllRoutePointsDone(routePoints)) {
-            route.setStatus(RouteStatus.COMPLETED);
-            route.setFinishTime(LocalDateTime.now());
-
-            eventService.publishRouteStatusChangeAuto(route);
-
-            log.info("Route ID {} was automatically close due to all RoutePoints are completed", route.getId());
-        }
-    }
-
-    @Override
-    public void reorderRoutePoints(UUID deliveryId, int routeId, LinkedList<RoutePointDto> routePointDtos) {
+        UUID deliveryId = route.getDelivery().getId();
 
         validateDelivery(deliveryId);
 
-        Route route = routeRepository.findById(routeId)
-                .orElseThrow(() -> new RouteNotFoundException(routeId));
-
         validateRoute(route, deliveryId);
 
-        if (isAllRoutePointsPending(routePointDtos)) {
-            Route reorderedRoute = routeCalculationService.recalculateRoute(route, routePointDtos);
+        if (isAllRoutePointsPending(routePointsOrdered)) {
+            Route reorderedRoute = routeCalculationService.recalculateRoute(route, routePointsOrdered);
             routeRepository.save(reorderedRoute);
         } else {
-            throw new IllegalRoutePointStatusForOperation(routePointDtos, "reorder");
+            throw new IllegalRoutePointStatusForOperation(routePointsOrdered, "reorder");
         }
     }
 
@@ -159,15 +107,8 @@ public class DefaultRouteService implements RouteService {
     public List<RouteDto> findRoutesByDeliveryAndCar(Delivery delivery, Car car) {
         return routeRepository.findByDeliveryAndCar(delivery, car)
                 .stream()
-                .map(routeMapper::routeToRouteDto)
+                .map(routeMapper::mapToDto)
                 .toList();
-    }
-
-    private boolean isAllRoutePointsDone(List<RoutePoint> routePoints) {
-        return routePoints.stream()
-                .filter(routePoint -> routePoint.getStatus().equals(PENDING))
-                .findFirst()
-                .isEmpty();
     }
 
     private boolean isAllRoutesCompleted(Delivery delivery) {
@@ -190,8 +131,8 @@ public class DefaultRouteService implements RouteService {
         }
     }
 
-    private boolean isAllRoutePointsPending(List<RoutePointDto> routePointDtos) {
-        return routePointDtos.stream()
+    private boolean isAllRoutePointsPending(List<RoutePointDto> routePointResponses) {
+        return routePointResponses.stream()
                 .allMatch(routePoint -> routePoint.getStatus().equals(PENDING));
     }
 
@@ -205,7 +146,7 @@ public class DefaultRouteService implements RouteService {
     }
 
     private void validateRoute(Route route, UUID deliveryId) {
-        if (!route.getDelivery().getId().equals(deliveryId)) {
+        if (!(route.getDelivery().getId().equals(deliveryId))) {
             throw new RouteNotFoundException(deliveryId);
         }
         RouteStatus routeStatus = route.getStatus();

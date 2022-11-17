@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-public class CarStatisticsCalculation {
+public class CarStatisticsResponse {
 
     private List<RouteDto> routes;
     private long totalTimeInRoutes;

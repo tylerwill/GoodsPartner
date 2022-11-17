@@ -2,33 +2,41 @@ package com.goodspartner.service;
 
 import com.goodspartner.action.DeliveryAction;
 import com.goodspartner.dto.CarDeliveryDto;
-import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import com.goodspartner.dto.DeliveryDto;
-import com.goodspartner.dto.DeliveryShortDto;
+import com.goodspartner.entity.DeliveryStatus;
+import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 public interface DeliveryService {
 
-    DeliveryDto add(DeliveryDto deliveryDto);
-
-    DeliveryDto update(UUID id, DeliveryDto deliveryDto);
+    /* --- CRUD --- */
+    List<DeliveryDto> findAll();
 
     DeliveryDto findById(UUID id);
 
-    List<DeliveryShortDto> findAll();
+    DeliveryDto add(DeliveryDto deliveryDto);
 
     DeliveryDto delete(UUID id);
 
-    DeliveryDto calculateDelivery(DeliveryDto deliveryDto);
+    /* --- Data retrieval --- */
+
+    DeliveryDto findByStatusAndDeliveryDate(DeliveryStatus status, LocalDate date);
+
+    List<DeliveryDto> findByStatusAndDeliveryDateBetween(DeliveryStatus status, LocalDate dateFrom, LocalDate dateTo);
+
+    /* --- Specific --- */
+
+    DeliveryDto calculateDelivery(UUID id);
 
     DeliveryActionResponse approve(UUID id, DeliveryAction deliveryAction);
 
-    // --- Driver related ---
+    /* --- Driver related --- */
 
-    List<DeliveryShortDto> findAll(OAuth2AuthenticationToken authentication);
+    List<DeliveryDto> findAll(OAuth2AuthenticationToken authentication);
 
     CarDeliveryDto findById(UUID id, OAuth2AuthenticationToken authentication);
 }
