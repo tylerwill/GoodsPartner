@@ -1,0 +1,16 @@
+[
+  {
+    "article": "Наповнювач фруктово-ягідний (декоргель) (12 кг)",
+    "totalAmount": 1,
+    "totalWeight": 12.0,
+    "productLoadDtos": [
+      {
+        "orderNumber": "00000002055",
+        "car": "Mercedes Sprinter (AA 1111 CT)",
+        "amount": 1,
+        "weight": 12.0,
+        "totalWeight": 12.0
+      }
+    ]
+  }
+]
