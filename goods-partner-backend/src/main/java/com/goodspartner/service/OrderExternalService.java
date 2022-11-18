@@ -8,8 +8,11 @@ import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.OrderExternal;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface OrderExternalService {
+
+    List<OrderDto> findByDeliveryId(UUID deliveryId);
 
     OrderDto update(int id, OrderDto orderDto);
 

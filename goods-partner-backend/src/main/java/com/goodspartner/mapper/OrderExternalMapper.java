@@ -21,7 +21,7 @@ public interface OrderExternalMapper {
     @Mapping(target = "deliveryId", source = "delivery.id")
     OrderDto mapToDto(OrderExternal orderExternal);
 
-    List<OrderExternal> mapToEntities(List<OrderDto> orderDtos);
+    List<OrderDto> mapToDtos(List<OrderExternal> orderDtos);
 
     @Mapping(target = "addressExternal.orderAddressId.orderAddress", source = "address")
     @Mapping(target = "addressExternal.orderAddressId.clientName", source = "clientName")
@@ -30,6 +30,8 @@ public interface OrderExternalMapper {
     @Mapping(target = "addressExternal.longitude", source = "mapPoint.longitude")
     @Mapping(target = "delivery.id", source = "deliveryId")
     OrderExternal mapToEntity(OrderDto orderDto);
+
+    List<OrderExternal> mapToEntities(List<OrderDto> orderDtos);
 
     @Named("mapMapPoint")
     default MapPoint mapMapPoint(AddressExternal addressExternal) {

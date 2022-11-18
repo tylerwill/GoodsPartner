@@ -11,9 +11,14 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface OrderExternalRepository extends JpaRepository<OrderExternal, Integer> {
+
+    @EntityGraph(attributePaths = {"addressExternal"})
+    @Query("SELECT o FROM OrderExternal o WHERE o.delivery.id = :deliveryId")
+    List<OrderExternal> findAllByDelivery(@Param("deliveryId") UUID deliveryId);
 
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o WHERE o.delivery = :delivery AND o.carLoad.car = :car")

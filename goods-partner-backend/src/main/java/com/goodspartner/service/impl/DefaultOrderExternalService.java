@@ -51,6 +51,11 @@ public class DefaultOrderExternalService implements OrderExternalService {
     private final ExternalOrderPostProcessor orderCommentProcessor;
     private final EventService eventService;
 
+    @Override
+    public List<OrderDto> findByDeliveryId(UUID deliveryId) {
+        return orderExternalMapper.mapToDtos(orderExternalRepository.findAllByDelivery(deliveryId));
+    }
+
     @Transactional
     @Override
     public OrderDto update(int id, OrderDto orderDto) {

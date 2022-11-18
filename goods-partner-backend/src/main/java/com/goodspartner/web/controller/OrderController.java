@@ -12,12 +12,22 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/orders", produces = MediaType.APPLICATION_JSON_VALUE)
 public class OrderController {
     private final OrderExternalService orderExternalService;
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
+    @ApiOperation(value = "Find Orders by delivery ID",
+            notes = "Provide an delivery ID to look up related orders",
+            response = List.class)
+    public List<OrderDto> findByDeliveryId(@RequestParam("deliveryId") UUID deliveryId){
+        return orderExternalService.findByDeliveryId(deliveryId);
+    }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @PutMapping("/{id}")
