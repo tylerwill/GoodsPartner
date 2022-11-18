@@ -34,7 +34,7 @@ public class DefaultDeliveryHistoryService implements DeliveryHistoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DeliveryHistoryDto> findByDelivery(UUID id) {
+    public List<DeliveryHistoryDto> findByDeliveryId(UUID id) {
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow(() -> new DeliveryNotFoundException(id));
         return deliveryHistoryMapper.toDeliveryHistoryDtos(

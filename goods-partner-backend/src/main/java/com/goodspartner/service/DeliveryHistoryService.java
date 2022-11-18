@@ -11,7 +11,7 @@ public interface DeliveryHistoryService {
 
     void add(DeliveryHistory deliveryHistory);
 
-    List<DeliveryHistoryDto> findByDelivery(UUID id);
+    List<DeliveryHistoryDto> findByDeliveryId(UUID id);
 
     void publish(DeliveryAuditEvent event);
 }

@@ -12,4 +12,5 @@ import java.util.UUID;
 public interface DeliveryHistoryRepository extends JpaRepository<DeliveryHistory, UUID> {
 
     List<DeliveryHistory> findByDeliveryOrderByCreatedAtDesc(Delivery delivery);
+
 }
