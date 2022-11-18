@@ -10,15 +10,16 @@ import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.Product;
-import com.goodspartner.entity.DeliveryType;
-import com.goodspartner.service.dto.RoutingSolution;
+import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.DeliveryStatus;
+import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.StoreService;
 import com.goodspartner.service.VRPSolver;
+import com.goodspartner.service.dto.RoutingSolution;
 import com.goodspartner.service.dto.VRPSolution;
 import com.graphhopper.ResponsePath;
 import com.graphhopper.util.Instruction;
@@ -50,7 +51,6 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -104,32 +104,32 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .address("15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна")
                 .latitude(50.08340335)
                 .longitude(29.885050630832627)
-                .status(KNOWN)
+                .status(AddressStatus.KNOWN)
                 .build();
 
         mapPointAutovalidatedFirst = MapPoint.builder()
                 .address("вулиця Єлизавети Чавдар, 36, Київ, Україна, 02000")
                 .latitude(50.3910679)
                 .longitude(30.6265536)
-                .status(MapPoint.AddressStatus.AUTOVALIDATED)
+                .status(AddressStatus.AUTOVALIDATED)
                 .build();
 
         mapPointAutovalidatedSecond = MapPoint.builder()
                 .address("16B, вулиця Княжий Затон, 16Б, Київ, Україна, 02000")
                 .latitude(50.403193)
                 .longitude(30.6163764)
-                .status(MapPoint.AddressStatus.AUTOVALIDATED)
+                .status(AddressStatus.AUTOVALIDATED)
                 .build();
 
         mapPointKnown = MapPoint.builder()
                 .address("16B, вулиця Княжий Затон, 16Б, Київ, Україна, 02000")
                 .latitude(50.403193)
                 .longitude(30.6163764)
-                .status(MapPoint.AddressStatus.KNOWN)
+                .status(AddressStatus.KNOWN)
                 .build();
 
         mapPointUnknown = MapPoint.builder()
-                .status(MapPoint.AddressStatus.UNKNOWN)
+                .status(AddressStatus.UNKNOWN)
                 .build();
 
         Product product = Product.builder()
@@ -180,28 +180,28 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .longitude(30.5339629)
                 .latitude(50.4782535)
                 .address("м. Київ, вул. Електриків 29А")
-                .status(MapPoint.AddressStatus.KNOWN)
+                .status(AddressStatus.KNOWN)
                 .build();
 
         MapPoint mapPointSecond = MapPoint.builder()
                 .longitude(30.603752)
                 .latitude(50.4439883)
                 .address("м.Київ, вул.Туманяна,15-А")
-                .status(MapPoint.AddressStatus.KNOWN)
+                .status(AddressStatus.KNOWN)
                 .build();
 
         MapPoint mapPointThird = MapPoint.builder()
                 .longitude(30.4936555)
                 .latitude(50.4895138)
                 .address("м.Київ,пр-т Бандери,21")
-                .status(MapPoint.AddressStatus.KNOWN)
+                .status(AddressStatus.KNOWN)
                 .build();
 
         MapPoint mapPointFourth = MapPoint.builder()
                 .longitude(80.4936555)
                 .latitude(50.4895138)
                 .address("м.Київ,пр-т Бандери,142")
-                .status(MapPoint.AddressStatus.KNOWN)
+                .status(AddressStatus.KNOWN)
                 .build();
 
         /*RoutePoint.OrderReference orderReference = RoutePoint.OrderReference.builder()

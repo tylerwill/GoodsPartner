@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.action.RouteAction;
+import com.goodspartner.entity.AddressStatus;
+import com.goodspartner.web.action.RouteAction;
 import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.DeliveryDto;
@@ -46,8 +47,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static com.goodspartner.action.DeliveryAction.APPROVE;
-import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
+import static com.goodspartner.entity.AddressStatus.KNOWN;
+import static com.goodspartner.web.action.DeliveryAction.APPROVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -134,7 +135,7 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
         routeDto.setStore(storeDto);
 
         storeMapPoint = MapPoint.builder()
-                .status(MapPoint.AddressStatus.KNOWN)
+                .status(AddressStatus.KNOWN)
                 .address("м. Київ, вул. Некрасова 138")
                 .latitude(72.12)
                 .longitude(85.15)

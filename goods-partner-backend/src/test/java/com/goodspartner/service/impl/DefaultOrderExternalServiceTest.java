@@ -3,12 +3,11 @@ package com.goodspartner.service.impl;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractBaseITest;
-import com.goodspartner.action.ExcludedOrderAction;
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.dto.RescheduleOrdersDto;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.repository.OrderExternalRepository;
 import com.goodspartner.service.OrderExternalService;
+import com.goodspartner.web.controller.request.RescheduleOrdersRequest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,11 +54,11 @@ class DefaultOrderExternalServiceTest extends AbstractBaseITest {
     @DisplayName("Update delivery date")
     void updateDeliveryDate() {
 
-        RescheduleOrdersDto rescheduleOrdersDto = new RescheduleOrdersDto();
+        RescheduleOrdersRequest rescheduleOrdersRequest = new RescheduleOrdersRequest();
         List<Integer> list = List.of(251);
         LocalDate date = LocalDate.of(2022, 2, 20);
-        rescheduleOrdersDto.setRescheduleDate(date);
-        rescheduleOrdersDto.setOrderIds(list);
+        rescheduleOrdersRequest.setRescheduleDate(date);
+        rescheduleOrdersRequest.setOrderIds(list);
 
         List<OrderDto> skippedOrders = orderExternalService.getSkippedOrders();
         assertEquals(1, skippedOrders.size());
@@ -68,7 +67,7 @@ class DefaultOrderExternalServiceTest extends AbstractBaseITest {
         assertEquals(UUID.fromString("70574dfd-48a3-40c7-8b0c-3e5defe7d080"), orderDto.getDeliveryId());
         assertEquals(251, orderDto.getId());
 
-        orderExternalService.rescheduleOrders(rescheduleOrdersDto, ExcludedOrderAction.of("reschedule"));
+        orderExternalService.rescheduleSkippedOrders(rescheduleOrdersRequest);
 
         Optional<OrderExternal> orderExternal = orderExternalRepository.findById(251);
 

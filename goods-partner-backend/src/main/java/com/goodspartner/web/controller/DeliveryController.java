@@ -1,8 +1,9 @@
 package com.goodspartner.web.controller;
 
-import com.goodspartner.action.DeliveryAction;
+import com.goodspartner.web.action.DeliveryAction;
 import com.goodspartner.dto.CarDeliveryDto;
 import com.goodspartner.dto.DeliveryDto;
+import com.goodspartner.facade.DeliveryFacade;
 import com.goodspartner.service.DeliveryService;
 import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +30,8 @@ import java.util.UUID;
 @RequestMapping(path = "/api/v1/deliveries", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DeliveryController {
 
+    private final DeliveryFacade deliveryFacade;
+
     private final DeliveryService deliveryService;
 
     @PostMapping
@@ -38,7 +41,7 @@ public class DeliveryController {
     public DeliveryDto createDelivery(
             @ApiParam(value = "DeliveryDto that you want to create", type = "DeliveryResponse", required = true)
             @RequestBody DeliveryDto delivery) {
-        return deliveryService.add(delivery);
+        return deliveryFacade.add(delivery);
     }
 
     @GetMapping
@@ -67,7 +70,7 @@ public class DeliveryController {
         return deliveryService.delete(id);
     }
 
-    //TODO rework on acton
+    // TODO rework on acton
     @PostMapping("/{id}/calculate")
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @ResponseStatus(HttpStatus.ACCEPTED)

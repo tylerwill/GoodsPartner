@@ -1,33 +1,7 @@
 package com.goodspartner.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.goodspartner.AbstractBaseITest;
-import com.goodspartner.action.RoutePointAction;
-import com.goodspartner.dto.CarDto;
-import com.goodspartner.dto.MapPoint;
-import com.goodspartner.dto.RouteDto;
-import com.goodspartner.dto.StoreDto;
-import com.goodspartner.entity.DeliveryStatus;
-import com.goodspartner.entity.RoutePoint;
-import com.goodspartner.entity.RoutePointStatus;
-import com.goodspartner.entity.RouteStatus;
-import com.goodspartner.service.RouteService;
-import com.goodspartner.web.controller.response.RouteActionResponse;
-import com.goodspartner.web.controller.response.RoutePointActionResponse;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.UUID;
-
-import static com.goodspartner.action.RouteAction.COMPLETE;
-import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
 
 @DBRider
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

@@ -4,7 +4,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestSecurityDisableConfig;
-import com.goodspartner.dto.RescheduleOrdersDto;
+import com.goodspartner.web.controller.request.RescheduleOrdersRequest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -38,15 +38,15 @@ class OrderControllerITest extends AbstractWebITest {
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void getUpdateDeliveryDate() throws Exception {
 
-        RescheduleOrdersDto rescheduleOrdersDto = new RescheduleOrdersDto();
+        RescheduleOrdersRequest rescheduleOrdersRequest = new RescheduleOrdersRequest();
         List<Integer> list = List.of(251);
         LocalDate date = LocalDate.of(2022, 2, 20);
-        rescheduleOrdersDto.setRescheduleDate(date);
-        rescheduleOrdersDto.setOrderIds(list);
+        rescheduleOrdersRequest.setRescheduleDate(date);
+        rescheduleOrdersRequest.setOrderIds(list);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/orders/reschedule")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(rescheduleOrdersDto)))
+                        .content(objectMapper.writeValueAsString(rescheduleOrdersRequest)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/order-controller-update-delivery.json")));
     }

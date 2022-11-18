@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
+import static com.goodspartner.entity.AddressStatus.KNOWN;
 
 @Mapper(componentModel = "spring")
 public interface StoreMapper {

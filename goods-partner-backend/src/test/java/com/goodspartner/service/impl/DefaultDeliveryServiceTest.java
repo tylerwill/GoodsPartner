@@ -53,13 +53,11 @@ class DefaultDeliveryServiceTest extends AbstractBaseITest {
         DeliveryCalculationHelper deliveryCalculationHelper = mock(DeliveryCalculationHelper.class);
         CarLoadService carLoadService = mock(CarLoadService.class);
 
-        TxWrapper txWrapper = new TxWrapper();
-
         //construct mock Delivery object
         DeliveryService mockService =
                 new DefaultDeliveryService(deliveryMapperMock, deliveryRepositoryMock, carRepositoryMock,
                         deliveryCalculationHelper, orderExternalServiceMock, eventServiceMock,
-                        carLoadService, routeServiceMock, userServiceMock, txWrapper);
+                        carLoadService, routeServiceMock, userServiceMock);
 
         //configure mock objects
         Delivery mockDelivery = mock(Delivery.class);

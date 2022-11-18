@@ -5,6 +5,7 @@ import com.goodspartner.dto.CarLoadDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.Product;
+import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.OrderExternal;
@@ -36,7 +37,7 @@ public class CarLoadMapperTest {
     @DisplayName("when Map CarLoadDto then Return CarLoad")
     void whenMapCarLoadDto_thenReturnCarLoad() {
         MapPoint mapPoint = MapPoint.builder()
-                .status(MapPoint.AddressStatus.KNOWN)
+                .status(AddressStatus.KNOWN)
                 .address("м.Київ, Марії Лагунової, 11")
                 .longitude(53.0099)
                 .latitude(35.0099)
@@ -93,7 +94,7 @@ public class CarLoadMapperTest {
         assertTrue(mappedCar.isAvailable());
         assertEquals(26, mappedCar.getTravelCost());
 
-        List<OrderExternal> mappedOrderExternals = orderExternalMapper.mapOrderDtosToOrdersExternal(carLoadDto.getOrders());
+        List<OrderExternal> mappedOrderExternals = orderExternalMapper.mapToEntities(carLoadDto.getOrders());
         assertEquals(2, mappedOrderExternals.get(0).getId());
         assertEquals("1232", mappedOrderExternals.get(0).getOrderNumber());
         assertEquals(LocalDate.of(2022, 2, 17), mappedOrderExternals.get(0).getShippingDate());

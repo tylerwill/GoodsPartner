@@ -1,4 +1,4 @@
-package com.goodspartner.action;
+package com.goodspartner.web.action;
 
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;

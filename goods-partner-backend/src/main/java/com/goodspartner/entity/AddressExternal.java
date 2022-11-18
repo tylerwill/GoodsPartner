@@ -11,6 +11,8 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -22,6 +24,9 @@ public class AddressExternal {
 
     @EmbeddedId
     private OrderAddressId orderAddressId;
+
+    @Enumerated(value = EnumType.STRING)
+    private AddressStatus status;
 
     @Column(name = "valid_address")
     private String validAddress;

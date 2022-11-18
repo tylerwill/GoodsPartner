@@ -14,7 +14,7 @@ public interface DeliveryMapper {
     @Mapping(target = "id", ignore = true)
     Delivery update(@MappingTarget Delivery delivery, DeliveryDto deliveryDto);
 
-    Delivery dtoToDelivery(DeliveryDto deliveryDto);
+    Delivery mapToEntity(DeliveryDto deliveryDto);
 
     @Mapping(target = "routes", ignore = true)
     @Mapping(target = "orders", ignore = true)

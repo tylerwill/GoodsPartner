@@ -1,0 +1,1 @@
+ALTER TABLE grandedolce_addresses ADD COLUMN status VARCHAR(20);

@@ -4,7 +4,6 @@ import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.exception.GoogleApiException;
 import com.goodspartner.exception.RouteNotFoundException;
 import com.goodspartner.exception.UnknownAddressException;
-import com.goodspartner.web.dto.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

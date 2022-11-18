@@ -1,32 +1,9 @@
 package com.goodspartner.service.google;
 
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.dto.MapPoint;
-import com.goodspartner.service.dto.RoutingSolution;
-import com.goodspartner.entity.Car;
-import com.goodspartner.entity.RoutePoint;
-import com.goodspartner.entity.RoutePointStatus;
-import com.goodspartner.service.dto.VRPSolution;
-import com.graphhopper.GHResponse;
-import com.graphhopper.GraphHopper;
-import com.graphhopper.ResponsePath;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
-
-import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @TestInstance(PER_CLASS)
 public class GoogleVRPSolverTest extends AbstractWebITest {

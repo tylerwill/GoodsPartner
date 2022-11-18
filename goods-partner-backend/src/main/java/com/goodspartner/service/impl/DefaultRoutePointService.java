@@ -1,7 +1,7 @@
 package com.goodspartner.service.impl;
 
 
-import com.goodspartner.action.RoutePointAction;
+import com.goodspartner.web.action.RoutePointAction;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;

@@ -9,7 +9,6 @@ import com.goodspartner.exception.NoOrdersFoundForDelivery;
 import com.goodspartner.exception.NoRoutesFoundForDelivery;
 import com.goodspartner.exception.RouteInWrongState;
 import com.goodspartner.exception.StoreNotFoundException;
-import com.goodspartner.web.dto.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

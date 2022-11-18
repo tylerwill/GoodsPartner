@@ -1,8 +1,9 @@
 package com.goodspartner.service;
 
-import com.goodspartner.action.DeliveryAction;
+import com.goodspartner.web.action.DeliveryAction;
 import com.goodspartner.dto.CarDeliveryDto;
 import com.goodspartner.dto.DeliveryDto;
+import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -18,7 +19,7 @@ public interface DeliveryService {
 
     DeliveryDto findById(UUID id);
 
-    DeliveryDto add(DeliveryDto deliveryDto);
+    Delivery add(DeliveryDto deliveryDto);
 
     DeliveryDto delete(UUID id);
 

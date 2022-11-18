@@ -42,7 +42,7 @@ public class DeliveryMapperTest {
                 .status(DeliveryStatus.COMPLETED)
                 .build();
 
-        Delivery mappedDelivery = deliveryMapper.dtoToDelivery(deliveryDto);
+        Delivery mappedDelivery = deliveryMapper.mapToEntity(deliveryDto);
 
         assertEquals(UUID.fromString("2221111-3344-5555-0000-444466669999"), mappedDelivery.getId());
         assertEquals(LocalDate.of(2022, 8, 15), mappedDelivery.getDeliveryDate());

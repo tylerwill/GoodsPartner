@@ -3,6 +3,7 @@ package com.goodspartner.service.impl;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.AddressExternal;
+import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
@@ -148,7 +149,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
         // TODO Address external is the same for all orders for RoutePoint
         AddressExternal addressExternal = orders.get(0).getAddressExternal();
         return MapPoint.builder()
-                .status(MapPoint.AddressStatus.KNOWN)
+                .status(AddressStatus.KNOWN)
                 .address(addressExternal.getValidAddress())
                 .longitude(addressExternal.getLongitude())
                 .latitude(addressExternal.getLatitude())

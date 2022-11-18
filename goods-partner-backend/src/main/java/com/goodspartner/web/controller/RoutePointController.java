@@ -1,6 +1,6 @@
 package com.goodspartner.web.controller;
 
-import com.goodspartner.action.RoutePointAction;
+import com.goodspartner.web.action.RoutePointAction;
 import com.goodspartner.service.RoutePointService;
 import com.goodspartner.web.controller.response.RoutePointActionResponse;
 import lombok.AllArgsConstructor;

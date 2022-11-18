@@ -16,7 +16,7 @@ public enum DeliveryHistoryTemplate {
     ROUTE_START("${roleTranslated} ${userName} розпочав(ла) маршрут до авто ${carName} ${carLicensePlate}"),
     ORDERS_LOADING("${roleTranslated} ${userName} вивантажує замовлення замовлення з 1С"),
     ORDERS_LOADED("${roleTranslated} ${userName} вивантажив(ла) замовлення з 1С"),
-    ORDERS_SAVED("${roleTranslated} ${userName} зберіг(ла) замовлення");
+    ;
 
     @Getter
     private final String template;

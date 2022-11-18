@@ -3,6 +3,7 @@ package com.goodspartner.service.google;
 import com.goodspartner.dto.DistanceMatrix;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.entity.AddressExternal;
+import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.RoutePoint;
@@ -88,7 +89,7 @@ public class GoogleVRPSolver implements VRPSolver {
         // TODO Address external is the same for all orders for RoutePoint
         AddressExternal addressExternal = orders.get(0).getAddressExternal();
         return MapPoint.builder()
-                .status(MapPoint.AddressStatus.KNOWN)
+                .status(AddressStatus.KNOWN)
                 .address(addressExternal.getValidAddress())
                 .longitude(addressExternal.getLongitude())
                 .latitude(addressExternal.getLatitude())

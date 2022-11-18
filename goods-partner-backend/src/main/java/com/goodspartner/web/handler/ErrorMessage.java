@@ -1,4 +1,4 @@
-package com.goodspartner.web.dto;
+package com.goodspartner.web.handler;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

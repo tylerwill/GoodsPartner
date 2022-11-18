@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.goodspartner.dto.MapPoint.AddressStatus.KNOWN;
-import static com.goodspartner.dto.MapPoint.AddressStatus.UNKNOWN;
-import static com.goodspartner.dto.MapPoint.AddressStatus.AUTOVALIDATED;
+import static com.goodspartner.entity.AddressStatus.KNOWN;
+import static com.goodspartner.entity.AddressStatus.UNKNOWN;
+import static com.goodspartner.entity.AddressStatus.AUTOVALIDATED;
 
 @Slf4j
 @Service
@@ -34,9 +34,7 @@ public class GoogleGeocodeService implements GeocodeService {
     @Override
     public void enrichValidAddress(List<OrderDto> orders) {
         long startTime = System.currentTimeMillis();
-
         orders.forEach(this::enrichAddress);
-
         log.info("Addresses have been enriched in {}", System.currentTimeMillis() - startTime);
     }
 

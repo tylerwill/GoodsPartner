@@ -1,6 +1,6 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.action.RouteAction;
+import com.goodspartner.web.action.RouteAction;
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Car;

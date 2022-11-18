@@ -1,6 +1,5 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.action.DeliveryAction;
 import com.goodspartner.dto.CarDeliveryDto;
 import com.goodspartner.dto.CarLoadDto;
 import com.goodspartner.dto.DeliveryDto;
@@ -12,10 +11,12 @@ import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.DeliveryStatus;
+import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
+import com.goodspartner.exception.UnknownAddressException;
 import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
@@ -26,7 +27,7 @@ import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.service.RouteService;
 import com.goodspartner.service.UserService;
 import com.goodspartner.service.util.DeliveryCalculationHelper;
-import com.goodspartner.service.util.TxWrapper;
+import com.goodspartner.web.action.DeliveryAction;
 import com.goodspartner.web.controller.response.DeliveryActionResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import static com.goodspartner.entity.AddressStatus.UNKNOWN;
 import static com.goodspartner.entity.DeliveryFormationStatus.ORDERS_LOADING;
 import static com.goodspartner.entity.DeliveryStatus.DRAFT;
 
@@ -57,7 +59,6 @@ public class DefaultDeliveryService implements DeliveryService {
     private final CarLoadService carLoadService;
     private final RouteService routeService;
     private final UserService userService;
-    private final TxWrapper txWrapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -108,34 +109,27 @@ public class DefaultDeliveryService implements DeliveryService {
 
     @Override
     @Transactional
-    public DeliveryDto add(DeliveryDto deliveryDto) {
-        validateExistence(deliveryDto);
-
-        deliveryDto.setStatus(DRAFT);
-        deliveryDto.setFormationStatus(ORDERS_LOADING);
-
-        Delivery addedDelivery = deliveryRepository.save(deliveryMapper.dtoToDelivery(deliveryDto));
-
-        orderExternalService.saveToOrderCache(addedDelivery.getId(), addedDelivery.getDeliveryDate());
-
-        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CREATED, addedDelivery.getId());
-
-        return deliveryMapper.mapToDto(addedDelivery);
-    }
-
-    private void validateExistence(DeliveryDto deliveryDto) {
+    public Delivery add(DeliveryDto deliveryDto) {
         deliveryRepository.findByDeliveryDate(deliveryDto.getDeliveryDate())
                 .ifPresent(delivery -> {
                     throw new IllegalArgumentException("There is already delivery on date: " + deliveryDto.getDeliveryDate());
                 });
+
+        deliveryDto.setStatus(DRAFT);
+        deliveryDto.setFormationStatus(ORDERS_LOADING);
+
+        return deliveryRepository.save(deliveryMapper.mapToEntity(deliveryDto));
     }
 
     @Override
     public DeliveryDto calculateDelivery(UUID id) {
-//        Delivery delivery = txWrapper.runInTransaction(this::saveOrders, deliveryResponse);
 
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow(() -> new DeliveryNotFoundException(id));
+
+        List<OrderExternal> orders = delivery.getOrders();
+        validateOrderAddresses(orders); // Do not create Delivery with UNKNOWN orders address
+        resetOrders(orders); // If delivery already have order silently reset and exit for recalculation
 
         delivery.setFormationStatus(DeliveryFormationStatus.ROUTE_CALCULATION);
 
@@ -146,37 +140,18 @@ public class DefaultDeliveryService implements DeliveryService {
         return deliveryMapper.mapToDto(deliveryRepository.save(delivery));
     }
 
-    private Delivery saveOrders(DeliveryDto deliveryDto) {
-        UUID deliveryId = deliveryDto.getId();
-
-        Delivery delivery = deliveryRepository.findById(deliveryId)
-                .orElseThrow(() -> new DeliveryNotFoundException(deliveryDto.getId()));
-
-        // If delivery already have order silently reset and exit for recalculation
-        if (!delivery.getOrders().isEmpty()) {
-            log.info("Delivery: {} already contains orders. Reseting them", delivery.getId());
-            resetOrders(delivery);
-            return delivery;
-        }
-
-//        List<OrderExternal> orderExternals = // Persist orders which sent from FE
-//                orderExternalService.saveValidOrdersAndEnrichKnownAddressesCache(deliveryResponse.getOrders());
-        log.info("Orders for Delivery: {} have been saved to DB", deliveryId);
-
-        orderExternalService.evictCache(deliveryId);
-        log.info("Cache has been evicted for Delivery: {}", deliveryId);
-
-        eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_SAVED, deliveryId);
-
-//        delivery.setOrders(orderExternals);
-        delivery.setFormationStatus(DeliveryFormationStatus.ORDERS_LOADED);
-        deliveryRepository.save(delivery);
-
-        return delivery;
+    private void validateOrderAddresses(List<OrderExternal> orders) {
+        orders.stream()
+                .map(OrderExternal::getAddressExternal)
+                .filter(addressExternal -> UNKNOWN.equals(addressExternal.getStatus()))
+                .findFirst()
+                .ifPresent(addressExternal -> {
+                    throw new UnknownAddressException(addressExternal);
+                });
     }
 
-    private void resetOrders(Delivery delivery) {
-        delivery.getOrders().forEach(orderExternal -> {
+    private void resetOrders(List<OrderExternal> orders) {
+        orders.forEach(orderExternal -> {
             orderExternal.setCarLoad(null);
             orderExternal.setRoutePoint(null);
             orderExternal.setDropped(false);
