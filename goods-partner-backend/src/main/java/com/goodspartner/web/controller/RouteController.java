@@ -1,9 +1,9 @@
 package com.goodspartner.web.controller;
 
-import com.goodspartner.web.action.RouteAction;
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.service.RouteService;
+import com.goodspartner.web.action.RouteAction;
 import com.goodspartner.web.controller.response.RouteActionResponse;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -29,12 +29,11 @@ public class RouteController {
 
     private final RouteService routeService;
 
-    @GetMapping("?deliveryId={deliveryId}")
+    @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
     @ApiOperation(value = "Find Routes by delivery ID",
             notes = "Provide an delivery ID to look up related routes",
             response = List.class)
-
     public List<RouteDto> findByDeliveryId(@RequestParam UUID deliveryId) {
         return routeService.findByDeliveryId(deliveryId);
     }
@@ -49,7 +48,7 @@ public class RouteController {
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
     @PutMapping("/{id}/reorder")
     public void reorderRoutePoints(@PathVariable int id,
-                                   @RequestBody LinkedList<RoutePointDto> routePointResponses) {
-        routeService.reorderRoutePoints(id, routePointResponses);
+                                   @RequestBody LinkedList<RoutePointDto> routePointDtos) {
+        routeService.reorderRoutePoints(id, routePointDtos);
     }
 }

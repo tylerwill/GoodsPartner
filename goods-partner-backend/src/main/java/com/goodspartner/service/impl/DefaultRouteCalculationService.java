@@ -183,7 +183,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                 index++;
             }
         }
-        route.setRoutePoints(routePointMapper.toRoutePointList(routePointDtos));
+        route.setRoutePoints(routePointMapper.toEntities(routePointDtos));
 
         return route;
     }

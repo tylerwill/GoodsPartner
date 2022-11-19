@@ -1,24 +1,23 @@
 package com.goodspartner.service.impl;
 
-
-import com.goodspartner.web.action.RoutePointAction;
+import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
-import com.goodspartner.entity.RouteStatus;
-import com.goodspartner.exception.RouteNotFoundException;
 import com.goodspartner.exception.RoutePointNotFoundException;
+import com.goodspartner.mapper.RoutePointMapper;
 import com.goodspartner.repository.RoutePointRepository;
-import com.goodspartner.repository.RouteRepository;
 import com.goodspartner.service.EventService;
 import com.goodspartner.service.RoutePointService;
+import com.goodspartner.service.RouteService;
+import com.goodspartner.web.action.RouteAction;
+import com.goodspartner.web.action.RoutePointAction;
 import com.goodspartner.web.controller.response.RoutePointActionResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.goodspartner.entity.RoutePointStatus.PENDING;
@@ -29,8 +28,16 @@ import static com.goodspartner.entity.RoutePointStatus.PENDING;
 public class DefaultRoutePointService implements RoutePointService {
 
     private final RoutePointRepository routePointRepository;
-    private final RouteRepository routeRepository;
+    private RouteService routeService;
+    private RoutePointMapper routePointMapper;
     private final EventService eventService;
+
+    @Override
+    public List<RoutePointDto> findByRouteId(int routeId) {
+        List<RoutePoint> routePoints = routePointRepository.findByRouteId(routeId);
+
+        return routePointMapper.toDtos(routePoints);
+    }
 
     @Override
     @Transactional
@@ -40,17 +47,14 @@ public class DefaultRoutePointService implements RoutePointService {
 
         action.perform(routePoint);
 
-        Route route = routeRepository.findById(routePoint.getRoute().getId())
-                .orElseThrow(() -> new RouteNotFoundException(routePoint.getRoute().getId()));
+        Route route = routePoint.getRoute();
+        Integer routeId = route.getId();
 
-        processRouteStatus(route);
-
-        //TODO complete logic for autocomplete delivery from routePoint
-//        processDeliveryStatus(route);
-
-        routeRepository.save(route);
+        List<RoutePointDto> routePointDtos = findByRouteId(routeId);
 
         eventService.publishRoutePointUpdated(routePoint, route);
+
+        processRouteStatus(routePointDtos, routeId);
 
         return getRoutePointActionResponse(route, routePoint);
     }
@@ -75,20 +79,16 @@ public class DefaultRoutePointService implements RoutePointService {
         return routePointActionResponse;
     }
 
-    private void processRouteStatus(Route route) {
-        if (isAllRoutePointsDone(route.getRoutePoints())) {
-            route.setStatus(RouteStatus.COMPLETED);
-            route.setFinishTime(LocalDateTime.now());
-
-            eventService.publishRouteStatusChangeAuto(route);
-
-            log.info("Route ID {} was automatically close due to all RoutePoints are completed", route.getId());
+    private void processRouteStatus(List<RoutePointDto> routePointDtos, int routeId) {
+        if (isAllRoutePointsDone(routePointDtos)) {
+            routeService.updateRoute(routeId, RouteAction.COMPLETE);
+            log.info("Route ID {} was automatically close due to all RoutePoints are completed", routeId);
         }
     }
 
-    private boolean isAllRoutePointsDone(List<RoutePoint> routePoints) {
-        return routePoints.stream()
-                .filter(routePoint -> routePoint.getStatus().equals(PENDING))
+    private boolean isAllRoutePointsDone(List<RoutePointDto> routePointDtos) {
+        return routePointDtos.stream()
+                .filter(routePointDto -> routePointDto.getStatus().equals(PENDING))
                 .findFirst()
                 .isEmpty();
     }

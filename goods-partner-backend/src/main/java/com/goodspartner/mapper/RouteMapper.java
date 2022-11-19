@@ -20,6 +20,8 @@ public interface RouteMapper {
     @Mapping(target = "car.loadSize", source = "routePoints", qualifiedByName = "mapCarLoadSize")
     RouteDto mapToDto(Route route);
 
+    List<RouteDto> toDtos(List<Route> routes);
+
     @Named("mapCarLoadSize")
     default double mapCarLoadSize(List<RoutePoint> routePoints) {
         return BigDecimal.valueOf(routePoints.stream()

@@ -1,12 +1,12 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.web.action.RouteAction;
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
+import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
@@ -15,9 +15,11 @@ import com.goodspartner.exception.IllegalRouteStatusForOperation;
 import com.goodspartner.exception.RouteNotFoundException;
 import com.goodspartner.mapper.RouteMapper;
 import com.goodspartner.repository.DeliveryRepository;
+import com.goodspartner.repository.RoutePointRepository;
 import com.goodspartner.repository.RouteRepository;
 import com.goodspartner.service.EventService;
 import com.goodspartner.service.RouteService;
+import com.goodspartner.web.action.RouteAction;
 import com.goodspartner.web.controller.response.RouteActionResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +28,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.goodspartner.entity.DeliveryStatus.COMPLETED;
 import static com.goodspartner.entity.RoutePointStatus.PENDING;
@@ -37,6 +41,7 @@ import static com.goodspartner.entity.RoutePointStatus.PENDING;
 public class DefaultRouteService implements RouteService {
 
     private final RouteRepository routeRepository;
+    private final RoutePointRepository routePointRepository;
     private final DeliveryRepository deliveryRepository;
     private final DefaultRouteCalculationService routeCalculationService;
     private final EventService eventService;
@@ -44,10 +49,21 @@ public class DefaultRouteService implements RouteService {
 
     @Override
     public List<RouteDto> findByDeliveryId(UUID deliveryId) {
-        return routeRepository.findByDeliveryId(deliveryId)
-                .stream()
-                .map(routeMapper::mapToDto)
+        List<Route> routes = routeRepository.findByDeliveryId(deliveryId);
+
+        List<Integer> routeIds = routes.stream()
+                .mapToInt(Route::getId)
+                .boxed()
                 .toList();
+
+        List<RoutePoint> routePoints = routePointRepository.findByMultipleRouteId(routeIds);
+
+        Map<Integer, List<RoutePoint>> routePointsMap = routePoints.stream()
+                .collect(Collectors.groupingBy(routePoint -> routePoint.getRoute().getId()));
+
+        routes.forEach(route -> route.setRoutePoints(routePointsMap.get(route.getId())));
+
+        return routeMapper.toDtos(routes);
     }
 
     @Override
@@ -84,7 +100,7 @@ public class DefaultRouteService implements RouteService {
     }
 
     @Override
-    public void reorderRoutePoints(int id, LinkedList<RoutePointDto> routePointsOrdered) {
+    public void reorderRoutePoints(int id, LinkedList<RoutePointDto> routePointDtos) {
 
         Route route = routeRepository.findById(id)
                 .orElseThrow(() -> new RouteNotFoundException(id));
@@ -95,11 +111,11 @@ public class DefaultRouteService implements RouteService {
 
         validateRoute(route, deliveryId);
 
-        if (isAllRoutePointsPending(routePointsOrdered)) {
-            Route reorderedRoute = routeCalculationService.recalculateRoute(route, routePointsOrdered);
+        if (isAllRoutePointsPending(routePointDtos)) {
+            Route reorderedRoute = routeCalculationService.recalculateRoute(route, routePointDtos);
             routeRepository.save(reorderedRoute);
         } else {
-            throw new IllegalRoutePointStatusForOperation(routePointsOrdered, "reorder");
+            throw new IllegalRoutePointStatusForOperation(routePointDtos, "reorder");
         }
     }
 
@@ -131,8 +147,8 @@ public class DefaultRouteService implements RouteService {
         }
     }
 
-    private boolean isAllRoutePointsPending(List<RoutePointDto> routePointResponses) {
-        return routePointResponses.stream()
+    private boolean isAllRoutePointsPending(List<RoutePointDto> routePointDtos) {
+        return routePointDtos.stream()
                 .allMatch(routePoint -> routePoint.getStatus().equals(PENDING));
     }
 

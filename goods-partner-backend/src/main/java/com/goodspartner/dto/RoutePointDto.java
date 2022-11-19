@@ -37,14 +37,5 @@ public class RoutePointDto {
 
     private MapPoint mapPoint;
 
-    private List<OrderShortDto> orders;
-
-    @Getter
-    @Setter
-    public static class OrderShortDto {
-        private int id;
-        private String orderNumber;
-        private String comment;
-    }
-
+    private List<OrderDto> orders;
 }

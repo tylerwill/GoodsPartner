@@ -1,10 +1,10 @@
 package com.goodspartner.service;
 
-import com.goodspartner.web.action.RouteAction;
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
+import com.goodspartner.web.action.RouteAction;
 import com.goodspartner.web.controller.response.RouteActionResponse;
 
 import java.util.LinkedList;
@@ -17,7 +17,7 @@ public interface RouteService {
 
     RouteActionResponse updateRoute(int routeId, RouteAction action);
 
-    void reorderRoutePoints(int id, LinkedList<RoutePointDto> routePointResponses);
+    void reorderRoutePoints(int id, LinkedList<RoutePointDto> routePointDtos);
 
     List<RouteDto> findRoutesByDeliveryAndCar(Delivery delivery, Car car);
 }
