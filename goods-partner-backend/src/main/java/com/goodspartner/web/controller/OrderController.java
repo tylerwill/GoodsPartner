@@ -40,7 +40,7 @@ public class OrderController {
             response = List.class)
     public List<OrderDto> findByDeliveryId(@RequestParam("deliveryId") UUID deliveryId,
                                            OAuth2AuthenticationToken authentication) {
-        return orderExternalService.findByDeliveryId(deliveryId, authentication)
+        return orderExternalService.getByDeliveryId(deliveryId, authentication)
                 .stream()
                 .map(orderExternalMapper::mapToDto)
                 .collect(Collectors.toList());

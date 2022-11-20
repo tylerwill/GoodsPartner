@@ -12,13 +12,9 @@ import java.util.UUID;
 
 public interface OrderExternalService {
 
-    List<OrderExternal> findByDeliveryId(UUID deliveryId, OAuth2AuthenticationToken authentication);
+    /* --- Data Fetching ---*/
 
-    OrderExternal update(int id, OrderDto orderDto);
-
-    void saveOrdersForDelivery(Delivery delivery);
-
-    List<OrderExternal> saveValidOrdersAndEnrichKnownAddressesCache(List<OrderDto> orderDtos);
+    List<OrderExternal> getByDeliveryId(UUID deliveryId, OAuth2AuthenticationToken authentication);
 
     List<OrderExternal> getSkippedOrders();
 
@@ -26,8 +22,13 @@ public interface OrderExternalService {
 
     List<OrderExternal> getScheduledOrders();
 
+    /* --- Data Modification ---*/
+
     List<OrderExternal> rescheduleSkippedOrders(RescheduleOrdersRequest rescheduleOrdersRequest);
 
     List<OrderExternal> removeExcludedOrders(RemoveOrdersRequest removeOrdersRequest);
 
+    OrderExternal update(int id, OrderDto orderDto);
+
+    void saveOrdersForDelivery(Delivery delivery);
 }

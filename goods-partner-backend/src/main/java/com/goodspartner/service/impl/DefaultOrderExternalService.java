@@ -62,8 +62,11 @@ public class DefaultOrderExternalService implements OrderExternalService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<OrderExternal> findByDeliveryId(UUID deliveryId, OAuth2AuthenticationToken authentication) {
-        return Optional.of(userService.findByAuthentication(authentication)).filter(user -> DRIVER.equals(user.getRole())).map(driver -> findByDeliveryAndDriver(deliveryId, driver)).orElseGet(() -> orderExternalRepository.findByDeliveryId(deliveryId));
+    public List<OrderExternal> getByDeliveryId(UUID deliveryId, OAuth2AuthenticationToken authentication) {
+        return Optional.of(userService.findByAuthentication(authentication))
+                .filter(user -> DRIVER.equals(user.getRole()))
+                .map(driver -> findByDeliveryAndDriver(deliveryId, driver))
+                .orElseGet(() -> orderExternalRepository.findByDeliveryId(deliveryId));
     }
 
     private List<OrderExternal> findByDeliveryAndDriver(UUID deliveryId, User driver) {
@@ -100,7 +103,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
 
             geocodeService.enrichValidAddress(orderDtos);
 
-            List<OrderExternal> orderEntities = saveValidOrdersAndEnrichKnownAddressesCache(orderDtos);
+            List<OrderExternal> orderEntities = saveValidOrdersAndEnrichAddresses(orderDtos);
             List<OrderExternal> scheduledOrders = orderExternalRepository.findByRescheduleDate(deliveryDate);
             List<OrderExternal> allOrdersByDate = ListUtils.union(orderEntities, scheduledOrders);
 
@@ -116,9 +119,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
         }
     }
 
-    @Override
-    @Transactional
-    public List<OrderExternal> saveValidOrdersAndEnrichKnownAddressesCache(List<OrderDto> orderDtos) {
+    private List<OrderExternal> saveValidOrdersAndEnrichAddresses(List<OrderDto> orderDtos) {
 
         List<OrderExternal> externalOrders = orderDtos.stream()
                 .map(orderExternalMapper::mapToEntity)

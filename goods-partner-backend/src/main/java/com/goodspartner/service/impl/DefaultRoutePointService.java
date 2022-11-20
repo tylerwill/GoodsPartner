@@ -1,6 +1,7 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.entity.Delivery;
+import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.exception.RoutePointNotFoundException;
@@ -31,7 +32,7 @@ public class DefaultRoutePointService implements RoutePointService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<RoutePoint> findByRouteId(int routeId) {
+    public List<RoutePoint> findByRouteId(long routeId) {
         return routePointRepository.findByRouteId(routeId);
     }
 
@@ -51,6 +52,13 @@ public class DefaultRoutePointService implements RoutePointService {
         processRouteStatus(routeId);
 
         return getRoutePointActionResponse(route, routePoint);
+    }
+
+    @Override
+    public List<OrderExternal> getRoutePointOrders(long routePointId) {
+        return routePointRepository.findById(routePointId)
+                .map(RoutePoint::getOrders)
+                .orElseThrow(() -> new RoutePointNotFoundException(routePointId));
     }
 
     private RoutePointActionResponse getRoutePointActionResponse(Route route, RoutePoint routePoint) {

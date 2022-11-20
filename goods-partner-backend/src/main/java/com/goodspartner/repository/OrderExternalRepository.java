@@ -26,7 +26,7 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, In
 
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o " +
-            "WHERE o.rescheduleDate IS NULL  " +
+            "WHERE o.rescheduleDate IS NULL " +
             "  AND (o.excluded = TRUE OR o.dropped = TRUE OR o.routePoint.status = 'SKIPPED')")
     List<OrderExternal> findSkippedOrders();
 
@@ -40,7 +40,6 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, In
     @Query("SELECT o FROM OrderExternal o " +
             "WHERE o.rescheduleDate IS NOT NULL AND o.delivery IS NULL")
     List<OrderExternal> findScheduledOrders();
-
 
     List<OrderExternal> findByRescheduleDate(LocalDate date);
 }
