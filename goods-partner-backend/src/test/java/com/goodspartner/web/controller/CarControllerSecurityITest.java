@@ -6,7 +6,6 @@ import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.dto.CarDto;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,13 +21,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @Import({TestSecurityEnableConfig.class})
 @AutoConfigureMockMvc
-@Disabled
 class CarControllerSecurityITest extends AbstractWebITest {
 
     private CarDto carDto;
 
     @BeforeEach
     public void setUp() {
+        // TODO builder
         carDto = new CarDto(
                 0,
                 "MAN",
@@ -37,7 +36,6 @@ class CarControllerSecurityITest extends AbstractWebITest {
                 4000,
                 false,
                 true,
-                0,
                 10);
     }
 

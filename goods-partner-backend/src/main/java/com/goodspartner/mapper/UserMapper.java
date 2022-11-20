@@ -9,9 +9,9 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    UserDto map(User user);
+    UserDto mapToDto(User user);
 
-    User map(UserDto userdto);
+    User mapToDto(UserDto userdto);
 
     @Mapping(target = "id", ignore = true)
     User update(@MappingTarget User user, UserDto userDto);

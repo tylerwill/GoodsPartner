@@ -1,5 +1,7 @@
 package com.goodspartner.service.impl;
 
+import com.goodspartner.entity.AddressExternal;
+import com.goodspartner.entity.AddressExternal.OrderAddressId;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.Route;
@@ -100,9 +102,12 @@ public class DefaultEventService implements EventService {
         Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
         values.put("carName", route.getCar().getName());
         values.put("carLicensePlate", route.getCar().getLicencePlate());
-        values.put("clientName", routePoint.getClientName());
-        values.put("clientAddress", routePoint.getAddress());
         values.put("routePointStatus", routePoint.getStatus().toString());
+
+        AddressExternal addressExternal = routePoint.getAddressExternal();
+        OrderAddressId orderAddressId = addressExternal.getOrderAddressId();
+        values.put("clientName", orderAddressId.getClientName());
+        values.put("clientAddress", orderAddressId.getOrderAddress());
 
         publishPreparedEvent(values, ROUTE_POINT_STATUS, route.getDelivery().getId());
     }

@@ -43,6 +43,7 @@ public class CarControllerITest extends AbstractWebITest {
     @DataSet(value = "common/car/dataset_cars.yml", disableConstraints = true)
     @DisplayName("when Add The First Car then Added Car and Ok Status Returned")
     void whenAddTheFirstCar_thenAddedCar_andOkStatusReturned() throws Exception {
+        // TDDO builder
         CarDto carDto = new CarDto(
                 0,
                 "MAN",
@@ -51,7 +52,6 @@ public class CarControllerITest extends AbstractWebITest {
                 4000,
                 true,
                 false,
-                0,
                 10);
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/cars")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -75,6 +75,8 @@ public class CarControllerITest extends AbstractWebITest {
     @ExpectedDataSet("common/car/dataset_update_car.yml")
     @DisplayName("when Update Car then Updated Car and Ok Status Returned")
     void whenUpdateCar_thenUpdatedCar_andOkStatusReturned() throws Exception {
+
+        // TODO builer
         CarDto carDto = new CarDto();
         carDto.setAvailable(false);
         carDto.setName("Mazda CX5");
@@ -83,7 +85,6 @@ public class CarControllerITest extends AbstractWebITest {
         carDto.setWeightCapacity(3500);
         carDto.setCooler(false);
         carDto.setAvailable(false);
-        carDto.setLoadSize(20.5);
         carDto.setTravelCost(10);
 
         mockMvc.perform(put("/api/v1/cars/1")

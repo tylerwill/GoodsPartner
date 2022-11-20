@@ -1,6 +1,6 @@
 package com.goodspartner.util;
 
-import com.goodspartner.service.dto.CustomOAuth2User;
+import com.goodspartner.service.dto.GoodsPartnerOAuth2User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -41,8 +41,8 @@ public class AuditorBuilder {
             return values;
         }
 
-        if (authentication.getPrincipal().getClass().equals(CustomOAuth2User.class)) {
-            CustomOAuth2User user = (CustomOAuth2User) authentication.getPrincipal();
+        if (authentication.getPrincipal().getClass().equals(GoodsPartnerOAuth2User.class)) {
+            GoodsPartnerOAuth2User user = (GoodsPartnerOAuth2User) authentication.getPrincipal();
 
             String role = user.getAuthorities().get(0).toString(); // We always set only 1 role
             values.put(ROLE_KEY, role);

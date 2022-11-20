@@ -4,11 +4,10 @@
       "id": 1,
       "name": "Mercedes Sprinter",
       "licencePlate": "AA 1111 CT",
-      "driver": "Вальдемар Кипарисович",
+      "driver": "Test Driver",
       "weightCapacity": 3000,
       "cooler": false,
       "available": true,
-      "loadSize": 0.0,
       "travelCost": 10
     },
     "orders": [

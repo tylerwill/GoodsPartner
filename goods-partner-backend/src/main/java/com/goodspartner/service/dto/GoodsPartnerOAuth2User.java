@@ -1,6 +1,7 @@
 package com.goodspartner.service.dto;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -8,8 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Data
-public class CustomOAuth2User implements OAuth2User {
+@Getter
+@Builder
+public class GoodsPartnerOAuth2User implements OAuth2User {
 
     private String username;
     private String email;

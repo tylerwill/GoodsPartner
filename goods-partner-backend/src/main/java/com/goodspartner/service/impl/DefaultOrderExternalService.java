@@ -1,39 +1,46 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.web.controller.request.RemoveOrdersRequest;
-import com.goodspartner.web.controller.request.RescheduleOrdersRequest;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.entity.User;
 import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.OrderNotFoundException;
 import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.repository.AddressExternalRepository;
+import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.OrderExternalRepository;
 import com.goodspartner.service.EventService;
 import com.goodspartner.service.GeocodeService;
 import com.goodspartner.service.IntegrationService;
 import com.goodspartner.service.OrderExternalService;
+import com.goodspartner.service.UserService;
 import com.goodspartner.service.util.ExternalOrderPostProcessor;
+import com.goodspartner.web.controller.request.RemoveOrdersRequest;
+import com.goodspartner.web.controller.request.RescheduleOrdersRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.goodspartner.entity.User.UserRole.DRIVER;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -45,25 +52,32 @@ public class DefaultOrderExternalService implements OrderExternalService {
     private final OrderExternalRepository orderExternalRepository;
     private final AddressExternalRepository addressExternalRepository;
     private final DeliveryRepository deliveryRepository;
+    private final CarRepository carRepository;
 
+    private final UserService userService;
     private final IntegrationService integrationService; // GrangeDolceIntegration
     private final GeocodeService geocodeService;
     private final ExternalOrderPostProcessor orderCommentProcessor;
     private final EventService eventService;
 
+    @Transactional(readOnly = true)
     @Override
-    public List<OrderDto> findByDeliveryId(UUID deliveryId) {
-        return orderExternalMapper.mapToDtos(orderExternalRepository.findAllByDelivery(deliveryId));
+    public List<OrderExternal> findByDeliveryId(UUID deliveryId, OAuth2AuthenticationToken authentication) {
+        return Optional.of(userService.findByAuthentication(authentication)).filter(user -> DRIVER.equals(user.getRole())).map(driver -> findByDeliveryAndDriver(deliveryId, driver)).orElseGet(() -> orderExternalRepository.findByDeliveryId(deliveryId));
+    }
+
+    private List<OrderExternal> findByDeliveryAndDriver(UUID deliveryId, User driver) {
+        Car car = carRepository.findCarByDriver(driver);
+        return orderExternalRepository.findAllByDeliveryAndCar(deliveryId, car);
     }
 
     @Transactional
     @Override
-    public OrderDto update(int id, OrderDto orderDto) {
+    public OrderExternal update(int id, OrderDto orderDto) {
         log.info("Updating order with id: {}", id);
-        OrderExternal order = orderExternalRepository.findById(id)
-                .orElseThrow(() -> new OrderNotFoundException(id));
+        OrderExternal order = orderExternalRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
         orderExternalMapper.update(order, orderDto);
-        return orderExternalMapper.mapToDto(orderExternalRepository.save(order));
+        return orderExternalRepository.save(order);
     }
 
     @Override
@@ -136,42 +150,24 @@ public class DefaultOrderExternalService implements OrderExternalService {
     }
 
     @Override
-    public List<OrderDto> findOrdersByDeliveryAndCar(Delivery delivery, Car car) {
-        return orderExternalRepository.findAllByDeliveryAndCar(delivery, car)
-                .stream()
-                .map(orderExternalMapper::mapToDto)
-                .toList();
-
+    public List<OrderExternal> getSkippedOrders() {
+        return orderExternalRepository.findSkippedOrders();
     }
 
     @Override
-    public List<OrderDto> getSkippedOrders() {
-        return orderExternalRepository.findSkippedOrders()
-                .stream()
-                .map(orderExternalMapper::mapToDto)
-                .toList();
+    public List<OrderExternal> getCompletedOrders() {
+        return orderExternalRepository.findCompletedOrders();
     }
 
     @Override
-    public List<OrderDto> getCompletedOrders() {
-        return orderExternalRepository.findCompletedOrders()
-                .stream()
-                .map(orderExternalMapper::mapToDto)
-                .toList();
-    }
-
-    @Override
-    public List<OrderDto> getScheduledOrders() {
-        return orderExternalRepository.findScheduledOrders()
-                .stream()
-                .map(orderExternalMapper::mapToDto)
-                .toList();
+    public List<OrderExternal> getScheduledOrders() {
+        return orderExternalRepository.findScheduledOrders();
     }
 
     /**
      * Scenario 1. User want to schedule excluded orders so they link to an existing delivery by date
      * Scenario 2. User know exact schedule date - but respective delivery is not created yet
-     *
+     * <p>
      * Excluded    (id=0) -> deliveryId-set  / rescheduleDate-null / excluded = true -> present in excluded
      * Scheduling  (id=0) -> deliveryId-set  / rescheduleDate-set  / excluded = true ->  gone from excluded (rescheduleDate!=null)
      * Rescheduled (id=1) -> deliveryId-null / rescheduleDate-set  / excluded = false -> scheduled
@@ -179,14 +175,14 @@ public class DefaultOrderExternalService implements OrderExternalService {
      */
     @Transactional
     @Override
-    public List<OrderDto> rescheduleSkippedOrders(RescheduleOrdersRequest rescheduleOrdersRequest) {
+    public List<OrderExternal> rescheduleSkippedOrders(RescheduleOrdersRequest rescheduleOrdersRequest) {
         List<Integer> ordersIds = rescheduleOrdersRequest.getOrderIds();
         List<OrderExternal> ordersExternals = orderExternalRepository.findAllById(ordersIds);
 
         ordersExternals.forEach(order -> order.setRescheduleDate(rescheduleOrdersRequest.getRescheduleDate()));
         List<OrderExternal> updatedSkippedOrders = orderExternalRepository.saveAll(ordersExternals);
 
-        List<OrderExternal> newScheduledOrders =  updatedSkippedOrders
+        List<OrderExternal> newScheduledOrders = updatedSkippedOrders
                 .stream()
                 .map(orderExternalMapper::copyNew)
                 .toList();
@@ -196,22 +192,16 @@ public class DefaultOrderExternalService implements OrderExternalService {
                 .ifPresent(delivery ->
                         newScheduledOrders.forEach(newScheduledOrder -> newScheduledOrder.setDelivery(delivery)));
 
-        return orderExternalRepository.saveAll(newScheduledOrders)
-                .stream()
-                .map(orderExternalMapper::mapToDto)
-                .toList();
+        return orderExternalRepository.saveAll(newScheduledOrders);
     }
 
     @Override
-    public List<OrderDto> removeExcludedOrders(RemoveOrdersRequest removeOrdersRequest) {
+    public List<OrderExternal> removeExcludedOrders(RemoveOrdersRequest removeOrdersRequest) {
         List<Integer> ordersIds = removeOrdersRequest.getOrderIds();
         List<OrderExternal> ordersExternals = orderExternalRepository.findAllById(ordersIds);
 
         ordersExternals.forEach(order -> order.setRescheduleDate(LocalDate.EPOCH)); // Set 1970 1 1
 
-        return orderExternalRepository.saveAll(ordersExternals)
-                .stream()
-                .map(orderExternalMapper::mapToDto)
-                .toList();
+        return orderExternalRepository.saveAll(ordersExternals);
     }
 }

@@ -82,7 +82,6 @@ class DefaultCarServiceITest extends AbstractBaseITest {
         Assertions.assertEquals(3000, carBefore.getWeightCapacity());
         Assertions.assertEquals(false, carBefore.getCooler());
         Assertions.assertEquals(true, carBefore.getAvailable());
-        Assertions.assertEquals(0.0, carBefore.getLoadSize());
         Assertions.assertEquals(10, carBefore.getTravelCost());
 
         // When
@@ -94,7 +93,6 @@ class DefaultCarServiceITest extends AbstractBaseITest {
         payload.setWeightCapacity(3500);
         payload.setCooler(false);
         payload.setAvailable(false);
-        payload.setLoadSize(0.0);
         payload.setTravelCost(10);
 
         carService.update(CAR_ID, payload);
@@ -108,7 +106,6 @@ class DefaultCarServiceITest extends AbstractBaseITest {
         Assertions.assertEquals(3500, carAfter.getWeightCapacity());
         Assertions.assertEquals(false, carAfter.getCooler());
         Assertions.assertEquals(false, carAfter.getAvailable());
-        Assertions.assertEquals(0.0, carAfter.getLoadSize());
         Assertions.assertEquals(10, carAfter.getTravelCost());
     }
 }

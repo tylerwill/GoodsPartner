@@ -1,22 +1,25 @@
 package com.goodspartner.service;
 
 import com.goodspartner.dto.UserDto;
+import com.goodspartner.entity.User;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 import java.util.List;
 
 public interface UserService {
 
+    List<User> findAll();
 
-    UserDto findByAuthentication(OAuth2AuthenticationToken authentication);
+    User update(int id, UserDto userDto);
 
-    List<UserDto> findAll();
+    User add(UserDto userDto);
 
-    UserDto update(int id, UserDto userDto);
+    User delete(int id);
 
-    UserDto add(UserDto userDto);
+    User findById(int id);
 
-    UserDto delete(int id);
+    /* --- Auth --- */
 
-    UserDto findById(int id);
+    User findByAuthentication(OAuth2AuthenticationToken authentication);
+
 }

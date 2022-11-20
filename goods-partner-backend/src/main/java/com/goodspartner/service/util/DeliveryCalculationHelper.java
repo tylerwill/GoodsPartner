@@ -3,6 +3,7 @@ package com.goodspartner.service.util;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
+import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
@@ -67,6 +68,8 @@ public class DeliveryCalculationHelper {
             delivery.setFormationStatus(DeliveryFormationStatus.COMPLETED);
 
             deliveryRepository.save(delivery);
+
+            eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, deliveryId);
         } catch (Exception exception) {
             eventService.publishEvent(new LiveEvent("Помилка розрахування доставки", EventType.ERROR));
             throw new RuntimeException(exception);

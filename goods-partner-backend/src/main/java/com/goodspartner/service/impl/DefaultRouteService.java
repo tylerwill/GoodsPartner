@@ -1,39 +1,39 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
-import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RouteStatus;
+import com.goodspartner.entity.User;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exception.IllegalRoutePointStatusForOperation;
 import com.goodspartner.exception.IllegalRouteStatusForOperation;
 import com.goodspartner.exception.RouteNotFoundException;
-import com.goodspartner.mapper.RouteMapper;
+import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
-import com.goodspartner.repository.RoutePointRepository;
 import com.goodspartner.repository.RouteRepository;
 import com.goodspartner.service.EventService;
 import com.goodspartner.service.RouteService;
+import com.goodspartner.service.UserService;
 import com.goodspartner.web.action.RouteAction;
 import com.goodspartner.web.controller.response.RouteActionResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.goodspartner.entity.DeliveryStatus.COMPLETED;
 import static com.goodspartner.entity.RoutePointStatus.PENDING;
+import static com.goodspartner.entity.User.UserRole.DRIVER;
 
 @AllArgsConstructor
 @Service
@@ -41,62 +41,69 @@ import static com.goodspartner.entity.RoutePointStatus.PENDING;
 public class DefaultRouteService implements RouteService {
 
     private final RouteRepository routeRepository;
-    private final RoutePointRepository routePointRepository;
     private final DeliveryRepository deliveryRepository;
+    private final CarRepository carRepository;
+
+    private final UserService userService;
     private final DefaultRouteCalculationService routeCalculationService;
     private final EventService eventService;
-    private final RouteMapper routeMapper;
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Route> findRelatedRoutesByDeliveryId(UUID deliveryId, OAuth2AuthenticationToken authentication) {
+        return Optional.of(userService.findByAuthentication(authentication))
+                .filter(user -> DRIVER.equals(user.getRole()))
+                .map(driver -> findByDeliveryAndDriver(deliveryId, driver))
+                .orElseGet(() -> findByDeliveryIdExtended(deliveryId));
+    }
+
+    private List<Route> findByDeliveryAndDriver(UUID deliveryId, User driver) {
+        Car car = carRepository.findCarByDriver(driver);
+        return routeRepository.findByDeliveryIdAndCar(deliveryId, car);
+    }
 
     @Override
-    public List<RouteDto> findByDeliveryId(UUID deliveryId) {
-        List<Route> routes = routeRepository.findByDeliveryId(deliveryId);
+    public List<Route> findByDeliveryIdExtended(UUID deliveryId) {
+        return routeRepository.findByDeliveryIdExtended(deliveryId);
+    }
 
-        List<Integer> routeIds = routes.stream()
-                .mapToInt(Route::getId)
-                .boxed()
-                .toList();
-
-        List<RoutePoint> routePoints = routePointRepository.findByMultipleRouteId(routeIds);
-
-        Map<Integer, List<RoutePoint>> routePointsMap = routePoints.stream()
-                .collect(Collectors.groupingBy(routePoint -> routePoint.getRoute().getId()));
-
-        routes.forEach(route -> route.setRoutePoints(routePointsMap.get(route.getId())));
-
-        return routeMapper.toDtos(routes);
+    @Override
+    public List<Route> findByDeliveryId(UUID deliveryId) {
+        return routeRepository.findByDeliveryId(deliveryId);
     }
 
     @Override
     @Transactional
     public RouteActionResponse updateRoute(int routeId, RouteAction action) {
 
-        Route route = routeRepository.findById(routeId)
+        Route route = routeRepository.findById(routeId) // TODO fetch with delivery?
                 .orElseThrow(() -> new RouteNotFoundException("Route not found"));
 
         action.perform(route);
-
-        processDeliveryStatus(route);
 
         routeRepository.save(route);
 
         eventService.publishRouteUpdated(route);
 
+        processDeliveryStatus(route);
+
         return getRouteActionResponse(route);
     }
 
+    // MapStruct?
     private RouteActionResponse getRouteActionResponse(Route route) {
-        RouteActionResponse routePointActionResponse = new RouteActionResponse();
+        RouteActionResponse routeActionResponse = new RouteActionResponse();
 
         // Route
-        routePointActionResponse.setRouteId(route.getId());
-        routePointActionResponse.setRouteStatus(route.getStatus());
-        routePointActionResponse.setRouteFinishTime(route.getFinishTime());
+        routeActionResponse.setRouteId(route.getId());
+        routeActionResponse.setRouteStatus(route.getStatus());
+        routeActionResponse.setRouteFinishTime(route.getFinishTime());
 
         // Delivery
         Delivery delivery = route.getDelivery();
-        routePointActionResponse.setDeliveryId(delivery.getId());
-        routePointActionResponse.setDeliveryStatus(delivery.getStatus());
-        return routePointActionResponse;
+        routeActionResponse.setDeliveryId(delivery.getId());
+        routeActionResponse.setDeliveryStatus(delivery.getStatus());
+        return routeActionResponse;
     }
 
     @Override
@@ -117,14 +124,6 @@ public class DefaultRouteService implements RouteService {
         } else {
             throw new IllegalRoutePointStatusForOperation(routePointDtos, "reorder");
         }
-    }
-
-    @Override
-    public List<RouteDto> findRoutesByDeliveryAndCar(Delivery delivery, Car car) {
-        return routeRepository.findByDeliveryAndCar(delivery, car)
-                .stream()
-                .map(routeMapper::mapToDto)
-                .toList();
     }
 
     private boolean isAllRoutesCompleted(Delivery delivery) {

@@ -4,10 +4,11 @@ package com.goodspartner.service.impl;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractBaseITest;
-import com.goodspartner.dto.CarDto;
-import com.goodspartner.dto.CarLoadDto;
-import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.Product;
+import com.goodspartner.entity.AddressExternal;
+import com.goodspartner.entity.Car;
+import com.goodspartner.entity.CarLoad;
+import com.goodspartner.entity.OrderExternal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DBRider
 class DefaultCarLoadServiceITest extends AbstractBaseITest {
@@ -32,36 +34,41 @@ class DefaultCarLoadServiceITest extends AbstractBaseITest {
         UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000111");
 
         // When
-        List<CarLoadDto> actualCarLoadList = carLoadService.findByDeliveryId(uuid);
-        CarLoadDto actualCarLoadDto = actualCarLoadList.get(0);
-        OrderDto actualOrderDto = actualCarLoadDto.getOrders().get(0);
-        List<Product> productList = actualOrderDto.getProducts();
+        List<CarLoad> actualCarLoadList = carLoadService.findByDeliveryId(uuid);
+        CarLoad actualCarLoad = actualCarLoadList.get(0);
+        OrderExternal actualOrder = actualCarLoad.getOrders().get(0);
+        List<Product> productList = actualOrder.getProducts();
         Product product = productList.get(0);
-        CarDto actualCarDto = actualCarLoadDto.getCar();
+        Car actualCarDto = actualCarLoad.getCar();
 
         // Then
         assertEquals(1, actualCarDto.getId());
         assertEquals("Mercedes Sprinter", actualCarDto.getName());
         assertEquals("AA 1111 CT", actualCarDto.getLicencePlate());
-        assertEquals("Вальдемар Кипарисович", actualCarDto.getDriver());
+        assertEquals("Test Driver", actualCarDto.getDriver());
         assertEquals(3000, actualCarDto.getWeightCapacity());
-        assertEquals(true, actualCarDto.getAvailable());
+        assertTrue(actualCarDto.isAvailable());
         assertEquals(10, actualCarDto.getTravelCost());
-        assertFalse(actualCarDto.getCooler());
+        assertFalse(actualCarDto.isCooler());
 
-        assertEquals(1, actualOrderDto.getId());
-        assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000111"), actualOrderDto.getDeliveryId());
-        assertEquals(12, actualOrderDto.getOrderWeight());
-        assertEquals("вул.Єлізавети Чавдар, буд.36", actualOrderDto.getAddress());
-        assertEquals("Кух Плюс ТОВ (Кухмайстер) бн", actualOrderDto.getClientName());
-        assertEquals("f6f73d76-8005-11ec-b3ce-00155dd72305", actualOrderDto.getRefKey());
-        assertEquals("Наталія Рябченко", actualOrderDto.getManagerFullName());
-        assertEquals("00000002055", actualOrderDto.getOrderNumber());
-        assertEquals("реп", actualOrderDto.getComment());
-        assertEquals("REGULAR", actualOrderDto.getDeliveryType().toString());
-        assertFalse(actualOrderDto.isFrozen());
-        assertFalse(actualOrderDto.isExcluded());
-        assertFalse(actualOrderDto.isDropped());
+        assertEquals(1, actualOrder.getId());
+
+        assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000111"), actualOrder.getDelivery().getId());
+        assertEquals(12, actualOrder.getOrderWeight());
+
+        AddressExternal addressExternal = actualOrder.getAddressExternal();
+        AddressExternal.OrderAddressId orderAddressId = addressExternal.getOrderAddressId();
+
+        assertEquals("вул.Єлізавети Чавдар, буд.36", orderAddressId.getOrderAddress());
+        assertEquals("Кух Плюс ТОВ (Кухмайстер) бн", orderAddressId.getClientName());
+        assertEquals("f6f73d76-8005-11ec-b3ce-00155dd72305", actualOrder.getRefKey());
+        assertEquals("Наталія Рябченко", actualOrder.getManagerFullName());
+        assertEquals("00000002055", actualOrder.getOrderNumber());
+        assertEquals("реп", actualOrder.getComment());
+        assertEquals("REGULAR", actualOrder.getDeliveryType().toString());
+        assertFalse(actualOrder.isFrozen());
+        assertFalse(actualOrder.isExcluded());
+        assertFalse(actualOrder.isDropped());
 
         assertEquals(1, productList.size());
         assertEquals("Наповнювач фруктово-ягідний (декоргель) (12 кг)", product.getProductName());

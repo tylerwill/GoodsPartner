@@ -15,6 +15,22 @@ GRANDEDOLCE_ORDERS:
     ORDER_WEIGHT: 12.00
     DELIVERY_ID: "00000000-0000-0000-0000-000000000111"
     CAR_LOAD_ID: "00000000-0000-0000-0000-000000000777"
+  - ID: 2
+    REF_KEY: "a6f73d76-8005-22ec-b3ce-00155dd72305"
+    ORDER_NUMBER: "00000002066"
+    SHIPPING_DATE: "2022-01-28"
+    RESCHEDULE_DATE: "2022-01-29"
+    COMMENT: "реп"
+    MANAGER: "Наталія Рябченко"
+    IS_FROZEN: false
+    DELIVERY_START: "11:00:00"
+    DELIVERY_FINISH: "13:00:00"
+    CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
+    ADDRESS: "вул.Єлізавети Чавдар, буд.36"
+    PRODUCTS: "[{\"amount\": 1, \"measure\": \"кг\", \"storeName\": \"Склад №1\", \"unitWeight\": 12.0, \"coefficient\": 1.0, \"productName\": \"Наповнювач фруктово-ягідний (декоргель) (12 кг)\", \"totalProductWeight\": 12.0}]"
+    ORDER_WEIGHT: 12.00
+    DELIVERY_ID: "00000000-0000-0000-0000-000000000111"
+    CAR_LOAD_ID: "00000000-0000-0000-0000-000000000888"
 
 GRANDEDOLCE_ADDRESSES:
   - ORDER_ADDRESS: "вул.Єлізавети Чавдар, буд.36"
@@ -49,8 +65,17 @@ CARS:
   - ID: 1
     NAME: "Mercedes Sprinter"
     LICENCE_PLATE: "AA 1111 CT"
-    DRIVER: "Вальдемар Кипарисович"
+    DRIVER: "Test Driver"
     WEIGHT_CAPACITY: 3000
+    COOLER: FALSE
+    AVAILABLE: TRUE
+    TRAVEL_COST: 10
+    DELETED: FALSE
+  - ID: 2
+    NAME: "Mercedes Sprinter"
+    LICENCE_PLATE: "AA 2222 CT"
+    DRIVER: "Another Test Driver"
+    WEIGHT_CAPACITY: 2000
     COOLER: FALSE
     AVAILABLE: TRUE
     TRAVEL_COST: 10
@@ -67,3 +92,19 @@ CAR_LOADS:
   - ID: "00000000-0000-0000-0000-000000000777"
     DELIVERY_ID: "00000000-0000-0000-0000-000000000111"
     CAR_ID: 1
+  - ID: "00000000-0000-0000-0000-000000000888"
+    DELIVERY_ID: "00000000-0000-0000-0000-000000000111"
+    CAR_ID: 2
+
+USERS:
+  - ID: 1
+    USER_NAME: "Test Driver"
+    EMAIL: "test-driver@gmail.com"
+    ROLE: "DRIVER"
+    ENABLED: "true"
+  - ID: 2
+    USER_NAME: "Another Test Driver"
+    EMAIL: "another-test-driver@gmail.com"
+    ROLE: "DRIVER"
+    ENABLED: "true"
+

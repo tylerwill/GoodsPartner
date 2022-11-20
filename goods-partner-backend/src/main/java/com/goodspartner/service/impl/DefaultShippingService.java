@@ -18,7 +18,7 @@ public class DefaultShippingService implements ShippingService {
 
     @Override
     public List<ProductShippingDto> findByDeliveryId(UUID id) {
-        return productShippingMapper.getCarloadByProduct(carLoadRepository.findCarLoadsByDeliveryId(id));
+        return productShippingMapper.getCarloadByProduct(carLoadRepository.findByDeliveryId(id));
 
     }
 }

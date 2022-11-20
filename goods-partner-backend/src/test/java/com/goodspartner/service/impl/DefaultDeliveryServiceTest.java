@@ -8,14 +8,8 @@ import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
-import com.goodspartner.service.CarLoadService;
 import com.goodspartner.service.DeliveryService;
-import com.goodspartner.service.EventService;
-import com.goodspartner.service.OrderExternalService;
-import com.goodspartner.service.RouteService;
 import com.goodspartner.service.UserService;
-import com.goodspartner.service.util.DeliveryCalculationHelper;
-import com.goodspartner.service.util.TxWrapper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,20 +38,13 @@ class DefaultDeliveryServiceTest extends AbstractBaseITest {
 
         //add mocks to construct mock Delivery object
         DeliveryRepository deliveryRepositoryMock = mock(DeliveryRepository.class);
-        EventService eventServiceMock = mock(EventService.class);
         DeliveryMapper deliveryMapperMock = mock(DeliveryMapper.class);
         CarRepository carRepositoryMock = mock(CarRepository.class);
         UserService userServiceMock = mock(UserService.class);
-        OrderExternalService orderExternalServiceMock = mock(OrderExternalService.class);
-        RouteService routeServiceMock = mock(RouteService.class);
-        DeliveryCalculationHelper deliveryCalculationHelper = mock(DeliveryCalculationHelper.class);
-        CarLoadService carLoadService = mock(CarLoadService.class);
 
         //construct mock Delivery object
         DeliveryService mockService =
-                new DefaultDeliveryService(deliveryMapperMock, deliveryRepositoryMock, carRepositoryMock,
-                        deliveryCalculationHelper, orderExternalServiceMock, eventServiceMock,
-                        carLoadService, routeServiceMock, userServiceMock);
+                new DefaultDeliveryService(deliveryMapperMock, deliveryRepositoryMock, carRepositoryMock, userServiceMock);
 
         //configure mock objects
         Delivery mockDelivery = mock(Delivery.class);

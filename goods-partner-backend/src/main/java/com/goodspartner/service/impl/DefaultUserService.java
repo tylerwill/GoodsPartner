@@ -24,50 +24,49 @@ public class DefaultUserService implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserDto findByAuthentication(OAuth2AuthenticationToken authentication) {
-        OAuth2User principal = authentication.getPrincipal();
-        String email = principal.getAttribute(EMAIL_ATTRIBUTE);
-        return userRepository.findUserByEmail(email)
-                .map(userMapper::map)
-                .orElseThrow(() -> new UserNotFoundException(email));
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 
     @Override
-    public List<UserDto> findAll() {
-        return userRepository.findAll().stream()
-                .map(userMapper::map)
-                .toList();
-    }
-
-    @Override
-    public UserDto findById(int id) {
-        return userRepository.findById(id)
-                .map(userMapper::map)
-                .orElseThrow(() -> new UserNotFoundException(id));
+    public User findById(int id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @Transactional
     @Override
-    public UserDto update(int id, UserDto userDto) {
+    public User update(int id, UserDto userDto) {
         return userRepository.findById(id)
                 .map(user -> userMapper.update(user, userDto))
-                .map(userMapper::map)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @Transactional
     @Override
-    public UserDto add(UserDto userDto) {
-        User user = userMapper.map(userDto);
-        User savedUser = userRepository.save(user);
-        return userMapper.map(savedUser);
+    public User add(UserDto userDto) {
+        User user = userMapper.mapToDto(userDto);
+        return userRepository.save(user);
     }
 
     @Override
-    public UserDto delete(int id) {
+    public User delete(int id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         userRepository.delete(user);
-        return userMapper.map(user);
+        return user;
+    }
+
+    /* --- Auth --- */
+
+    @Override
+    public User findByAuthentication(OAuth2AuthenticationToken authentication) {
+        String userEmail = getUserEmail(authentication);
+        return userRepository.findUserByEmail(userEmail)
+                .orElseThrow(() -> new UserNotFoundException(userEmail));
+    }
+
+    private String getUserEmail(OAuth2AuthenticationToken authentication) {
+        OAuth2User principal = authentication.getPrincipal();
+        return principal.getAttribute(EMAIL_ATTRIBUTE);
     }
 }

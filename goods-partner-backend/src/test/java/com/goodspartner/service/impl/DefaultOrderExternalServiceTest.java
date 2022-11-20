@@ -3,7 +3,6 @@ package com.goodspartner.service.impl;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractBaseITest;
-import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.repository.OrderExternalRepository;
 import com.goodspartner.service.OrderExternalService;
@@ -35,7 +34,7 @@ class DefaultOrderExternalServiceTest extends AbstractBaseITest {
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("Get only excluded / dropped / skipped orders")
     void getExcludedDroppedOrders() {
-        List<OrderDto> skippedOrders = orderExternalService.getSkippedOrders();
+        List<OrderExternal> skippedOrders = orderExternalService.getSkippedOrders();
         assertEquals(1, skippedOrders.size());
     }
 
@@ -44,7 +43,7 @@ class DefaultOrderExternalServiceTest extends AbstractBaseITest {
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("Get only completed orders")
     void getOnlyExcludedOrders() {
-        List<OrderDto> completedOrders = orderExternalService.getCompletedOrders();
+        List<OrderExternal> completedOrders = orderExternalService.getCompletedOrders();
         assertEquals(1, completedOrders.size());
     }
 
@@ -60,11 +59,11 @@ class DefaultOrderExternalServiceTest extends AbstractBaseITest {
         rescheduleOrdersRequest.setRescheduleDate(date);
         rescheduleOrdersRequest.setOrderIds(list);
 
-        List<OrderDto> skippedOrders = orderExternalService.getSkippedOrders();
+        List<OrderExternal> skippedOrders = orderExternalService.getSkippedOrders();
         assertEquals(1, skippedOrders.size());
-        OrderDto orderDto = skippedOrders.get(0);
+        OrderExternal orderDto = skippedOrders.get(0);
 
-        assertEquals(UUID.fromString("70574dfd-48a3-40c7-8b0c-3e5defe7d080"), orderDto.getDeliveryId());
+        assertEquals(UUID.fromString("70574dfd-48a3-40c7-8b0c-3e5defe7d080"), orderDto.getDelivery().getId());
         assertEquals(251, orderDto.getId());
 
         orderExternalService.rescheduleSkippedOrders(rescheduleOrdersRequest);

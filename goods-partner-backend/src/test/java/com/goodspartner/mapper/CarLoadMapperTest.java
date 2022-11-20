@@ -66,6 +66,7 @@ public class CarLoadMapperTest {
                 .deliveryId(UUID.fromString("237e9877-e79b-12d4-a765-321741963000"))
                 .build();
 
+        // TOOD builder
         CarDto carDto = new CarDto(
                 1,
                 "FORD",
@@ -74,7 +75,6 @@ public class CarLoadMapperTest {
                 2000,
                 false,
                 true,
-                15.5,
                 26
         );
 

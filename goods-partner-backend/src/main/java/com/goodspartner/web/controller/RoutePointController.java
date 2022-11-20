@@ -19,9 +19,9 @@ public class RoutePointController {
     private final RoutePointService routePointService;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
-    @PostMapping("/{id}/{action}")
-    public RoutePointActionResponse apply(@PathVariable long id,
+    @PostMapping("/{routePointId}/{action}")
+    public RoutePointActionResponse apply(@PathVariable long routePointId,
                                           @PathVariable String action) {
-        return routePointService.updateRoutePoint(id, RoutePointAction.of(action));
+        return routePointService.updateRoutePoint(routePointId, RoutePointAction.of(action));
     }
 }

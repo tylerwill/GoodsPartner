@@ -21,6 +21,5 @@ public class CarDto {
     private int weightCapacity;
     private Boolean cooler;
     private Boolean available;
-    private double loadSize;
     private int travelCost;
 }

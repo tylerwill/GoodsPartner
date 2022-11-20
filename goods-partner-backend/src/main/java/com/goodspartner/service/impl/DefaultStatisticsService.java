@@ -3,7 +3,9 @@ package com.goodspartner.service.impl;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.RouteDto;
+import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePointStatus;
+import com.goodspartner.mapper.RouteMapper;
 import com.goodspartner.service.CarService;
 import com.goodspartner.service.DeliveryService;
 import com.goodspartner.service.RouteService;
@@ -35,13 +37,14 @@ public class DefaultStatisticsService implements StatisticsService {
     private final RouteService routeService;
     private final CarService carService;
 
+    private final RouteMapper routeMapper;
+
     @Override
     public StatisticsResponse getStatistics(LocalDate dateFrom, LocalDate dateTo) {
 
         List<DeliveryDto> deliveries = getCompletedDeliveriesInRange(dateFrom, dateTo);
-        long averageDeliveryDuration = getAverageDeliveryDuration(deliveries);
 
-        List<RouteDto> routes = getRoutes(deliveries);
+        List<Route> routes = getRoutes(deliveries);
 
         CalculationRoutesResult calculationRoutesResult = calculateRoutesStatistic(routes);
 
@@ -74,7 +77,7 @@ public class DefaultStatisticsService implements StatisticsService {
                 .orderCount(calculationRoutesResult.ordersCount)
                 .weight(calculationRoutesResult.totalWeight)
                 .fuelConsumption(calculationRoutesResult.fuelConsumption)
-                .averageDeliveryDuration(averageDeliveryDuration)
+                .averageDeliveryDuration(getAverageDeliveryDuration(deliveries))
                 .routesForPeriodPerDay(getDataForPeriodPerDay(dateFrom, dateTo, routesPerDay))
                 .ordersForPeriodPerDay(getDataForPeriodPerDay(dateFrom, dateTo, ordersPerDay))
                 .weightForPeriodPerDay(getDataForPeriodPerDay(dateFrom, dateTo, weightPerDay))
@@ -101,7 +104,8 @@ public class DefaultStatisticsService implements StatisticsService {
         CarDto car = getCar(carId);
         List<DeliveryDto> deliveries = getCompletedDeliveriesInRange(dateFrom, dateTo);
 
-        List<RouteDto> routes = getRoutes(deliveries)
+        // TODO rewrite to use getRoutesByDeliveries and Cars
+        List<Route> routes = getRoutes(deliveries)
                 .stream()
                 .filter(routeDto -> routeDto.getCar().getId() == carId)
                 .toList();
@@ -109,7 +113,6 @@ public class DefaultStatisticsService implements StatisticsService {
         CalculationRoutesResult calculationRoutesResult = calculateRoutesStatistic(routes, car);
 
         return CarStatisticsResponse.builder()
-                .routes(routes)
                 .totalTimeInRoutes(calculationRoutesResult.totalTimeInRoutes)
                 .orderCount(calculationRoutesResult.ordersCount)
                 .weight(calculationRoutesResult.totalWeight)
@@ -125,7 +128,8 @@ public class DefaultStatisticsService implements StatisticsService {
         CarDto car = getCar(carId);
         DeliveryDto delivery = getCompletedDelivery(date);
 
-        RouteDto routeResponse = routeService.findByDeliveryId(delivery.getId()).stream()
+        Route routeResponse = routeService.findByDeliveryId(delivery.getId())
+                .stream()
                 .filter(route -> route.getCar().getId() == carId)
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);// This car was not used at this date
@@ -159,7 +163,8 @@ public class DefaultStatisticsService implements StatisticsService {
                 .longValue();
     }
 
-    private List<RouteDto> getRoutes(List<DeliveryDto> deliveries) {
+    // TODO N+1 select by deliveries with Delivery in entity graph
+    private List<Route> getRoutes(List<DeliveryDto> deliveries) {
         return deliveries.stream()
                 .map(DeliveryDto::getId)
                 .map(routeService::findByDeliveryId)
@@ -168,13 +173,14 @@ public class DefaultStatisticsService implements StatisticsService {
     }
 
     private long getDeliveryDuration(DeliveryDto delivery) {
-        return routeService.findByDeliveryId(delivery.getId()).stream()
-                .mapToLong(RouteDto::getSpentTime)
+        return routeService.findByDeliveryId(delivery.getId())
+                .stream()
+                .mapToLong(Route::getSpentTime)
                 .summaryStatistics()
                 .getMax();
     }
 
-    CalculationRoutesResult calculateRoutesStatistic(List<RouteDto> routes, CarDto carDto) {
+    CalculationRoutesResult calculateRoutesStatistic(List<Route> routes, CarDto carDto) {
         int travelCost = carDto.getTravelCost();
         int ordersCount = 0;
         double totalWeight = 0.0;
@@ -182,12 +188,12 @@ public class DefaultStatisticsService implements StatisticsService {
         long totalTimeInRoutes = 0L;
         int incompleteRoutePointsCount = 0;
 
-        for (RouteDto routeDto : routes) {
-            ordersCount += routeDto.getTotalOrders();
-            totalWeight += routeDto.getTotalWeight();
-            fuelConsumption += travelCost * routeDto.getDistance() / 100;
-            totalTimeInRoutes += routeDto.getSpentTime();
-            incompleteRoutePointsCount += routeDto.getRoutePoints().stream()
+        for (Route route : routes) {
+            ordersCount += route.getTotalOrders();
+            totalWeight += route.getTotalWeight();
+            fuelConsumption += travelCost * route.getDistance() / 100;
+            totalTimeInRoutes += route.getSpentTime();
+            incompleteRoutePointsCount += route.getRoutePoints().stream()
                     .filter(routePoint -> !routePoint.getStatus().equals(RoutePointStatus.DONE))
                     .map(e -> 1).reduce(0, Integer::sum);
         }
@@ -197,15 +203,15 @@ public class DefaultStatisticsService implements StatisticsService {
         return new CalculationRoutesResult(ordersCount, totalWeight, roundedTravelCost, totalTimeInRoutes, incompleteRoutePointsCount);
     }
 
-    CalculationRoutesResult calculateRoutesStatistic(List<RouteDto> routes) {
+    CalculationRoutesResult calculateRoutesStatistic(List<Route> routes) {
         int ordersCount = 0;
         double totalWeight = 0.0;
         double fuelConsumption = 0.0;
 
-        for (RouteDto routeDto : routes) {
-            ordersCount += routeDto.getTotalOrders();
-            totalWeight += routeDto.getTotalWeight();
-            fuelConsumption += routeDto.getCar().getTravelCost() * routeDto.getDistance() / 100;
+        for (Route route : routes) {
+            ordersCount += route.getTotalOrders();
+            totalWeight += route.getTotalWeight();
+            fuelConsumption += route.getCar().getTravelCost() * route.getDistance() / 100;
         }
 
         int roundedTravelCost = new BigDecimal(fuelConsumption).setScale(0, RoundingMode.HALF_UP).intValue();
@@ -216,7 +222,11 @@ public class DefaultStatisticsService implements StatisticsService {
     private Map<LocalDate, List<RouteDto>> collectRoutesByDate(List<DeliveryDto> deliveries) {
         return deliveries.stream()
                 .collect(Collectors.toMap(DeliveryDto::getDeliveryDate,
-                        delivery -> routeService.findByDeliveryId(delivery.getId())));
+                        delivery ->
+                                routeService.findByDeliveryIdExtended(delivery.getId())
+                                        .stream()
+                                        .map(routeMapper::mapToDto)
+                                        .collect(Collectors.toList())));
     }
 
     @AllArgsConstructor

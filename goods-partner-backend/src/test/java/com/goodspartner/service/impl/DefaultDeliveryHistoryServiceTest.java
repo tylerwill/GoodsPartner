@@ -5,6 +5,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.entity.AddressStatus;
+import com.goodspartner.facade.DeliveryFacade;
 import com.goodspartner.web.action.RouteAction;
 import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.CarDto;
@@ -68,6 +69,9 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
 
     @Autowired
     private DeliveryService deliveryService;
+
+    @Autowired
+    private DeliveryFacade deliveryFacade;
 
     @Autowired
     private ApplicationEvents applicationEvents;
@@ -302,7 +306,7 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
 
         UUID deliveryId = UUID.fromString("d0000000-0000-0000-0000-000000000001");
 
-        deliveryService.approve(deliveryId, APPROVE);
+        deliveryFacade.approve(deliveryId, APPROVE);
 
         assertEquals(1, applicationEvents
                 .stream(DeliveryAuditEvent.class)

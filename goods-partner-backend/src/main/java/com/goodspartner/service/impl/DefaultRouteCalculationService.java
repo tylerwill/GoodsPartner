@@ -183,7 +183,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                 index++;
             }
         }
-        route.setRoutePoints(routePointMapper.toEntities(routePointDtos));
+        route.setRoutePoints(routePointMapper.mapToEntities(routePointDtos));
 
         return route;
     }
@@ -225,15 +225,13 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
             routePoint.setOrders(orderList);
             routePoint.setAddressTotalWeight(addressTotalWeight);
 
+            routePoint.setAddressExternal(addressExternal);
+
             // TODO : issue #205 how to represent several orders per one client. Now we take first
             // TODO : stream over all order and choose the one where the values are not default one
             OrderExternal orderExternal = orderList.get(0);
             routePoint.setDeliveryStart(orderExternal.getDeliveryStart());
             routePoint.setDeliveryEnd(orderExternal.getDeliveryFinish());
-
-            AddressExternal.OrderAddressId orderAddressId = addressExternal.getOrderAddressId();
-            routePoint.setAddress(orderAddressId.getOrderAddress());
-            routePoint.setClientName(orderAddressId.getClientName());
 
             routePointList.add(routePoint);
         });

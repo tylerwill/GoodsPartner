@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -42,13 +43,10 @@ public class RoutePoint {
     private Long id;
     @Enumerated(value = EnumType.STRING)
     private RoutePointStatus status;
-    @Column(name = "client_name")
-    private String clientName;
-    private String address;
-    private Double addressTotalWeight; //TODO check if necessary here
+    @Column(name = "address_total_weight")
+    private Double addressTotalWeight;
     @Column(name = "route_point_distant_time")
     private Long routePointDistantTime;
-
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
     @Column(name = "expected_arrival")
@@ -66,6 +64,13 @@ public class RoutePoint {
 
     @OneToMany(mappedBy = "routePoint", cascade = CascadeType.ALL)
     private List<OrderExternal> orders = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "client_name", referencedColumnName = "client_name"),
+            @JoinColumn(name = "address", referencedColumnName = "order_address")
+    })
+    private AddressExternal addressExternal;
 
     public void setOrders(List<OrderExternal> orders) {
         List<OrderExternal> requiredOrders = Optional.ofNullable(orders)

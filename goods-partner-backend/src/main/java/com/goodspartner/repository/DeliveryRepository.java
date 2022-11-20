@@ -3,6 +3,7 @@ package com.goodspartner.repository;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,6 +29,6 @@ public interface DeliveryRepository extends JpaRepository<Delivery, UUID> {
     @EntityGraph(attributePaths = {"orders.addressExternal"})
     Optional<Delivery> findById(UUID id);
 
-    @Query("SELECT d FROM Delivery d JOIN CarLoad c ON d.id = c.delivery WHERE c.car = :car")
-    List<Delivery> findDeliveriesByCar(@Param("car") Car car);
+    @Query("SELECT d FROM Delivery d JOIN d.carLoads c WHERE c.car = :car")
+    List<Delivery> findDeliveriesByCar(@Param("car") Car car, Sort sortByDeliveryDate);
 }

@@ -2,7 +2,7 @@ package com.goodspartner.service.security;
 
 import com.goodspartner.entity.User;
 import com.goodspartner.repository.UserRepository;
-import com.goodspartner.service.dto.CustomOAuth2User;
+import com.goodspartner.service.dto.GoodsPartnerOAuth2User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,7 +22,7 @@ public class GoodsPartnerOAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
 
     @Override
-    public CustomOAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
         String email = (String) oAuth2User.getAttributes().get("email");
@@ -34,16 +34,15 @@ public class GoodsPartnerOAuth2UserService extends DefaultOAuth2UserService {
             throw new DisabledException("User is disabled: " + email);
         }
 
-        CustomOAuth2User customOAuth2User = new CustomOAuth2User();
-        customOAuth2User.setUsername(user.getUserName());
-        customOAuth2User.setEmail(user.getEmail());
-        customOAuth2User.setAuthorities(List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole())));
-        customOAuth2User.setAccountNonExpired(true);
-        customOAuth2User.setAccountNonLocked(true);
-        customOAuth2User.setCredentialsNonExpired(true);
-        customOAuth2User.setEnabled(user.isEnabled());
-
-        return customOAuth2User;
+        return GoodsPartnerOAuth2User.builder()
+                .username(user.getUserName())
+                .email(user.getEmail())
+                .authorities(List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole())))
+                .accountNonExpired(true)
+                .accountNonLocked(true)
+                .credentialsNonExpired(true)
+                .enabled(user.isEnabled())
+                .build();
     }
 }
 

@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CarLoadServiceTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final CarLoadService carLoadService = new DefaultCarLoadService(null, null);
+    private final CarLoadService carLoadService = new DefaultCarLoadService(null, null, null);
 
     @Test
     void mapOrdersTCar() throws JsonProcessingException {

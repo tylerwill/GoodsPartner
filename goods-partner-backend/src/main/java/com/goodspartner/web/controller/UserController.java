@@ -2,6 +2,7 @@ package com.goodspartner.web.controller;
 
 
 import com.goodspartner.dto.UserDto;
+import com.goodspartner.mapper.UserMapper;
 import com.goodspartner.service.UserService;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -26,30 +27,34 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @GetMapping("/auth")
     public UserDto getAuthenticationDetails(OAuth2AuthenticationToken authentication) {
-        return userService.findByAuthentication(authentication);
+        return userMapper.mapToDto(userService.findByAuthentication(authentication));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping
     public List<UserDto> getAll() {
-        return userService.findAll();
+        return userService.findAll()
+                .stream()
+                .map(userMapper::mapToDto)
+                .toList();
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/{id}")
     public UserDto getById(@ApiParam(value = "ID of the user to retrieve", required = true)
                            @PathVariable("id") int id) {
-        return userService.findById(id);
+        return userMapper.mapToDto(userService.findById(id));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public UserDto add(@ApiParam(value = "User that you want to add", type = "UserDto", required = true)
                        @RequestBody UserDto userDto) {
-        return userService.add(userDto);
+        return userMapper.mapToDto(userService.add(userDto));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
@@ -58,13 +63,13 @@ public class UserController {
                           @PathVariable int id,
                           @ApiParam(value = "Edited User", type = "UserDto", required = true)
                           @RequestBody UserDto userDto) {
-        return userService.update(id, userDto);
+        return userMapper.mapToDto(userService.update(id, userDto));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
     public UserDto delete(@ApiParam(value = "ID of the user to delete", required = true)
                           @PathVariable("id") int id) {
-        return userService.delete(id);
+        return userMapper.mapToDto(userService.delete(id));
     }
 }

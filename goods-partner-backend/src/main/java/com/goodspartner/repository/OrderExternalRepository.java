@@ -1,7 +1,6 @@
 package com.goodspartner.repository;
 
 import com.goodspartner.entity.Car;
-import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.OrderExternal;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,11 +17,11 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, In
 
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o WHERE o.delivery.id = :deliveryId")
-    List<OrderExternal> findAllByDelivery(@Param("deliveryId") UUID deliveryId);
+    List<OrderExternal> findByDeliveryId(@Param("deliveryId") UUID deliveryId);
 
     @EntityGraph(attributePaths = {"addressExternal"})
-    @Query("SELECT o FROM OrderExternal o WHERE o.delivery = :delivery AND o.carLoad.car = :car")
-    List<OrderExternal> findAllByDeliveryAndCar(@Param("delivery") Delivery delivery,
+    @Query("SELECT o FROM OrderExternal o WHERE o.delivery.id = :deliveryId AND o.carLoad.car = :car")
+    List<OrderExternal> findAllByDeliveryAndCar(@Param("deliveryId") UUID deliveryId,
                                                 @Param("car") Car car);
 
     @EntityGraph(attributePaths = {"addressExternal"})

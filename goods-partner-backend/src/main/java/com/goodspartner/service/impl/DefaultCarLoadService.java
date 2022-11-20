@@ -1,39 +1,38 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.CarLoadDto;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.CarLoad;
-import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
-import com.goodspartner.mapper.CarLoadMapper;
+import com.goodspartner.entity.User;
 import com.goodspartner.repository.CarLoadRepository;
+import com.goodspartner.repository.CarRepository;
 import com.goodspartner.service.CarLoadService;
+import com.goodspartner.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.goodspartner.entity.User.UserRole.DRIVER;
 
 @Service
 @AllArgsConstructor
 public class DefaultCarLoadService implements CarLoadService {
 
+    private final CarRepository carRepository;
+
+    private final UserService userService;
     private final CarLoadRepository carLoadRepository;
-    private final CarLoadMapper carLoadMapper;
 
     @Override
-    public List<CarLoadDto> findCarLoad(Delivery delivery, Car car) {
-        return carLoadRepository.findByDeliveryAndCar(delivery, car)
-                .stream()
-                .map(carLoadMapper::mapToDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<CarLoad> buildCarLoad(List<Route> routes, List<OrderExternal> orders){
+    public List<CarLoad> buildCarLoad(List<Route> routes, List<OrderExternal> orders) {
         return routes.stream().map(route -> routeToCarDetails(route, orders)).toList();
     }
 
@@ -61,11 +60,22 @@ public class DefaultCarLoadService implements CarLoadService {
         return carLoad;
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public List<CarLoadDto> findByDeliveryId(UUID id) {
-        return carLoadRepository.findCarLoadsByDeliveryId(id)
-                .stream()
-                .map(carLoadMapper::mapToDto)
-                .collect(Collectors.toList());
+    public List<CarLoad> findByDeliveryId(UUID deliveryId, OAuth2AuthenticationToken authentication) {
+        return Optional.of(userService.findByAuthentication(authentication))
+                .filter(user -> DRIVER.equals(user.getRole()))
+                .map(driver -> findByDeliveryAndDriver(deliveryId, driver))
+                .orElseGet(() -> carLoadRepository.findByDeliveryId(deliveryId));
+    }
+
+    @Override
+    public List<CarLoad> findByDeliveryId(UUID deliveryId) {
+        return carLoadRepository.findByDeliveryId(deliveryId);
+    }
+
+    private List<CarLoad> findByDeliveryAndDriver(UUID deliveryId, User driver) {
+        Car car = carRepository.findCarByDriver(driver);
+        return carLoadRepository.findByDeliveryIdAndCar(deliveryId, car);
     }
 }
