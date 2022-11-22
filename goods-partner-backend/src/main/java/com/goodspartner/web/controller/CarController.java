@@ -2,6 +2,7 @@ package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.Location;
+import com.goodspartner.mapper.CarMapper;
 import com.goodspartner.service.CarService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -19,6 +20,8 @@ public class CarController {
 
     private final CarService carService;
 
+    private final CarMapper carMapper;
+
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'LOGIST')")
     @GetMapping
     @ApiOperation(value = "Get all Cars",
@@ -26,6 +29,24 @@ public class CarController {
             response = List.class)
     public List<CarDto> getAll() {
         return carService.findAll();
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @GetMapping("/{id}")
+    @ApiOperation(value = "Find Car by id",
+            notes = "Provide an id to look up specific car",
+            response = CarDto.class)
+    public CarDto getById(@ApiParam(value = "ID value for the car you need to retrieve", required = true)
+                          @PathVariable("id") int id) {
+        return carMapper.carToCarDto(carService.findById(id));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PostMapping()
+    @ApiOperation(value = "Add car")
+    public CarDto add(@ApiParam(value = "CarDto that you want to add", type = "CarDto", required = true)
+                      @RequestBody CarDto car) {
+        return carService.add(car);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
@@ -40,30 +61,12 @@ public class CarController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
-    @PostMapping()
-    @ApiOperation(value = "Add car")
-    public CarDto add(@ApiParam(value = "CarDto that you want to add", type = "CarDto", required = true)
-                      @RequestBody CarDto car) {
-        return carService.add(car);
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
     @DeleteMapping("{id}")
     @ApiOperation(value = "Remove Car by id",
             notes = "Provide an id to remove up specific car")
     public void delete(@ApiParam(value = "ID of the car to delete", required = true)
                        @PathVariable("id") int id) {
         carService.delete(id);
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
-    @GetMapping("/{id}")
-    @ApiOperation(value = "Find Car by id",
-            notes = "Provide an id to look up specific car",
-            response = CarDto.class)
-    public CarDto getById(@ApiParam(value = "ID value for the car you need to retrieve", required = true)
-                          @PathVariable("id") int id) {
-        return carService.findById(id);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")

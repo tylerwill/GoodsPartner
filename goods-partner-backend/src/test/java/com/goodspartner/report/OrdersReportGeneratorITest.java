@@ -7,6 +7,7 @@ import com.goodspartner.entity.Car;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.entity.User;
 import com.goodspartner.repository.DeliveryRepository;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
@@ -124,10 +125,17 @@ class OrdersReportGeneratorITest extends AbstractBaseITest {
 
     @NotNull
     private Car getCar() {
+
+        User user = new User(555,
+                "Ivan Piddubny",
+                "userEmail@gmail",
+                User.UserRole.DRIVER,
+                true);
+
         return new Car(
                 1,
                 "Mercedes Vito",
-                "Ivan Piddubny",
+                user,
                 true,
                 false,
                 "AA 2222 CT",

@@ -2,9 +2,15 @@ CARS:
   - ID: 1
     NAME: "Mercedes Sprinter"
     LICENCE_PLATE: "AA 1111 CT"
-    DRIVER: "Oleg Dudka"
     WEIGHT_CAPACITY: 3000
     COOLER: FALSE
     AVAILABLE: TRUE
     TRAVEL_COST: 10
     DELETED: FALSE
+
+USERS:
+  - ID: 1
+    USER_NAME: "Oleg Dudka"
+    EMAIL: "test-driver@gmail.com"
+    ROLE: "DRIVER"
+    ENABLED: "true"

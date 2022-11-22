@@ -5,6 +5,8 @@ import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.dto.CarDto;
+import com.goodspartner.dto.UserDto;
+import com.goodspartner.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,11 +30,18 @@ class CarControllerSecurityITest extends AbstractWebITest {
     @BeforeEach
     public void setUp() {
         // TODO builder
+
+        UserDto userDto = new UserDto(1,
+                "Ivan Kornienko",
+                "userEmail@gmail",
+                User.UserRole.DRIVER.getName(),
+                true);
+
         carDto = new CarDto(
                 0,
                 "MAN",
                 "AA 2455 CT",
-                "Ivan Kornienko",
+                userDto,
                 4000,
                 false,
                 true,
@@ -50,7 +59,8 @@ class CarControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_add_car.yml")
+    @DataSet(value = "datasets/common/car/dataset_add_car.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @WithMockUser(username = "mary", roles = "ADMIN")
     @DisplayName("when Delete Car After Auth then Ok Status Returned")
     void whenDeleteCarAfterAuthThenOkStatusReturned() throws Exception {
@@ -60,7 +70,8 @@ class CarControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_add_car.yml")
+    @DataSet(value = "datasets/common/car/dataset_add_car.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @WithMockUser(username = "mary", roles = "ADMIN")
     @DisplayName("when Get Car By Id After Auth  then Ok Status Returned")
     void whenGetCarByIdAfterAuthThenOkStatusReturned() throws Exception {
@@ -70,7 +81,8 @@ class CarControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "datasets/common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Add Car After Auth then Ok Status Returned")
     @WithMockUser(username = "mary", roles = "ADMIN")
     void whenAddCarAuthenticatedAndAuthorizedThenOkStatusReturned() throws Exception {
@@ -82,7 +94,8 @@ class CarControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Put Car After Auth then Ok Status Returned")
     @WithMockUser(username = "mary", roles = "ADMIN")
     void whenPutCarAuthenticatedAndAuthorizedThenOkStatusReturned() throws Exception {
@@ -103,7 +116,8 @@ class CarControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_add_car.yml")
+    @DataSet(value = "datasets/common/car/dataset_add_car.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Delete Car Without Auth then Redirected Status Returned")
     void whenDeleteCarNotAuthenticatedThenStatusIsRedirection() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/cars/1")
@@ -112,7 +126,8 @@ class CarControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_add_car.yml")
+    @DataSet(value = "common/car/dataset_add_car.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Get Car By Id Without Auth then Redirected Status Returned")
     void whenGetCarByIdNotAuthenticatedThenStatusIsRedirection() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/cars/2")
@@ -121,7 +136,8 @@ class CarControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Add Car Without Auth then Redirected Status Returned")
     void whenAddCarNotAuthenticatedThenStatusIsRedirection() throws Exception {
 
@@ -132,7 +148,8 @@ class CarControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "datasets/common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Put Car Without Auth then Redirected Status Returned")
     void whenPutCarNotAuthenticatedThenStatusIsRedirection() throws Exception {
 
@@ -153,7 +170,8 @@ class CarControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_add_car.yml")
+    @DataSet(value = "common/car/dataset_add_car.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Delete Car Without Rights Then Forbidden Status Returned")
     @WithMockUser(username = "mary", roles = "NORIGHTS")
     void whenDeleteCarWithNoAuthorizationThenStatusIsForbidden() throws Exception {
@@ -163,7 +181,8 @@ class CarControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_add_car.yml")
+    @DataSet(value = "common/car/dataset_add_car.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Get Car By Id Without Rights Then Forbidden Status Returned")
     @WithMockUser(username = "mary", roles = "NORIGHTS")
     void whenGetCarByIdWithNoAuthorizationThenStatusIsForbidden() throws Exception {
@@ -173,7 +192,8 @@ class CarControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "datasets/common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Add Car Without Rights Then Forbidden Status Returned")
     @WithMockUser(username = "mary", roles = "NORIGHTS")
     void whenAddCarWithNoAuthorizationThenStatusIsForbidden() throws Exception {
@@ -185,7 +205,8 @@ class CarControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("common/car/dataset_cars.yml")
+    @DataSet(value = "common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Put Car Without Rights Then Forbidden Status Returned")
     @WithMockUser(username = "mary", roles = "NORIGHTS")
     void whenPutCarWithNoAuthorizationThenStatusIsForbidden() throws Exception {

@@ -49,12 +49,19 @@ CARS:
   - ID: 1
     NAME: "Mercedes Sprinter"
     LICENCE_PLATE: "AA 1111 CT"
-    DRIVER: "Вальдемар Кипарисович"
     WEIGHT_CAPACITY: 3000
     COOLER: FALSE
     AVAILABLE: TRUE
     TRAVEL_COST: 10
     DELETED: FALSE
+    USER_ID: 22
+
+USERS:
+  - ID: 22
+    USER_NAME: "Вальдемар Кипарисович"
+    EMAIL: "user@gmail.com"
+    ROLE: "DRIVER"
+    ENABLED: TRUE
 
 STORE:
   - ID: "00000000-0000-0000-0000-000000000555"

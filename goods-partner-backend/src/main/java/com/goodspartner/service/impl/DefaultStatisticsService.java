@@ -5,6 +5,7 @@ import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePointStatus;
+import com.goodspartner.mapper.CarMapper;
 import com.goodspartner.mapper.RouteMapper;
 import com.goodspartner.service.CarService;
 import com.goodspartner.service.DeliveryService;
@@ -38,6 +39,7 @@ public class DefaultStatisticsService implements StatisticsService {
     private final CarService carService;
 
     private final RouteMapper routeMapper;
+    private final CarMapper carMapper;
 
     @Override
     public StatisticsResponse getStatistics(LocalDate dateFrom, LocalDate dateTo) {
@@ -140,8 +142,9 @@ public class DefaultStatisticsService implements StatisticsService {
                 .build();
     }
 
+    // TODO refactor code to avoid usage of mappers
     private CarDto getCar(int carId) {
-        return carService.findById(carId);
+        return carMapper.carToCarDto(carService.findById(carId));
     }
 
     private List<DeliveryDto> getCompletedDeliveriesInRange(LocalDate dateFrom, LocalDate dateTo) {

@@ -5,10 +5,12 @@ import com.goodspartner.dto.CarLoadDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.dto.Product;
+import com.goodspartner.dto.UserDto;
 import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,12 +68,18 @@ public class CarLoadMapperTest {
                 .deliveryId(UUID.fromString("237e9877-e79b-12d4-a765-321741963000"))
                 .build();
 
-        // TOOD builder
+        UserDto userDto = new UserDto(555,
+                "Oleg",
+                "userEmail@gmail",
+                User.UserRole.DRIVER.toString(),
+                true);
+
+        // TODO builder
         CarDto carDto = new CarDto(
                 1,
                 "FORD",
                 "12345",
-                "Oleg",
+                userDto,
                 2000,
                 false,
                 true,
@@ -88,7 +96,7 @@ public class CarLoadMapperTest {
         assertEquals(1, mappedCar.getId());
         assertEquals("FORD", mappedCar.getName());
         assertEquals("12345", mappedCar.getLicencePlate());
-        assertEquals("Oleg", mappedCar.getDriver());
+        assertEquals("Oleg", mappedCar.getDriver().getUserName());
         assertEquals(2000, mappedCar.getWeightCapacity());
         assertFalse(mappedCar.isCooler());
         assertTrue(mappedCar.isAvailable());

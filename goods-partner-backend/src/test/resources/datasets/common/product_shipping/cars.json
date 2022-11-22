@@ -3,7 +3,13 @@
     "id": 101,
     "name": "Mercedes Vito",
     "licencePlate": "AA 2222 CT",
-    "driver": "Ivan Piddubny",
+    "driver": {
+      "id": 1,
+      "userName": "Test Driver",
+      "email": "test-driver@gmail.com",
+      "role": "DRIVER",
+      "enabled": "true"
+    },
     "weightCapacity": 1000,
     "cooler": false,
     "available": true,
@@ -13,7 +19,13 @@
     "id": 151,
     "name": "Mercedes Sprinter",
     "licencePlate": "AA 3333 CT",
-    "driver": "Anton Geraschenko",
+    "driver": {
+      "id": 1,
+      "userName": "Another Test Driver",
+      "email": "test-driver@gmail.com",
+      "role": "DRIVER",
+      "enabled": "true"
+    },
     "weightCapacity": 2500,
     "cooler": true,
     "available": true,

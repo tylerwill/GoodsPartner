@@ -2,6 +2,7 @@ package com.goodspartner.service;
 
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.Location;
+import com.goodspartner.entity.Car;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface CarService {
 
     CarDto update(int id, CarDto car);
 
-    CarDto findById(int id);
+    Car findById(int id);
 
     List<CarDto> findAll();
 

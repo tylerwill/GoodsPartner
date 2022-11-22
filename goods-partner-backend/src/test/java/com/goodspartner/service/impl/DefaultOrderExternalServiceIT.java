@@ -7,6 +7,7 @@ import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.repository.OrderExternalRepository;
 import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.web.controller.request.RescheduleOrdersRequest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DBRider
+@Disabled
 class DefaultOrderExternalServiceIT extends AbstractBaseITest {
 
     @Autowired

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
+import com.goodspartner.dto.UserDto;
 import com.goodspartner.entity.AddressStatus;
+import com.goodspartner.entity.User;
 import com.goodspartner.facade.DeliveryFacade;
 import com.goodspartner.web.action.RouteAction;
 import com.goodspartner.config.TestSecurityDisableConfig;
@@ -110,12 +112,18 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
 
         when(storeService.getMainStore()).thenReturn(store);
 
+        UserDto userDto = new UserDto(555,
+                "Oleg",
+                "userEmail@gmail",
+                User.UserRole.DRIVER.getName(),
+                true);
+
         CarDto carDto = CarDto.builder()
                 .id(1)
                 .name("Mercedes Sprinter")
                 .licencePlate("AA 1111 CT")
                 .available(Boolean.TRUE)
-                .driver("Oleg Dudka")
+                .driver(userDto)
                 .weightCapacity(2500)
                 .cooler(Boolean.TRUE)
                 .build();
