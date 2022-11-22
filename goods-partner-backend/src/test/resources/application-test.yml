@@ -24,7 +24,7 @@ google:
 
 grandedolce:
   accounting-app:
-    url: some-test-url
+    url: http://192.168.0.1:3002/
     login: some-test-login
     password: some-test-password
 

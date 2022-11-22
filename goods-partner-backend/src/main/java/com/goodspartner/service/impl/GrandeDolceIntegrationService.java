@@ -1,5 +1,7 @@
 package com.goodspartner.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodspartner.configuration.properties.GrandeDolce1CProperties;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.mapper.ODataOrderMapper;
@@ -11,21 +13,33 @@ import com.goodspartner.service.dto.external.grandedolce.ODataWrapperDto;
 import com.goodspartner.util.ExternalOrderDataEnricher;
 import com.goodspartner.util.ODataUrlBuilder;
 import com.google.common.collect.Lists;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 
+import java.io.IOException;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @Service
 @Slf4j
 public class GrandeDolceIntegrationService implements IntegrationService {
@@ -43,27 +57,21 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private static final String PRODUCT_SELECT_FIELDS = "Ref_Key,Количество,КоличествоМест,Коэффициент,ЕдиницаИзмерения/Description,Номенклатура/Description";
     private static final String PRODUCT_EXPAND_FIELDS = "Номенклатура,ЕдиницаИзмерения";
 
+    @Value("classpath:mock1CoData/*")
+    private Resource[] mockFiles;
+
     private final GrandeDolce1CProperties properties;
 
     private final WebClient webClient;
     private final ODataOrderMapper odataOrderMapper;
     private final ProductMapper productMapper;
     private final ExternalOrderDataEnricher enricher;
+    private final ObjectMapper objectMapper;
 
-    public GrandeDolceIntegrationService(GrandeDolce1CProperties properties,
-                                         WebClient webClient,
-                                         ODataOrderMapper odataOrderMapper,
-                                         ProductMapper productMapper,
-                                         ExternalOrderDataEnricher enricher) {
-        this.properties = properties;
-        this.webClient = webClient;
-        this.odataOrderMapper = odataOrderMapper;
-        this.productMapper = productMapper;
-        this.enricher = enricher;
-    }
 
     @Override
     public List<OrderDto> findAllByShippingDate(LocalDate deliveryDate) {
+        log.info("Start fetching orders for date: {}", deliveryDate);
         long startTime = System.currentTimeMillis();
 
         ODataWrapperDto<ODataOrderDto> oDataWrappedOrderDtos = getOrders(deliveryDate);
@@ -95,28 +103,33 @@ public class GrandeDolceIntegrationService implements IntegrationService {
      */
     private ODataWrapperDto<ODataOrderDto> getOrders(LocalDate deliveryDate) {
         URI orderUri = buildOrderUri(createOrderByDateFilter(deliveryDate.atStartOfDay().toString()));
-        return webClient.get()
-                .uri(orderUri)
+
+        return fetchMockDataByRequest(orderUri, new TypeReference<>() {
+                },
+                () -> webClient.get()
+                        .uri(orderUri)
 //                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
-                })
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(15)))
-                .block();
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
+                        })
+                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(15)))
+                        .block());
     }
 
     /**
      * Get products from 1C
      */
     private ODataWrapperDto<ODataProductDto> getProducts(URI productUri) {
-        return webClient.get()
-                .uri(productUri)
+        return fetchMockDataByRequest(productUri, new TypeReference<>() {
+                },
+                () -> webClient.get()
+                        .uri(productUri)
 //                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataProductDto>>() {
-                })
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(15)))
-                .block();
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataProductDto>>() {
+                        })
+                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(15)))
+                        .block());
     }
 
     /*URI*/
@@ -213,5 +226,34 @@ public class GrandeDolceIntegrationService implements IntegrationService {
      */
     String createOrderByDateFilter(String date) {
         return String.format("ДатаОтгрузки eq datetime'%s' and like(АдресДоставки , '[^\"\"][^\"   \"]______%%')", date);
+    }
+
+    private <T> ODataWrapperDto<T> fetchMockDataByRequest(URI integrationServiceUri,
+                                                          TypeReference<ODataWrapperDto<T>> typeRef,
+                                                          Supplier<ODataWrapperDto<T>> supplier) {
+        return Arrays.stream(mockFiles)
+                .filter(resource -> Objects.nonNull(resource.getFilename()))
+                .filter(resource -> checkIfMockResourceMathRequest(integrationServiceUri, resource))
+                .findFirst()
+                .map(resource -> {
+                    try {
+                        return objectMapper.readValue(
+                                FileUtils.readFileToString(resource.getFile(), StandardCharsets.UTF_8),
+                                typeRef
+                        );
+                    } catch (IOException e) {
+                        log.error("Unable to read the file: {} fallback call to service", resource.getFilename());
+                        return null;
+                    }
+                })
+                .orElseGet(supplier);
+    }
+
+    private boolean checkIfMockResourceMathRequest(URI integrationServiceUri, Resource resource) {
+        String decodedUrlQuery = URLDecoder.decode(integrationServiceUri.toString(), StandardCharsets.UTF_8);
+        String mockFileName = FilenameUtils.removeExtension(resource.getFilename());
+        boolean found = decodedUrlQuery.contains(mockFileName == null ? "" : mockFileName);
+        log.debug("Trying to find mockFile by url: {} - {} -> {}", decodedUrlQuery, mockFileName, found);
+        return found;
     }
 }

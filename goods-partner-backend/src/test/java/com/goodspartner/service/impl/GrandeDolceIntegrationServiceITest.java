@@ -33,12 +33,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Import({TestSecurityDisableConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
-@DirtiesContext
-@Disabled
 class GrandeDolceIntegrationServiceITest extends AbstractBaseITest {
-
-    @LocalServerPort
-    private int port;
 
     @MockBean
     private StoreService mockStoreService;
@@ -48,10 +43,6 @@ class GrandeDolceIntegrationServiceITest extends AbstractBaseITest {
 
     @BeforeEach
     public void setup() {
-        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-        mockRequest.setLocalPort(port);
-        RequestAttributes request = new ServletWebRequest(mockRequest);
-        RequestContextHolder.setRequestAttributes(request);
 
         Store store = new Store(UUID.fromString("5688492e-ede4-45d3-923b-5f9773fd3d4b"),
                 "Склад №1",
