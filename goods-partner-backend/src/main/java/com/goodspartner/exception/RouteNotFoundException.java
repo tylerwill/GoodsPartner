@@ -10,8 +10,8 @@ public class RouteNotFoundException extends RuntimeException {
         super(message);
     }
 
-    public RouteNotFoundException(int id) {
-        super(String.format(NO_ROUTE_BY_ID_MESSAGE, id));
+    public RouteNotFoundException(long routeId) {
+        super(String.format(NO_ROUTE_BY_ID_MESSAGE, routeId));
     }
 
     public RouteNotFoundException(UUID deliveryId) {

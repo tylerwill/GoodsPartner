@@ -1,6 +1,7 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.DeliveryHistoryDto;
+import com.goodspartner.mapper.DeliveryHistoryMapper;
 import com.goodspartner.service.DeliveryHistoryService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -14,14 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "api/v1/histories", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DeliveryHistoryController {
+
     private final DeliveryHistoryService deliveryHistoryService;
 
+    private final DeliveryHistoryMapper deliveryHistoryMapper;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
     @GetMapping
@@ -30,7 +34,10 @@ public class DeliveryHistoryController {
             response = DeliveryHistoryDto.class)
     public List<DeliveryHistoryDto> findByDeliveryId(@ApiParam(value = "ID value for the Delivery you need to retrieve", required = true)
                                                      @RequestParam(name = "deliveryId") UUID id) {
-        return deliveryHistoryService.findByDeliveryId(id);
+        return deliveryHistoryService.findByDeliveryId(id)
+                .stream()
+                .map(deliveryHistoryMapper::mapToDto)
+                .collect(Collectors.toList());
     }
 
 }

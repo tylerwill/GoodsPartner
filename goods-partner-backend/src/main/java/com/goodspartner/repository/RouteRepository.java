@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.UUID;
 
-public interface RouteRepository extends JpaRepository<Route, Integer> {
+public interface RouteRepository extends JpaRepository<Route, Long> {
 
     @EntityGraph(attributePaths = {"routePoints", "routePoints.addressExternal", "store", "car"})
     List<Route> findByDeliveryIdAndCar(UUID deliveryId, Car car);

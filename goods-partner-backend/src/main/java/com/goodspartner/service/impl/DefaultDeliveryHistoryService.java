@@ -1,20 +1,21 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.dto.DeliveryHistoryDto;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryHistory;
 import com.goodspartner.event.DeliveryAuditEvent;
 import com.goodspartner.exception.DeliveryNotFoundException;
-import com.goodspartner.mapper.DeliveryHistoryMapper;
 import com.goodspartner.repository.DeliveryHistoryRepository;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.service.DeliveryHistoryService;
+import com.goodspartner.util.AuditorBuilder;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -22,28 +23,35 @@ import java.util.UUID;
 public class DefaultDeliveryHistoryService implements DeliveryHistoryService {
 
     private final DeliveryHistoryRepository deliveryHistoryRepository;
-    private final DeliveryHistoryMapper deliveryHistoryMapper;
-    private final ApplicationEventPublisher applicationEventPublisher;
     private final DeliveryRepository deliveryRepository;
 
     @Override
-    @Transactional
-    public void add(DeliveryHistory deliveryHistory) {
-        deliveryHistoryRepository.save(deliveryHistory);
-    }
-
-    @Override
     @Transactional(readOnly = true)
-    public List<DeliveryHistoryDto> findByDeliveryId(UUID id) {
+    public List<DeliveryHistory> findByDeliveryId(UUID id) {
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow(() -> new DeliveryNotFoundException(id));
-        return deliveryHistoryMapper.toDeliveryHistoryDtos(
-                deliveryHistoryRepository.findByDeliveryOrderByCreatedAtDesc(delivery));
+        return deliveryHistoryRepository.findByDeliveryOrderByCreatedAtDesc(delivery);
     }
 
-    @Override
-    public void publish(DeliveryAuditEvent event) {
-        applicationEventPublisher.publishEvent(event);
+    @EventListener(DeliveryAuditEvent.class)
+    public void handleEvent(DeliveryAuditEvent event) {
+        deliveryHistoryRepository.save(createNewDeliveryHistory(event));
     }
 
+    private DeliveryHistory createNewDeliveryHistory(DeliveryAuditEvent event) {
+        Delivery delivery = deliveryRepository.findById(event.getDeliveryId())
+                .orElseThrow(() -> new DeliveryNotFoundException(event.getDeliveryId()));
+
+        Map<String, String> currentAuditorData = AuditorBuilder.getCurrentAuditorData();
+        String role = currentAuditorData.get("role");
+        String userEmail = currentAuditorData.get("userEmail");
+
+        return DeliveryHistory.builder()
+                .delivery(delivery)
+                .createdAt(LocalDateTime.now())
+                .role(role)
+                .userEmail(userEmail)
+                .action(event.getAction())
+                .build();
+    }
 }

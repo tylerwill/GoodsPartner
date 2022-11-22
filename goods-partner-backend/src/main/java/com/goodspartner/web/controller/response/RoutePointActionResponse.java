@@ -23,7 +23,7 @@ public class RoutePointActionResponse {
     private UUID deliveryId;
     private DeliveryStatus deliveryStatus;
 
-    private int routeId;
+    private long routeId;
     private RouteStatus routeStatus;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")

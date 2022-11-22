@@ -30,5 +30,5 @@ public interface OrderExternalService {
 
     OrderExternal update(int id, OrderDto orderDto);
 
-    void saveOrdersForDelivery(Delivery delivery);
+    void saveOrdersForDeliveryAsync(Delivery delivery);
 }

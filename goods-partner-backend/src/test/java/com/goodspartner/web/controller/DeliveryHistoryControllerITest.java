@@ -27,21 +27,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class DeliveryHistoryControllerITest extends AbstractWebITest {
 
     private static final String DELIVERY_HISTORY_API = "/api/v1/histories";
+    private static final String DELIVERY_ID = "00000000-0000-0000-0000-000000000123";
 
     @Test
-    @DataSet(value = "datasets/delivery/delivery-history-test.yml", disableConstraints = true,
+    @DataSet(value = "datasets/history/delivery-history-test.yml", disableConstraints = true,
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Find By Delivery Id then List Of CarLoadDto Returned")
-    public void whenFindByDeliveryId_thenCarLoadDtoListReturned() throws Exception {
+    public void whenFindByDeliveryId_thenRelatedHistoryReturned() throws Exception {
         SQLStatementCountValidator.reset();
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get(DELIVERY_HISTORY_API)
-                        .param("deliveryId", "00000000-0000-0000-0000-000000000123")
+                        .param("deliveryId", DELIVERY_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
-                        .json(getResponseAsString("response/delivery-history-controller-test.json")));
+                        .json(getResponseAsString("response/history/delivery-history-controller-test.json")));
 
         assertSelectCount(2);
     }

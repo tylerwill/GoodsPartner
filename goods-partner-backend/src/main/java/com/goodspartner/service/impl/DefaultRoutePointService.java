@@ -45,11 +45,10 @@ public class DefaultRoutePointService implements RoutePointService {
         action.perform(routePoint);
 
         Route route = routePoint.getRoute();
-        Integer routeId = route.getId();
 
         eventService.publishRoutePointUpdated(routePoint, route);
 
-        processRouteStatus(routeId);
+        processRouteStatus(route);
 
         return getRoutePointActionResponse(route, routePoint);
     }
@@ -81,11 +80,11 @@ public class DefaultRoutePointService implements RoutePointService {
         return routePointActionResponse;
     }
 
-    private void processRouteStatus(int routeId) {
-        List<RoutePoint> routePointDtos = findByRouteId(routeId);
+    private void processRouteStatus(Route route) {
+        List<RoutePoint> routePointDtos = findByRouteId(route.getId());
         if (isAllRoutePointsDone(routePointDtos)) {
-            routeService.updateRoute(routeId, RouteAction.COMPLETE);
-            log.info("Route ID {} was automatically close due to all RoutePoints are completed", routeId);
+            routeService.updateRoute(route.getId(), RouteAction.COMPLETE);
+            log.info("Route ID {} was automatically close due to all RoutePoints are completed", route.getId());
         }
     }
 

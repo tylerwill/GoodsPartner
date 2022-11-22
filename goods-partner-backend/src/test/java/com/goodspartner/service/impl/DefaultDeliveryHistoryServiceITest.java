@@ -3,7 +3,7 @@ package com.goodspartner.service.impl;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractBaseITest;
-import com.goodspartner.dto.DeliveryHistoryDto;
+import com.goodspartner.entity.DeliveryHistory;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +23,7 @@ class DefaultDeliveryHistoryServiceITest extends AbstractBaseITest {
     private DefaultDeliveryHistoryService deliveryHistoryService;
 
     @Test
-    @DataSet(value = "datasets/delivery/delivery-history-test.yml", disableConstraints = true,
+    @DataSet(value = "datasets/history/delivery-history-test.yml", disableConstraints = true,
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Find By Delivery Id then Expected List Of Delivery History Dto Returned")
     public void whenFindByDeliveryId_thenDeliveryHistoryDtoReturned() {
@@ -34,12 +34,12 @@ class DefaultDeliveryHistoryServiceITest extends AbstractBaseITest {
         UUID expectedDeliveryHistoryId = UUID.fromString("00000000-0000-0000-0000-000000000999");
 
         // When
-        List<DeliveryHistoryDto> deliveryHistoryDtoList = deliveryHistoryService.findByDeliveryId(expectedDeliveryId);
-        DeliveryHistoryDto deliveryHistoryDto = deliveryHistoryDtoList.get(0);
+        List<DeliveryHistory> deliveryHistoryDtoList = deliveryHistoryService.findByDeliveryId(expectedDeliveryId);
+        DeliveryHistory deliveryHistoryDto = deliveryHistoryDtoList.get(0);
 
         // Then
         assertEquals(expectedDeliveryHistoryId, deliveryHistoryDto.getId());
-        assertEquals(expectedDeliveryId, deliveryHistoryDto.getDeliveryId());
+        assertEquals(expectedDeliveryId, deliveryHistoryDto.getDelivery().getId());
         assertEquals((expectedDateTime), deliveryHistoryDto.getCreatedAt());
         assertEquals(("ROLE_ANONYMOUS"), deliveryHistoryDto.getRole());
         assertEquals(("anonymous@mail"), deliveryHistoryDto.getUserEmail());

@@ -267,7 +267,6 @@ class DeliveryControllerITest extends AbstractWebITest {
         incorrectRoutePoints.add(routePointFourth);*/
     }
 
-    // Should be disabled?
     @Test
     @DataSet(value = "delivery/get_delivery.yml", skipCleaningFor = "flyway_schema_history",
             cleanAfter = true, cleanBefore = true)
@@ -353,7 +352,7 @@ class DeliveryControllerITest extends AbstractWebITest {
                         .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000/approve"))
                 .andExpect(status().isOk())
                 .andExpect(content()
-                        .json(getResponseAsString("datasets/delivery/delivery-and-routes-status.json")));
+                        .json(getResponseAsString("response/delivery/approve-delivery-response.json")));
 
     }
 
@@ -581,7 +580,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
+    @DataSet(value = "datasets/delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
             cleanAfter = true, cleanBefore = true)
     @ExpectedDataSet(value = "delivery/save_orders_map_point_has_known_status.yml", ignoreCols = {"id"})
     @DisplayName("when save orders with known map point status then Ok status returned")

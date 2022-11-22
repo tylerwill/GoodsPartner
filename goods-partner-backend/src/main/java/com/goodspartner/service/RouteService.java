@@ -18,9 +18,9 @@ public interface RouteService {
 
     List<Route> findByDeliveryId(UUID deliveryId);
 
-    RouteActionResponse updateRoute(int routeId, RouteAction action);
+    RouteActionResponse updateRoute(long routeId, RouteAction action);
 
-    void reorderRoutePoints(int id, LinkedList<RoutePointDto> routePointDtos);
+    void reorderRoutePoints(long routeId, LinkedList<RoutePointDto> routePointDtos);
 
 }
 

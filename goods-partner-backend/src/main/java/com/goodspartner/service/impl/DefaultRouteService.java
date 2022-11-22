@@ -74,7 +74,7 @@ public class DefaultRouteService implements RouteService {
 
     @Override
     @Transactional
-    public RouteActionResponse updateRoute(int routeId, RouteAction action) {
+    public RouteActionResponse updateRoute(long routeId, RouteAction action) {
 
         Route route = routeRepository.findById(routeId) // TODO fetch with delivery?
                 .orElseThrow(() -> new RouteNotFoundException("Route not found"));
@@ -107,10 +107,10 @@ public class DefaultRouteService implements RouteService {
     }
 
     @Override
-    public void reorderRoutePoints(int id, LinkedList<RoutePointDto> routePointDtos) {
+    public void reorderRoutePoints(long routeId, LinkedList<RoutePointDto> routePointDtos) {
 
-        Route route = routeRepository.findById(id)
-                .orElseThrow(() -> new RouteNotFoundException(id));
+        Route route = routeRepository.findById(routeId)
+                .orElseThrow(() -> new RouteNotFoundException(routeId));
 
         UUID deliveryId = route.getDelivery().getId();
 

@@ -22,6 +22,8 @@
         <testcontainers.version>1.17.3</testcontainers.version>
         <poi.version>5.2.2</poi.version>
         <odata.version>4.9.0</odata.version>
+        <awaitility.version>4.0.2</awaitility.version>
+        <awaitility-proxy.version>3.1.6</awaitility-proxy.version>
     </properties>
 
     <dependencies>
@@ -208,6 +210,19 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${awaitility.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility-proxy</artifactId>
+            <version>${awaitility-proxy.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

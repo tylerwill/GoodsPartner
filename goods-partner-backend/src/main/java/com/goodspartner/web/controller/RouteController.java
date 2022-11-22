@@ -55,9 +55,9 @@ public class RouteController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
-    @PutMapping("/{id}/reorder")
-    public void reorderRoutePoints(@PathVariable int id,
+    @PutMapping("/{routeId}/reorder")
+    public void reorderRoutePoints(@PathVariable long routeId,
                                    @RequestBody LinkedList<RoutePointDto> routePointDtos) {
-        routeService.reorderRoutePoints(id, routePointDtos);
+        routeService.reorderRoutePoints(routeId, routePointDtos);
     }
 }

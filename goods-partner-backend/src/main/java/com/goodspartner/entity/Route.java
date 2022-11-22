@@ -34,7 +34,7 @@ public class Route {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "routes_sequence")
     @SequenceGenerator(name = "routes_sequence", sequenceName = "routes_sequence")
-    private Integer id; // TODO migrate to long
+    private Long id;
 
     @Enumerated(value = EnumType.STRING)
     private RouteStatus status;

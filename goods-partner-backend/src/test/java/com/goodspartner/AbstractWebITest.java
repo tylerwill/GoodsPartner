@@ -14,13 +14,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.List;
 
+import static com.goodspartner.entity.User.UserRole.DRIVER;
+import static com.goodspartner.entity.User.UserRole.LOGISTICIAN;
+
 @AutoConfigureMockMvc
 public class AbstractWebITest extends AbstractBaseITest {
 
     private static final String DEFAULT_DRIVER_NAME = "Test Driver";
     private static final String DEFAULT_DRIVER_EMAIL = "test-driver@gmail.com";
-    private static final String DRIVER_ROLE = "DRIVER";
+    private static final String DRIVER_ROLE = DRIVER.getName();
 
+    private static final String DEFAULT_LOGIST_NAME = "Test Logist";
+    private static final String DEFAULT_LOGIST_EMAIL = "test-logist@gmail.com";
+    private static final String LOGIST_ROLE = LOGISTICIAN.getName();
 
     @Autowired
     protected MockMvc mockMvc;
@@ -29,7 +35,11 @@ public class AbstractWebITest extends AbstractBaseITest {
         return getMockSession(DEFAULT_DRIVER_NAME, DEFAULT_DRIVER_EMAIL, DRIVER_ROLE);
     }
 
-    protected MockHttpSession getMockSession(String username, String email, String role) {
+    protected MockHttpSession getLogistSession() {
+        return getMockSession(DEFAULT_LOGIST_NAME, DEFAULT_LOGIST_EMAIL, LOGIST_ROLE);
+    }
+
+    private MockHttpSession getMockSession(String username, String email, String role) {
         OAuth2AuthenticationToken principal = buildPrincipal(username, email, role);
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(

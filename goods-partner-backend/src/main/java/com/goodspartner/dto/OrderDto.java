@@ -22,7 +22,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OrderDto {
 
-    private int id;
+    private Integer id; // Keep boxed to differentiate between new DTO and specific one
 
     @JsonIgnore
     private UUID deliveryId;

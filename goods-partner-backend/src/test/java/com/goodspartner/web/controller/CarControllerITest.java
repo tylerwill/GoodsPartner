@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @AutoConfigureMockMvc(addFilters = false)
 @Import({TestSecurityDisableConfig.class})
-@Disabled
 public class CarControllerITest extends AbstractWebITest {
 
     private static final LocalDateTime DATE_TIME = LocalDateTime.of(2022, 5, 5, 14, 35);

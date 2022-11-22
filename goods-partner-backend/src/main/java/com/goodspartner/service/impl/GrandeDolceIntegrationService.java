@@ -66,24 +66,20 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     public List<OrderDto> findAllByShippingDate(LocalDate deliveryDate) {
         long startTime = System.currentTimeMillis();
 
-        URI orderUri = buildOrderUri(createOrderByDateFilter(deliveryDate.atStartOfDay().toString()));
-
-        ODataWrapperDto<ODataOrderDto> oDataWrappedOrderDtos = getOrders(orderUri);
+        ODataWrapperDto<ODataOrderDto> oDataWrappedOrderDtos = getOrders(deliveryDate);
 
         List<ODataOrderDto> oDataOrderDtosList = oDataWrappedOrderDtos.getValue();
 
         List<List<String>> partitionedOrders = getPartitionOfProductKeys(oDataOrderDtosList);
 
-        Map<String, List<ODataProductDto>> allProducts = parseAllProducts(partitionedOrders);
+        Map<String, List<ODataProductDto>> allProducts = getProductsByOrders(partitionedOrders);
 
         enrichOrders(oDataOrderDtosList, allProducts);
 
-        List<OrderDto> orderDtosList = odataOrderMapper.toOrderDtosList(oDataOrderDtosList);
-
         log.info("{} Orders has been fetched from 1C for date: {} in {}",
-                orderDtosList.size(), deliveryDate, System.currentTimeMillis() - startTime);
+                oDataOrderDtosList.size(), deliveryDate, System.currentTimeMillis() - startTime);
 
-        return orderDtosList;
+        return odataOrderMapper.toOrderDtosList(oDataOrderDtosList);
     }
 
     @Override
@@ -96,11 +92,9 @@ public class GrandeDolceIntegrationService implements IntegrationService {
 
     /**
      * Get orders from 1C
-     *
-     * @param uri for receive Document_ЗаказПокупателя from 1C
-     * @return ODataWrapperDto<ODataOrderDto> wrapper with ProductDto for OData
      */
-    private ODataWrapperDto<ODataOrderDto> getOrders(URI orderUri) {
+    private ODataWrapperDto<ODataOrderDto> getOrders(LocalDate deliveryDate) {
+        URI orderUri = buildOrderUri(createOrderByDateFilter(deliveryDate.atStartOfDay().toString()));
         return webClient.get()
                 .uri(orderUri)
 //                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
@@ -113,11 +107,8 @@ public class GrandeDolceIntegrationService implements IntegrationService {
 
     /**
      * Get products from 1C
-     *
-     * @param uri for receive Document_ЗаказПокупателя_Товары from 1C
-     * @return ODataWrapperDto<ODataProductDto> wrapper with ProductDto for OData
      */
-    private ODataWrapperDto<ODataProductDto> parseProducts(URI productUri) {
+    private ODataWrapperDto<ODataProductDto> getProducts(URI productUri) {
         return webClient.get()
                 .uri(productUri)
 //                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
@@ -157,9 +148,6 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     /**
      * If amount of orders would be huge, for possibility to send request for retrieving products -
      * split on partition of refKeys list for further creation filter for OData request
-     *
-     * @param List<ODataOrderDto> orders
-     * @return List<List < String>>
      */
     private List<List<String>> getPartitionOfProductKeys(List<ODataOrderDto> orders) {
         List<String> listRefKeys = orders.stream()
@@ -173,15 +161,12 @@ public class GrandeDolceIntegrationService implements IntegrationService {
      * - build appropriate URI
      * - get response and parse it to ODataWrapperDto<ODataProductDto>
      * - collect to Map<RefKey, List<ProductDto>>
-     *
-     * @param List<List<String>>partition
-     * @return Map<String, List < ProductDto>>
      */
-    private Map<String, List<ODataProductDto>> parseAllProducts(List<List<String>> partition) {
+    private Map<String, List<ODataProductDto>> getProductsByOrders(List<List<String>> partition) {
         return partition.stream()
                 .map(this::createProductsFilter)
                 .map(this::buildProductUri)
-                .map(this::parseProducts)
+                .map(this::getProducts)
                 .map(ODataWrapperDto::getValue)
                 .flatMap(Collection::stream)
                 .peek(enricher::enrichODataProduct)

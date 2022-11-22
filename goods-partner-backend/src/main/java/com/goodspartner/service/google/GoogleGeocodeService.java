@@ -66,7 +66,7 @@ public class GoogleGeocodeService implements GeocodeService {
 
     private MapPoint autovalidate(String orderAddress) {
         GeocodingResult[] geocodingResults = googleClient.getGeocodingResults(orderAddress);
-        if (geocodingResults.length == 0) { // Nothing found
+        if (geocodingResults == null || geocodingResults.length == 0) { // Nothing found
             return MapPoint.builder()
                     .status(UNKNOWN)
                     .build();

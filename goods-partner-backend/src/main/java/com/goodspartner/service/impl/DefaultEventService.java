@@ -7,17 +7,17 @@ import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RouteStatus;
+import com.goodspartner.event.Action;
 import com.goodspartner.event.ActionType;
 import com.goodspartner.event.DeliveryAuditEvent;
-import com.goodspartner.event.LiveEvent;
-import com.goodspartner.event.Action;
 import com.goodspartner.event.EventType;
-import com.goodspartner.service.DeliveryHistoryService;
+import com.goodspartner.event.LiveEvent;
 import com.goodspartner.service.EventService;
 import com.goodspartner.service.LiveEventService;
 import com.goodspartner.util.AuditorBuilder;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.text.StringSubstitutor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -38,8 +38,8 @@ import static com.goodspartner.entity.DeliveryHistoryTemplate.ROUTE_STATUS_AUTO;
 @RequiredArgsConstructor
 public class DefaultEventService implements EventService {
 
-    private final DeliveryHistoryService deliveryHistoryService;
     private final LiveEventService liveEventService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public void publishDeliveryEvent(DeliveryHistoryTemplate template, UUID deliverId) {
@@ -47,7 +47,7 @@ public class DefaultEventService implements EventService {
 
         DeliveryAuditEvent deliveryAuditEvent = new DeliveryAuditEvent(action, deliverId);
 
-        deliveryHistoryService.publish(deliveryAuditEvent);
+        applicationEventPublisher.publishEvent(deliveryAuditEvent);
 
         EventType type = EventType.INFO;
         Action eventAction = null;
@@ -69,7 +69,7 @@ public class DefaultEventService implements EventService {
 
         DeliveryAuditEvent deliveryAuditEvent = new DeliveryAuditEvent(action, delivery.getId());
 
-        deliveryHistoryService.publish(deliveryAuditEvent);
+        applicationEventPublisher.publishEvent(deliveryAuditEvent);
         liveEventService.publish(new LiveEvent(deliveryAuditEvent.getAction(), EventType.INFO));
     }
 
@@ -159,7 +159,7 @@ public class DefaultEventService implements EventService {
             eventAction = new Action(ActionType.DELIVERY_UPDATED, deliveryId);
         }
 
-        deliveryHistoryService.publish(deliveryAuditEvent);
+        applicationEventPublisher.publishEvent(deliveryAuditEvent);
         liveEventService.publish(new LiveEvent(deliveryAuditEvent.getAction(), type, eventAction));
     }
 

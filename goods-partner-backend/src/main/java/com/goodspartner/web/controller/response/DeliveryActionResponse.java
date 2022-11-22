@@ -27,7 +27,7 @@ public class DeliveryActionResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class RoutesStatus {
-        private int id;
+        private long id;
         private RouteStatus routeStatus;
     }
 }

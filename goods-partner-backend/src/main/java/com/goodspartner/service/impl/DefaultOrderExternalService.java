@@ -5,7 +5,6 @@ import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
-import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.User;
 import com.goodspartner.event.EventType;
@@ -40,6 +39,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.goodspartner.entity.DeliveryHistoryTemplate.ORDERS_LOADED;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.ORDERS_LOADING;
 import static com.goodspartner.entity.User.UserRole.DRIVER;
 
 @RequiredArgsConstructor
@@ -86,13 +87,13 @@ public class DefaultOrderExternalService implements OrderExternalService {
     @Override
     @Async("goodsPartnerThreadPoolTaskExecutor")
     @Transactional
-    public void saveOrdersForDelivery(Delivery delivery) {
+    public void saveOrdersForDeliveryAsync(Delivery delivery) {
         UUID deliveryId = delivery.getId();
         LocalDate deliveryDate = delivery.getDeliveryDate();
 
         log.info("Fetching orders from 1C");
         try {
-            eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADING, deliveryId);
+            eventService.publishOrdersStatus(ORDERS_LOADING, deliveryId);
             List<OrderDto> orderDtos = integrationService.findAllByShippingDate(deliveryDate);
             if (orderDtos.isEmpty()) {
                 log.warn("No orders where found in 1C for deliveryDate: {}", deliveryDate);
@@ -103,15 +104,14 @@ public class DefaultOrderExternalService implements OrderExternalService {
 
             geocodeService.enrichValidAddress(orderDtos);
 
-            List<OrderExternal> orderEntities = saveValidOrdersAndEnrichAddresses(orderDtos);
             List<OrderExternal> scheduledOrders = orderExternalRepository.findByRescheduleDate(deliveryDate);
-            List<OrderExternal> allOrdersByDate = ListUtils.union(orderEntities, scheduledOrders);
+            List<OrderExternal> orderEntities = saveValidOrdersAndEnrichAddresses(orderDtos);
 
-            delivery.setOrders(allOrdersByDate);
+            delivery.setOrders(ListUtils.union(orderEntities, scheduledOrders));
             delivery.setFormationStatus(DeliveryFormationStatus.ORDERS_LOADED);
             deliveryRepository.save(delivery);
 
-            eventService.publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADED, deliveryId);
+            eventService.publishOrdersStatus(ORDERS_LOADED, deliveryId);
             log.info("Saved orders for delivery {} on {} deliveryDate", deliveryId, deliveryDate);
         } catch (Exception exception) {
             eventService.publishEvent(new LiveEvent("Помилка під час вивантаження замовлень з 1С", EventType.ERROR));

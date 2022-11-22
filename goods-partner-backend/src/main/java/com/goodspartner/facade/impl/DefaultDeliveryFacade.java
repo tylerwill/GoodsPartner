@@ -36,7 +36,7 @@ public class DefaultDeliveryFacade implements DeliveryFacade {
     @Override
     public Delivery add(DeliveryDto deliveryDto) {
         Delivery delivery = deliveryService.add(deliveryDto);
-        orderService.saveOrdersForDelivery(delivery); // Async
+        orderService.saveOrdersForDeliveryAsync(delivery); // Async
         eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CREATED, delivery.getId());
         return delivery;
     }
