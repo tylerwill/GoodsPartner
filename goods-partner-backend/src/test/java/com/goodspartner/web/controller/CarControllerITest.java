@@ -11,7 +11,6 @@ import com.goodspartner.dto.Location;
 import com.goodspartner.dto.UserDto;
 import com.goodspartner.entity.User;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @AutoConfigureMockMvc(addFilters = false)
 @Import({TestSecurityDisableConfig.class})
-@Disabled
 public class CarControllerITest extends AbstractWebITest {
 
     private static final LocalDateTime DATE_TIME = LocalDateTime.of(2022, 5, 5, 14, 35);
@@ -49,7 +47,7 @@ public class CarControllerITest extends AbstractWebITest {
 
         UserDto userDto = new UserDto(1,
                 "Ivan Kornienko",
-                "userEmail@gmail",
+                "user-testEmail@gmail",
                 User.UserRole.DRIVER.getName(),
                 true);
 
@@ -68,10 +66,16 @@ public class CarControllerITest extends AbstractWebITest {
                         .content(objectMapper.writeValueAsString(carDto)))
                 .andExpect(content()
                         .json("""
-                                {                          
+                                {                        
                                  "name":"MAN",
                                  "licencePlate":"AA 2455 CT",
-                                 "driver":"Ivan Kornienko",
+                                 "driver":{
+                                    "id":1,
+                                    "userName":"Ivan Kornienko",
+                                    "email":"user-testEmail@gmail",
+                                    "role":"DRIVER",
+                                    "enabled":true
+                                    },
                                  "weightCapacity":4000,
                                  "cooler":true,
                                  "available":false,
@@ -88,7 +92,7 @@ public class CarControllerITest extends AbstractWebITest {
 
         UserDto userDto = new UserDto(1,
                 "Vasya Pupkin",
-                "userEmail@gmail",
+                "user-testEmail@gmail",
                 User.UserRole.DRIVER.getName(),
                 true);
 
@@ -111,7 +115,13 @@ public class CarControllerITest extends AbstractWebITest {
                                  "id": 1,
                                  "name":"Mazda CX5",
                                  "licencePlate":"AA 2244 CT",
-                                 "driver":"Vasya Pupkin",
+                                 "driver":{
+                                    "id":1,
+                                    "userName":"Vasya Pupkin",
+                                    "email":"user-testEmail@gmail",
+                                    "role":"DRIVER",
+                                    "enabled":true
+                                    },
                                  "weightCapacity":3500,
                                  "cooler":false,
                                  "available":false,
@@ -177,7 +187,13 @@ public class CarControllerITest extends AbstractWebITest {
                                   "id":1,
                                  "name":"Mercedes Sprinter",
                                  "licencePlate":"AA 1111 CT",
-                                 "driver":"Oleg Dudka",
+                                 "driver":{
+                                    "id":1,
+                                    "userName":"Oleg Dudka",
+                                    "email":"test-driver@gmail.com",
+                                    "role":"DRIVER",
+                                    "enabled":true
+                                    },
                                  "weightCapacity":3000,
                                  "cooler":false,
                                  "available":true,
@@ -185,7 +201,13 @@ public class CarControllerITest extends AbstractWebITest {
                                  {"id":2,
                                  "name":"MAN",
                                  "licencePlate":"AA 2455 CT",
-                                 "driver":"Ivan Kornienko",
+                                 "driver":{
+                                    "id":2,
+                                    "userName":"Ivan Kornienko",
+                                    "email":"another-test-driver@gmail.com",
+                                    "role":"DRIVER",
+                                    "enabled":true
+                                    },
                                  "weightCapacity":4000,
                                  "cooler":true,
                                  "available":false,
@@ -207,7 +229,13 @@ public class CarControllerITest extends AbstractWebITest {
                                 {"id":2,
                                  "name":"MAN",
                                  "licencePlate":"AA 2455 CT",
-                                 "driver":"Ivan Kornienko",
+                                 "driver":{
+                                    "id":2,
+                                    "userName":"Ivan Kornienko",
+                                    "email":"another-test-driver@gmail.com",
+                                    "role":"DRIVER",
+                                    "enabled":true
+                                    },
                                  "weightCapacity":4000,
                                  "cooler":true,
                                  "available":false,

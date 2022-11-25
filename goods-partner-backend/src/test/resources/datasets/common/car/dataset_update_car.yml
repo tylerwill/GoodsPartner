@@ -2,7 +2,6 @@ CARS:
   - ID: 1
     NAME: "Mazda CX5"
     LICENCE_PLATE: "AA 2244 CT"
-    DRIVER: "Vasya Pupkin"
     WEIGHT_CAPACITY: 3500
     COOLER: FALSE
     AVAILABLE: FALSE

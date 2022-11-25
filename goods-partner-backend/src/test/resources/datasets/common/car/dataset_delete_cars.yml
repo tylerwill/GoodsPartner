@@ -2,7 +2,6 @@ CARS:
   - ID: 1
     NAME: "Mercedes Sprinter"
     LICENCE_PLATE: "AA 1111 CT"
-    DRIVER: "Oleg Dudka"
     WEIGHT_CAPACITY: 3000
     COOLER: FALSE
     AVAILABLE: TRUE
@@ -12,7 +11,6 @@ CARS:
   - ID: 2
     NAME: "MAN"
     LICENCE_PLATE: "AA 2455 CT"
-    DRIVER: "Ivan Kornienko"
     WEIGHT_CAPACITY: 4000
     COOLER: TRUE
     AVAILABLE: FALSE

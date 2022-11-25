@@ -20,7 +20,6 @@ import com.goodspartner.service.client.GoogleClient;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.Geometry;
 import com.google.maps.model.LatLng;
-import com.vladmihalcea.sql.SQLStatementCountValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -194,7 +193,8 @@ public class DeliveryControllerIT extends AbstractWebITest {
 
     // Query count is not applicable in thi test due to Async thread
     @Test
-    @DataSet("datasets/delivery/add_delivery_fetch_orders.yml")
+    @DataSet(value = "datasets/delivery/add_delivery_fetch_orders.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     public void addDelivery() throws Exception {
 
         // Given
