@@ -68,10 +68,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class DeliveryControllerITest extends AbstractWebITest {
 
     // TODO require further refactoring
-    private static final String MOCKED_DELIVERY_DTO = "datasets/common/delivery/calculate/deliveryDto.json";
-    private static final String MOCKED_ROUTE = "datasets/common/delivery/calculate/RouteDto.json";
+    private static final String MOCKED_DELIVERY_DTO = "response/delivery/delivery-calculated-response.json";
 
-    private static final String MOCKED_ROUTE_NEW = "mock/route/RouteDto.json";
+    private static final String MOCKED_ROUTE_NEW = "mock/route/mocked-route-entity.json";
     private static final String RESPONSE_DELIVERY_DROPPED_POINTS = "response/delivery/delivery_with_dropped_order.json";
 
 
@@ -277,7 +276,7 @@ class DeliveryControllerITest extends AbstractWebITest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
-                        .json(getResponseAsString("datasets/delivery/delivery-dataset.json")));
+                        .json(getResponseAsString("response/delivery/get-delivery-response.json")));
     }
 
     @Test
@@ -290,7 +289,7 @@ class DeliveryControllerITest extends AbstractWebITest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
-                        .json(getResponseAsString("datasets/delivery/short-deliveries.json")));
+                        .json(getResponseAsString("response/delivery/short-deliveries-response.json")));
     }
 
     @Test
@@ -436,7 +435,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     @DisplayName("when Calculate Delivery With Correct Id then DeliveryDto Return")
     @Disabled("Due to changed delivery flow, Refactor")
     void whenCalculateDelivery_withCorrectId_thenDeliveryDtoReturn() throws Exception {
-        Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), Route.class);
+        Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE_NEW), Route.class);
 
         RoutingSolution regularRoutingSolution = RoutingSolution.builder()
                 .routePoints(route.getRoutePoints())
@@ -517,7 +516,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     @DisplayName("when RECalculate Delivery With Correct Id then DeliveryDto Return")
     @Disabled("Due to changed delivery flow, Refactor")
     void whenRECalculateDelivery_withCorrectId_thenDeliveryDtoReturn() throws Exception {
-        Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE), Route.class);
+        Route route = objectMapper.readValue(getClass().getClassLoader().getResource(MOCKED_ROUTE_NEW), Route.class);
 
         RoutingSolution regularRoutingSolution = RoutingSolution.builder()
                 .routePoints(route.getRoutePoints())
@@ -633,7 +632,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     @Test
     @DataSet(value = "common/recalculate_route/dataset_routes.yml", skipCleaningFor = "flyway_schema_history",
             cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet(value = "datasets/common/recalculate_route/dataset_updated_routes.yml")
+    @ExpectedDataSet(value = "datasets/common/recalculate_route/expected_dataset_updated_routes.yml")
     @DisplayName("when Reorder Route then Ok Status Returned")
     void whenReorderRoute_thenOkStatusReturned() throws Exception {
 

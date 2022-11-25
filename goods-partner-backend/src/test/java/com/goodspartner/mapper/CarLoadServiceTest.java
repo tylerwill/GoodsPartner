@@ -30,11 +30,11 @@ class CarLoadServiceTest {
 
     @Test
     void mapOrdersTCar() throws JsonProcessingException {
-        String responseAsString = getResponseAsString("datasets/common/mapper/car/details/dataset_orders.json");
+        String responseAsString = getResponseAsString("mock/carload/dataset_orders.json");
         List<OrderExternal> orders = objectMapper.readValue(responseAsString, new TypeReference<>() {
         });
 
-        responseAsString = getResponseAsString("datasets/common/mapper/car/details/dataset_route.json");
+        responseAsString = getResponseAsString("mock/carload/dataset_route.json");
         Route route = objectMapper.readValue(responseAsString, new TypeReference<>() {
         });
 

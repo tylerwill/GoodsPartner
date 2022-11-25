@@ -22,11 +22,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // TODO rework after moving RoutePoints to separate table
 class StatisticsControllerTest extends AbstractWebITest {
 
-    public static final String MOCK_STATISTICS_PATH = "datasets/common/statistics/statistics.json";
-    public static final String MOCK_NO_STATISTICS_PATH = "datasets/common/statistics/no-statistics.json";
-    public static final String MOCK_CAR_STATISTICS_PATH = "datasets/common/statistics/car-statistics.json";
-    public static final String MOCK_CAR_NO_STATISTICS_PATH = "datasets/common/statistics/no-car-statistics.json";
-    public static final String MOCK_DAILY_CAR_STATISTICS_PATH = "datasets/common/statistics/daily-car-statistics.json";
+    public static final String MOCK_STATISTICS_PATH = "response/statistics/statistics.json";
+    public static final String MOCK_NO_STATISTICS_PATH = "response/statistics/no-statistics.json";
+    public static final String MOCK_CAR_STATISTICS_PATH = "response/statistics/car-statistics.json";
+    public static final String MOCK_CAR_NO_STATISTICS_PATH = "response/statistics/no-car-statistics.json";
+    public static final String MOCK_DAILY_CAR_STATISTICS_PATH = "response/statistics/daily-car-statistics.json";
     
     @Test
     @DataSet(value = "common/statistics/dataset.json")

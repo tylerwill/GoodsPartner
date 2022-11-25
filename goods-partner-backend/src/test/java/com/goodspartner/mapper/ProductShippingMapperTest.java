@@ -29,9 +29,9 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 @TestInstance(PER_CLASS)
 class ProductShippingMapperTest {
 
-    private static final String MOCK_ORDERS_PATH = "datasets/common/product_shipping/orders.json";
-    private static final String MOCK_CARS_PATH = "datasets/common/product_shipping/cars.json";
-    private static final String MOCK_PRODUCT_SHIPPING_PATH = "datasets/common/product_shipping/expected_product_shipping_list.json";
+    private static final String MOCK_ORDERS_PATH = "mock/product-shipping-mapper-mocks/orders.json";
+    private static final String MOCK_CARS_PATH = "mock/product-shipping-mapper-mocks/cars.json";
+    private static final String MOCK_PRODUCT_SHIPPING_PATH = "mock/product-shipping-mapper-mocks/expected_product_shipping_list.json";
 
     private final ProductShippingMapper productShippingMapper = new ProductShippingMapper();
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -94,7 +94,7 @@ class ProductShippingMapperTest {
     void testGetProductLoadMap() {
         Map<String, List<ProductLoadDto>> actualProductLoadMap = productShippingMapper.getProductLoadMap(carLoads);
 
-        assertTrue(productMap.equals(actualProductLoadMap));
+        assertEquals(productMap, actualProductLoadMap);
     }
 
     @Test

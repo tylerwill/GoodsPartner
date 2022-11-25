@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 // TODO rework after moving RoutePoints to separate table
 class DefaultStatisticsServiceTest extends AbstractBaseITest {
 
-    private static final String MOCK_ROUTES_PATH = "datasets/common/statistics/routes.json";
+    private static final String MOCK_ROUTES_PATH = "mock/route/mocked-statistic-routes.json";
     private List<Route> routes;
     private Car car;
 

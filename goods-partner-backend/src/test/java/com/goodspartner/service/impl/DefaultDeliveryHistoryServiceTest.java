@@ -66,8 +66,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Disabled
 // TODO rework after moving RoutePoints to separate table
 class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
-    private static final String MOCKED_DELIVERY_DTO = "datasets/common/delivery/calculate/deliveryDto.json";
-    private static final String MOCKED_ROUTE = "datasets/common/delivery/calculate/RouteDto.json";
+    private static final String EXPECTED_DELIVERY_RESPONSE = "response/delivery/delivery-calculated-response.json";
+    private static final String MOCKED_ROUTE = "mock/route/mocked-route-entity.json";
 
     @Autowired
     private DeliveryService deliveryService;
@@ -155,7 +155,7 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "common/delivery_history/initial_data.yml",
+    @DataSet(value = "datasets/common/delivery_history/initial_data.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("When Create Delivery Then History Created")
     public void testWhenCreateDeliveryThenCorrectHistoryCreated() {
@@ -210,7 +210,7 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries/70574dfd-48a3-40c7-8b0c-3e5defe7d080/calculate")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isAccepted())
-                .andExpect(content().json(getResponseAsString(MOCKED_DELIVERY_DTO)));
+                .andExpect(content().json(getResponseAsString(EXPECTED_DELIVERY_RESPONSE)));
     }
 
     @Test
