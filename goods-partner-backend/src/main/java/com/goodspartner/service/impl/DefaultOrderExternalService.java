@@ -2,6 +2,7 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal;
+import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
@@ -81,7 +82,13 @@ public class DefaultOrderExternalService implements OrderExternalService {
         log.info("Updating order with id: {}", id);
         OrderExternal order = orderExternalRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
         orderExternalMapper.update(order, orderDto);
-        return orderExternalRepository.save(order);
+        OrderExternal saveOrder = orderExternalRepository.save(order);
+
+        Delivery delivery = saveOrder.getDelivery();
+        if (isAllOrdersValid(delivery)) {
+            delivery.setFormationStatus(DeliveryFormationStatus.READY_FOR_CALCULATION);
+        }
+        return saveOrder;
     }
 
     @Override
@@ -108,7 +115,10 @@ public class DefaultOrderExternalService implements OrderExternalService {
             List<OrderExternal> orderEntities = saveValidOrdersAndEnrichAddresses(orderDtos);
 
             delivery.setOrders(ListUtils.union(orderEntities, scheduledOrders));
-            delivery.setFormationStatus(DeliveryFormationStatus.ORDERS_LOADED);
+            delivery.setFormationStatus(isAllOrdersValid(delivery)
+                    ? DeliveryFormationStatus.READY_FOR_CALCULATION
+                    : DeliveryFormationStatus.ORDERS_LOADED);
+
             deliveryRepository.save(delivery);
 
             eventService.publishOrdersStatus(ORDERS_LOADED, deliveryId);
@@ -118,6 +128,12 @@ public class DefaultOrderExternalService implements OrderExternalService {
             log.error("Failed to save orders to cache for delivery by date: {}", deliveryDate, exception);
             throw new RuntimeException(exception);
         }
+    }
+
+    private boolean isAllOrdersValid(Delivery delivery) {
+        return delivery.getOrders()
+                .stream()
+                .noneMatch(orderExternal -> AddressStatus.UNKNOWN.equals(orderExternal.getAddressExternal().getStatus()));
     }
 
     private List<OrderExternal> saveValidOrdersAndEnrichAddresses(List<OrderDto> orderDtos) {
