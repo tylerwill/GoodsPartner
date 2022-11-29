@@ -40,7 +40,8 @@ export const rescheduleSkippedOrders = createAsyncThunk('orders/reschedule',
 export const deleteSkippedOrders = createAsyncThunk('orders/delete',
     (orderIds: Array<number>) => {
         return ordersApi.delete(orderIds)
-            .then(() => ordersApi.fetchSkipped()).then(response => response.data);;
+            .then(() => ordersApi.fetchSkipped()).then(response => response.data);
+        ;
     })
 
 

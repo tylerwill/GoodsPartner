@@ -5,7 +5,7 @@ import Divider from "@mui/material/Divider";
 import RouteDetails from "./RouteDetails/RouteDetails";
 import RoutePointDetails from "./RoutePointDetails/RoutePointDetails";
 
-const RouteContent = ({deliveryDate, route, updateRoutePoint, updateRoute}) => {
+const RouteContent = ({deliveryDate, route, updateRoutePoint = ()=>{}, updateRoute= ()=>{}}) => {
 
     const updateRoutePointHandler = (routePointId, action) => {
         if (route.status !== 'INPROGRESS') {

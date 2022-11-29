@@ -3,18 +3,6 @@ import Delivery from "../model/Delivery";
 import {RouteAction, RoutePointAction} from "../model/Actions";
 
 export const deliveriesApi = {
-    findAll() {
-        return axiosWithSetting.get('/deliveries');
-    },
-
-    findAllForDriver() {
-        return axiosWithSetting.get('/deliveries/by-driver');
-    },
-
-    create(delivery: Delivery) {
-        return axiosWithSetting.post('/deliveries', delivery)
-    },
-
     findById(id: number) {
         return axiosWithSetting.get(`/deliveries/${id}`);
     },
@@ -22,7 +10,6 @@ export const deliveriesApi = {
     findByIdForDriver(id: number) {
         return axiosWithSetting.get(`/deliveries/${id}/by-driver`);
     },
-
 
     calculate(delivery: Delivery) {
         return axiosWithSetting.post(`/deliveries/${delivery.id}/calculate`, delivery);

@@ -1,13 +1,16 @@
 // TODO: replace all any
 
+import {Route} from "./Route";
+import Order from "./Order";
+
 export default interface Delivery {
     id: string
     deliveryDate: string,
     status: DeliveryStatus,
     formationStatus: DeliveryFormationStatus,
-    orders: Array<any>
+    orders: Array<Order>
     productsShipping: Array<any>
-    routes: Array<any>
+    routes: Array<Route>
 }
 
 enum DeliveryStatus {
@@ -16,7 +19,7 @@ enum DeliveryStatus {
     COMPLETED
 }
 
-enum DeliveryFormationStatus {
+export enum DeliveryFormationStatus {
     ORDERS_LOADING,
     ORDERS_LOADED,
     ROUTE_CALCULATION,

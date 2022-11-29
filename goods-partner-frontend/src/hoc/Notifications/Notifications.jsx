@@ -3,7 +3,6 @@ import {useEffect} from "react";
 import {currentHost} from "../../util/util";
 import {useSnackbar} from 'notistack'
 import {useDispatch, useSelector} from "react-redux";
-import {fetchDelivery} from "../../features/currentDelivery/currentDeliverySlice";
 import {setNotification} from "../../features/notifications/notificationsSlice";
 
 function Notifications({children}) {
@@ -47,9 +46,9 @@ function Notifications({children}) {
             {variant: currentNotification.type === 'INFO' ? 'default' : currentNotification.type.toLowerCase()})
 
         if (currentNotification.action?.type === 'DELIVERY_UPDATED') {
-            if (delivery && delivery.id === currentNotification.action.deliveryId) {
-                dispatch(fetchDelivery(delivery.id));
-            }
+            // if (delivery && delivery.id === currentNotification.action.deliveryId) {
+            //     dispatch(fetchDelivery(delivery.id));
+            // }
         }
     }, [currentNotification]);
 

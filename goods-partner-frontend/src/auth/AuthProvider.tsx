@@ -2,6 +2,7 @@ import * as React from 'react'
 import {useState, useEffect, useMemo, useContext, ReactNode} from "react";
 import {usersApi} from "../api/usersApi";
 import {AuthUserContext} from "./AuthUserContext";
+import {useGetCurrentUserQuery} from "../api/users/users.api";
 import {User} from "../model/User";
 
 const AuthContext = React.createContext<AuthUserContext | null>(null);
@@ -22,6 +23,8 @@ export const AuthProvider = ({children}: Props) => {
             .finally(() => setLoading(false));
     }, []);
 
+
+    // @ts-ignore
     const memoedValue = useMemo<AuthUserContext>(
         () => ({
             user,

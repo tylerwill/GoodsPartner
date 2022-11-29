@@ -17,7 +17,7 @@ function TabPanel(props) {
             {...other}
         >
             {value === index && (
-                <Box >
+                <Box>
                     {children}
                 </Box>
             )}
@@ -32,7 +32,7 @@ function a11yProps(index) {
     };
 }
 
-export default function BasicTabs({children, labels, fullWidth, tabIndex, setTabIndex, styles}) {
+export default function BasicTabs({children, labels, fullWidth = false, tabIndex, setTabIndex, styles = {}}) {
 
     const handleChange = (event, newValue) => {
         setTabIndex(newValue);
@@ -53,14 +53,16 @@ export default function BasicTabs({children, labels, fullWidth, tabIndex, setTab
 
 function createTabsPanel(value, handleChange, labels, fullWidth) {
     const tabs = (<Tabs value={value} onChange={handleChange} variant={fullWidth ? "fullWidth" : "standard"}
-                        textColor={ fullWidth ? "inherit" : "primary"}>
+                        textColor={fullWidth ? "inherit" : "primary"}>
         {
             labels.map((label, index) => <Tab sx={{borderBottom: 1, borderColor: 'divider'}}
                                               key={"tab" + label.name}
                                               iconPosition="start"
-                                              label={<>{label.icon} {label.name}</>} disabled={!label.enabled} {...a11yProps(index)}/>)
+                                              label={<>{label.icon} {label.name}</>}
+                                              disabled={!label.enabled} {...a11yProps(index)}/>)
         }
     </Tabs>);
 
-    return fullWidth ? <AppBar sx={fullWidth && {padding: '0 250px'}} position={"static"}>{tabs}</AppBar> : <> {tabs} </>;
+    return fullWidth ?
+        <AppBar sx={fullWidth && {padding: '0 250px'}} position={"static"}>{tabs}</AppBar> : <> {tabs} </>;
 }

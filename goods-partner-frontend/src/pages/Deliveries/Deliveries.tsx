@@ -1,31 +1,25 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {Box, Button, Typography} from "@mui/material";
 import {ArrowForward} from "@mui/icons-material";
 import DeliveriesTable from "./DeliveriesTable/DeliveriesTable";
-import {useDispatch, useSelector} from "react-redux";
-import {createDelivery, fetchDeliveries, fetchDeliveriesForDriver} from "../../features/deliveries/deliveriesSlice";
 import Loading from "../../components/Loading/Loading";
 import ErrorAlert from "../../components/ErrorAlert/ErrorAlert";
 import NewDeliveryDialog from "./NewDeliveryDialog/NewDeliveryDialog";
 import useAuth from "../../auth/AuthProvider";
+import {useAddDeliveryMutation, useGetDeliveriesQuery} from '../../api/deliveries/deliveries.api'
 
 const Deliveries = () => {
+    const {data: deliveries, error, isLoading} = useGetDeliveriesQuery();
+    const [addDelivery] = useAddDeliveryMutation();
     const [openNewDeliveryDialog, setOpenNewDeliveryDialog] = React.useState(false);
 
-    const {deliveries, loading, error} = useSelector(state => state.deliveriesList);
-    const dispatch = useDispatch();
+    const addNewDeliveryHandler = (date: string) => addDelivery({deliveryDate: date});
+
+    // @ts-ignore
     const {user} = useAuth();
     const isDriver = user.role === 'DRIVER';
 
-    useEffect(() => {
-        if (user.role === 'DRIVER') {
-            dispatch(fetchDeliveriesForDriver());
-        } else {
-            dispatch(fetchDeliveries());
-        }
-    }, [dispatch])
-
-    if (loading) {
+    if (isLoading) {
         return <Loading/>
     }
 
@@ -39,11 +33,11 @@ const Deliveries = () => {
         </Box>
 
         <Box sx={{mt: 2}}>
-            <DeliveriesTable deliveries={deliveries}/>
+            {!isLoading && <DeliveriesTable deliveries={deliveries}/>}
         </Box>
 
         <NewDeliveryDialog open={openNewDeliveryDialog} setOpen={setOpenNewDeliveryDialog}
-                           onCreate={(date) => dispatch(createDelivery(date))}/>
+                           onCreate={addNewDeliveryHandler}/>
 
         {error && <ErrorAlert error={error}/>}
     </section>

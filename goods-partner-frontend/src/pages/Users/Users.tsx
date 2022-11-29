@@ -15,12 +15,21 @@ import {addUser, deleteUser, fetchUsers, updateUser} from "../../features/users/
 import Loading from "../../components/Loading/Loading";
 import ErrorAlert from "../../components/ErrorAlert/ErrorAlert";
 import {useAppDispatch, useAppSelector} from "../../hooks/redux-hooks";
-import {User, UserRole} from "../../model/User";
+import {User} from "../../model/User";
 import ActionMenu from "../../components/ActionMenu/ActionMenu";
+import {useAddDeliveryMutation} from "../../api/deliveries/deliveries.api";
+import {
+    useAddUserMutation,
+    useDeleteUserMutation,
+    useGetUsersQuery,
+    useUpdateUserMutation
+} from "../../api/users/users.api";
 
 const Users = () => {
-    const {users, loading, error} = useAppSelector(state => state.users);
-    const dispatch = useAppDispatch();
+    const {data: users, error, isLoading} = useGetUsersQuery();
+    const [addUser] = useAddUserMutation();
+    const [updateUser] = useUpdateUserMutation();
+    const [deleteUser] = useDeleteUserMutation();
 
     const defaultNewUserState = {
         id: null,
@@ -36,24 +45,20 @@ const Users = () => {
     const [newUser, setNewUser] = useState(defaultNewUserState);
 
     const addUserHandler = (user: User) => {
-        dispatch(addUser(user));
+        addUser(user);
         setNewUser(defaultNewUserState);
     }
 
     const updateUserHandler = (user: User) => {
-        dispatch(updateUser(user));
+        updateUser(user);
         setNewUser(defaultNewUserState);
     }
 
     const deleteUserHandler = (id: number) => {
-        dispatch(deleteUser(id));
+        deleteUser(id);
     }
 
-    useEffect(() => {
-        dispatch(fetchUsers());
-    }, [dispatch]);
-
-    if (loading) {
+    if (isLoading || !users) {
         return <Loading/>
     }
 
