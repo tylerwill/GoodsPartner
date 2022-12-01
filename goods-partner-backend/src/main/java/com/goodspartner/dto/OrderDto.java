@@ -1,7 +1,6 @@
 package com.goodspartner.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.goodspartner.entity.DeliveryType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -24,15 +23,16 @@ public class OrderDto {
 
     private Integer id; // Keep boxed to differentiate between new DTO and specific one
 
-    @JsonIgnore
-    private UUID deliveryId;
     @ApiModelProperty(notes = "The unique uuid of order from 1C")
     private String refKey;
     private String orderNumber;
     private String comment;
     private String managerFullName;
-    private boolean isFrozen;
+
+    private UUID deliveryId;
     private DeliveryType deliveryType;
+
+    private boolean isFrozen;
     private boolean excluded;
     private boolean dropped;
 

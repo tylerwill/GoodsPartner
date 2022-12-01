@@ -5,6 +5,7 @@ import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.OrderExternal;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -33,17 +34,18 @@ public interface OrderExternalMapper {
 
     List<OrderExternal> mapToEntities(List<OrderDto> orderDtos);
 
-    @Named("mapMapPoint")
-    default MapPoint mapMapPoint(AddressExternal addressExternal) {
-        return MapPoint.builder()
-                .address(addressExternal.getOrderAddressId().getOrderAddress()) // We are showing the client address variant
-                .latitude(addressExternal.getLatitude())
-                .longitude(addressExternal.getLongitude())
-                .status(AddressStatus.KNOWN)
-                .build();
-    }
-
-    @Mapping(target = "id", ignore = true)
+    @BeanMapping(ignoreByDefault = true)
+    // Address related
+    @Mapping(target = "addressExternal.validAddress", source = "mapPoint.address")
+    @Mapping(target = "addressExternal.latitude", source = "mapPoint.latitude")
+    @Mapping(target = "addressExternal.longitude", source = "mapPoint.longitude")
+    // Other
+    @Mapping(target = "deliveryType", source = "deliveryType")
+    @Mapping(target = "deliveryStart", source = "deliveryStart")
+    @Mapping(target = "deliveryFinish", source = "deliveryFinish")
+    @Mapping(target = "excluded", source = "excluded")
+    @Mapping(target = "dropped", source = "dropped")
+    @Mapping(target = "frozen", source = "frozen")
     void update(@MappingTarget OrderExternal order, OrderDto orderDto);
 
     @Mapping(target = "id", ignore = true)
@@ -53,4 +55,14 @@ public interface OrderExternalMapper {
     @Mapping(target = "carLoad", ignore = true)
     @Mapping(target = "routePoint", ignore = true)
     OrderExternal copyNew(OrderExternal orderExternal);
+
+    @Named("mapMapPoint")
+    default MapPoint mapMapPoint(AddressExternal addressExternal) {
+        return MapPoint.builder()
+                .address(addressExternal.getValidAddress())
+                .latitude(addressExternal.getLatitude())
+                .longitude(addressExternal.getLongitude())
+                .status(AddressStatus.KNOWN)
+                .build();
+    }
 }

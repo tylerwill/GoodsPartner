@@ -23,6 +23,7 @@
         "orderNumber":"00000002055",
         "comment":"реп",
         "managerFullName":"Наталія Рябченко",
+        "deliveryId":"00000000-0000-0000-0000-000000000111",
         "deliveryType":"REGULAR",
         "excluded":false,
         "dropped":false,
@@ -33,7 +34,7 @@
         "clientName":"Кух Плюс ТОВ (Кухмайстер) бн",
         "address":"вул.Єлізавети Чавдар, буд.36",
         "mapPoint":{
-          "address":"вул.Єлізавети Чавдар, буд.36",
+          "address":"вулиця Єлизавети Чавдар, 36, Київ, Україна, 02000",
           "latitude":50.3910679,
           "longitude":30.6265536,
           "status":"KNOWN"

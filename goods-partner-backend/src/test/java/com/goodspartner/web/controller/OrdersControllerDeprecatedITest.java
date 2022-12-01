@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @TestInstance(PER_CLASS)
 @Disabled("Removed order controller. Rework to test for service")
-class OrdersControllerITest extends AbstractWebITest {
+class OrdersControllerDeprecatedITest extends AbstractWebITest {
 
     private static final double AUTOVALIDATED_ADDRESS_LATITUDE = 50.51;
     private static final double AUTOVALIDATED_ADDRESS_LONGITUDE = 30.79;

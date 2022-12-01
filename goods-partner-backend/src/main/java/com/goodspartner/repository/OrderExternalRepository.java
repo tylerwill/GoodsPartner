@@ -25,9 +25,9 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, In
                                                 @Param("car") Car car);
 
     @EntityGraph(attributePaths = {"addressExternal"})
-    @Query("SELECT o FROM OrderExternal o " +
+    @Query("SELECT o FROM OrderExternal o LEFT JOIN o.routePoint rp " +
             "WHERE o.rescheduleDate IS NULL " +
-            "  AND (o.excluded = TRUE OR o.dropped = TRUE OR o.routePoint.status = 'SKIPPED')")
+            "  AND (o.excluded = TRUE OR o.dropped = TRUE OR rp.status = 'SKIPPED')")
     List<OrderExternal> findSkippedOrders();
 
     @EntityGraph(attributePaths = {"addressExternal"})
