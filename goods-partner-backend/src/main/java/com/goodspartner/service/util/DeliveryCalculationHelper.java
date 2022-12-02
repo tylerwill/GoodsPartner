@@ -65,7 +65,7 @@ public class DeliveryCalculationHelper {
             delivery.setRouteCount(routes.size());
             delivery.setCarLoads(ListUtils.union(coolerCarLoad, regularCarLoads));
 
-            delivery.setFormationStatus(DeliveryFormationStatus.COMPLETED);
+            delivery.setFormationStatus(DeliveryFormationStatus.CALCULATION_COMPLETED);
 
             deliveryRepository.save(delivery);
 

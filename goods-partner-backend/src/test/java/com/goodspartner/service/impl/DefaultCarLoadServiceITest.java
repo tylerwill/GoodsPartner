@@ -26,7 +26,7 @@ class DefaultCarLoadServiceITest extends AbstractBaseITest {
     private DefaultCarLoadService carLoadService;
 
     @Test
-    @DataSet(value = "datasets/delivery/delivery-carload-controller-test.yml")
+    @DataSet(value = "datasets/carload/delivery-carload-controller-test.yml")
     @DisplayName("when Find By Delivery Id then Expected List Of CarLoadDto Returned")
     public void whenFindByDeliveryId_thenCarLoadDtoListReturned() {
 

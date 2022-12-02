@@ -55,7 +55,7 @@
       "address":"провулок Політехнічний, 1, Київ, Україна, 02000",
       "latitude":50.4504636,
       "longitude":30.4667037,
-      "status":"KNOWN"
+      "status":"AUTOVALIDATED"
     },
     "products":[
       {
@@ -91,7 +91,7 @@
       "address":"провулок Політехнічний, 1, Київ, Україна, 02000",
       "latitude":50.4504636,
       "longitude":30.4667037,
-      "status":"KNOWN"
+      "status":"AUTOVALIDATED"
     },
     "products":[
       {

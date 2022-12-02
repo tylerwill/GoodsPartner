@@ -28,7 +28,7 @@ class CarLoadControllerITest extends AbstractWebITest {
     private static final String CAR_LOADS_API = "/api/v1/car-loads";
 
     @Test
-    @DataSet(value = "datasets/delivery/delivery-carload-controller-test.yml",
+    @DataSet(value = "datasets/carload/delivery-carload-controller-test.yml",
             cleanBefore = true, cleanAfter = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Find By Delivery Id then List Of CarLoadDto Returned")
     public void whenFindByDeliveryId_thenCarLoadDtoListReturned() throws Exception {
@@ -40,9 +40,7 @@ class CarLoadControllerITest extends AbstractWebITest {
                         .session(getDriverSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content()
-                        .json(getResponseAsString("response/carload-controller-get_by_delivery_id.json")));
-
+                .andExpect(content().json(getResponseAsString("response/carload/get-carload-by-delivery-id.json")));
         assertSelectCount(3); // One for user + One for Car + One for CarLoads
     }
 }

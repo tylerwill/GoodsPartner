@@ -46,7 +46,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class OrderControllerIT extends AbstractWebITest {
 
-    private static final String ROOT_ORDER_ENDPOINT = "/api/v1/orders/";
     private static final String SKIPPED_ORDERS_ENDPOINT = "/api/v1/orders/skipped";
     private static final String COMPLETED_ORDERS_ENDPOINT = "/api/v1/orders/completed";
     private static final String RESCHEDULE_ORDER_ENDPOINT = "/api/v1/orders/skipped/reschedule";
@@ -140,7 +139,7 @@ class OrderControllerIT extends AbstractWebITest {
                 .deliveryStart(LocalTime.of(10, 0))
                 .deliveryFinish(LocalTime.of(11, 0))
                 .mapPoint(MapPoint.builder()
-                        .status(AddressStatus.KNOWN)
+                        .status(AddressStatus.KNOWN) // Override status
                         .address("проспект Академіка Палладіна, 9А, Київ, Україна, 03179")
                         .longitude(32.3553835000000)
                         .latitude(52.4618259000000)

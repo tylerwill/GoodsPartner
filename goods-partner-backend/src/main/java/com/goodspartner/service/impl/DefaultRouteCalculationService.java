@@ -3,7 +3,6 @@ package com.goodspartner.service.impl;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.AddressExternal;
-import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
@@ -116,11 +115,9 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
 
         List<MapPoint> mapPoints = new ArrayList<>();
         mapPoints.add(storeMapper.getMapPoint(store));
-        mapPoints.addAll(routingSolution.getRoutePoints()
-                .stream()
-                .map(this::getMapPoint)
-                .toList());
+        mapPoints.addAll(routePointMapper.getMapPoints(routingSolution.getRoutePoints()));
         mapPoints.add(storeMapper.getMapPoint(store)); // Return back to Store
+
         ResponsePath routePath = graphhopperService.getRoute(mapPoints);
 
         List<RoutePoint> routePoints = routingSolution.getRoutePoints();
@@ -141,19 +138,6 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
         route.setEstimatedTime(Duration.ofMillis(routePath.getTime()).toMinutes() + totalWaitTimeMin);
 
         return route;
-    }
-
-    // TODO method duplication
-    private MapPoint getMapPoint(RoutePoint routePoint) {
-        List<OrderExternal> orders = routePoint.getOrders();
-        // TODO Address external is the same for all orders for RoutePoint
-        AddressExternal addressExternal = orders.get(0).getAddressExternal();
-        return MapPoint.builder()
-                .status(AddressStatus.KNOWN)
-                .address(addressExternal.getValidAddress())
-                .longitude(addressExternal.getLongitude())
-                .latitude(addressExternal.getLatitude())
-                .build();
     }
 
     @VisibleForTesting

@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring",
         uses = {RouteMapper.class, OrderExternalMapper.class})
@@ -30,5 +31,17 @@ public interface RoutePointMapper {
                 .longitude(addressExternal.getLongitude())
                 .status(addressExternal.getStatus())
                 .build();
+    }
+
+    default List<MapPoint> getMapPoints(List<RoutePoint> routePoints) {
+        return routePoints.stream()
+                .map(RoutePoint::getAddressExternal)
+                .map(addressExternal -> MapPoint.builder()
+                        .status(addressExternal.getStatus())
+                        .address(addressExternal.getValidAddress())
+                        .longitude(addressExternal.getLongitude())
+                        .latitude(addressExternal.getLatitude())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

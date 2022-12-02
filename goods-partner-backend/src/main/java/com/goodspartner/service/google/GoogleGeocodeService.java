@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.goodspartner.entity.AddressStatus.KNOWN;
 import static com.goodspartner.entity.AddressStatus.UNKNOWN;
 import static com.goodspartner.entity.AddressStatus.AUTOVALIDATED;
 
@@ -46,21 +45,18 @@ public class GoogleGeocodeService implements GeocodeService {
                 .build();
 
         MapPoint mapPoint = addressExternalRepository.findById(externalAddressId)
-                .map(this::convertToKnown)
+                .map(this::map)
                 .orElseGet(() -> autovalidate(orderAddress));
 
         orderDto.setMapPoint(mapPoint);
     }
 
-    private MapPoint convertToKnown(AddressExternal addressExternal) {
-        String knownAddress = addressExternal.getValidAddress();
-        double latitude = addressExternal.getLatitude();
-        double longitude = addressExternal.getLongitude();
+    private MapPoint map(AddressExternal addressExternal) {
         return MapPoint.builder()
-                .address(knownAddress)
-                .longitude(longitude)
-                .latitude(latitude)
-                .status(KNOWN)
+                .address(addressExternal.getValidAddress())
+                .longitude(addressExternal.getLongitude())
+                .latitude(addressExternal.getLatitude())
+                .status(addressExternal.getStatus())
                 .build();
     }
 

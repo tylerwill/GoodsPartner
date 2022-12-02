@@ -3,7 +3,6 @@ package com.goodspartner.mapper;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal;
-import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.OrderExternal;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -62,7 +61,7 @@ public interface OrderExternalMapper {
                 .address(addressExternal.getValidAddress())
                 .latitude(addressExternal.getLatitude())
                 .longitude(addressExternal.getLongitude())
-                .status(AddressStatus.KNOWN)
+                .status(addressExternal.getStatus())
                 .build();
     }
 }

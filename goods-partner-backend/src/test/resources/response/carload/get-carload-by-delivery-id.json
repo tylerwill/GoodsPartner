@@ -37,7 +37,7 @@
           "address":"вулиця Єлизавети Чавдар, 36, Київ, Україна, 02000",
           "latitude":50.3910679,
           "longitude":30.6265536,
-          "status":"KNOWN"
+          "status": "KNOWN"
         },
         "products":[
           {
