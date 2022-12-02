@@ -1,0 +1,1 @@
+ALTER TABLE route_points ALTER COLUMN route_point_distant_time DROP NOT NULL;

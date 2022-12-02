@@ -48,7 +48,7 @@ public class RoutePoint {
     @Column(name = "address_total_weight")
     private Double addressTotalWeight;
     @Column(name = "route_point_distant_time")
-    private Long routePointDistantTime;
+    private Long routePointDistantTime; // TODO figureout if we need this field
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
     @Column(name = "expected_arrival")
