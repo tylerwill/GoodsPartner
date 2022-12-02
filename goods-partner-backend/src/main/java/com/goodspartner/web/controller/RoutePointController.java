@@ -42,7 +42,7 @@ public class RoutePointController {
     public List<OrderDto> findByRoutePointId(@PathVariable(value = "routePointId") long routePointId) {
         return routePointService.getRoutePointOrders(routePointId)
                 .stream()
-                .map(orderExternalMapper::mapToDto)
+                .map(orderExternalMapper::toOrderDto)
                 .collect(Collectors.toList());
     }
 }

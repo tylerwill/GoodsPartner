@@ -19,9 +19,9 @@ public interface OrderExternalMapper {
     @Mapping(target = "address", source = "addressExternal.orderAddressId.orderAddress")
     @Mapping(target = "clientName", source = "addressExternal.orderAddressId.clientName")
     @Mapping(target = "deliveryId", source = "delivery.id")
-    OrderDto mapToDto(OrderExternal orderExternal);
+    OrderDto toOrderDto(OrderExternal orderExternal);
 
-    List<OrderDto> mapToDtos(List<OrderExternal> orderDtos);
+    List<OrderDto> toOrderDtosList(List<OrderExternal> orderDtos);
 
     @Mapping(target = "addressExternal.orderAddressId.orderAddress", source = "address")
     @Mapping(target = "addressExternal.orderAddressId.clientName", source = "clientName")
@@ -29,9 +29,9 @@ public interface OrderExternalMapper {
     @Mapping(target = "addressExternal.latitude", source = "mapPoint.latitude")
     @Mapping(target = "addressExternal.longitude", source = "mapPoint.longitude")
     @Mapping(target = "delivery.id", source = "deliveryId")
-    OrderExternal mapToEntity(OrderDto orderDto);
+    OrderExternal toOrderExternal(OrderDto orderDto);
 
-    List<OrderExternal> mapToEntities(List<OrderDto> orderDtos);
+    List<OrderExternal> toOrderExternalList(List<OrderDto> orderDtos);
 
     @BeanMapping(ignoreByDefault = true)
     // Address related

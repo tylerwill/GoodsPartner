@@ -31,7 +31,7 @@ public class UserController {
 
     @GetMapping("/auth")
     public UserDto getAuthenticationDetails(OAuth2AuthenticationToken authentication) {
-        return userMapper.mapToDto(userService.findByAuthentication(authentication));
+        return userMapper.toUserDto(userService.findByAuthentication(authentication));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
@@ -39,7 +39,7 @@ public class UserController {
     public List<UserDto> getAll() {
         return userService.findAll()
                 .stream()
-                .map(userMapper::mapToDto)
+                .map(userMapper::toUserDto)
                 .toList();
     }
 
@@ -47,14 +47,14 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDto getById(@ApiParam(value = "ID of the user to retrieve", required = true)
                            @PathVariable("id") int id) {
-        return userMapper.mapToDto(userService.findById(id));
+        return userMapper.toUserDto(userService.findById(id));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public UserDto add(@ApiParam(value = "User that you want to add", type = "UserDto", required = true)
                        @RequestBody UserDto userDto) {
-        return userMapper.mapToDto(userService.add(userDto));
+        return userMapper.toUserDto(userService.add(userDto));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
@@ -63,13 +63,13 @@ public class UserController {
                           @PathVariable int id,
                           @ApiParam(value = "Edited User", type = "UserDto", required = true)
                           @RequestBody UserDto userDto) {
-        return userMapper.mapToDto(userService.update(id, userDto));
+        return userMapper.toUserDto(userService.update(id, userDto));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
     public UserDto delete(@ApiParam(value = "ID of the user to delete", required = true)
                           @PathVariable("id") int id) {
-        return userMapper.mapToDto(userService.delete(id));
+        return userMapper.toUserDto(userService.delete(id));
     }
 }

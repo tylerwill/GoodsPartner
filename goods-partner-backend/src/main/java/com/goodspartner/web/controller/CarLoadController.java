@@ -36,7 +36,7 @@ public class CarLoadController {
                                              OAuth2AuthenticationToken authentication) {
         return carLoadService.findByDeliveryId(deliveryId, authentication)
                 .stream()
-                .map(carLoadMapper::mapToDto)
+                .map(carLoadMapper::toCarLoadDto)
                 .collect(Collectors.toList());
 
     }

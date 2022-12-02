@@ -80,14 +80,14 @@ public class DefaultDeliveryService implements DeliveryService {
     public DeliveryDto findByStatusAndDeliveryDate(DeliveryStatus status, LocalDate date) {
         Delivery delivery = deliveryRepository.findByStatusAndDeliveryDate(status, date)
                 .orElseThrow(() -> new DeliveryNotFoundException(status, date));
-        return deliveryMapper.mapToDto(delivery);
+        return deliveryMapper.toDeliveryDto(delivery);
     }
 
     @Override
     public List<DeliveryDto> findByStatusAndDeliveryDateBetween(DeliveryStatus status, LocalDate dateFrom, LocalDate dateTo) {
         return deliveryRepository.findByStatusAndDeliveryDateBetween(status, dateFrom, dateTo)
                 .stream()
-                .map(deliveryMapper::mapToDto)
+                .map(deliveryMapper::toDeliveryDto)
                 .toList();
     }
 
@@ -102,6 +102,6 @@ public class DefaultDeliveryService implements DeliveryService {
         deliveryDto.setStatus(DRAFT);
         deliveryDto.setFormationStatus(ORDERS_LOADING);
 
-        return deliveryRepository.save(deliveryMapper.mapToEntity(deliveryDto));
+        return deliveryRepository.save(deliveryMapper.toDelivery(deliveryDto));
     }
 }

@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 
 public interface RoutePointMapper {
 
-    List<RoutePoint> mapToEntities(List<RoutePointDto> routePointDtos);
+    List<RoutePoint> toRoutePointList(List<RoutePointDto> routePointDtos);
 
-    List<RoutePointDto> mapToDtos(List<RoutePoint> routePoints);
+    List<RoutePointDto> toRoutePointDtosList(List<RoutePoint> routePoints);
 
     @Mapping(target = "mapPoint", source = "routePoint.addressExternal", qualifiedByName = "getMapPoint")
-    RoutePointDto mapToDto(RoutePoint routePoint);
+    RoutePointDto toRoutePointDto(RoutePoint routePoint);
 
     @Named("getMapPoint")
     default MapPoint getMapPoint(AddressExternal addressExternal) {

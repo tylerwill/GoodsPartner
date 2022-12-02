@@ -43,7 +43,7 @@ public class RouteController {
                                            OAuth2AuthenticationToken authentication) {
         return routeService.findRelatedRoutesByDeliveryId(deliveryId, authentication)
                 .stream()
-                .map(routeMapper::mapToDto)
+                .map(routeMapper::toRouteDto)
                 .collect(Collectors.toList());
     }
 

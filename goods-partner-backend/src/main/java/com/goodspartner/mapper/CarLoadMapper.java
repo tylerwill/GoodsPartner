@@ -7,8 +7,8 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", uses = OrderExternalMapper.class)
 public interface CarLoadMapper {
 
-    CarLoad mapDtoToEntity(CarLoadDto carLoadDto);
+    CarLoad toCarLoad(CarLoadDto carLoadDto);
 
-    CarLoadDto mapToDto(CarLoad carLoad);
+    CarLoadDto toCarLoadDto(CarLoad carLoad);
 
 }

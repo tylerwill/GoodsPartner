@@ -46,7 +46,7 @@ public class DefaultUserService implements UserService {
     @Transactional
     @Override
     public User add(UserDto userDto) {
-        User user = userMapper.mapToDto(userDto);
+        User user = userMapper.toUser(userDto);
         return userRepository.save(user);
     }
 

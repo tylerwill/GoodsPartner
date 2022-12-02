@@ -44,7 +44,7 @@ public class DeliveryController {
     public DeliveryDto createDelivery(
             @ApiParam(value = "DeliveryDto that you want to create", type = "DeliveryResponse", required = true)
             @RequestBody DeliveryDto delivery) {
-        return deliveryMapper.mapToDto(deliveryFacade.add(delivery));
+        return deliveryMapper.toDeliveryDto(deliveryFacade.add(delivery));
     }
 
     @GetMapping
@@ -52,7 +52,7 @@ public class DeliveryController {
     @ApiOperation(value = "Get all Deliveries", notes = "Return list of DeliveryResponse", response = List.class)
     public List<DeliveryDto> findAll(OAuth2AuthenticationToken authentication) {
         return deliveryService.findAll(authentication).stream()
-                .map(deliveryMapper::mapToDto)
+                .map(deliveryMapper::toDeliveryDto)
                 .toList();
     }
 
@@ -64,7 +64,7 @@ public class DeliveryController {
     public DeliveryDto findById(
             @ApiParam(value = "ID value for the delivery you need to retrieve", required = true)
             @PathVariable UUID id) {
-        return deliveryMapper.mapToDto(deliveryService.findById(id));
+        return deliveryMapper.toDeliveryDto(deliveryService.findById(id));
     }
 
     @DeleteMapping("/{id}")
@@ -72,7 +72,7 @@ public class DeliveryController {
     @ApiOperation(value = "Remove Delivery by ID", notes = "Provide an ID to remove up specific delivery")
     public DeliveryDto delete(@ApiParam(value = "ID value for the delivery you need to retrieve", required = true)
                               @PathVariable UUID id) {
-        return deliveryMapper.mapToDto(deliveryService.delete(id));
+        return deliveryMapper.toDeliveryDto(deliveryService.delete(id));
     }
 
     @PostMapping("/{id}/calculate")
@@ -83,7 +83,7 @@ public class DeliveryController {
             response = DeliveryDto.class)
     public DeliveryDto calculateDelivery(@ApiParam(value = "ID of Delivery to be calculated", required = true)
                                          @PathVariable UUID id) {
-        return deliveryMapper.mapToDto(deliveryFacade.calculateDelivery(id));
+        return deliveryMapper.toDeliveryDto(deliveryFacade.calculateDelivery(id));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")

@@ -42,7 +42,7 @@ public class OrderController {
                                            OAuth2AuthenticationToken authentication) {
         return orderExternalService.getByDeliveryId(deliveryId, authentication)
                 .stream()
-                .map(orderExternalMapper::mapToDto)
+                .map(orderExternalMapper::toOrderDto)
                 .collect(Collectors.toList());
     }
 
@@ -55,7 +55,7 @@ public class OrderController {
     )
     public OrderDto update(@PathVariable int id,
                            @RequestBody OrderDto orderDto) {
-        return orderExternalMapper.mapToDto(orderExternalService.update(id, orderDto));
+        return orderExternalMapper.toOrderDto(orderExternalService.update(id, orderDto));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
@@ -68,7 +68,7 @@ public class OrderController {
     public List<OrderDto> getSkippedOrders() {
         return orderExternalService.getSkippedOrders()
                 .stream()
-                .map(orderExternalMapper::mapToDto)
+                .map(orderExternalMapper::toOrderDto)
                 .toList();
     }
 
@@ -82,7 +82,7 @@ public class OrderController {
     public List<OrderDto> getCompletedOrders() {
         return orderExternalService.getCompletedOrders()
                 .stream()
-                .map(orderExternalMapper::mapToDto)
+                .map(orderExternalMapper::toOrderDto)
                 .toList();
     }
 
@@ -96,7 +96,7 @@ public class OrderController {
     public List<OrderDto> getScheduledOrders() {
         return orderExternalService.getScheduledOrders()
                 .stream()
-                .map(orderExternalMapper::mapToDto)
+                .map(orderExternalMapper::toOrderDto)
                 .toList();
     }
 
@@ -112,7 +112,7 @@ public class OrderController {
             @RequestBody RescheduleOrdersRequest rescheduleOrdersRequest) {
         return orderExternalService.rescheduleSkippedOrders(rescheduleOrdersRequest)
                 .stream()
-                .map(orderExternalMapper::mapToDto)
+                .map(orderExternalMapper::toOrderDto)
                 .toList();
     }
 
@@ -127,7 +127,7 @@ public class OrderController {
             @ApiParam(value = "Remove chosen order ids from skipped list", type = "UpdateDto", required = true)
             @RequestBody RemoveOrdersRequest removeOrdersRequest) {
         return orderExternalService.removeExcludedOrders(removeOrdersRequest).stream()
-                .map(orderExternalMapper::mapToDto)
+                .map(orderExternalMapper::toOrderDto)
                 .toList();
 
     }

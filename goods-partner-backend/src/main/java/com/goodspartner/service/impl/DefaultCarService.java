@@ -26,13 +26,13 @@ public class DefaultCarService implements CarService {
     @Override
     @Transactional(readOnly = true)
     public List<CarDto> findAll() {
-        return carMapper.carsToCarDtos(carRepository.findAll());
+        return carMapper.toCarDtosList(carRepository.findAll());
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CarDto> findByAvailableCars() {
-        return carMapper.carsToCarDtos(carRepository.findByAvailableTrue());
+        return carMapper.toCarDtosList(carRepository.findByAvailableTrue());
     }
 
     @Override
@@ -41,13 +41,13 @@ public class DefaultCarService implements CarService {
         Car updateCar = carRepository.findById(id)
                 .map(car -> carMapper.update(car, carDto))
                 .orElseThrow(() -> new CarNotFoundException("Car not found"));
-        return carMapper.carToCarDto(carRepository.save(updateCar));
+        return carMapper.toCarDto(carRepository.save(updateCar));
     }
 
     @Override
     public CarDto add(CarDto carDto) {
-        Car car = carMapper.carDtoToCar(carDto);
-        return carMapper.carToCarDto(carRepository.save(car));
+        Car car = carMapper.toCar(carDto);
+        return carMapper.toCarDto(carRepository.save(car));
     }
 
     @Override

@@ -10,6 +10,6 @@ import org.mapstruct.Mapping;
 public interface RouteMapper {
 
     @Mapping(target = "car", source = "car")
-    RouteDto mapToDto(Route route);
+    RouteDto toRouteDto(Route route);
 
 }

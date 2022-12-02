@@ -144,7 +144,7 @@ public class DefaultStatisticsService implements StatisticsService {
 
     // TODO refactor code to avoid usage of mappers
     private CarDto getCar(int carId) {
-        return carMapper.carToCarDto(carService.findById(carId));
+        return carMapper.toCarDto(carService.findById(carId));
     }
 
     private List<DeliveryDto> getCompletedDeliveriesInRange(LocalDate dateFrom, LocalDate dateTo) {
@@ -228,7 +228,7 @@ public class DefaultStatisticsService implements StatisticsService {
                         delivery ->
                                 routeService.findByDeliveryIdExtended(delivery.getId())
                                         .stream()
-                                        .map(routeMapper::mapToDto)
+                                        .map(routeMapper::toRouteDto)
                                         .collect(Collectors.toList())));
     }
 

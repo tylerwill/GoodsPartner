@@ -194,7 +194,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         for (ODataOrderDto order : orders) {
             String refKey = order.getRefKey();
             List<ODataProductDto> products = allProducts.get(refKey);
-            order.setProducts(productMapper.toProductDtosList(products));
+            order.setProducts(productMapper.toProductList(products));
             order.setOrderWeight(getTotalOrderWeight(products));
         }
     }

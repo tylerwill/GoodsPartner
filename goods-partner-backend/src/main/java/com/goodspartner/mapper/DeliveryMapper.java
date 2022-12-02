@@ -13,7 +13,7 @@ public interface DeliveryMapper {
     @Mapping(target = "id", ignore = true)
     Delivery update(@MappingTarget Delivery delivery, DeliveryDto deliveryDto);
 
-    Delivery mapToEntity(DeliveryDto deliveryDto);
+    Delivery toDelivery(DeliveryDto deliveryDto);
 
-    DeliveryDto mapToDto(Delivery delivery);
+    DeliveryDto toDeliveryDto(Delivery delivery);
 }

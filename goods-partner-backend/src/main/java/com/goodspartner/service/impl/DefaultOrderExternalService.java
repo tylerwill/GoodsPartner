@@ -137,7 +137,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
     private List<OrderExternal> saveValidOrdersAndEnrichAddresses(List<OrderDto> orderDtos) {
 
         List<OrderExternal> externalOrders = orderDtos.stream()
-                .map(orderExternalMapper::mapToEntity)
+                .map(orderExternalMapper::toOrderExternal)
                 .toList();
 
         Set<AddressExternal> addresses = externalOrders

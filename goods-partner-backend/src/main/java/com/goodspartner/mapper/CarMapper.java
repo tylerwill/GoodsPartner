@@ -10,11 +10,11 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CarMapper {
-    List<CarDto> carsToCarDtos(List<Car> cars);
+    List<CarDto> toCarDtosList(List<Car> cars);
 
-    CarDto carToCarDto(Car car);
+    CarDto toCarDto(Car car);
 
-    Car carDtoToCar(CarDto carDto);
+    Car toCar(CarDto carDto);
 
     @Mapping(target = "id", ignore = true)
     Car update(@MappingTarget Car car, CarDto carDto);

@@ -88,11 +88,11 @@ public class CarLoadMapperTest {
 
         CarLoadDto carLoadDto = new CarLoadDto(carDto, List.of(orderDto));
 
-        CarLoad carLoad = carLoadMapper.mapDtoToEntity(carLoadDto);
+        CarLoad carLoad = carLoadMapper.toCarLoad(carLoadDto);
 
         Assertions.assertNull(carLoad.getId());
 
-        Car mappedCar = carMapper.carDtoToCar(carDto);
+        Car mappedCar = carMapper.toCar(carDto);
         assertEquals(1, mappedCar.getId());
         assertEquals("FORD", mappedCar.getName());
         assertEquals("12345", mappedCar.getLicencePlate());
@@ -102,7 +102,7 @@ public class CarLoadMapperTest {
         assertTrue(mappedCar.isAvailable());
         assertEquals(26, mappedCar.getTravelCost());
 
-        List<OrderExternal> mappedOrderExternals = orderExternalMapper.mapToEntities(carLoadDto.getOrders());
+        List<OrderExternal> mappedOrderExternals = orderExternalMapper.toOrderExternalList(carLoadDto.getOrders());
         assertEquals(2, mappedOrderExternals.get(0).getId());
         assertEquals("1232", mappedOrderExternals.get(0).getOrderNumber());
         assertEquals(LocalDate.of(2022, 2, 17), mappedOrderExternals.get(0).getShippingDate());

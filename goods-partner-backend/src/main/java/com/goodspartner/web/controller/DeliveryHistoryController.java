@@ -36,7 +36,7 @@ public class DeliveryHistoryController {
                                                      @RequestParam(name = "deliveryId") UUID id) {
         return deliveryHistoryService.findByDeliveryId(id)
                 .stream()
-                .map(deliveryHistoryMapper::mapToDto)
+                .map(deliveryHistoryMapper::toDeliveryHistoryDto)
                 .collect(Collectors.toList());
     }
 

@@ -9,6 +9,6 @@ import org.mapstruct.Mapping;
 public interface DeliveryHistoryMapper {
 
     @Mapping(target = "deliveryId", source = "delivery.id")
-    DeliveryHistoryDto mapToDto(DeliveryHistory deliveryHistory);
+    DeliveryHistoryDto toDeliveryHistoryDto(DeliveryHistory deliveryHistory);
 
 }
