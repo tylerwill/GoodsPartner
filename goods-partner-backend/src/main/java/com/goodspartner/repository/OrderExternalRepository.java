@@ -42,6 +42,11 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, In
             "WHERE o.rescheduleDate IS NOT NULL AND o.delivery IS NULL")
     List<OrderExternal> findScheduledOrders();
 
+
+    @EntityGraph(attributePaths = {"addressExternal"})
+    @Query("SELECT o FROM OrderExternal o WHERE o.addressExternal.status = 'UNKNOWN'")
+    List<OrderExternal> findOrderExternalsByDeliveryId(@Param("deliveryId") UUID deliveryId);
+
     List<OrderExternal> findByRescheduleDate(LocalDate date);
 
     @EntityGraph(attributePaths = {"addressExternal"})

@@ -2,7 +2,6 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal;
-import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
@@ -131,9 +130,8 @@ public class DefaultOrderExternalService implements OrderExternalService {
     }
 
     private boolean isAllOrdersValid(Delivery delivery) {
-        return delivery.getOrders()
-                .stream()
-                .noneMatch(orderExternal -> AddressStatus.UNKNOWN.equals(orderExternal.getAddressExternal().getStatus()));
+        List<OrderExternal> unknownOrders = orderExternalRepository.findOrderExternalsByDeliveryId(delivery.getId());
+        return unknownOrders.isEmpty();
     }
 
     private List<OrderExternal> saveValidOrdersAndEnrichAddresses(List<OrderDto> orderDtos) {
