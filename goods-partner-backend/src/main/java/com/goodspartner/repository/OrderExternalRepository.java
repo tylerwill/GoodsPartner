@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -42,4 +43,13 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, In
     List<OrderExternal> findScheduledOrders();
 
     List<OrderExternal> findByRescheduleDate(LocalDate date);
+
+    @EntityGraph(attributePaths = {"addressExternal"})
+    @Query("SELECT o FROM OrderExternal o WHERE o.id IN :orderIds")
+    List<OrderExternal> findByOrderIds(@Param("orderIds") List<Integer> orderIds);
+
+    @Override
+    @EntityGraph(attributePaths = {"addressExternal", "delivery"})
+    @Query("SELECT o FROM OrderExternal o WHERE o.id = :id")
+    Optional<OrderExternal> findById(@Param("id") Integer id);
 }

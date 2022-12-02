@@ -195,7 +195,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
     @Override
     public List<OrderExternal> rescheduleSkippedOrders(RescheduleOrdersRequest rescheduleOrdersRequest) {
         List<Integer> ordersIds = rescheduleOrdersRequest.getOrderIds();
-        List<OrderExternal> ordersExternals = orderExternalRepository.findAllById(ordersIds);
+        List<OrderExternal> ordersExternals = orderExternalRepository.findByOrderIds(ordersIds);
 
         ordersExternals.forEach(order -> order.setRescheduleDate(rescheduleOrdersRequest.getRescheduleDate()));
         List<OrderExternal> updatedSkippedOrders = orderExternalRepository.saveAll(ordersExternals);

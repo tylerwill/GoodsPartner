@@ -46,7 +46,7 @@ public class OrderController {
                 .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @PutMapping("/{id}")
     @ApiOperation(value = "Update order",
             notes = "Return updated order",
@@ -58,7 +58,7 @@ public class OrderController {
         return orderExternalMapper.mapToDto(orderExternalService.update(id, orderDto));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @GetMapping("/skipped")
     @ApiOperation(value = "Get skipped orders",
             notes = "Return orders filtered by excluded/dropped attribute",
@@ -72,7 +72,7 @@ public class OrderController {
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @GetMapping("/completed")
     @ApiOperation(value = "Get completed orders",
             notes = "Return orders filtered by excluded/dropped attribute",
@@ -86,9 +86,9 @@ public class OrderController {
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @GetMapping("/scheduled")
-    @ApiOperation(value = "Get completed orders",
+    @ApiOperation(value = "Get scheduled orders",
             notes = "Return orders filtered by excluded/dropped attribute",
             response = OrderDto.class,
             responseContainer = "List"
@@ -100,8 +100,8 @@ public class OrderController {
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
-    @PostMapping("/reschedule") // TODO /skipped/reschedule
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
+    @PostMapping("/skipped/reschedule")
     @ApiOperation(value = "Update orders delivery date",
             notes = "Return updated orders",
             response = OrderDto.class,
@@ -116,15 +116,15 @@ public class OrderController {
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
-    @PostMapping("/remove") // TODO /skipped/remove
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
+    @PostMapping("/skipped/remove")
     @ApiOperation(value = "Remove orders from excluded state",
             notes = "Return removed orders",
             response = OrderDto.class,
             responseContainer = "List"
     )
     public List<OrderDto> removeOrders(
-            @ApiParam(value = "Remove chosen order ids", type = "UpdateDto", required = true)
+            @ApiParam(value = "Remove chosen order ids from skipped list", type = "UpdateDto", required = true)
             @RequestBody RemoveOrdersRequest removeOrdersRequest) {
         return orderExternalService.removeExcludedOrders(removeOrdersRequest).stream()
                 .map(orderExternalMapper::mapToDto)

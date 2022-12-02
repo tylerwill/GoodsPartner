@@ -1,6 +1,23 @@
 {
   "grandedolce_orders": [
     {
+      "id": 1,
+      "order_number": "00000001234",
+      "shipping_date": "2022-02-15",
+      "client_name": "Новус Україна ТОВ",
+      "address": "м.Київ провулок Політехнічний 10",
+      "manager": "Крамаренко Леся                                   ",
+      "order_weight": 1500.00,
+      "products": "[{\"amount\": 1, \"storeName\": \"Склад №1\",  \"unitWeight\": 3200,   \"productName\": \"715050B Форми тюльпани 150/50 Коричневі (3200 шт)\",\"totalProductWeight\": 1500}]",
+      "ref_key": "18ee46a5-8e41-11ec-b3ce-00155dd72305",
+      "comment": "Skipped point",
+      "delivery_id": "70574dfd-48a3-40c7-8b0c-3e5defe7d080",
+      "car_load_id": null,
+      "excluded": false,
+      "dropped": false,
+      "route_point_id": 2
+    },
+    {
       "id": 51,
       "order_number": "00000003433",
       "shipping_date": "2022-02-14",
@@ -60,6 +77,13 @@
       "longitude": 30.4667037000000
     },
     {
+      "order_address": "м.Київ провулок Політехнічний 10",
+      "client_name": "Новус Україна ТОВ",
+      "valid_address": "провулок Політехнічний, 10, Київ, Україна, 02000",
+      "latitude": 49.4504636000000,
+      "longitude": 29.4667037000000
+    },
+    {
       "order_address": "м.Київ, пр. Академіка Палладіна, 7-А",
       "client_name": "Новус Україна ТОВ",
       "valid_address": "проспект Академіка Палладіна, 7А, Київ, Україна, 03179",
@@ -74,6 +98,14 @@
       "status": "DONE",
       "client_name": "Новус Україна ТОВ",
       "address": "м.Київ, пр. Академіка Палладіна, 7-А",
+      "address_total_weight": 200,
+      "route_point_distant_time": 150
+    },
+    {
+      "id": 2,
+      "status": "SKIPPED",
+      "client_name": "Новус Україна ТОВ",
+      "address": "м.Київ провулок Політехнічний 10",
       "address_total_weight": 200,
       "route_point_distant_time": 150
     }
