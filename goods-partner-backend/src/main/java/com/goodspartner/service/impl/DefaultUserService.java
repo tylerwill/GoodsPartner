@@ -7,6 +7,7 @@ import com.goodspartner.mapper.UserMapper;
 import com.goodspartner.repository.UserRepository;
 import com.goodspartner.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.List;
 @Service
 public class DefaultUserService implements UserService {
 
+    private static final String DEFAULT_SORT_FILED = "id";
     private static final String EMAIL_ATTRIBUTE = "email";
 
     private final UserRepository userRepository;
@@ -25,7 +27,7 @@ public class DefaultUserService implements UserService {
 
     @Override
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userRepository.findAll(Sort.by(Sort.Direction.ASC, DEFAULT_SORT_FILED));
     }
 
     @Override
