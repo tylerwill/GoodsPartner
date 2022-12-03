@@ -7,6 +7,8 @@ import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
+import com.goodspartner.event.Action;
+import com.goodspartner.event.ActionType;
 import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.DeliveryNotFoundException;
@@ -71,7 +73,8 @@ public class DeliveryCalculationHelper {
 
             eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, deliveryId);
         } catch (Exception exception) {
-            eventService.publishEvent(new LiveEvent("Помилка розрахування доставки", EventType.ERROR));
+            eventService.publishEvent(new LiveEvent("Помилка розрахування доставки", EventType.ERROR,
+                    new Action(ActionType.INFO, deliveryId)));
             throw new RuntimeException(exception);
         }
 

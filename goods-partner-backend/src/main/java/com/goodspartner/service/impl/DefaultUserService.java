@@ -35,6 +35,11 @@ public class DefaultUserService implements UserService {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
+    @Override
+    public User findByRouteId(long routeId) {
+        return userRepository.findByRouteId(routeId).orElseThrow(() -> new UserNotFoundException(routeId));
+    }
+
     @Transactional
     @Override
     public User update(int id, UserDto userDto) {

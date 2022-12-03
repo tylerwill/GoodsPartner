@@ -37,6 +37,7 @@ public class GoodsPartnerOAuth2UserService extends DefaultOAuth2UserService {
         return GoodsPartnerOAuth2User.builder()
                 .username(user.getUserName())
                 .email(user.getEmail())
+                // TODO make sense to migrate role to have prefix included
                 .authorities(List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole())))
                 .accountNonExpired(true)
                 .accountNonLocked(true)

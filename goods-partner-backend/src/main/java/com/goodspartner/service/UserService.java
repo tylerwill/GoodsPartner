@@ -18,6 +18,8 @@ public interface UserService {
 
     User findById(int id);
 
+    User findByRouteId(long routeId);
+
     /* --- Auth --- */
 
     User findByAuthentication(OAuth2AuthenticationToken authentication);

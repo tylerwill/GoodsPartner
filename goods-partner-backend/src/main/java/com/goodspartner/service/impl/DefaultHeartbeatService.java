@@ -6,7 +6,7 @@ import com.goodspartner.service.HeartbeatService;
 import com.goodspartner.service.LiveEventService;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -14,13 +14,12 @@ import org.springframework.stereotype.Service;
 @EnableScheduling
 public class DefaultHeartbeatService implements HeartbeatService {
 
-    private static final int SSE_HEART_BEAT_FIXED_RATE = 15000;
+    private static final LiveEvent HEAR_BEAT_EVENT = new LiveEvent("Keep alive", EventType.HEARTBEAT);
 
     private final LiveEventService eventService;
 
     @Override
-    @Scheduled(fixedRate = SSE_HEART_BEAT_FIXED_RATE)
-    public void pushBeat() {
-        eventService.publish(new LiveEvent("Keep alive", EventType.HEARTBEAT));
+    public void pushBeat(OAuth2AuthenticationToken authenticationToken) {
+        eventService.publishHeartBeat(authenticationToken, HEAR_BEAT_EVENT);
     }
 }

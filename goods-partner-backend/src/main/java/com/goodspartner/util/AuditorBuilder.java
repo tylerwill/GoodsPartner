@@ -3,6 +3,7 @@ package com.goodspartner.util;
 import com.goodspartner.service.dto.GoodsPartnerOAuth2User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class AuditorBuilder {
     public static Map<String, String> getCurrentAuditorData() {
         Map<String, String> values = new HashMap<>();
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = getAuthentication();
         if (Objects.isNull(authentication)) {
             values.put(ROLE_KEY, ROLE_ANONYMOUS);
             values.put(ROLE_TRANSLATED_KEY, ROLES_TRANSLATION.get(ROLE_ANONYMOUS));
@@ -61,5 +62,9 @@ public class AuditorBuilder {
             values.put(USER_NAME_KEY, authentication.getPrincipal().toString());
         }
         return values;
+    }
+
+    public static OAuth2AuthenticationToken getAuthentication() {
+        return (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
     }
 }

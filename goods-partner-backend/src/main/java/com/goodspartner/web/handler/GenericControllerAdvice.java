@@ -3,6 +3,7 @@ package com.goodspartner.web.handler;
 import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.exception.GoogleApiException;
 import com.goodspartner.exception.RouteNotFoundException;
+import com.goodspartner.exception.SubscriberNotFoundException;
 import com.goodspartner.exception.UnknownAddressException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,12 @@ public class GenericControllerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UnknownAddressException.class)
     public ResponseEntity<ErrorMessage> unknownAddressException(UnknownAddressException exception) {
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+
+    @ExceptionHandler(SubscriberNotFoundException.class)
+    public ResponseEntity<ErrorMessage> subscriberNotFoundException(SubscriberNotFoundException exception) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 }
