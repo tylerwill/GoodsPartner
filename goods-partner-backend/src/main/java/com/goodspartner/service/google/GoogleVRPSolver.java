@@ -38,7 +38,7 @@ import java.util.List;
 @AllArgsConstructor
 public class GoogleVRPSolver implements VRPSolver {
 
-    public static final int SERVICE_TIME_AT_LOCATION_MIN = 15; // 5 minutes
+    public static final int SERVICE_TIME_AT_LOCATION_MIN = 15; // minutes
 
     private static final int ROUTE_START_INDEX = 0;
     private static final int SOLUTION_PROCESSING_TIME_SEC = 30;
