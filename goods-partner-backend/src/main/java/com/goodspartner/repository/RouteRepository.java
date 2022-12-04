@@ -12,10 +12,10 @@ import java.util.UUID;
 
 public interface RouteRepository extends JpaRepository<Route, Long> {
 
-    @EntityGraph(attributePaths = {"routePoints", "routePoints.addressExternal", "store", "car"})
+    @EntityGraph(attributePaths = {"routePoints", "routePoints.addressExternal", "store", "car.driver"})
     List<Route> findByDeliveryIdAndCar(UUID deliveryId, Car car);
 
-    @EntityGraph(attributePaths = {"routePoints", "routePoints.addressExternal", "store", "car"})
+    @EntityGraph(attributePaths = {"routePoints", "routePoints.addressExternal", "store", "car.driver"})
     @Query(value = "SELECT r FROM Route r WHERE r.delivery.id = :id")
     List<Route> findByDeliveryIdExtended(@Param("id") UUID deliveryId);
 
