@@ -124,12 +124,11 @@ public class DefaultOrderExternalService implements OrderExternalService {
 
             eventService.publishOrdersStatus(ORDERS_LOADED, deliveryId);
             log.info("Saved orders for delivery {} on {} deliveryDate", deliveryId, deliveryDate);
-        } catch (Exception exception) {
 
+        } catch (Exception exception) {
             eventService.publishEvent(new LiveEvent("Помилка під час вивантаження замовлень з 1С",
                     EventType.ERROR, new Action(ActionType.INFO, deliveryId)));
             log.error("Failed to save orders to cache for delivery by date: {}", deliveryDate, exception);
-
             throw new RuntimeException(exception);
         }
     }

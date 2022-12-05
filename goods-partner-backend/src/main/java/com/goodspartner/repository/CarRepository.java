@@ -20,4 +20,7 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
 
     @EntityGraph(attributePaths = {"driver"})
     Optional<Car> findById(int id);
+
+    @EntityGraph(attributePaths = {"driver"})
+    List<Car> findAll();
 }

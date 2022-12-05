@@ -1,0 +1,157 @@
+[
+  {
+    "id":null,
+    "refKey":"01grande-0000-0000-0000-000000000000",
+    "orderNumber":"45678",
+    "comment":"фасовка",
+    "managerFullName":"Балашова Лариса",
+    "deliveryId":null,
+    "deliveryType":"REGULAR",
+    "excluded":false,
+    "dropped":false,
+    "shippingDate":"2022-02-17",
+    "rescheduleDate":null,
+    "deliveryStart":null,
+    "deliveryFinish":null,
+    "clientName":"Домашня випічка",
+    "address":"Бровари, Марії Лагунової, 11",
+    "mapPoint":null,
+    "products":[
+      {
+        "productName":"Наповнювач фруктово-ягідний (декоргель) (12 кг)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":12.0,
+        "totalProductWeight":12.0,
+        "coefficient":0.0,
+        "measure":null
+      }
+    ],
+    "orderWeight":12.0,
+    "frozen":false
+  },
+  {
+    "id":null,
+    "refKey":"02grande-0000-0000-0000-000000000000",
+    "orderNumber":"43532",
+    "comment":"бн",
+    "managerFullName":"Шульженко Олег",
+    "deliveryId":null,
+    "deliveryType":"REGULAR",
+    "excluded":false,
+    "dropped":false,
+    "shippingDate":"2022-02-17",
+    "rescheduleDate":null,
+    "deliveryStart":null,
+    "deliveryFinish":null,
+    "clientName":"ТОВ Пекарня",
+    "address":"вул. Невідома 8667",
+    "mapPoint":null,
+    "products":[
+      {
+        "productName":"66784 Арахісова паста",
+        "amount":1,
+        "storeName":"Склад №2",
+        "unitWeight":20.0,
+        "totalProductWeight":20.0,
+        "coefficient":0.0,
+        "measure":null
+      }
+    ],
+    "orderWeight":20.0,
+    "frozen":false
+  },
+  {
+    "id":null,
+    "refKey":"03grande-0000-0000-0000-000000000000",
+    "orderNumber":"45679",
+    "comment":"самовивіз",
+    "managerFullName":"Кравченко Сергій",
+    "deliveryId":null,
+    "deliveryType":"REGULAR",
+    "excluded":false,
+    "dropped":false,
+    "shippingDate":"2022-02-17",
+    "rescheduleDate":null,
+    "deliveryStart":null,
+    "deliveryFinish":null,
+    "clientName":"Фоззі-Фуд",
+    "address":"Київ, вулиця Незалежності 105",
+    "mapPoint":null,
+    "products":[
+      {
+        "productName":"Паста шоколадна(10 кг)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":10.0,
+        "totalProductWeight":10.0,
+        "coefficient":0.0,
+        "measure":null
+      }
+    ],
+    "orderWeight":10.0,
+    "frozen":false
+  },
+  {
+    "id":null,
+    "refKey":"04grande-0000-0000-0000-000000000000",
+    "orderNumber":"45789",
+    "comment":"бн",
+    "managerFullName":"Кравченко Сергій",
+    "deliveryId":null,
+    "deliveryType":"REGULAR",
+    "excluded":false,
+    "dropped":false,
+    "shippingDate":"2022-02-17",
+    "rescheduleDate":null,
+    "deliveryStart":null,
+    "deliveryFinish":null,
+    "clientName":"Тераса ТОВ (Іль Моліно)",
+    "address":"м. Житомир, вул Корольова, 1",
+    "mapPoint":null,
+    "products":[
+      {
+        "productName":"Гурме Голд  (AV23AB) 12л",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":1.0,
+        "totalProductWeight":1.0,
+        "coefficient":0.0,
+        "measure":null
+      }
+    ],
+    "orderWeight":1.0,
+    "frozen":false
+  },
+  {
+    "id":null,
+    "refKey":"05grande-0000-0000-0000-000000000000",
+    "orderNumber":"00000002130",
+    "comment":"доставка: Нова пошта, заморозка: доставка в холодильнику",
+    "managerFullName":"Балашова Лариса",
+    "deliveryId":null,
+    "deliveryType":"POSTAL",
+    "excluded":false,
+    "dropped":false,
+    "shippingDate":"2022-02-17",
+    "rescheduleDate":null,
+    "deliveryStart":null,
+    "deliveryFinish":null,
+    "clientName":"Домашня випічка",
+    "address":"Бровари, Марії Лагунової, 11",
+    "mapPoint":null,
+    "products":[
+      {
+        "productName":"Наповнювач фруктово-ягідний (декоргель) (12 кг)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":12.0,
+        "totalProductWeight":12.0,
+        "coefficient":0.0,
+        "measure":null
+      }
+    ],
+    "orderWeight":12.0,
+    "frozen":false
+  }
+]

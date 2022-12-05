@@ -58,7 +58,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private static final String PRODUCT_EXPAND_FIELDS = "Номенклатура,ЕдиницаИзмерения";
 
     @Value("classpath:mock1CoData/*")
-    private Resource[] mockFiles;
+    private Resource[] mockedResponses;
 
     private final GrandeDolce1CProperties properties;
 
@@ -67,7 +67,6 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private final ProductMapper productMapper;
     private final ExternalOrderDataEnricher enricher;
     private final ObjectMapper objectMapper;
-
 
     @Override
     public List<OrderDto> findAllByShippingDate(LocalDate deliveryDate) {
@@ -103,7 +102,6 @@ public class GrandeDolceIntegrationService implements IntegrationService {
      */
     private ODataWrapperDto<ODataOrderDto> getOrders(LocalDate deliveryDate) {
         URI orderUri = buildOrderUri(createOrderByDateFilter(deliveryDate.atStartOfDay().toString()));
-
         return fetchMockDataByRequest(orderUri, new TypeReference<>() {
                 },
                 () -> webClient.get()
@@ -231,7 +229,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private <T> ODataWrapperDto<T> fetchMockDataByRequest(URI integrationServiceUri,
                                                           TypeReference<ODataWrapperDto<T>> typeRef,
                                                           Supplier<ODataWrapperDto<T>> supplier) {
-        return Arrays.stream(mockFiles)
+        return Arrays.stream(mockedResponses)
                 .filter(resource -> Objects.nonNull(resource.getFilename()))
                 .filter(resource -> checkIfMockResourceMathRequest(integrationServiceUri, resource))
                 .findFirst()

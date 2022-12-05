@@ -10,7 +10,6 @@ import com.goodspartner.entity.Car;
 import com.goodspartner.entity.User;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
 
 @Import(TestConfigurationToCountAllQueries.class)
 @DBRider
-@Disabled
 class DefaultCarServiceITest extends AbstractBaseITest {
 
     private static final int CAR_ID = 1;
@@ -29,15 +27,15 @@ class DefaultCarServiceITest extends AbstractBaseITest {
     private DefaultCarService carService;
 
     @Test
-    @DataSet(value = "common/car/dataset_cars.yml",
+    @DataSet(value = "/datasets/common/car/dataset_cars.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("validate Queries After Add Car")
     void validateQueriesAfterAddCar() {
         SQLStatementCountValidator.reset();
 
-        UserDto userDto = new UserDto(555,
-                "Roman Levchenko",
-                "userEmail@gmail",
+        UserDto userDto = new UserDto(1,
+                "Oleg Dudka",
+                "test-driver@gmail.com",
                 User.UserRole.DRIVER.getName(),
                 true);
 
@@ -51,7 +49,7 @@ class DefaultCarServiceITest extends AbstractBaseITest {
 
         carService.add(carDto);
 
-        assertSelectCount(1);
+        assertSelectCount(2); // Validated Select for car + Select for Users
     }
 
     @Test
@@ -79,12 +77,12 @@ class DefaultCarServiceITest extends AbstractBaseITest {
     }
 
     @Test
-    @DataSet(value = "common/car/dataset_cars.yml",
+    @DataSet(value = "/datasets/common/car/dataset_cars.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("validate Queries AfterUpdate Car Status")
     void validateQueries_afterUpdateCarStatus() {
         // Given
-        Car carBefore = carService.findById(1);
+        Car carBefore = carService.findById(CAR_ID);
         Assertions.assertEquals("Mercedes Sprinter", carBefore.getName());
         Assertions.assertEquals("AA 1111 CT", carBefore.getLicencePlate());
         Assertions.assertEquals("Oleg Dudka", carBefore.getDriver().getUserName());
@@ -96,7 +94,7 @@ class DefaultCarServiceITest extends AbstractBaseITest {
         // When
         UserDto userDto = new UserDto(555,
                 "Vasya Pupkin",
-                "userEmail@gmail",
+                "userEmail@gmail.com",
                 User.UserRole.DRIVER.getName(),
                 true);
 

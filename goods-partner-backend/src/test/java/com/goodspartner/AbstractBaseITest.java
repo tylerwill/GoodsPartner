@@ -1,6 +1,7 @@
 package com.goodspartner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @SpringBootTest
 @Testcontainers
@@ -22,9 +24,6 @@ import java.nio.charset.StandardCharsets;
 public class AbstractBaseITest {
 
     private static final PostgreSQLContainer<?> POSTGRES_SQL_CONTAINER;
-
-    @Autowired
-    protected ObjectMapper objectMapper;
 
     static {
         POSTGRES_SQL_CONTAINER =
@@ -34,6 +33,9 @@ public class AbstractBaseITest {
                         .withPassword("test");
         POSTGRES_SQL_CONTAINER.start();
     }
+
+    @Autowired
+    protected ObjectMapper objectMapper;
 
     @DynamicPropertySource
     public static void overrideProps(DynamicPropertyRegistry registry) {
@@ -48,6 +50,19 @@ public class AbstractBaseITest {
             return FileUtils.readFileToString(new File(resource.toURI()), StandardCharsets.UTF_8);
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException("Unable to find file: " + jsonPath);
+        }
+    }
+
+    protected <T> List<T> getMockedListObjects(String mockPath, Class<T> contentClass) {
+        URL resource = getClass().getClassLoader().getResource(mockPath);
+        try {
+            String fileContent = FileUtils.readFileToString(new File(resource.toURI()), StandardCharsets.UTF_8);
+            return objectMapper.readValue(fileContent,
+                    TypeFactory
+                            .defaultInstance()
+                            .constructParametricType(List.class, contentClass));
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException("Unable to find file: " + mockPath);
         }
     }
 }

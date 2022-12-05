@@ -60,7 +60,7 @@
       "products": "[{\"amount\": 1, \"storeName\": \"Склад №1\",  \"unitWeight\": 3200,   \"productName\": \"715050B Форми тюльпани 150/50 Коричневі (3200 шт)\",\"totalProductWeight\": 1500}]",
       "ref_key": "18ee46a5-8e41-11ec-b3ce-00155dd72305",
       "comment": "some-test-comment",
-      "delivery_id": "70574dfd-48a3-40c7-8b0c-3e5defe7d080",
+      "delivery_id": "70574dfd-48a3-40c7-8b0c-3e5defe7d081",
       "car_load_id": null,
       "excluded": false,
       "dropped": false,
@@ -134,6 +134,16 @@
       "address": "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
       "latitude": 50.08,
       "longitude": 29.89
+    }
+  ],
+
+  "users": [
+    {
+      "id": 1,
+      "user_name": "Test Logist",
+      "email": "test-logist@gmail.com",
+      "role": "LOGISTICIAN",
+      "enabled": true
     }
   ]
 }

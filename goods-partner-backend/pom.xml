@@ -314,6 +314,19 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M7</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -325,7 +338,7 @@
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.7</version>
+                        <version>0.8.8</version>
                         <executions>
                             <execution>
                                 <id>prepare-agent</id>
@@ -347,14 +360,14 @@
                         </executions>
                         <configuration>
                             <excludes>
+                                <exclude>com/goodspartner/configuration/**/*.class</exclude>
                                 <exclude>com/goodspartner/dto/**/*.class</exclude>
                                 <exclude>com/goodspartner/entity/**/*.class</exclude>
                                 <exclude>com/goodspartner/exceptions/**/*.class</exclude>
                                 <exclude>com/goodspartner/repository/**/*.class</exclude>
-                                <exclude>com/goodspartner/web/config/**/*.class</exclude>
-                                <exclude>com/goodspartner/web/controller/response/**/*.class</exclude>
-                                <exclude>com/goodspartner/web/RestResponseEntityExceptionHandler.class</exclude>
                                 <exclude>com/goodspartner/service/dto/**/*.class</exclude>
+                                <exclude>com/goodspartner/web/controller/response/**/*.class</exclude>
+                                <exclude>com/goodspartner/web/handler</exclude>
                             </excludes>
                         </configuration>
                     </plugin>

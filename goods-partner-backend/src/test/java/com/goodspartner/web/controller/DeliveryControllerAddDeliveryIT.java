@@ -63,7 +63,7 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
         TestConfigurationToCountAllQueries.class
 })
 @AutoConfigureMockMvc
-public class DeliveryControllerIT extends AbstractWebITest {
+public class DeliveryControllerAddDeliveryIT extends AbstractWebITest {
 
     private static final String INTEGRATION_SERVICE_VARIOUS_ORDERS_MOCK_PATH = "mock/integration/mock-integration-service-return-various-orders.json";
     private static final String INTEGRATION_SERVICE_KNOWN_ORDERS_MOCK_PATH = "mock/integration/mock-integration-service-return-known-orders.json";

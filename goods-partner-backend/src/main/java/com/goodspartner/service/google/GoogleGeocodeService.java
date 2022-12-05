@@ -38,15 +38,14 @@ public class GoogleGeocodeService implements GeocodeService {
     }
 
     private void enrichAddress(OrderDto orderDto) {
-        String orderAddress = orderDto.getAddress();
         OrderAddressId externalAddressId = OrderAddressId.builder()
-                .orderAddress(orderAddress)
+                .orderAddress(orderDto.getAddress())
                 .clientName(orderDto.getClientName())
                 .build();
 
         MapPoint mapPoint = addressExternalRepository.findById(externalAddressId)
                 .map(this::map)
-                .orElseGet(() -> autovalidate(orderAddress));
+                .orElseGet(() -> autovalidate(orderDto));
 
         orderDto.setMapPoint(mapPoint);
     }
@@ -60,7 +59,8 @@ public class GoogleGeocodeService implements GeocodeService {
                 .build();
     }
 
-    private MapPoint autovalidate(String orderAddress) {
+    private MapPoint autovalidate(OrderDto orderDto) {
+        String orderAddress = orderDto.getAddress();
         GeocodingResult[] geocodingResults = googleClient.getGeocodingResults(orderAddress);
         if (geocodingResults == null || geocodingResults.length == 0) { // Nothing found
             return MapPoint.builder()

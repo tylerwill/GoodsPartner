@@ -1,0 +1,38 @@
+[
+  {
+    "id":1,
+    "refKey":"b5619e6b-8d72-11ec-b3ce-00155dd72305",
+    "orderNumber":"00000003433",
+    "comment":null,
+    "managerFullName":"Крамаренко Леся                                   ",
+    "deliveryId":"70574dfd-48a3-40c7-8b0c-3e5defe7d080",
+    "deliveryType":"REGULAR",
+    "excluded":false,
+    "dropped":false,
+    "shippingDate":"2022-02-14",
+    "rescheduleDate":"2022-02-17",
+    "deliveryStart":null,
+    "deliveryFinish":null,
+    "clientName":"Новус Україна ТОВ",
+    "address":"м.Київ провулок Політехнічний 1/33",
+    "mapPoint":{
+      "address":"провулок Політехнічний, 1, Київ, Україна, 02000",
+      "latitude":50.4504636,
+      "longitude":30.4667037,
+      "status":"AUTOVALIDATED"
+    },
+    "products":[
+      {
+        "productName":"271008240 Тарілка Камінь Сіра 24*24 (80 шт) 271/24",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":8.0,
+        "totalProductWeight":999.0,
+        "coefficient":0.0,
+        "measure":null
+      }
+    ],
+    "orderWeight":999.0,
+    "frozen":false
+  }
+]

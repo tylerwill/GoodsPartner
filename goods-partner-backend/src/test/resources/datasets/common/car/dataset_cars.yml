@@ -7,10 +7,17 @@ CARS:
     AVAILABLE: TRUE
     TRAVEL_COST: 10
     DELETED: FALSE
+    USER_ID: 1
 
 USERS:
   - ID: 1
     USER_NAME: "Oleg Dudka"
     EMAIL: "test-driver@gmail.com"
+    ROLE: "DRIVER"
+    ENABLED: "true"
+
+  - ID: 555
+    USER_NAME: "Vasya Pupkin"
+    EMAIL: "userEmail@gmail.com"
     ROLE: "DRIVER"
     ENABLED: "true"

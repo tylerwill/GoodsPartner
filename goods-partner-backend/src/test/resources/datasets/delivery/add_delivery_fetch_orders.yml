@@ -27,3 +27,12 @@ GRANDEDOLCE_ADDRESSES:
     VALID_ADDRESS: "вулиця Єлизавети Чавдар, 36, Київ, Україна, 02000"
     LATITUDE: 50.3910679000000
     LONGITUDE: 30.6265536000000
+    STATUS: AUTOVALIDATED
+
+  - ORDER_ADDRESS: "Київ, вулиця Незалежності 105"
+    CLIENT_NAME: "Фоззі-Фуд"
+    VALID_ADDRESS: "вулиця Незалежності, 105, м.Київ, Україна, 07400"
+    LATITUDE: 49.3910679000000
+    LONGITUDE: 31.6265536000000
+    STATUS: KNOWN
+

@@ -36,18 +36,19 @@ public class CarControllerITest extends AbstractWebITest {
 
     private static final LocalDateTime DATE_TIME = LocalDateTime.of(2022, 5, 5, 14, 35);
     private final Location location = new Location(25.323434, 20.323434, DATE_TIME);
+
     @Autowired
     private CarLocationCache carLocationCache;
 
     @Test
-    @DataSet(value = "datasets/common/car/dataset_cars.yml", disableConstraints = true)
+    @DataSet(value = "datasets/common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Add The First Car then Added Car and Ok Status Returned")
     void whenAddTheFirstCar_thenAddedCar_andOkStatusReturned() throws Exception {
-        // TODO builder
-
+        // TODO request json
         UserDto userDto = new UserDto(1,
-                "Ivan Kornienko",
-                "user-testEmail@gmail",
+                "Oleg Dudka",
+                "test-driver@gmail.com",
                 User.UserRole.DRIVER.getName(),
                 true);
 
@@ -66,13 +67,13 @@ public class CarControllerITest extends AbstractWebITest {
                         .content(objectMapper.writeValueAsString(carDto)))
                 .andExpect(content()
                         .json("""
-                                {                        
+                                {
                                  "name":"MAN",
                                  "licencePlate":"AA 2455 CT",
                                  "driver":{
                                     "id":1,
-                                    "userName":"Ivan Kornienko",
-                                    "email":"user-testEmail@gmail",
+                                    "userName":"Oleg Dudka",
+                                    "email":"test-driver@gmail.com",
                                     "role":"DRIVER",
                                     "enabled":true
                                     },
@@ -85,14 +86,15 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "common/car/dataset_cars.yml", disableConstraints = true)
+    @DataSet(value = "common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/car/dataset_update_car.yml")
     @DisplayName("when Update Car then Updated Car and Ok Status Returned")
     void whenUpdateCar_thenUpdatedCar_andOkStatusReturned() throws Exception {
 
-        UserDto userDto = new UserDto(1,
+        UserDto userDto = new UserDto(555,
                 "Vasya Pupkin",
-                "user-testEmail@gmail",
+                "userEmail@gmail.com",
                 User.UserRole.DRIVER.getName(),
                 true);
 
@@ -116,9 +118,9 @@ public class CarControllerITest extends AbstractWebITest {
                                  "name":"Mazda CX5",
                                  "licencePlate":"AA 2244 CT",
                                  "driver":{
-                                    "id":1,
+                                    "id":555,
                                     "userName":"Vasya Pupkin",
-                                    "email":"user-testEmail@gmail",
+                                    "email":"userEmail@gmail.com",
                                     "role":"DRIVER",
                                     "enabled":true
                                     },
@@ -131,7 +133,8 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "common/car/dataset_cars.yml", disableConstraints = true)
+    @DataSet(value = "common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Delete Car With Incorrect Id then Bad Request Return")
     void whenDeleteCar_withIncorrectId_thenBadRequestReturn() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/cars/incorrectId")
@@ -140,7 +143,8 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "common/car/dataset_add_car.yml", disableConstraints = true)
+    @DataSet(value = "common/car/dataset_add_car.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/car/dataset_delete_cars.yml")
     @DisplayName("when Delete Car then Ok Status Returned")
     void whenDeleteCar_thenOkStatusReturned() throws Exception {
@@ -150,7 +154,8 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "common/car/dataset_cars.yml", disableConstraints = true)
+    @DataSet(value = "common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/car/dataset_cars.yml")
     @DisplayName("given Not Existing Id when Delete By Id then Exception Thrown")
     void givenNotExistingId_whenDeleteById_thenExceptionThrown() {
@@ -161,7 +166,8 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "common/car/dataset_cars.yml", disableConstraints = true)
+    @DataSet(value = "common/car/dataset_cars.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/car/dataset_cars.yml")
     @DisplayName("given Not Existing Id when Update Car Status By Id then Exception Thrown")
     void givenNotExistingId_whenUpdateCarStatusById_thenExceptionThrown() throws Exception {
@@ -174,7 +180,8 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "common/car/dataset_add_car.yml", disableConstraints = true)
+    @DataSet(value = "common/car/dataset_add_car.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/car/dataset_add_car.yml")
     @DisplayName("when Get All Cars then Ok Status Returned")
     void whenGetAllCars_thenOkStatusReturned() throws Exception {
@@ -217,7 +224,8 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "common/car/dataset_add_car.yml", disableConstraints = true)
+    @DataSet(value = "common/car/dataset_add_car.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/car/dataset_add_car.yml")
     @DisplayName("when Get Car By Id then Ok Status Returned")
     void whenGetCarById_thenOkStatusReturned() throws Exception {
