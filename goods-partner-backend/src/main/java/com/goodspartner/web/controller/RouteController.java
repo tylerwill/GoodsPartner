@@ -47,14 +47,14 @@ public class RouteController {
                 .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
     @PostMapping("/{id}/{action}")
     public RouteActionResponse apply(@PathVariable int id,
                                      @PathVariable String action) {
         return routeService.updateRoute(id, RouteAction.of(action));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
     @PutMapping("/{routeId}/reorder")
     public void reorderRoutePoints(@PathVariable long routeId,
                                    @RequestBody LinkedList<RoutePointDto> routePointDtos) {

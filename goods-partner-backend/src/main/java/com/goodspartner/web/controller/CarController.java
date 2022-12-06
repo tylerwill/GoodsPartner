@@ -22,7 +22,7 @@ public class CarController {
 
     private final CarMapper carMapper;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'LOGISTICIAN')")
     @GetMapping
     @ApiOperation(value = "Get all Cars",
             notes = "Return list of CarDto",
@@ -31,7 +31,7 @@ public class CarController {
         return carService.findAll();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
     @GetMapping("/{id}")
     @ApiOperation(value = "Find Car by id",
             notes = "Provide an id to look up specific car",
@@ -41,7 +41,7 @@ public class CarController {
         return carMapper.toCarDto(carService.findById(id));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @PostMapping()
     @ApiOperation(value = "Add car")
     public CarDto add(@ApiParam(value = "CarDto that you want to add", type = "CarDto", required = true)
@@ -49,7 +49,7 @@ public class CarController {
         return carService.add(car);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @PutMapping("/{id}")
     @ApiOperation(value = "Edit Car",
             notes = "Provide an id to edit up specific car")
@@ -60,7 +60,7 @@ public class CarController {
         return carService.update(id, car);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @DeleteMapping("{id}")
     @ApiOperation(value = "Remove Car by id",
             notes = "Provide an id to remove up specific car")
@@ -69,7 +69,7 @@ public class CarController {
         carService.delete(id);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @PutMapping("/{id}/location")
     @ApiOperation(value = "Save car location",
             notes = "Provide an id to save the location of the car")
@@ -80,7 +80,7 @@ public class CarController {
         carService.saveCarLocation(id, location);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @GetMapping("/{id}/location")
     @ApiOperation(value = "Get car location",
             notes = "Provide an id to determine the location of the car")

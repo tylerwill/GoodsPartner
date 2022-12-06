@@ -27,7 +27,7 @@ public class RoutePointController {
 
     private final OrderExternalMapper orderExternalMapper;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
     @PostMapping("/{routePointId}/{action}")
     public RoutePointActionResponse apply(@PathVariable long routePointId,
                                           @PathVariable String action) {

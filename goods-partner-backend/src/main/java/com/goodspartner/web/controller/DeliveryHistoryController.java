@@ -27,7 +27,7 @@ public class DeliveryHistoryController {
 
     private final DeliveryHistoryMapper deliveryHistoryMapper;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
     @GetMapping
     @ApiOperation(value = "value find Delivery by id",
             notes = "Provide an id to look up specific Delivery",

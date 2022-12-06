@@ -27,7 +27,7 @@ public class CarLoadController {
 
     private final CarLoadMapper carLoadMapper;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
     @GetMapping
     @ApiOperation(value = "Find CarLoad by delivery id",
             response = CarLoadDto.class)

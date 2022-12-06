@@ -22,7 +22,7 @@ public class ShippingController {
 
     private final ShippingService shippingService;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
     @GetMapping
     @ApiOperation(value = "value find Delivery by id",
             notes = "Provide an id to look up specific Delivery",

@@ -30,7 +30,7 @@ public class LiveEventController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'LOGISTICIAN')")
     @ApiOperation(
             value = "Live server-sent events",
             notes = "Stream of events"

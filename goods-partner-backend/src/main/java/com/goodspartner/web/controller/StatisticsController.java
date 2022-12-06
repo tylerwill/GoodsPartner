@@ -20,7 +20,7 @@ public class StatisticsController {
 
     private final StatisticsService statisticsService;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @GetMapping("/statistics/deliveries")
     @ApiOperation(value = "Get statistics for date range",
             notes = "Return StatisticsCalculation object",
@@ -36,7 +36,7 @@ public class StatisticsController {
                 .getStatistics(LocalDate.parse(dateFrom), LocalDate.parse(dateTo));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @GetMapping("/statistics/cars/{id}")
     @ApiOperation(value = "Get statistics for date range for selected car",
             notes = "Return CarStatisticsCalculation object",
@@ -53,7 +53,7 @@ public class StatisticsController {
                 .getCarStatistics(LocalDate.parse(dateFrom), LocalDate.parse(dateTo), id);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @GetMapping("/daily-statistics/cars/{id}")
     @ApiOperation(value = "Get statistics for date for selected car",
             notes = "Return DailyCarStatisticsCalculation object",
