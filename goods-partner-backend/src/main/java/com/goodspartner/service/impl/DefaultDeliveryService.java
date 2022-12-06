@@ -52,7 +52,7 @@ public class DefaultDeliveryService implements DeliveryService {
 
     private List<Delivery> findDeliveriesByDriver(User driver) {
         Car car = carRepository.findCarByDriver(driver);
-        return deliveryRepository.findDeliveriesByCar(car, DEFAULT_DELIVERY_SORT);
+        return deliveryRepository.findDeliveriesByCarAndStatus(car, DEFAULT_DELIVERY_SORT);
     }
 
     @Override

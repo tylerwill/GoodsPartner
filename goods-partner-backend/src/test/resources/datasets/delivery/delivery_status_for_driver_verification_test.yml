@@ -1,0 +1,180 @@
+GRANDEDOLCE_ORDERS:
+  - ID: 1
+    REF_KEY: "f6f73d76-8005-11ec-b3ce-00155dd72305"
+    ORDER_NUMBER: "00000002055"
+    SHIPPING_DATE: "2022-01-28"
+    RESCHEDULE_DATE: "2022-01-29"
+    COMMENT: "реп"
+    MANAGER: "Наталія Рябченко"
+    IS_FROZEN: false
+    DELIVERY_START: "11:00:00"
+    DELIVERY_FINISH: "13:00:00"
+    CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
+    ADDRESS: "вул.Єлізавети Чавдар, буд.36"
+    PRODUCTS: "[{\"amount\": 1, \"measure\": \"кг\", \"storeName\": \"Склад №1\", \"unitWeight\": 12.0, \"coefficient\": 1.0, \"productName\": \"Наповнювач фруктово-ягідний (декоргель) (12 кг)\", \"totalProductWeight\": 12.0}]"
+    ORDER_WEIGHT: 12.00
+    DELIVERY_ID: "00000000-0000-0000-0000-000000000111"
+    CAR_LOAD_ID: "00000000-0000-0000-0000-000000000111"
+
+  - ID: 2
+    REF_KEY: "f6f73d76-8005-11ec-b3ce-00155dd72305"
+    ORDER_NUMBER: "00000002066"
+    SHIPPING_DATE: "2022-01-29"
+    RESCHEDULE_DATE: "2022-01-30"
+    COMMENT: "реп"
+    MANAGER: "Наталія Рябченко"
+    IS_FROZEN: false
+    DELIVERY_START: "11:00:00"
+    DELIVERY_FINISH: "13:00:00"
+    CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
+    ADDRESS: "вул.Єлізавети Чавдар, буд.36"
+    PRODUCTS: "[{\"amount\": 1, \"measure\": \"кг\", \"storeName\": \"Склад №1\", \"unitWeight\": 12.0, \"coefficient\": 1.0, \"productName\": \"Наповнювач фруктово-ягідний (декоргель) (12 кг)\", \"totalProductWeight\": 12.0}]"
+    ORDER_WEIGHT: 12.00
+    DELIVERY_ID: "00000000-0000-0000-0000-000000000222"
+    CAR_LOAD_ID: "00000000-0000-0000-0000-000000000222"
+
+  - ID: 3
+    REF_KEY: "f6f73d76-8005-11ec-b3ce-00155dd72305"
+    ORDER_NUMBER: "00000002066"
+    SHIPPING_DATE: "2022-01-30"
+    RESCHEDULE_DATE: "2022-01-31"
+    COMMENT: "реп"
+    MANAGER: "Наталія Рябченко"
+    IS_FROZEN: false
+    DELIVERY_START: "11:00:00"
+    DELIVERY_FINISH: "13:00:00"
+    CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
+    ADDRESS: "вул.Єлізавети Чавдар, буд.36"
+    PRODUCTS: "[{\"amount\": 1, \"measure\": \"кг\", \"storeName\": \"Склад №1\", \"unitWeight\": 12.0, \"coefficient\": 1.0, \"productName\": \"Наповнювач фруктово-ягідний (декоргель) (12 кг)\", \"totalProductWeight\": 12.0}]"
+    ORDER_WEIGHT: 12.00
+    DELIVERY_ID: "00000000-0000-0000-0000-000000000333"
+    CAR_LOAD_ID: "00000000-0000-0000-0000-000000000333"
+
+
+GRANDEDOLCE_ADDRESSES:
+  - ORDER_ADDRESS: "вул.Єлізавети Чавдар, буд.36"
+    CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
+    VALID_ADDRESS: "вулиця Єлизавети Чавдар, 36, Київ, Україна, 02000"
+    LATITUDE: 50.3910679000000
+    LONGITUDE: 30.6265536000000
+
+DELIVERIES:
+  - ID: "00000000-0000-0000-0000-000000000111"
+    DELIVERY_DATE: "2022-08-21"
+    STATUS: DRAFT
+    DELETED: FALSE
+    ROUTE_COUNT: 1
+    FORMATION_STATUS: "ORDERS_LOADED"
+    ORDER_COUNT: 1
+
+  - ID: "00000000-0000-0000-0000-000000000222"
+    DELIVERY_DATE: "2022-08-22"
+    STATUS: APPROVED
+    DELETED: FALSE
+    ROUTE_COUNT: 1
+    FORMATION_STATUS: "READY_FOR_CALCULATION"
+    ORDER_COUNT: 1
+
+  - ID: "00000000-0000-0000-0000-000000000333"
+    DELIVERY_DATE: "2022-08-23"
+    STATUS: COMPLETED
+    DELETED: FALSE
+    ROUTE_COUNT: 1
+    FORMATION_STATUS: "CALCULATION_COMPLETED"
+    ORDER_COUNT: 1
+
+ROUTES:
+  - ID: 1
+    STATUS: DRAFT
+    DISTANCE: 167.71
+    START_TIME: "2022-08-21 11:00:00"
+    FINISH_TIME: "2022-08-21 13:00:00"
+    TOTAL_WEIGHT: 12.00
+    TOTAL_POINTS: 0
+    TOTAL_ORDERS: 1
+    ESTIMATED_TIME: 100
+    SPENT_TIME: 100
+    OPTIMIZATION: TRUE
+    DELIVERY_ID: "00000000-0000-0000-0000-000000000111"
+    CAR_ID: 1
+    STORE_ID: "00000000-0000-0000-0000-000000000111"
+
+  - ID: 2
+    STATUS: APPROVED
+    DISTANCE: 167.71
+    START_TIME: "2022-08-21 11:00:00"
+    FINISH_TIME: "2022-08-21 13:00:00"
+    TOTAL_WEIGHT: 12.00
+    TOTAL_POINTS: 0
+    TOTAL_ORDERS: 1
+    ESTIMATED_TIME: 100
+    SPENT_TIME: 100
+    OPTIMIZATION: TRUE
+    DELIVERY_ID: "00000000-0000-0000-0000-000000000222"
+    CAR_ID: 1
+    STORE_ID: "00000000-0000-0000-0000-000000000222"
+
+  - ID: 3
+    STATUS: COMPLETED
+    DISTANCE: 167.71
+    START_TIME: "2022-08-21 11:00:00"
+    FINISH_TIME: "2022-08-21 13:00:00"
+    TOTAL_WEIGHT: 12.00
+    TOTAL_POINTS: 0
+    TOTAL_ORDERS: 1
+    ESTIMATED_TIME: 100
+    SPENT_TIME: 100
+    OPTIMIZATION: TRUE
+    DELIVERY_ID: "00000000-0000-0000-0000-000000000333"
+    CAR_ID: 1
+    STORE_ID: "00000000-0000-0000-0000-000000000333"
+
+CARS:
+  - ID: 1
+    NAME: "Mercedes Sprinter"
+    LICENCE_PLATE: "AA 1111 CT"
+    WEIGHT_CAPACITY: 3000
+    COOLER: FALSE
+    AVAILABLE: TRUE
+    TRAVEL_COST: 10
+    DELETED: FALSE
+    USER_ID: 1
+
+USERS:
+  - ID: 1
+    USER_NAME: "Test Driver"
+    EMAIL: "test-driver@gmail.com"
+    ROLE: "DRIVER"
+    ENABLED: TRUE
+
+STORE:
+  - ID: "00000000-0000-0000-0000-000000000111"
+    NAME: "Склад №1"
+    ADDRESS: "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна"
+    LATITUDE: 50.08
+    LONGITUDE: 29.89
+
+  - ID: "00000000-0000-0000-0000-000000000222"
+    NAME: "Склад №2"
+    ADDRESS: "20, Апельсинова вулиця, Київ, 08500, Україна"
+    LATITUDE: 70.10
+    LONGITUDE: 30.80
+
+  - ID: "00000000-0000-0000-0000-000000000333"
+    NAME: "Склад №3"
+    ADDRESS: "25, Кипарисова вулиця, Вишгород, 08500, Україна"
+    LATITUDE: 20.08
+    LONGITUDE: 60.89
+
+CAR_LOADS:
+  - ID: "00000000-0000-0000-0000-000000000111"
+    DELIVERY_ID: "00000000-0000-0000-0000-000000000111"
+    CAR_ID: 1
+
+  - ID: "00000000-0000-0000-0000-000000000222"
+    DELIVERY_ID: "00000000-0000-0000-0000-000000000222"
+    CAR_ID: 1
+
+  - ID: "00000000-0000-0000-0000-000000000333"
+    DELIVERY_ID: "00000000-0000-0000-0000-000000000333"
+    CAR_ID: 1

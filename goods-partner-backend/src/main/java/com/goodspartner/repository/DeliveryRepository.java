@@ -30,6 +30,7 @@ public interface DeliveryRepository extends JpaRepository<Delivery, UUID> {
     @Query("SELECT d FROM Delivery d WHERE d.id = :id")
     Optional<Delivery> findByIdWithOrders(UUID id);
 
-    @Query("SELECT d FROM Delivery d JOIN d.carLoads c WHERE c.car = :car")
-    List<Delivery> findDeliveriesByCar(@Param("car") Car car, Sort sortByDeliveryDate);
+    @Query("SELECT d FROM Delivery d JOIN d.carLoads c WHERE c.car = :car " +
+            "AND d.status = 'APPROVED' OR d.status = 'COMPLETED'")
+    List<Delivery> findDeliveriesByCarAndStatus(@Param("car") Car car, Sort sortByDeliveryDate);
 }
