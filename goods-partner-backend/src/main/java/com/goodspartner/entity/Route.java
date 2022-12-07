@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -49,6 +50,7 @@ public class Route {
     private Boolean optimization;
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
+    @OrderBy("expectedCompletion ASC")
     private List<RoutePoint> routePoints = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,0 +1,92 @@
+{
+  "grandedolce_addresses": [
+    {
+      "order_address": "вул.Велика Васильківська, 85-87 (через арку)",
+      "client_name": "Міа Кучіна ТОВ бн ( Істмен)",
+      "valid_address": "Велика Васильківська, 85-87, Київ, Україна, 02000",
+      "latitude": 50.4254956,
+      "longitude": 30.5182225,
+      "status": null
+    },
+    {
+      "order_address": "Київ, вул. Б. Хмеьницького, 40   Тетяна, 050-775-99-40",
+      "client_name": "Лила Кейк ",
+      "valid_address": "вулиця Богдана Хмельницького, 40, Київ, Україна, 02000",
+      "latitude": 50.4469685,
+      "longitude": 30.50906,
+      "status": null
+    },
+    {
+      "order_address": " м. Київ,  вул. Радунська, 40",
+      "client_name": "ЕКО ТОВ",
+      "valid_address": "вулиця Радунська, 40, Київ, Україна, 02000",
+      "latitude": 50.5301869,
+      "longitude": 30.6007786,
+      "status": null
+    },
+    {
+      "order_address": "вул. Воскресенська, 14Д (ЖК Паркові озера)",
+      "client_name": "Світ Кенді (бн) ТОВ \"БІНС-13\"",
+      "valid_address": "вулиця Воскресенська, 14Д, Київ, Україна, 02000",
+      "latitude": 50.4681723,
+      "longitude": 30.6042143,
+      "status": null
+    }
+  ],
+  "store": [
+    {
+      "id": "5688492e-ede4-45d3-923b-5f9773fd3d4b",
+      "name": "Склад №1",
+      "address": "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
+      "latitude": 50.08,
+      "longitude": 29.89
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "user_name": "Test Logist",
+      "email": "test-logist@gmail.com",
+      "role": "LOGISTICIAN",
+      "enabled": true
+    },
+    {
+      "id": 2,
+      "user_name": "Test Driver",
+      "email": "test-driver@gmail.com",
+      "role": "DRIVER",
+      "enabled": true
+    },
+    {
+      "id": 3,
+      "user_name": "Test Fake Driver",
+      "email": "test-fake-driver@gmail.com",
+      "role": "DRIVER",
+      "enabled": true
+    }
+  ],
+  "cars": [
+    {
+      "id": 151,
+      "name": "Mercedes Vito",
+      "licence_plate": "AA 2222 CT",
+      "weight_capacity": 1000,
+      "cooler": false,
+      "available": true,
+      "travel_cost": 10,
+      "deleted": false,
+      "user_id": 2
+    },
+    {
+      "id": 152,
+      "name": "Mercedes Vito",
+      "licence_plate": "AA 3333 CT",
+      "weight_capacity": 1000,
+      "cooler": false,
+      "available": true,
+      "travel_cost": 10,
+      "deleted": false,
+      "user_id": 3
+    }
+  ]
+}

@@ -49,7 +49,7 @@ public class RouteController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
     @PostMapping("/{id}/{action}")
-    public RouteActionResponse apply(@PathVariable int id,
+    public RouteActionResponse apply(@PathVariable long id,
                                      @PathVariable String action) {
         return routeService.updateRoute(id, RouteAction.of(action));
     }

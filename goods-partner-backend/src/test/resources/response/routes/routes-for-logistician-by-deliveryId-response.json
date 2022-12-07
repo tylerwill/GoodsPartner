@@ -1,0 +1,160 @@
+[
+  {
+    "id": 1002,
+    "status": "APPROVED",
+    "totalWeight": 24.0,
+    "totalPoints": 3,
+    "totalOrders": 3,
+    "distance": 179.53,
+    "estimatedTime": 230,
+    "startTime": null,
+    "finishTime": null,
+    "spentTime": 0,
+    "optimization": true,
+    "routePoints": [
+      {
+        "id": 1052,
+        "status": "PENDING",
+        "clientName": null,
+        "address": null,
+        "addressTotalWeight": 15.0,
+        "routePointDistantTime": 0,
+        "completedAt": null,
+        "expectedArrival": "10:24",
+        "expectedCompletion": "10:39",
+        "deliveryStart": "09:00",
+        "deliveryEnd": "18:00",
+        "mapPoint": {
+          "address": "Велика Васильківська, 85-87, Київ, Україна, 02000",
+          "latitude": 50.4254956,
+          "longitude": 30.5182225,
+          "status": null
+        }
+      },
+      {
+        "id": 1053,
+        "status": "PENDING",
+        "clientName": null,
+        "address": null,
+        "addressTotalWeight": 6.0,
+        "routePointDistantTime": 0,
+        "completedAt": null,
+        "expectedArrival": "10:05",
+        "expectedCompletion": "10:20",
+        "deliveryStart": "09:00",
+        "deliveryEnd": "18:00",
+        "mapPoint": {
+          "address": "вулиця Богдана Хмельницького, 40, Київ, Україна, 02000",
+          "latitude": 50.4469685,
+          "longitude": 30.50906,
+          "status": null
+        }
+      },
+      {
+        "id": 1054,
+        "status": "PENDING",
+        "clientName": null,
+        "address": null,
+        "addressTotalWeight": 3.0,
+        "routePointDistantTime": 0,
+        "completedAt": null,
+        "expectedArrival": "09:30",
+        "expectedCompletion": "09:45",
+        "deliveryStart": "09:00",
+        "deliveryEnd": "18:00",
+        "mapPoint": {
+          "address": "вулиця Радунська, 40, Київ, Україна, 02000",
+          "latitude": 50.5301869,
+          "longitude": 30.6007786,
+          "status": null
+        }
+      }
+    ],
+    "car": {
+      "id": 151,
+      "name": "Mercedes Vito",
+      "licencePlate": "AA 2222 CT",
+      "driver": {
+        "id": 2,
+        "userName": "Test Driver",
+        "email": "test-driver@gmail.com",
+        "role": "DRIVER",
+        "enabled": true
+      },
+      "weightCapacity": 1000,
+      "cooler": false,
+      "available": true,
+      "travelCost": 10
+    },
+    "store": {
+      "name": "Склад №1",
+      "address": "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
+      "mapPoint": {
+        "address": "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
+        "latitude": 50.08,
+        "longitude": 29.89,
+        "status": "KNOWN"
+      }
+    }
+  },
+  {
+    "id": 1003,
+    "status": "APPROVED",
+    "totalWeight": 48.0,
+    "totalPoints": 1,
+    "totalOrders": 1,
+    "distance": 50.53,
+    "estimatedTime": 71,
+    "startTime": null,
+    "finishTime": null,
+    "spentTime": 0,
+    "optimization": true,
+    "routePoints": [
+      {
+        "id": 1055,
+        "status": "PENDING",
+        "clientName": null,
+        "address": null,
+        "addressTotalWeight": 48.0,
+        "routePointDistantTime": 0,
+        "completedAt": null,
+        "expectedArrival": "09:44",
+        "expectedCompletion": "09:59",
+        "deliveryStart": "09:00",
+        "deliveryEnd": "18:00",
+        "mapPoint": {
+          "address": "вулиця Воскресенська, 14Д, Київ, Україна, 02000",
+          "latitude": 50.4681723,
+          "longitude": 30.6042143,
+          "status": null
+        }
+      }
+    ],
+    "car": {
+      "id": 152,
+      "name": "Mercedes Vito",
+      "licencePlate": "AA 3333 CT",
+      "driver": {
+        "id": 3,
+        "userName": "Test Fake Driver",
+        "email": "test-fake-driver@gmail.com",
+        "role": "DRIVER",
+        "enabled": true
+      },
+      "weightCapacity": 1000,
+      "cooler": false,
+      "available": true,
+      "travelCost": 10
+    },
+    "store": {
+      "name": "Склад №1",
+      "address": "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
+      "mapPoint": {
+        "address": "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
+        "latitude": 50.08,
+        "longitude": 29.89,
+        "status": "KNOWN"
+      }
+    }
+  }
+]
