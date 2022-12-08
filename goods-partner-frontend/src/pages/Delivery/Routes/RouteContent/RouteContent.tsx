@@ -4,14 +4,24 @@ import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import RouteDetails from "./RouteDetails/RouteDetails";
 import RoutePointDetails from "./RoutePointDetails/RoutePointDetails";
+import {Route} from "../../../../model/Route";
+import {RoutePoint} from "../../../../model/RoutePoint";
 
-const RouteContent = ({deliveryDate, route, updateRoutePoint = ()=>{}, updateRoute= ()=>{}}) => {
+interface RouteContentProps {
+    deliveryDate: string,
+    route: Route,
+    updateRoutePoint: (point: RoutePoint) => void,
+    updateRoute: (route: Route) => void,
 
-    const updateRoutePointHandler = (routePointId, action) => {
+}
+
+const RouteContent = ({deliveryDate, route, updateRoutePoint, updateRoute}: RouteContentProps) => {
+
+    const updateRoutePointHandler = (routePoint: RoutePoint) => {
         if (route.status !== 'INPROGRESS') {
             alert('Зміна статусу неможлива. Маршрут завершенний або не розпочатий.');
         } else {
-            updateRoutePoint(route.id, routePointId, action);
+            updateRoutePoint(routePoint);
         }
     }
 
@@ -39,7 +49,6 @@ const RouteContent = ({deliveryDate, route, updateRoutePoint = ()=>{}, updateRou
                 Пункти призначення
             </Typography>
         </ListItem>
-
         {route.routePoints.map((routePoint, index) =>
             <ListItem
                 key={routePoint.id}>

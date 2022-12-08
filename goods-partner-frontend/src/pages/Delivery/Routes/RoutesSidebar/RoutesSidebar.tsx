@@ -3,8 +3,15 @@ import {ListItem, ListItemText, ListSubheader} from "@mui/material";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItemButton from "@mui/material/ListItemButton";
+import {Route} from "../../../../model/Route";
 
-const RoutesSidebar = ({routes, currentRoute, setCurrentRouteIndex}) => {
+interface RoutesSidebarProps {
+    routes: Array<Route>,
+    currentRoute: Route,
+    setCurrentRouteIndex: (index: number) => void
+}
+
+const RoutesSidebar = ({routes, currentRoute, setCurrentRouteIndex}: RoutesSidebarProps) => {
     return (
         <List
             sx={{
@@ -22,15 +29,19 @@ const RoutesSidebar = ({routes, currentRoute, setCurrentRouteIndex}) => {
             }
         >
             {
-                routes.map((route, index) => {
+                routes.map((route: Route, index: number) => {
                     const car = route.car;
-                    return (<React.Fragment key={"routeSidebar"  + route.id}>
+
+                    return (<React.Fragment key={"routeSidebar" + route.id}>
                         <Divider/>
                         <ListItem alignItems="flex-start"
                                   sx={{p: 0}}
                         >
-                            <ListItemButton onClick={()=> setCurrentRouteIndex(index)} selected={route.id === currentRoute.id}>
-                                <ListItemText primary={car.name + ", " + car.licencePlate} secondary={car.driver}/>
+                            <ListItemButton onClick={() => setCurrentRouteIndex(index)}
+                                            selected={route.id === currentRoute.id}>
+
+                                <ListItemText primary={car.name + ", " + car.licencePlate}
+                                              secondary={car.driver.userName}/>
                             </ListItemButton>
                         </ListItem>
                     </React.Fragment>)
@@ -42,3 +53,5 @@ const RoutesSidebar = ({routes, currentRoute, setCurrentRouteIndex}) => {
 }
 
 export default RoutesSidebar;
+
+// secondary={car.driver}

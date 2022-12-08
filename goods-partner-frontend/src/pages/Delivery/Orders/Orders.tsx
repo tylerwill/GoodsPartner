@@ -1,17 +1,16 @@
 import React, {useCallback} from "react";
 import {Box} from "@mui/material";
 import OrdersTable from "./OrdersContent/OrdersTable";
-import {
-    setOrderTabIndex,
-    updateAddressForOrder,
-    updateOrder
-} from "../../../features/currentDelivery/currentDeliverySlice";
+import {setOrderTabIndex} from "../../../features/currentDelivery/currentDeliverySlice";
 import BasicTabs from "../../../hoc/BasicTabs/BasicTabs";
 import {useParams} from "react-router-dom";
-import {useGetOrdersForDeliveryQuery} from "../../../api/orders/orders.api";
+import {useGetOrdersForDeliveryQuery, useUpdateOrderMutation} from "../../../api/orders/orders.api";
 import {useAppDispatch, useAppSelector} from "../../../hooks/redux-hooks";
 import {MapPointStatus} from "../../../model/MapPointStatus";
 import Order from "../../../model/Order";
+import ChooseAddressDialog from "./OrdersContent/ChooseAddressDialog/ChooseAddressDialog";
+import {DeliveryType} from "../../../model/DeliveryType";
+import Loading from "../../../components/Loading/Loading";
 
 
 const Orders = () => {
@@ -19,54 +18,50 @@ const Orders = () => {
 
     const {data: orders, isLoading, error} = useGetOrdersForDeliveryQuery(String(deliveryId));
 
+    const isOrderAddressDialogOpen = useAppSelector(state => state.deliveryOrders.isOrderAddressDialogOpen);
+
+    const [updateOrder] = useUpdateOrderMutation();
     const {orderTabIndex} = useAppSelector(state => state.currentDelivery);
     const dispatch = useAppDispatch();
 
-    const setOrdersTabHandler = useCallback((index: number) => dispatch(setOrderTabIndex(index)), []);
+    const setOrdersTabHandler = useCallback((index: number) => dispatch(setOrderTabIndex(index)), [dispatch]);
 
-    const updateOrderHandler = useCallback((updatedOrder: Order) => {
-        dispatch(updateOrder(updatedOrder));
-    }, []);
-
-    const updateOrderAddressHandler = useCallback((updatedAddressInfo: any) => {
-        dispatch(updateAddressForOrder(updatedAddressInfo));
-    }, []);
-
-    const [orderAddressDialogOpen, setOrderAddressDialogOpen] = React.useState(false);
-    const [editedOrder, setEditedOrder] = React.useState(null);
+    const updateOrderHandler = useCallback((updatedOrder: Order) => updateOrder(updatedOrder), [dispatch]);
 
     if (!orders) {
-        return <div>No orders</div>
+        return <Loading/>;
     }
 
-    const invalidOrders = orders ? orders
-        .filter(order => order.mapPoint.status === MapPointStatus.UNKNOWN) : [];
+    const invalidOrders = orders
+        .filter(order => order.deliveryType === DeliveryType.REGULAR)
+        .filter(order => order.mapPoint.status === MapPointStatus.UNKNOWN);
+
+    const excludedOrders = orders
+        .filter(order => order.excluded);
 
 
     const tabLabels = [
         {name: `Всі замовлення (${orders.length})`, enabled: true},
-        {name: `потребують уточнення (${invalidOrders.length})`, enabled: true}
+        {name: `Потребують уточнення (${invalidOrders.length})`, enabled: true},
+        {name: `Вилучені (${excludedOrders.length})`, enabled: true}
     ];
+
     return <Box sx={{padding: '0 24px'}}>
         <BasicTabs labels={tabLabels} setTabIndex={setOrdersTabHandler} tabIndex={orderTabIndex}>
             <OrdersTable orders={orders} keyPrefix={"all"}
-                         setEditedOrder={setEditedOrder}
                          updateOrder={updateOrderHandler}
-                         setOrderAddressDialogOpen={updateOrderAddressHandler}
             />
 
             <OrdersTable orders={invalidOrders} keyPrefix={"invalid"}
-                         setEditedOrder={setEditedOrder}
-                         updateOrder={updateOrderHandler}
-                         setOrderAddressDialogOpen={setOrderAddressDialogOpen}/>
+                         updateOrder={updateOrderHandler}/>
+
+            <OrdersTable orders={excludedOrders} keyPrefix={"excluded"}
+                         updateOrder={updateOrderHandler}/>
         </BasicTabs>
 
-        {/*{*/}
-        {/*    orderAddressDialogOpen && <ChooseAddressDialog open={orderAddressDialogOpen}*/}
-        {/*                                                   handleClose={() => setOrderAddressDialogOpen(false)}*/}
-        {/*                                                   order={editedOrder}*/}
-        {/*                                                   updateAddressForOrder={updateOrderAddressHandler}/>*/}
-        {/*}*/}
+        {
+            isOrderAddressDialogOpen && <ChooseAddressDialog/>
+        }
     </Box>
 }
 

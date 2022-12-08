@@ -14,9 +14,18 @@ import {Button, Collapse} from "@mui/material";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import UnfoldLessIcon from "@mui/icons-material/UnfoldLess";
 import TablePagination from "@mui/material/TablePagination";
+import {useParams} from "react-router-dom";
+import {useGetHistoryForDeliveryQuery} from "../../../api/history/history.api";
+import Loading from "../../../components/Loading/Loading";
+import {useGetShippingForDeliveryQuery} from "../../../api/shipping/shipping.api";
 
 
-const Shipping = ({productsShipping}) => {
+const Shipping = () => {
+    const {deliveryId} = useParams();
+
+    const {data: productsShipping, isLoading} = useGetShippingForDeliveryQuery(String(deliveryId));
+
+
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -50,6 +59,11 @@ const Shipping = ({productsShipping}) => {
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - productsShipping.length) : 0;
+
+
+    if (isLoading) {
+        return <Loading/>
+    }
 
     return <Box sx={{paddingLeft:'24px', paddingRight:'24px'}}>
         <Box sx={{display: "flex", justifyContent: 'flex-end', mb: 2}}>

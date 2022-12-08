@@ -37,8 +37,8 @@ export const deliveriesApi = createApi({
                 query: (id: string) => ({
                     url: `deliveries/${id}/calculate`,
                     method: 'POST'
-                }),
-                invalidatesTags: (result, error, id) => [{type: 'deliveries', id}],
+                })
+            //    TODO: think about cache invalidation
             }),
         }),
     }

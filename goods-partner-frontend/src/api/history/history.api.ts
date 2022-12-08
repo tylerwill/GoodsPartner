@@ -1,29 +1,27 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 import {apiUrl} from "../../util/util";
-import {Route} from "../../model/Route";
+import {DeliveryHistory} from "../../model/DeliveryHistory";
 
-type RoutesResponse = Route[];
+type DeliveryHistoryResponse = DeliveryHistory[];
 
 
-export const routesApi = createApi({
-    reducerPath: 'routesApi',
-    tagTypes: ['routes'],
+export const historyApi = createApi({
+    reducerPath: 'historyApi',
+    tagTypes: ['history'],
     baseQuery: fetchBaseQuery({
         baseUrl: apiUrl(),
         credentials: "include",
     }),
     endpoints: (builder) => ({
-        getRoutesForDelivery: builder.query<RoutesResponse, string>({
+        getHistoryForDelivery: builder.query<DeliveryHistoryResponse, string>({
             query: (deliveryId) => ({
-                url: `routes`,
+                url: `histories`,
                 params: {
                     deliveryId
                 }
             }),
-            providesTags: [{type: 'routes', id: 'forDelivery'}],
         }),
-
     }),
 })
 
-export const {useGetRoutesForDeliveryQuery} = routesApi
+export const {useGetHistoryForDeliveryQuery} = historyApi

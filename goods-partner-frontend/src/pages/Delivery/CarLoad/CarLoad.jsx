@@ -1,7 +1,7 @@
 import React from 'react';
 
 const CarLoad = () => {
-    return "Under construction"
+    return <div>Under construction</div>
 }
 
 export default CarLoad;

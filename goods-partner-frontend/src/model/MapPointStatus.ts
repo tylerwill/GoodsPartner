@@ -1,5 +1,5 @@
 export enum MapPointStatus {
-    KNOWN,
-    UNKNOWN,
-    AUTOVALIDATED
+    KNOWN = "KNOWN",
+    UNKNOWN = "UNKNOWN",
+    AUTOVALIDATED = "AUTOVALIDATED"
 }

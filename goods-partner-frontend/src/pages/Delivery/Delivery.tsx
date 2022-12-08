@@ -14,6 +14,7 @@ import Loading from "../../components/Loading/Loading";
 import ErrorAlert from "../../components/ErrorAlert/ErrorAlert";
 import BasicTabs from "../../hoc/BasicTabs/BasicTabs";
 import Orders from "./Orders/Orders";
+import History from "./History/History";
 import Routes from "./Routes/Routes";
 import {reformatDate} from "../../util/util";
 import useAuth from "../../auth/AuthProvider";
@@ -23,6 +24,11 @@ import {DeliveryFormationStatus} from "../../model/Delivery";
 import {MapPointStatus} from "../../model/MapPointStatus";
 import {UserRole} from "../../model/User";
 import {useGetOrdersForDeliveryQuery} from "../../api/orders/orders.api";
+import InventoryIcon from '@mui/icons-material/Inventory';
+
+import FactCheckIcon from '@mui/icons-material/FactCheck';
+import CarLoad from "./CarLoad/CarLoad";
+import Shipping from "./Shipping/Shipping";
 
 
 const Delivery = () => {
@@ -44,20 +50,22 @@ const Delivery = () => {
         dispatch(setCurrentRouteIndex(0));
 
     }, [dispatch, deliveryId]);
+
     if (isLoading || !delivery) {
         return <Loading/>
 
     }
 
     const isDriver = user.role === UserRole.DRIVER;
-    //
-    debugger;
-    const isPreCalculationStatus = delivery.formationStatus === DeliveryFormationStatus.ORDERS_LOADED && !isDriver;
+
+    const isPreCalculationStatus = delivery.formationStatus === DeliveryFormationStatus.READY_FOR_CALCULATION
+        && !isDriver;
+    // const isPreCalculationStatus = true;
     // const isPreApprove = delivery.formationStatus === 'COMPLETED' && !isDriver;
     //
     // const isApproveEnabled = delivery.status !== 'APPROVED';
     //
-    const calculated = delivery?.formationStatus === DeliveryFormationStatus.COMPLETED;
+    const calculated = delivery?.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED;
 
     const hasInvalidOrders = orders?.some(order => order.mapPoint.status === MapPointStatus.UNKNOWN);
 
@@ -65,8 +73,8 @@ const Delivery = () => {
     const tabLabels = [
         {name: 'Замовлення', enabled: true, icon: <ShoppingCartIcon sx={{mr: 1}}/>},
         {name: 'Маршрути', enabled: calculated, icon: <RouteIcon sx={{mr: 1}}/>},
-        // {name: 'Завантаження', enabled: calculated, icon: <InventoryIcon sx={{mr: 1}}/>},
-        // {name: 'Історія', enabled: true, icon: <HistorySharpIcon sx={{mr: 1}}/>}
+        {name: 'Завантаження', enabled: calculated, icon: <InventoryIcon sx={{mr: 1}}/>},
+        {name: 'Історія', enabled: true, icon: <FactCheckIcon sx={{mr: 1}}/>}
     ];
 
     const isLoadingBar = delivery && (delivery.formationStatus === DeliveryFormationStatus.ORDERS_LOADING
@@ -88,7 +96,7 @@ const Delivery = () => {
                     <DeliveryStatusChip status={delivery.status}/>
                 </Box>
 
-                {isPreCalculationStatus && <CalculateButton enabled={!hasInvalidOrders} onClick={calculateDeliveryHandler}/>}
+                {isPreCalculationStatus && <CalculateButton enabled={true} onClick={calculateDeliveryHandler}/>}
                 {/*{isPreApprove && <ApproveButton enabled={isApproveEnabled} approve={approveHandler}/>}*/}
 
             </Box>
@@ -111,8 +119,8 @@ const Delivery = () => {
                 <BasicTabs labels={tabLabels} fullWidth={true} tabIndex={tabIndex} setTabIndex={setTabIndexHandler}>
                     <Orders/>
                     <Routes/>
-                    {/*{user.role === 'DRIVER' ? <CarLoad/> : <Shipping productsShipping={delivery.productsShipping}/>}*/}
-                    {/*<History/>*/}
+                    {user.role === 'DRIVER' ? <CarLoad/> : <Shipping/>}
+                    <History/>
                 </BasicTabs>
 
             </Box>

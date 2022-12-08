@@ -2,21 +2,28 @@ import Grid from "@mui/material/Grid";
 import {Checkbox, FormControlLabel, MenuItem, Select, Typography} from "@mui/material";
 import Box from "@mui/material/Box";
 import React from "react";
+import Order from "../../../../../model/Order";
 
-const AdditionalInfo = ({order, updateOrder}) => {
+interface AdditionalInfoProps {
+    order: Order,
+    updateOrder: (order: Order) => void
+}
+
+const AdditionalInfo = ({order, updateOrder}: AdditionalInfoProps) => {
     const from = order.deliveryStart ?? "09:00";
     const to = order.deliveryFinish ?? "18:00";
 
-    const handleChangeFrom = (event) => {
+    const handleChangeFrom = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newOrder = {...order, deliveryStart: event.target.value};
         updateOrder(newOrder);
-    };
-    const handleChangeTo = (event) => {
+    }
+
+    const handleChangeTo = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newOrder = {...order, deliveryFinish: event.target.value};
         updateOrder(newOrder);
     };
 
-    const handleFreeze = (event) => {
+    const handleFreeze = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newOrder = {...order, frozen: event.target.checked};
         updateOrder(newOrder);
     };
@@ -39,7 +46,7 @@ const AdditionalInfo = ({order, updateOrder}) => {
                     Заморозка
                 </Typography>
                 <Box>
-                    <FormControlLabel onChange={(e) => handleFreeze(e)} checked={order.frozen} control={<Checkbox/>}
+                    <FormControlLabel checked={order.frozen} control={<Checkbox onChange={handleFreeze}/>}
                                       label="Потребує заморозки"/>
                 </Box>
             </Grid>
@@ -55,8 +62,14 @@ const AdditionalInfo = ({order, updateOrder}) => {
         </Grid>)
 }
 
+interface TimeSelectProperties {
+    from: number,
+    to: number,
+    value: string,
+    onChange: (e: any) => void
+}
 
-const TimeSelect = ({from, to, value, onChange}) => {
+const TimeSelect = ({from, to, value, onChange}: TimeSelectProperties) => {
     const menuItems = range(from, to)
         .map(e => String(e))
         // transform 9:00 -> 09:00
@@ -65,13 +78,13 @@ const TimeSelect = ({from, to, value, onChange}) => {
     return (<Select
         value={value}
         onChange={onChange}
-        sx={{minWidth: "140px", height: "40px", mr:1}}
+        sx={{minWidth: "140px", height: "40px", mr: 1}}
     >
         {menuItems}
     </Select>)
 }
 
-const range = (from, to) => Array(to - from + 1)
+const range = (from: number, to: number) => Array(to - from + 1)
     .fill(0)
     .map((_, i) => from + i);
 

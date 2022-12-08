@@ -18,8 +18,15 @@ import TablePagination from "@mui/material/TablePagination";
 
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+import {
+    setAddressDialogOpen,
+    setOrderForAddressModification
+} from "../../../../features/delivery-orders/deliveryOrdersSlice";
 
-const OrdersTable = ({orders, keyPrefix, setOrderAddressDialogOpen, setEditedOrder, updateOrder}) => {
+import {useAppDispatch} from "../../../../hooks/redux-hooks";
+import OrderTableRow from "./OrderTableRow/OrderTableRow";
+
+const OrdersTable = ({orders, keyPrefix, updateOrder}) => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -86,9 +93,8 @@ const OrdersTable = ({orders, keyPrefix, setOrderAddressDialogOpen, setEditedOrd
                             {orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((order, index) => {
                                     return (
-                                        <Row order={order} key={keyPrefix + index} keyPrefix={keyPrefix + "subTable"}
-                                             setOrderAddressDialogOpen={setOrderAddressDialogOpen}
-                                             setEditedOrder={setEditedOrder} updateOrder={updateOrder}
+                                        <OrderTableRow order={order} key={keyPrefix + index} keyPrefix={keyPrefix + "subTable"}
+                                             updateOrder={updateOrder}
                                              expandAll={expandAll} collapseAll={collapseAll} reset={reset}
                                         />)
                                 })}
@@ -115,94 +121,6 @@ const OrdersTable = ({orders, keyPrefix, setOrderAddressDialogOpen, setEditedOrd
                 />
             </Paper>
         </Box>
-    );
-}
-
-const Row = ({order, keyPrefix, setOrderAddressDialogOpen, setEditedOrder, updateOrder, collapseAll, expandAll, reset}) => {
-    const from = order.deliveryStart ?? "09:00";
-    const to = order.deliveryFinish ?? "18:00";
-    const [orderTableOpen, setOrderTableOpen] = React.useState(false);
-
-    const isTableOpened = expandAll || (orderTableOpen && !collapseAll);
-
-    const isInvalid = order.mapPoint.status === "UNKNOWN";
-    return (
-        <>
-            <TableRow sx={{'& > *': {borderBottom: 'unset'}}}>
-                <TableCell>
-                    <IconButton
-                        aria-label="expand row"
-                        size="small"
-                        onClick={() => {setOrderTableOpen(!orderTableOpen); reset()}}
-                    >
-                        {isTableOpened ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
-                    </IconButton>
-                </TableCell>
-                <TableCell component="th" scope="row">
-                    {order.orderNumber}
-                </TableCell>
-                <TableCell>{order.orderWeight} кг</TableCell>
-                <TableCell>{order.clientName}</TableCell>
-                <TableCell>
-                    <Stack
-                        direction={"row"}
-                        alignItems={'center'}>
-
-                        <EditOutlined
-                            sx={{cursor: 'pointer'}}
-                            onClick={() => {
-                                setEditedOrder(order);
-                                setOrderAddressDialogOpen(true);
-                            }}/>
-                        {
-                            // TODO: [UI] Shitty code
-                            isInvalid ? <Box sx={{ml: 1, backgroundColor: '#FFECB3'}}>{order.address}</Box>
-                                : <Box sx={{ml: 1}}>{order.address}</Box>
-                        }
-                    </Stack>
-
-                </TableCell>
-                <TableCell>{from} - {to}</TableCell>
-                <TableCell>{order.managerFullName}</TableCell>
-            </TableRow>
-            <TableRow>
-                <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={7}>
-                    <Collapse in={isTableOpened} timeout="auto" unmountOnExit>
-                        <Box sx={{margin: 2}}>
-                            <TableContainer component={Paper}>
-                                <Table sx={{minWidth: 650}} size="small">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell sx={{width: '500px'}}>Артикул</TableCell>
-                                            <TableCell>Кількість</TableCell>
-                                            <TableCell>Упаковка</TableCell>
-                                            <TableCell>Загальна вага</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {order.products.map((product) => (
-                                            <TableRow
-                                                key={keyPrefix + product.productName}
-                                                sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                                            >
-                                                <TableCell component="th" scope="row">
-                                                    {product.productName}
-                                                </TableCell>
-                                                <TableCell> {product.amount}</TableCell>
-                                                <TableCell> {product.unitWeight} {product.measure}</TableCell>
-                                                <TableCell> {product.totalProductWeight} кг</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-
-                            <OrderAdditionalInfo order={order} updateOrder={updateOrder}/>
-                        </Box>
-                    </Collapse>
-                </TableCell>
-            </TableRow>
-        </>
     );
 }
 
