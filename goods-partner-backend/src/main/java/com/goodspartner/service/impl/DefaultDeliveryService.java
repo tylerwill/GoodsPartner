@@ -1,10 +1,10 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.DeliveryDto;
-import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.User;
+import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
 import com.goodspartner.mapper.DeliveryMapper;
@@ -51,8 +51,9 @@ public class DefaultDeliveryService implements DeliveryService {
     }
 
     private List<Delivery> findDeliveriesByDriver(User driver) {
-        Car car = carRepository.findCarByDriver(driver);
-        return deliveryRepository.findDeliveriesByCarAndStatus(car, DEFAULT_DELIVERY_SORT);
+        return carRepository.findCarByDriver(driver)
+                .map(car -> deliveryRepository.findDeliveriesByCarAndStatus(car, DEFAULT_DELIVERY_SORT))
+                .orElseThrow(() -> new CarNotFoundException(driver));
     }
 
     @Override

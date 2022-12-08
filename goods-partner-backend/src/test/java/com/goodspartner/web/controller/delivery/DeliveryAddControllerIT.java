@@ -1,4 +1,4 @@
-package com.goodspartner.web.controller;
+package com.goodspartner.web.controller.delivery;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
@@ -25,7 +25,6 @@ import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.Geometry;
 import com.google.maps.model.LatLng;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.org.awaitility.Durations;
 
 import java.nio.charset.StandardCharsets;
@@ -55,7 +53,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
@@ -66,7 +63,7 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
         TestConfigurationToCountAllQueries.class
 })
 @AutoConfigureMockMvc
-public class DeliveryControllerIT extends AbstractWebITest {
+public class DeliveryAddControllerIT extends AbstractWebITest {
 
     private static final String INTEGRATION_SERVICE_VARIOUS_ORDERS_MOCK_PATH = "mock/integration/mock-integration-service-return-various-orders.json";
     private static final String INTEGRATION_SERVICE_KNOWN_ORDERS_MOCK_PATH = "mock/integration/mock-integration-service-return-known-orders.json";
@@ -188,7 +185,7 @@ public class DeliveryControllerIT extends AbstractWebITest {
                 .filter(addressExternal -> addressExternal.getOrderAddressId().getOrderAddress().equals(orderAddress))
                 .filter(addressExternal ->
                         Objects.isNull(addressExternal.getValidAddress())
-                                || addressExternal.getValidAddress().equals(resolvedAddress))
+                        || addressExternal.getValidAddress().equals(resolvedAddress))
                 .anyMatch(addressExternal -> addressExternal.getStatus().equals(addressStatus));
     }
 
@@ -288,18 +285,4 @@ public class DeliveryControllerIT extends AbstractWebITest {
         assertEquals(AddressStatus.AUTOVALIDATED, rescheduled.getAddressExternal().getStatus());
         assertEquals(SHIPPING_DATE, rescheduled.getRescheduleDate());
     }
-
-    @Test
-    @DataSet("datasets/delivery/delivery_status_for_driver_verification_test.yml")
-    @DisplayName("when Delivery Calculated But In Status DRAFT then Verification Driver Can't See Delivery In DRAFT Status")
-    public void whenDeliveryCreated_thenDriverCantSeeDeliveryInStatusDRAFT() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/v1/deliveries")
-                        .session(getDriverSession())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(getResponseAsString("response/delivery/delivery-status-verification-response.json")));
-    }
-
 }

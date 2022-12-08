@@ -1,6 +1,6 @@
 package com.goodspartner.service.google;
 
-import com.goodspartner.dto.DistanceMatrix;
+import com.goodspartner.service.dto.DistanceMatrix;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.RoutePoint;

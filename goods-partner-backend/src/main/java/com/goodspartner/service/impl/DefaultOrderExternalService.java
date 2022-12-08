@@ -2,7 +2,6 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal;
-import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.OrderExternal;
@@ -11,6 +10,7 @@ import com.goodspartner.event.Action;
 import com.goodspartner.event.ActionType;
 import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
+import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.exception.OrderNotFoundException;
 import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.repository.AddressExternalRepository;
@@ -73,8 +73,9 @@ public class DefaultOrderExternalService implements OrderExternalService {
     }
 
     private List<OrderExternal> findByDeliveryAndDriver(UUID deliveryId, User driver) {
-        Car car = carRepository.findCarByDriver(driver);
-        return orderExternalRepository.findAllByDeliveryAndCar(deliveryId, car);
+        return carRepository.findCarByDriver(driver)
+                .map(car -> orderExternalRepository.findAllByDeliveryAndCar(deliveryId, car))
+                .orElseThrow(() -> new CarNotFoundException(driver));
     }
 
     @Transactional

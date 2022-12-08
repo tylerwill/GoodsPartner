@@ -1,12 +1,12 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.RoutePointDto;
-import com.goodspartner.entity.Car;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.entity.User;
+import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exception.IllegalRoutePointStatusForOperation;
@@ -58,8 +58,9 @@ public class DefaultRouteService implements RouteService {
     }
 
     private List<Route> findByDeliveryAndDriver(UUID deliveryId, User driver) {
-        Car car = carRepository.findCarByDriver(driver);
-        return routeRepository.findByDeliveryIdAndCar(deliveryId, car);
+        return carRepository.findCarByDriver(driver)
+                .map(car -> routeRepository.findByDeliveryIdAndCar(deliveryId, car))
+                .orElseThrow(() -> new CarNotFoundException(driver));
     }
 
     @Override

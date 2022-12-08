@@ -1,10 +1,10 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.entity.Car;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.User;
+import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.repository.CarLoadRepository;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.service.CarLoadService;
@@ -75,7 +75,8 @@ public class DefaultCarLoadService implements CarLoadService {
     }
 
     private List<CarLoad> findByDeliveryAndDriver(UUID deliveryId, User driver) {
-        Car car = carRepository.findCarByDriver(driver);
-        return carLoadRepository.findByDeliveryIdAndCar(deliveryId, car);
+        return carRepository.findCarByDriver(driver)
+                .map(car -> carLoadRepository.findByDeliveryIdAndCar(deliveryId, car))
+                .orElseThrow(() -> new CarNotFoundException(driver));
     }
 }

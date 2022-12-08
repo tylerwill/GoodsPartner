@@ -1,7 +1,7 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.configuration.properties.GraphhopperProperties;
-import com.goodspartner.dto.DistanceMatrix;
+import com.goodspartner.service.dto.DistanceMatrix;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.service.GraphhopperService;
 import com.graphhopper.GHRequest;

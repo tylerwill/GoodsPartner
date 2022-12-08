@@ -1,6 +1,5 @@
-package com.goodspartner.web.controller;
+package com.goodspartner.web.controller.delivery;
 
-import com.github.database.rider.core.api.dataset.CompareOperation;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
@@ -55,7 +54,6 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -264,126 +262,6 @@ class DeliveryControllerITest extends AbstractWebITest {
 
         incorrectRoutePoints.add(routePointFirst);
         incorrectRoutePoints.add(routePointFourth);*/
-    }
-
-    @Test
-    @DataSet(value = "delivery/get_delivery.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
-    @DisplayName("when Get Delivery then OK status returned")
-    void whenGetDeliveryById_thenOkStatusReturned() throws Exception {
-
-        mockMvc.perform(get("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content()
-                        .json(getResponseAsString("response/delivery/get-delivery-response.json")));
-    }
-
-    @Test
-    @DataSet(value = "delivery/get_delivery.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
-    @DisplayName("when Get Deliveries then OK status returned")
-    void whenGetDeliveries_thenOkStatusReturned() throws Exception {
-
-        mockMvc.perform(get("/api/v1/deliveries")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content()
-                        .json(getResponseAsString("response/delivery/short-deliveries-response.json")));
-    }
-
-    @Test
-    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet(value = "delivery/add_delivery.yml",
-            ignoreCols = "id", compareOperation = CompareOperation.CONTAINS)
-    @DisplayName("when Add Delivery then then OK status returned")
-    void whenAddDelivery_thenOkStatusReturned() throws Exception {
-
-        DeliveryDto deliveryDto = DeliveryDto.builder()
-                .deliveryDate(LocalDate.parse("2022-07-10"))
-                .status(DeliveryStatus.DRAFT)
-                .build();
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(deliveryDto)))
-                .andExpect(status().isAccepted());
-    }
-
-    @Test
-    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet(value = "delivery/update_delivery.yml")
-    @DisplayName("when Update Delivery then Ok Status Returned")
-    void whenUpdateDelivery_thenOkStatusReturned() throws Exception {
-
-        DeliveryDto deliveryDto = DeliveryDto.builder()
-                .deliveryDate(LocalDate.parse("2000-01-01"))
-                .status(DeliveryStatus.APPROVED)
-                .build();
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(deliveryDto)))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet(value = "delivery/approve_delivery.yml")
-    @DisplayName("when Approve Delivery then Ok Status Returned")
-    void whenApproveDelivery_thenOkStatusReturned() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000/approve"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
-    @DisplayName("when Approve Delivery then Correct DeliveryAndRoutesStatusDto Returned")
-    void whenApproveDelivery_thenCorrectDeliveryAndRoutesStatusDtoReturned() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000/approve"))
-                .andExpect(status().isOk())
-                .andExpect(content()
-                        .json(getResponseAsString("response/delivery/approve-delivery-response.json")));
-
-    }
-
-    @Test
-    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
-    @DisplayName("when Approve Delivery By Non-Existing Id then Not Found Returned")
-    void whenApproveDeliveryByNonExistingId_thenNotFoundReturned() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/00000000-0000-0000-0000-000000000000/approve"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DataSet(value = "delivery/approve_delivery.yml")
-    @DisplayName("when Approve Delivery of Non-Draft Status then Exception Thrown")
-    void whenApproveDeliveryOfNonDraftStatus_thenExceptionThrown() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440000/approve"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DataSet(value = "delivery/delivery.yml")
-    @DisplayName("when Approve Delivery without Routes then Exception Thrown")
-    void whenApproveDeliveryWithoutRoutes_thenExceptionThrown() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/approve"))
-                .andExpect(status().isBadRequest());
     }
 
     @Test

@@ -16,7 +16,7 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
 
     List<Car> findByAvailableTrueAndCoolerIs(boolean coolerRequired);
 
-    Car findCarByDriver(User user);
+    Optional<Car> findCarByDriver(User user);
 
     @EntityGraph(attributePaths = {"driver"})
     Optional<Car> findById(int id);

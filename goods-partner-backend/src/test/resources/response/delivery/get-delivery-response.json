@@ -1,74 +1,8 @@
 {
-  "id": "123e4567-e89b-12d3-a456-556642440000",
-  "deliveryDate": "2022-08-21",
-  "status": "DRAFT",
-  "routes": [
-    {
-      "id": 1,
-      "status": "DRAFT",
-      "totalWeight": 12.00,
-      "totalPoints": 0,
-      "totalOrders": 1,
-      "distance": 167.71,
-      "estimatedTime": 100,
-      "startTime": "2022-08-21T11:00:00",
-      "finishTime": "2022-08-21T13:00:00",
-      "spentTime": 100,
-      "optimization": true,
-      "routePoints": [],
-      "car": {
-        "id": 0,
-        "name": null,
-        "licencePlate": null,
-        "driver": null,
-        "weightCapacity": 0,
-        "cooler": null,
-        "available": null,
-        "loadSize": 0.0,
-        "travelCost": 0
-      },
-      "store": {
-        "name": "Склад №1",
-        "address": "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
-        "mapPoint": {
-          "address": "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
-          "latitude": 50.08,
-          "longitude": 29.89,
-          "status": "KNOWN"
-        }
-      }
-    }
-  ],
-  "orders": [
-    {
-      "id": 0,
-      "refKey": "f6f73d76-8005-11ec-b3ce-00155dd72305",
-      "orderNumber": "00000002055",
-      "createdDate": "2022-01-28",
-      "comment": "бн",
-      "managerFullName": "Наталія Рябченко",
-      "deliveryStart": "11:00",
-      "deliveryFinish": "13:00",
-      "clientName": "Кух Плюс ТОВ (Кухмайстер) бн",
-      "address": "вул.Єлізавети Чавдар, буд.36",
-      "mapPoint": {
-        "address": "вул.Єлізавети Чавдар, буд.36",
-        "latitude": 50.3910679,
-        "longitude": 30.6265536,
-        "status": "KNOWN"
-      },
-      "products": [
-        {
-          "productName": "Наповнювач фруктово-ягідний (декоргель) (12 кг)",
-          "amount": 1,
-          "storeName": "Склад №1",
-          "unitWeight": 12.00,
-          "totalProductWeight": 12.00
-        }
-      ],
-      "orderWeight": 12.00,
-      "frozen": false
-    }
-  ],
-  "productsShipping": []
+  "id":"00000000-0000-0000-0000-000000000111",
+  "deliveryDate":"2022-08-21",
+  "status":"DRAFT",
+  "formationStatus":"ORDERS_LOADED",
+  "orderCount":1,
+  "routeCount":1
 }
