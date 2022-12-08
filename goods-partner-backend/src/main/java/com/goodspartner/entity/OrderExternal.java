@@ -51,8 +51,8 @@ public class OrderExternal {
     @Column(name = "manager")
     private String managerFullName;
 
-    @Column(name = "is_frozen")
-    private boolean isFrozen;
+    @Column(name = "frozen")
+    private boolean frozen;
 
     @Column(name = "delivery_start")
     private LocalTime deliveryStart;

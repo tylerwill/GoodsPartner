@@ -142,7 +142,7 @@
       "comment": "нал, ПІСЛЯ 14:00, тел.063-345-01-00, будівля МЕТРО, 2й поверх",
       "delivery_id": "a9bc3e19-5f92-4178-af06-67b61a87fb18",
       "car_load_id": "feec9645-fd12-4964-b1ff-868d1746acc5",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -159,7 +159,7 @@
       "comment": "нал 067 5824063",
       "delivery_id": "a9bc3e19-5f92-4178-af06-67b61a87fb18",
       "car_load_id": "feec9645-fd12-4964-b1ff-868d1746acc5",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -176,7 +176,7 @@
       "comment": null,
       "delivery_id": "e891d7d2-f8f8-4d5d-945d-f90e7d74930d",
       "car_load_id": "70dd54ea-690c-4fb4-9513-b0c34d17e7f8",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -193,7 +193,7 @@
       "comment": "бн. Гостомель №2000015298",
       "delivery_id": "a9bc3e19-5f92-4178-af06-67b61a87fb18",
       "car_load_id": "feec9645-fd12-4964-b1ff-868d1746acc5",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -210,7 +210,7 @@
       "comment": "бн. Здолбунівська",
       "delivery_id": "a9bc3e19-5f92-4178-af06-67b61a87fb18",
       "car_load_id": "feec9645-fd12-4964-b1ff-868d1746acc5",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -227,7 +227,7 @@
       "comment": null,
       "delivery_id": "7ab46042-10ca-4f21-b48e-48eacaf0002c",
       "car_load_id": "3b83285f-7ca5-41b3-b19c-88e2653b9a89",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -244,7 +244,7 @@
       "comment": null,
       "delivery_id": "7ab46042-10ca-4f21-b48e-48eacaf0002c",
       "car_load_id": "3b83285f-7ca5-41b3-b19c-88e2653b9a89",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -261,7 +261,7 @@
       "comment": null,
       "delivery_id": "7ab46042-10ca-4f21-b48e-48eacaf0002c",
       "car_load_id": "3b83285f-7ca5-41b3-b19c-88e2653b9a89",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -278,7 +278,7 @@
       "comment": null,
       "delivery_id": "7ab46042-10ca-4f21-b48e-48eacaf0002c",
       "car_load_id": "3b83285f-7ca5-41b3-b19c-88e2653b9a89",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -295,7 +295,7 @@
       "comment": null,
       "delivery_id": "7ab46042-10ca-4f21-b48e-48eacaf0002c",
       "car_load_id": "3b83285f-7ca5-41b3-b19c-88e2653b9a89",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -312,7 +312,7 @@
       "comment": null,
       "delivery_id": "7ab46042-10ca-4f21-b48e-48eacaf0002c",
       "car_load_id": "3b83285f-7ca5-41b3-b19c-88e2653b9a89",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -329,7 +329,7 @@
       "comment": null,
       "delivery_id": "7ab46042-10ca-4f21-b48e-48eacaf0002c",
       "car_load_id": "3b83285f-7ca5-41b3-b19c-88e2653b9a89",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -346,7 +346,7 @@
       "comment": null,
       "delivery_id": "7ab46042-10ca-4f21-b48e-48eacaf0002c",
       "car_load_id": "3b83285f-7ca5-41b3-b19c-88e2653b9a89",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -363,7 +363,7 @@
       "comment": null,
       "delivery_id": "7ab46042-10ca-4f21-b48e-48eacaf0002c",
       "car_load_id": "3b83285f-7ca5-41b3-b19c-88e2653b9a89",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -380,7 +380,7 @@
       "comment": "бн, вул.Русановська набережна, 12, ТЕРМОБОКС",
       "delivery_id": "a9bc3e19-5f92-4178-af06-67b61a87fb18",
       "car_load_id": "feec9645-fd12-4964-b1ff-868d1746acc5",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -397,7 +397,7 @@
       "comment": "нал без оплати, 098 494 52 83",
       "delivery_id": "a9bc3e19-5f92-4178-af06-67b61a87fb18",
       "car_load_id": "feec9645-fd12-4964-b1ff-868d1746acc5",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -414,7 +414,7 @@
       "comment": null,
       "delivery_id": "e891d7d2-f8f8-4d5d-945d-f90e7d74930d",
       "car_load_id": "70dd54ea-690c-4fb4-9513-b0c34d17e7f8",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -431,7 +431,7 @@
       "comment": "бн, тел. (050)-453-05-36, або тел. (073)-5055095, (063)-6307796",
       "delivery_id": "a9bc3e19-5f92-4178-af06-67b61a87fb18",
       "car_load_id": "feec9645-fd12-4964-b1ff-868d1746acc5",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -448,7 +448,7 @@
       "comment": "нал без оплати  0675438404 Світлана",
       "delivery_id": "a9bc3e19-5f92-4178-af06-67b61a87fb18",
       "car_load_id": "feec9645-fd12-4964-b1ff-868d1746acc5",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -465,7 +465,7 @@
       "comment": "бн, Броварьський р-н., с. Требухів, вул.Броварська, 27, Ориентир:  ресторан «НУР» (справа) – а  напротив повернуть налево, конт. лице  Кирилюк Максим 067–504–29–31. ПАЛЕТНЕ ВІДВАНТАЖЕННЯ",
       "delivery_id": "a9bc3e19-5f92-4178-af06-67b61a87fb18",
       "car_load_id": "feec9645-fd12-4964-b1ff-868d1746acc5",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -482,7 +482,7 @@
       "comment": "бн",
       "delivery_id": "a9bc3e19-5f92-4178-af06-67b61a87fb18",
       "car_load_id": "feec9645-fd12-4964-b1ff-868d1746acc5",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -499,7 +499,7 @@
       "comment": null,
       "delivery_id": "7ab46042-10ca-4f21-b48e-48eacaf0002c",
       "car_load_id": "3b83285f-7ca5-41b3-b19c-88e2653b9a89",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -516,7 +516,7 @@
       "comment": null,
       "delivery_id": "e891d7d2-f8f8-4d5d-945d-f90e7d74930d",
       "car_load_id": "70dd54ea-690c-4fb4-9513-b0c34d17e7f8",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -533,7 +533,7 @@
       "comment": null,
       "delivery_id": "e891d7d2-f8f8-4d5d-945d-f90e7d74930d",
       "car_load_id": "70dd54ea-690c-4fb4-9513-b0c34d17e7f8",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -550,7 +550,7 @@
       "comment": null,
       "delivery_id": "e891d7d2-f8f8-4d5d-945d-f90e7d74930d",
       "car_load_id": "70dd54ea-690c-4fb4-9513-b0c34d17e7f8",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -567,7 +567,7 @@
       "comment": null,
       "delivery_id": "e891d7d2-f8f8-4d5d-945d-f90e7d74930d",
       "car_load_id": "70dd54ea-690c-4fb4-9513-b0c34d17e7f8",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -584,7 +584,7 @@
       "comment": null,
       "delivery_id": "e891d7d2-f8f8-4d5d-945d-f90e7d74930d",
       "car_load_id": "70dd54ea-690c-4fb4-9513-b0c34d17e7f8",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -601,7 +601,7 @@
       "comment": null,
       "delivery_id": "e891d7d2-f8f8-4d5d-945d-f90e7d74930d",
       "car_load_id": "70dd54ea-690c-4fb4-9513-b0c34d17e7f8",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     },
@@ -618,7 +618,7 @@
       "comment": null,
       "delivery_id": "e891d7d2-f8f8-4d5d-945d-f90e7d74930d",
       "car_load_id": "70dd54ea-690c-4fb4-9513-b0c34d17e7f8",
-      "is_frozen": false,
+      "frozen": false,
       "delivery_start": null,
       "delivery_finish": null
     }

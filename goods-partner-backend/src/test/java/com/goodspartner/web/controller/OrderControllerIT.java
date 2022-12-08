@@ -205,7 +205,7 @@ class OrderControllerIT extends AbstractWebITest {
                 .deliveryType(POSTAL)
                 .excluded(true)
                 .dropped(true)
-                .isFrozen(true)
+                .frozen(true)
                 .deliveryStart(LocalTime.of(10, 0))
                 .deliveryFinish(LocalTime.of(11, 0))
                 .mapPoint(MapPoint.builder()

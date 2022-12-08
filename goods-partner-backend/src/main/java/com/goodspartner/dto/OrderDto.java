@@ -32,7 +32,7 @@ public class OrderDto {
     private UUID deliveryId;
     private DeliveryType deliveryType;
 
-    private boolean isFrozen;
+    private boolean frozen;
     private boolean excluded;
     private boolean dropped;
 

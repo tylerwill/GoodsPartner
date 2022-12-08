@@ -2,6 +2,7 @@ package com.goodspartner.service;
 
 import com.goodspartner.dto.UserDto;
 import com.goodspartner.entity.User;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 import java.util.List;

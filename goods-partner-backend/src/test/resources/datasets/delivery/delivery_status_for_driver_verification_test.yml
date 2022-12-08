@@ -6,7 +6,7 @@ GRANDEDOLCE_ORDERS:
     RESCHEDULE_DATE: "2022-01-29"
     COMMENT: "реп"
     MANAGER: "Наталія Рябченко"
-    IS_FROZEN: false
+    FROZEN: false
     DELIVERY_START: "11:00:00"
     DELIVERY_FINISH: "13:00:00"
     CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
@@ -23,7 +23,7 @@ GRANDEDOLCE_ORDERS:
     RESCHEDULE_DATE: "2022-01-30"
     COMMENT: "реп"
     MANAGER: "Наталія Рябченко"
-    IS_FROZEN: false
+    FROZEN: false
     DELIVERY_START: "11:00:00"
     DELIVERY_FINISH: "13:00:00"
     CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
@@ -40,7 +40,7 @@ GRANDEDOLCE_ORDERS:
     RESCHEDULE_DATE: "2022-01-31"
     COMMENT: "реп"
     MANAGER: "Наталія Рябченко"
-    IS_FROZEN: false
+    FROZEN: false
     DELIVERY_START: "11:00:00"
     DELIVERY_FINISH: "13:00:00"
     CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
