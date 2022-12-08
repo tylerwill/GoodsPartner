@@ -3,7 +3,7 @@
     "id":null,
     "refKey":"01grande-0000-0000-0000-000000000000",
     "orderNumber":"45678",
-    "comment":"фасовка",
+    "comment":"бн",
     "managerFullName":"Балашова Лариса",
     "deliveryId":null,
     "deliveryType":"REGULAR",
@@ -130,7 +130,7 @@
     "comment":"доставка: Нова пошта, заморозка: доставка в холодильнику",
     "managerFullName":"Балашова Лариса",
     "deliveryId":null,
-    "deliveryType":"POSTAL",
+    "deliveryType":"REGULAR",
     "excluded":false,
     "dropped":false,
     "shippingDate":"2022-02-17",
@@ -153,5 +153,36 @@
     ],
     "orderWeight":12.0,
     "frozen":false
-  }
+  },
+  {
+  "id":null,
+  "refKey":"06grande-0000-0000-0000-000000000000",
+  "orderNumber":"00000002135",
+  "comment":"фасовка",
+  "managerFullName":"Балашова Лариса",
+  "deliveryId":null,
+  "deliveryType":"REGULAR",
+  "excluded":false,
+  "dropped":false,
+  "shippingDate":"2022-02-17",
+  "rescheduleDate":null,
+  "deliveryStart":null,
+  "deliveryFinish":null,
+  "clientName":"Домашня випічка",
+  "address":"Бровари, Марії Лагунової, 11",
+  "mapPoint":null,
+  "products":[
+    {
+      "productName":"Наповнювач фруктово-ягідний (декоргель) (12 кг)",
+      "amount":1,
+      "storeName":"Склад №1",
+      "unitWeight":12.0,
+      "totalProductWeight":12.0,
+      "coefficient":0.0,
+      "measure":null
+    }
+  ],
+  "orderWeight":12.0,
+  "frozen":false
+}
 ]

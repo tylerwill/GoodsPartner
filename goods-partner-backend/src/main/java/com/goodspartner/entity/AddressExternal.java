@@ -51,5 +51,24 @@ public class AddressExternal {
 
         @Column(name = "client_name")
         private String clientName;
+
+        @Override
+        public String toString() {
+            return "OrderAddressId{" +
+                    "orderAddress='" + orderAddress + '\'' +
+                    ", clientName='" + clientName + '\'' +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "AddressExternal{" +
+                "orderAddressId=" + orderAddressId +
+                ", status=" + status +
+                ", validAddress='" + validAddress + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
     }
 }

@@ -82,6 +82,8 @@ public class DefaultOrderExternalService implements OrderExternalService {
     @Override
     public OrderExternal update(int id, OrderDto orderDto) {
         log.info("Updating order with id: {}", id);
+        geocodeService.validateOurOfRegion(orderDto.getMapPoint());
+
         OrderExternal order = orderExternalRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
         orderExternalMapper.update(order, orderDto);
         OrderExternal saveOrder = orderExternalRepository.save(order);
@@ -111,7 +113,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
 
             orderCommentProcessor.processOrderComments(orderDtos);
 
-            geocodeService.enrichValidAddress(orderDtos);
+            geocodeService.enrichValidAddressForRegularOrders(orderDtos);
 
             List<OrderExternal> scheduledOrders = orderExternalRepository.findByRescheduleDate(deliveryDate);
             List<OrderExternal> orderEntities = saveValidOrdersAndEnrichAddresses(orderDtos);

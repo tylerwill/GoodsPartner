@@ -187,6 +187,29 @@ class OrderControllerIT extends AbstractWebITest {
         assertUpdateCount(4); // Update Orders + Addresses + Delivery
     }
 
+    @Test
+    @DataSet(value = "datasets/orders/default-order-dataset.json",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
+    void whenOrderUpdateAddressOutOfReqion_BadRequestReturned() throws Exception {
+        SQLStatementCountValidator.reset();
+
+        OrderDto payload = buildRequestUpdateOrderDto();
+        MapPoint mapPoint = payload.getMapPoint();
+        mapPoint.setLatitude(52.03); // Out of Kyiv region
+        mapPoint.setLongitude(28.69);
+        mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .session(getLogistSession())
+                        .content(objectMapper.writeValueAsString(payload)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().json("{" +
+                                "   \"status\":\"BAD_REQUEST\"," +
+                                "   \"message\":\"Requested address coordinates out of valid region:\\n проспект Академіка Палладіна, 9А, Київ, Україна, 03179.\\n Change delivery type if needed\"" +
+                                "}"));
+        assertSelectCount(0); // OrderById + isAllOrdersValid verification
+        assertUpdateCount(0); // Update Orders + Addresses + Delivery
+    }
+
     private OrderDto buildRequestUpdateOrderDto() {
         return OrderDto.builder()
                 // Unmodifiable
@@ -211,8 +234,8 @@ class OrderControllerIT extends AbstractWebITest {
                 .mapPoint(MapPoint.builder()
                         .status(AddressStatus.KNOWN) // Override status
                         .address("проспект Академіка Палладіна, 9А, Київ, Україна, 03179")
-                        .longitude(32.3553835000000)
-                        .latitude(52.4618259000000)
+                        .longitude(31.3553835000000)
+                        .latitude(51.4618259000000)
                         .build())
                 .build();
     }

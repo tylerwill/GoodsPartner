@@ -42,10 +42,13 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.goodspartner.entity.AddressStatus.AUTOVALIDATED;
+import static com.goodspartner.entity.AddressStatus.KNOWN;
 import static com.goodspartner.entity.DeliveryFormationStatus.ORDERS_LOADED;
 import static com.goodspartner.entity.DeliveryFormationStatus.ORDERS_LOADING;
 import static com.goodspartner.entity.DeliveryFormationStatus.READY_FOR_CALCULATION;
 import static com.goodspartner.entity.DeliveryStatus.DRAFT;
+import static com.goodspartner.entity.DeliveryType.REGULAR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -78,9 +81,8 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
     private static final double OUT_OF_REGION_ADDRESS_LONGITUDE = 28.69;
     private static final String OUT_OF_REGION_ADDRESS = "м. Житомир, вул Корольова, 1";
 
-    private static final double PRE_PACKING_ADDRESS_LATITUDE = 50.27;
-    private static final double PRE_PACKING_ADDRESS_LONGITUDE = 30.81;
     private static final String PRE_PACKING_ADDRESS = "вулиця Київська, 34, Фастів, Київська обл., Україна, 08500";
+    private static final String POSTAL_ADDRESS = "вулиця Київська, 30, Фастів, Київська обл., Україна, 08500";
 
     private static final String UNKNOWN_ADDRESS = "вул. Невідома 8667";
 
@@ -120,7 +122,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
                         .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
                 DeliveryDto.class);
         // Then
-        verifyOrdersFetchedDeliveryEnriched(addedDelivery, 6); // 5 Orders from 1C + 1 order rescheduled
+        verifyOrdersFetchedDeliveryEnriched(addedDelivery, 7); // 6 Orders from 1C + 1 order rescheduled
         verifyDeliveryState(addedDelivery, ORDERS_LOADED);
         verifyRequiredEventsEmmitted(addedDelivery);
         verifyAddedAddresses();
@@ -167,25 +169,26 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         assertEquals(2, addressesMap.size());
 
         assertEquals(1, addressesMap.get(AddressStatus.KNOWN).size());
-        assertEquals(1, addressesMap.get(AddressStatus.AUTOVALIDATED).size());
+        assertEquals(1, addressesMap.get(AUTOVALIDATED).size());
     }
 
     private void verifyAddedAddresses() {
         List<AddressExternal> addressesAfter = addressExternalRepository.findAll();
-        assertEquals(6, addressesAfter.size());
+        assertEquals(8, addressesAfter.size());
         // Assert new address state
-        assertTrue(verifyContains(addressesAfter, AUTOVALIDATED_ADDRESS, FORMATTED_AUTOVALIDATED_ADDRESS, AddressStatus.AUTOVALIDATED));
+        assertTrue(verifyContains(addressesAfter, AUTOVALIDATED_ADDRESS, FORMATTED_AUTOVALIDATED_ADDRESS, AUTOVALIDATED));
         assertTrue(verifyContains(addressesAfter, OUT_OF_REGION_ADDRESS, null, AddressStatus.UNKNOWN));
         assertTrue(verifyContains(addressesAfter, UNKNOWN_ADDRESS, null, AddressStatus.UNKNOWN));
     }
 
     private boolean verifyContains(List<AddressExternal> addressesAfter,
                                    String orderAddress, String resolvedAddress, AddressStatus addressStatus) {
+        log.info("Addresses: {}", addressesAfter);
         return addressesAfter.stream()
                 .filter(addressExternal -> addressExternal.getOrderAddressId().getOrderAddress().equals(orderAddress))
                 .filter(addressExternal ->
                         Objects.isNull(addressExternal.getValidAddress())
-                        || addressExternal.getValidAddress().equals(resolvedAddress))
+                                || addressExternal.getValidAddress().equals(resolvedAddress))
                 .anyMatch(addressExternal -> addressExternal.getStatus().equals(addressStatus));
     }
 
@@ -221,7 +224,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
     private void mockGoogleGeocodeService() {
         mockUnknownAddress();
         mockAddressGeocoding(AUTOVALIDATED_ADDRESS_LATITUDE, AUTOVALIDATED_ADDRESS_LONGITUDE, FORMATTED_AUTOVALIDATED_ADDRESS, AUTOVALIDATED_ADDRESS);
-        mockAddressGeocoding(PRE_PACKING_ADDRESS_LATITUDE, PRE_PACKING_ADDRESS_LONGITUDE, PRE_PACKING_ADDRESS, PRE_PACKING_ADDRESS);
+//        mockAddressGeocoding(PRE_PACKING_ADDRESS_LATITUDE, PRE_PACKING_ADDRESS_LONGITUDE, PRE_PACKING_ADDRESS, PRE_PACKING_ADDRESS);
         mockAddressGeocoding(OUT_OF_REGION_ADDRESS_LATITUDE, OUT_OF_REGION_ADDRESS_LONGITUDE, OUT_OF_REGION_ADDRESS, OUT_OF_REGION_ADDRESS);
     }
 
@@ -249,19 +252,19 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         List<OrderExternal> deliveryOrders = orderExternalRepository.findByDeliveryId(delivery.getId());
         Map<String, OrderExternal> ordersMap = deliveryOrders.stream()
                 .collect(Collectors.toMap(OrderExternal::getRefKey, Function.identity()));
-        assertEquals(6, ordersMap.size());
+        assertEquals(7, ordersMap.size());
 
         // Check Orders
         OrderExternal order01 = ordersMap.get("01grande-0000-0000-0000-000000000000");
         assertFalse(order01.isFrozen());
-        assertEquals(DeliveryType.PRE_PACKING, order01.getDeliveryType());
-        assertEquals(AddressStatus.AUTOVALIDATED, order01.getAddressExternal().getStatus());
-        assertEquals(PRE_PACKING_ADDRESS, order01.getAddressExternal().getValidAddress());
-        assertEquals(PRE_PACKING_ADDRESS, order01.getAddressExternal().getOrderAddressId().getOrderAddress());
+        assertEquals(REGULAR, order01.getDeliveryType());
+        assertSame(AUTOVALIDATED, order01.getAddressExternal().getStatus());
+        assertEquals(FORMATTED_AUTOVALIDATED_ADDRESS, order01.getAddressExternal().getValidAddress());
+        assertEquals(AUTOVALIDATED_ADDRESS, order01.getAddressExternal().getOrderAddressId().getOrderAddress());
 
         OrderExternal order02 = ordersMap.get("02grande-0000-0000-0000-000000000000");
         assertFalse(order02.isFrozen());
-        assertEquals(DeliveryType.REGULAR, order02.getDeliveryType());
+        assertEquals(REGULAR, order02.getDeliveryType());
         assertEquals(AddressStatus.UNKNOWN, order02.getAddressExternal().getStatus()); // Overide
 
         OrderExternal order03 = ordersMap.get("03grande-0000-0000-0000-000000000000");
@@ -271,18 +274,27 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
 
         OrderExternal order04 = ordersMap.get("04grande-0000-0000-0000-000000000000");
         assertFalse(order04.isFrozen());
-        assertEquals(DeliveryType.REGULAR, order04.getDeliveryType());
+        assertEquals(REGULAR, order04.getDeliveryType());
         assertEquals(AddressStatus.UNKNOWN, order04.getAddressExternal().getStatus());
 
         OrderExternal order05 = ordersMap.get("05grande-0000-0000-0000-000000000000");
         assertTrue(order05.isFrozen());
         assertEquals(DeliveryType.POSTAL, order05.getDeliveryType());
-        assertEquals(AddressStatus.AUTOVALIDATED, order05.getAddressExternal().getStatus()); // Check it
+        assertEquals(KNOWN, order05.getAddressExternal().getStatus());
+        assertEquals(POSTAL_ADDRESS, order05.getAddressExternal().getOrderAddressId().getOrderAddress());
+        assertEquals(POSTAL_ADDRESS, order05.getAddressExternal().getValidAddress());
+
+        OrderExternal order06 = ordersMap.get("06grande-0000-0000-0000-000000000000");
+        assertFalse(order06.isFrozen());
+        assertEquals(DeliveryType.PRE_PACKING, order06.getDeliveryType());
+        assertEquals(AddressStatus.KNOWN, order06.getAddressExternal().getStatus());
+        assertEquals(PRE_PACKING_ADDRESS, order06.getAddressExternal().getValidAddress());
+        assertEquals(PRE_PACKING_ADDRESS, order06.getAddressExternal().getOrderAddressId().getOrderAddress());
 
         OrderExternal rescheduled = ordersMap.get("f6f73d76-8005-11ec-b3ce-00155dd72305");
         assertFalse(rescheduled.isFrozen());
-        assertEquals(DeliveryType.REGULAR, rescheduled.getDeliveryType());
-        assertEquals(AddressStatus.AUTOVALIDATED, rescheduled.getAddressExternal().getStatus());
+        assertEquals(REGULAR, rescheduled.getDeliveryType());
+        assertEquals(AUTOVALIDATED, rescheduled.getAddressExternal().getStatus());
         assertEquals(SHIPPING_DATE, rescheduled.getRescheduleDate());
     }
 }

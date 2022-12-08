@@ -11,6 +11,8 @@ import org.mapstruct.Named;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.goodspartner.entity.AddressStatus.UNKNOWN;
+
 @Mapper(componentModel = "spring",
         uses = {RouteMapper.class, OrderExternalMapper.class})
 
@@ -43,5 +45,11 @@ public interface RoutePointMapper {
                         .latitude(addressExternal.getLatitude())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    default MapPoint getUnknownMapPoint() {
+        return MapPoint.builder()
+                .status(UNKNOWN)
+                .build();
     }
 }

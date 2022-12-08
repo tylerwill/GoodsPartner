@@ -1,7 +1,9 @@
 package com.goodspartner.service.util;
 
 import com.goodspartner.configuration.properties.GrandeDolceBusinessProperties;
+import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.DeliveryType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -9,7 +11,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
-// TODO postprocess address line as well
 @Component
 @RequiredArgsConstructor
 public class DefaultExternalOrderPostProcessor implements ExternalOrderPostProcessor {
@@ -42,21 +43,37 @@ public class DefaultExternalOrderPostProcessor implements ExternalOrderPostProce
     private void checkIfPostal(List<OrderDto> orderDtos) {
         orderDtos.stream()
                 .filter(this::checkCommentIfShippedByPostal)
-                .forEach(orderDto -> orderDto.setDeliveryType(DeliveryType.POSTAL));
+                .forEach(orderDto -> {
+                    orderDto.setDeliveryType(DeliveryType.POSTAL);
+                    orderDto.setAddress(grandeDolceBusinessProperties.getPostal().getAddress());
+                    orderDto.setMapPoint(getPostProcessMapPoint(grandeDolceBusinessProperties.getPostal().getAddress()));
+                });
+    }
+
+    private MapPoint getPostProcessMapPoint(String postProcessorAddress) {
+        return MapPoint.builder()  // TODO fetch from static data constants / etc. Enrich properties with respective longtitude latitude
+                .address(postProcessorAddress)
+                .status(AddressStatus.KNOWN)
+                .build();
     }
 
     private void checkIfSelfService(List<OrderDto> orderDtos) {
         orderDtos.stream()
                 .filter(this::checkCommentIdSelfService)
-                .forEach(orderDto -> orderDto.setDeliveryType(DeliveryType.SELF_SERVICE));
+                .forEach(orderDto -> {
+                    orderDto.setDeliveryType(DeliveryType.SELF_SERVICE);
+                    orderDto.setAddress(grandeDolceBusinessProperties.getSelfService().getAddress());
+                    orderDto.setMapPoint(getPostProcessMapPoint(grandeDolceBusinessProperties.getSelfService().getAddress()));
+                });
     }
 
     private void checkIfPrePacking(List<OrderDto> orderDtos) {
         orderDtos.stream()
                 .filter(this::checkCommentIfPrePacking)
                 .forEach(orderDto -> {
-                    orderDto.setAddress(grandeDolceBusinessProperties.getPrePacking().getAddress());
                     orderDto.setDeliveryType(DeliveryType.PRE_PACKING);
+                    orderDto.setAddress(grandeDolceBusinessProperties.getPrePacking().getAddress());
+                    orderDto.setMapPoint(getPostProcessMapPoint(grandeDolceBusinessProperties.getPrePacking().getAddress()));
                 });
     }
 

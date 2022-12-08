@@ -24,8 +24,12 @@ grandedolce:
     login: ${GRANDE_DOLCE_1C_LOGIN}
     password: ${GRANDE_DOLCE_1C_PASSWORD}
   business:
-    pre-packing:
+    pre-packing: #TODO coordinates
       address: "вулиця Київська, 34, Фастів, Київська обл., Україна, 08500"
+    self-service: #TODO coordinates
+      address: "вулиця Київська, 32, Фастів, Київська обл., Україна, 08500"
+    postal: #TODO coordinates
+      address: "вулиця Київська, 30, Фастів, Київська обл., Україна, 08500"
 
 graphhopper:
   enabled: true

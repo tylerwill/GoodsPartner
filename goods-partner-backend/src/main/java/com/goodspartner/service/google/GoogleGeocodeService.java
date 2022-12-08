@@ -2,8 +2,10 @@ package com.goodspartner.service.google;
 
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.AddressExternal.OrderAddressId;
+import com.goodspartner.entity.DeliveryType;
+import com.goodspartner.exception.AddressOutOfRegionException;
+import com.goodspartner.mapper.RoutePointMapper;
 import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.service.client.GoogleClient;
 import com.goodspartner.service.GeocodeService;
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.goodspartner.entity.AddressStatus.UNKNOWN;
 import static com.goodspartner.entity.AddressStatus.AUTOVALIDATED;
 
 @Slf4j
@@ -27,14 +28,24 @@ public class GoogleGeocodeService implements GeocodeService {
     private static final double EAST_REGION_BORDER = 32.160730;
     private static final double WEST_REGION_BORDER = 29.266897;
 
+    private final RoutePointMapper routePointMapper;
     private final GoogleClient googleClient;
     private final AddressExternalRepository addressExternalRepository;
 
     @Override
-    public void enrichValidAddress(List<OrderDto> orders) {
+    public void enrichValidAddressForRegularOrders(List<OrderDto> orders) {
         long startTime = System.currentTimeMillis();
-        orders.forEach(this::enrichAddress);
+        orders.stream()
+                .filter(orderDto -> DeliveryType.REGULAR.equals(orderDto.getDeliveryType()))
+                .forEach(this::enrichAddress);
         log.info("Addresses have been enriched in {}", System.currentTimeMillis() - startTime);
+    }
+
+    @Override
+    public void validateOurOfRegion(MapPoint mapPoint) {
+        if (isInvalidRegionBoundaries(mapPoint.getLatitude(), mapPoint.getLongitude())) {
+            throw new AddressOutOfRegionException(mapPoint);
+        }
     }
 
     private void enrichAddress(OrderDto orderDto) {
@@ -44,28 +55,16 @@ public class GoogleGeocodeService implements GeocodeService {
                 .build();
 
         MapPoint mapPoint = addressExternalRepository.findById(externalAddressId)
-                .map(this::map)
+                .map(routePointMapper::getMapPoint)
                 .orElseGet(() -> autovalidate(orderDto));
 
         orderDto.setMapPoint(mapPoint);
     }
 
-    private MapPoint map(AddressExternal addressExternal) {
-        return MapPoint.builder()
-                .address(addressExternal.getValidAddress())
-                .longitude(addressExternal.getLongitude())
-                .latitude(addressExternal.getLatitude())
-                .status(addressExternal.getStatus())
-                .build();
-    }
-
     private MapPoint autovalidate(OrderDto orderDto) {
-        String orderAddress = orderDto.getAddress();
-        GeocodingResult[] geocodingResults = googleClient.getGeocodingResults(orderAddress);
+        GeocodingResult[] geocodingResults = googleClient.getGeocodingResults(orderDto.getAddress());
         if (geocodingResults == null || geocodingResults.length == 0) { // Nothing found
-            return MapPoint.builder()
-                    .status(UNKNOWN)
-                    .build();
+            return routePointMapper.getUnknownMapPoint();
         }
 
         GeocodingResult geocodingResult = geocodingResults[0]; // Always get the first available result
@@ -74,13 +73,8 @@ public class GoogleGeocodeService implements GeocodeService {
         double longitude = geocodingResult.geometry.location.lng;
 
         //address outside defined area
-        if (latitude > NORTH_REGION_BORDER
-            || latitude < SOUTH_REGION_BORDER
-            || longitude > EAST_REGION_BORDER
-            || longitude < WEST_REGION_BORDER) {
-            return MapPoint.builder()
-                    .status(UNKNOWN)
-                    .build();
+        if (isInvalidRegionBoundaries(latitude, longitude)) {
+            return routePointMapper.getUnknownMapPoint();
         }
 
         return MapPoint.builder()
@@ -90,4 +84,11 @@ public class GoogleGeocodeService implements GeocodeService {
                 .status(AUTOVALIDATED)
                 .build();
     }
+
+    private boolean isInvalidRegionBoundaries(double latitude, double longitude) {
+        return latitude > NORTH_REGION_BORDER || latitude < SOUTH_REGION_BORDER
+                || longitude > EAST_REGION_BORDER || longitude < WEST_REGION_BORDER;
+    }
+
+
 }
