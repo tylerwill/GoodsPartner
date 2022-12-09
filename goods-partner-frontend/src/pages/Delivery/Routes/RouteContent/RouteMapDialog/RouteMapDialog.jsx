@@ -40,7 +40,7 @@ const RouteMapDialog = ({route, open, closeDialog}) => {
         centerMap(mapRef, lngs, lats);
     };
 
-    useEffect(()=> {
+    useEffect(() => {
         if (isMapLoaded) {
             calculateRoute(waypointsParts, renderDirections);
         }

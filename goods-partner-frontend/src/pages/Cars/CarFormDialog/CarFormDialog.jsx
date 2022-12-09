@@ -63,7 +63,7 @@ export default function CarFormDialog({title, closeDialog, open, actionHandler, 
                         <Grid item xs={6}>
                             <TextField id="outlined-basic"
                                        value={car.driver}
-                                       onChange={(e) => setCar({...car,driver: e.target.value})} label="Водій"
+                                       onChange={(e) => setCar({...car, driver: e.target.value})} label="Водій"
                                        required variant="outlined"/>
                         </Grid>
                         <Grid item xs={6}>

@@ -1,5 +1,4 @@
 import React, {useCallback} from 'react';
-import Order from "../../../model/Order";
 import Box from "@mui/material/Box";
 import {Button, Checkbox} from "@mui/material";
 import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
@@ -18,7 +17,8 @@ import {
     deleteSkippedOrders,
     deselectAll,
     rescheduleSkippedOrders,
-    selectAll, setDeleteOrdersDialogOpen,
+    selectAll,
+    setDeleteOrdersDialogOpen,
     setRescheduleDialogOpen
 } from "../../../features/orders/ordersSlice";
 import RescheduleDialog from "./RescheduleDialog/RescheduleDialog";
@@ -99,13 +99,13 @@ const SkippedOrders = () => {
                 </Box>
                 <Box>
                     <Button variant="outlined" color={"error"}
-                            onClick={()=>setDeleteDialogOpenHandler(true)}
+                            onClick={() => setDeleteDialogOpenHandler(true)}
                             disabled={!hasSelected}>
                         Видалити
                     </Button>
                     <Button variant="contained" color={"primary"}
                             sx={{ml: 2}}
-                            onClick={()=>setDialogOpenHandler(true)}
+                            onClick={() => setDialogOpenHandler(true)}
                             disabled={!hasSelected}>
                         Запланувати доставку
                     </Button>

@@ -1,5 +1,5 @@
 import React, {useCallback} from "react";
-import {Button, Stack} from "@mui/material";
+import {Button} from "@mui/material";
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -7,23 +7,11 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import IconButton from "@mui/material/IconButton";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import {EditOutlined} from "@mui/icons-material";
-import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
-import OrderAdditionalInfo from "./OrderAdditionalInfo/OrderAdditionalInfo";
 import TablePagination from "@mui/material/TablePagination";
 
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
-import {
-    setAddressDialogOpen,
-    setOrderForAddressModification
-} from "../../../../features/delivery-orders/deliveryOrdersSlice";
-
-import {useAppDispatch} from "../../../../hooks/redux-hooks";
 import OrderTableRow from "./OrderTableRow/OrderTableRow";
 
 const OrdersTable = ({orders, keyPrefix, updateOrder}) => {
@@ -81,11 +69,11 @@ const OrdersTable = ({orders, keyPrefix, updateOrder}) => {
                             <TableRow>
                                 <TableCell/>
                                 <TableCell sx={{minWidth: '135px'}}>№ замовлення</TableCell>
-                                <TableCell>Вага</TableCell>
                                 <TableCell>Клієнт</TableCell>
                                 <TableCell>Адреса</TableCell>
                                 <TableCell sx={{minWidth: '135px'}}>Час доставки</TableCell>
                                 <TableCell>Менеджер</TableCell>
+                                <TableCell/>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -93,9 +81,10 @@ const OrdersTable = ({orders, keyPrefix, updateOrder}) => {
                             {orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((order, index) => {
                                     return (
-                                        <OrderTableRow order={order} key={keyPrefix + index} keyPrefix={keyPrefix + "subTable"}
-                                             updateOrder={updateOrder}
-                                             expandAll={expandAll} collapseAll={collapseAll} reset={reset}
+                                        <OrderTableRow order={order} key={keyPrefix + index}
+                                                       keyPrefix={keyPrefix + "subTable"}
+                                                       updateOrder={updateOrder}
+                                                       expandAll={expandAll} collapseAll={collapseAll} reset={reset}
                                         />)
                                 })}
                             {emptyRows > 0 && (

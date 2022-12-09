@@ -1,5 +1,5 @@
 import React from "react";
-import {Card, CardContent, Chip} from "@mui/material";
+import {Card, CardContent} from "@mui/material";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
@@ -11,7 +11,7 @@ import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TablePagination from "@mui/material/TablePagination";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import DeliveryStatusChip from "../../../components/DeliveryStatusChip/DeliveryStatusChip";
 import {reformatDate} from "../../../util/util";
 

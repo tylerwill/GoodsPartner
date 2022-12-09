@@ -68,7 +68,7 @@ const DeliveredOrders = ({completedOrders}: Props) => {
 
             <Paper variant={"outlined"}>
                 <TableContainer style={{
-                    minHeight:'800px',
+                    minHeight: '800px',
                     borderTop: '1px solid rgba(0, 0, 0, 0.1)'
                 }}>
                     <Table aria-label="collapsible table">

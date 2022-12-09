@@ -16,7 +16,7 @@ interface Props {
 const ActionMenu: React.FC<Props> = ({user, deleteUser, setEditedUser, openEditDialog}) => {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>();
     const open = Boolean(anchorEl);
-    const handleClick = (event:React.MouseEvent<HTMLButtonElement>) => {
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {

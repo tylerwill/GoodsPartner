@@ -38,7 +38,7 @@ const Header = ({open, setOpen}) => {
                         aria-label="close drawer"
                         onClick={handleDrawerClose}
                         edge="start"
-                        sx={{mr: 3, color: "#000" , ...(!open && {display: 'none'})}}
+                        sx={{mr: 3, color: "#000", ...(!open && {display: 'none'})}}
                     >
                         <CloseIcon/>
                     </IconButton>

@@ -1,5 +1,5 @@
 import Grid from "@mui/material/Grid";
-import {Checkbox, FormControlLabel, Typography} from "@mui/material";
+import {Checkbox, Typography} from "@mui/material";
 import React from "react";
 import Order from "../../../model/Order";
 import Box from "@mui/material/Box";
@@ -9,7 +9,7 @@ const OrderAdditionalInfo = ({order}: { order: Order }) => {
     const to = order.deliveryFinish ?? "18:00";
 
     return (
-        <Grid sx={{mt: 2, pb:2, background: 'rgba(0, 0, 0, 0.02)', borderRadius: '6px'}} container spacing={2}>
+        <Grid sx={{mt: 2, pb: 2, background: 'rgba(0, 0, 0, 0.02)', borderRadius: '6px'}} container spacing={2}>
 
             <Grid item xs={2}>
                 <Typography sx={{mb: 1}} variant="caption" display="block" gutterBottom>
@@ -63,7 +63,7 @@ const OrderAdditionalInfo = ({order}: { order: Order }) => {
                 </Typography>
                 <Box>
                     <Typography variant="caption" display="block" gutterBottom>
-                        <Checkbox sx={{p:0}} size={"small"} disabled={true} checked={order.frozen}/>    Потребує заморозки
+                        <Checkbox sx={{p: 0}} size={"small"} disabled={true} checked={order.frozen}/> Потребує заморозки
                     </Typography>
                 </Box>
             </Grid>

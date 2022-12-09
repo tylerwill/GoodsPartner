@@ -1,17 +1,24 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import {Button, FormControl, MenuItem, Select, styled, Typography} from "@mui/material";
+import {Button, FormControl, MenuItem, Select, SelectChangeEvent, styled, Typography} from "@mui/material";
 import {toHoursAndMinutes} from "../../../../../util/util";
 import InfoTableItem from "../../../../../components/InfoTableItem/InfoTableItem";
 import RouteMapDialog from "../RouteMapDialog/RouteMapDialog";
+import {Route} from "../../../../../model/Route";
+import {useCompleteRouteMutation, useStartRouteMutation} from "../../../../../api/routes/routes.api";
 
-const RouteDetails = ({route, updateRoute, deliveryDate}) => {
+interface RouteDetailsProps {
+    route: Route,
+    deliveryDate?: string
+}
+
+const RouteDetails: React.FC<RouteDetailsProps> = ({route, deliveryDate}) => {
     return (<Box sx={{
         width: '100%', background: 'rgba(0, 0, 0, 0.02)',
         borderRadius: '6px', p: 2
     }}>
-        <RouteDetailsHeader route={route} updateRoute={updateRoute} deliveryDate={deliveryDate}/>
+        <RouteDetailsHeader route={route} deliveryDate={deliveryDate}/>
         <Box sx={{mt: 3}}>
             <RouteDetailsBody route={route}/>
         </Box>
@@ -21,7 +28,7 @@ const RouteDetails = ({route, updateRoute, deliveryDate}) => {
 
 export default RouteDetails;
 
-const RouteDetailsHeader = ({route, updateRoute, deliveryDate}) => {
+const RouteDetailsHeader: React.FC<RouteDetailsProps> = ({route, deliveryDate}) => {
     const [routeMapOpen, setRouteMapOpen] = React.useState(false);
 
     return (<Box sx={{width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -33,7 +40,9 @@ const RouteDetailsHeader = ({route, updateRoute, deliveryDate}) => {
 
             <Box sx={{display: 'flex'}}>
                 <Button sx={{mr: 2}} onClick={() => setRouteMapOpen(true)} variant="text">Показати на
-                    мапі</Button><RouteStatusSelect route={route} updateRoute={updateRoute}/></Box>
+                    мапі</Button>
+                <RouteStatusSelect route={route}/>
+            </Box>
 
             <RouteMapDialog route={route} open={routeMapOpen} closeDialog={() => setRouteMapOpen(false)}/>
         </Box>
@@ -41,7 +50,7 @@ const RouteDetailsHeader = ({route, updateRoute, deliveryDate}) => {
 }
 
 
-const RouteDetailsBody = ({route}) => {
+const RouteDetailsBody = ({route}: { route: Route }) => {
     const car = route.car;
 
     const startTime = route.startTime ? route.startTime : '8:00';
@@ -86,17 +95,17 @@ const RouteDetailsBody = ({route}) => {
 }
 
 
-const RouteStatusSelect = ({route, updateRoute}) => {
+const RouteStatusSelect = ({route}: { route: Route }) => {
     const {status} = route;
 
-    const statusToActionMap = {
-        'INPROGRESS': 'START',
-        'COMPLETED': 'COMPLETE'
-    }
+    const [startRoute] = useStartRouteMutation();
+    const [completeRoute] = useCompleteRouteMutation();
 
-    const handleChange = (event) => {
-        if (event.target.value === 'INPROGRESS' || event.target.value === 'COMPLETED') {
-            updateRoute(route.id, statusToActionMap[event.target.value]);
+    const handleChange = (event: SelectChangeEvent<unknown>) => {
+        if (event.target.value === 'INPROGRESS') {
+            startRoute(route.id);
+        } else if (event.target.value === 'COMPLETED') {
+            completeRoute(route.id);
         }
     }
     const CustomSelect = styled(Select)(() => ({
@@ -116,19 +125,16 @@ const RouteStatusSelect = ({route, updateRoute}) => {
     }));
 
     return <div>
-        <FormControl disabled={status === 'DRAFT' || status === 'COMPLETED'}>
+        <FormControl disabled={status === 'COMPLETED'}>
             <CustomSelect
                 value={status}
                 onChange={handleChange}
-                disabled={status==='COMPLETED'}
                 autoWidth
                 MenuProps={{MenuListProps: {disablePadding: true}}}
             >
-                <MenuItem disabled value={'DRAFT'}>Створений</MenuItem>
                 <MenuItem value={'INPROGRESS'}>В роботі</MenuItem>
                 <MenuItem disabled value={'APPROVED'}>Підтверджений</MenuItem>
                 <MenuItem value={'COMPLETED'}>Закінчений</MenuItem>
-                <MenuItem disabled value={'INCOMPLETED'}>Не закінчений</MenuItem>
             </CustomSelect>
         </FormControl>
     </div>

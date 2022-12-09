@@ -1,28 +1,40 @@
 import {FormControl, MenuItem, Select, SelectChangeEvent, styled} from "@mui/material";
-import React from "react";
+import React, {useCallback} from "react";
 import {RoutePoint} from "../../../../../../model/RoutePoint";
+import {
+    useCompleteRoutePointMutation,
+    useResetRoutePointMutation,
+    useSkipRoutePointMutation
+} from "../../../../../../api/routes/routes.api";
 
 interface RoutePointSelectProps {
-    routePoint: RoutePoint,
-    updateRoutePoint: (point: RoutePoint) => void
+    routePoint: RoutePoint
 }
 
-const RoutePointSelect = ({routePoint, updateRoutePoint}: RoutePointSelectProps) => {
+const RoutePointSelect = ({routePoint}: RoutePointSelectProps) => {
     const {status} = routePoint;
     const selectColor = getSelectColor(status);
 
-    const statusToActionMap = {
-        'PENDING': 'RESET',
-        'DONE': 'COMPLETE',
-        'SKIPPED': 'SKIP',
-    }
+    const [resetRoutePoint] = useResetRoutePointMutation();
+    const [skipRoutePoint] = useSkipRoutePointMutation();
+    const [completeRoutePoint] = useCompleteRoutePointMutation();
 
-    const handleChange = (event: SelectChangeEvent<unknown>) => {
-        // ts-ignore
-        const updatedRoutePoint = {...routePoint, status: event.target.value as string};
-
-        updateRoutePoint(updatedRoutePoint);
-    }
+    const handleChange = useCallback((event: SelectChangeEvent<unknown>) => {
+        switch (event.target.value) {
+            case 'PENDING': {
+                resetRoutePoint(routePoint.id);
+                break;
+            }
+            case 'DONE': {
+                completeRoutePoint(routePoint.id);
+                break;
+            }
+            case 'SKIPPED': {
+                skipRoutePoint(routePoint.id);
+                break;
+            }
+        }
+    }, []);
     const CustomSelect = styled(Select)(() => ({
         "&.MuiOutlinedInput-root": {
             "& fieldset": {

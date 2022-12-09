@@ -1,7 +1,6 @@
 import carsReducer from "../features/cars/carsSlice";
 import currentDeliveryReducer from "../features/currentDelivery/currentDeliverySlice";
 import reportsReducer from "../features/reports/reportsSlice";
-import historyReducer from "../features/history/historySlice";
 import notificationsReducer from "../features/notifications/notificationsSlice";
 
 import {configureStore} from "@reduxjs/toolkit";
@@ -20,7 +19,6 @@ const store = configureStore({
         cars: carsReducer,
         reports: reportsReducer,
         currentDelivery: currentDeliveryReducer,
-        history: historyReducer,
         notifications: notificationsReducer,
         orders: ordersReducer,
         deliveryOrders: deliveryOrdersReducer,

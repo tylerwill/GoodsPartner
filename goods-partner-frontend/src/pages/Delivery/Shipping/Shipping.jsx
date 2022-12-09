@@ -15,7 +15,6 @@ import UnfoldMoreIcon from "@mui/icons-material/UnfoldMore";
 import UnfoldLessIcon from "@mui/icons-material/UnfoldLess";
 import TablePagination from "@mui/material/TablePagination";
 import {useParams} from "react-router-dom";
-import {useGetHistoryForDeliveryQuery} from "../../../api/history/history.api";
 import Loading from "../../../components/Loading/Loading";
 import {useGetShippingForDeliveryQuery} from "../../../api/shipping/shipping.api";
 
@@ -65,7 +64,7 @@ const Shipping = () => {
         return <Loading/>
     }
 
-    return <Box sx={{paddingLeft:'24px', paddingRight:'24px'}}>
+    return <Box sx={{paddingLeft: '24px', paddingRight: '24px'}}>
         <Box sx={{display: "flex", justifyContent: 'flex-end', mb: 2}}>
             <Button onClick={expandAllHandler}>
                 <UnfoldMoreIcon sx={{mr: 1, transform: 'rotate(45deg)', width: '0.75em'}}/> розгорнути всі
@@ -132,7 +131,10 @@ const Row = ({shipping, collapseAll, expandAll, reset}) => {
                 <TableCell>
                     <IconButton
                         size="small"
-                        onClick={() => {setCarLoadTableOpen(!carLoadTableOpen); reset()}}
+                        onClick={() => {
+                            setCarLoadTableOpen(!carLoadTableOpen);
+                            reset()
+                        }}
                     >
                         {carLoadTableOpen ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
                     </IconButton>

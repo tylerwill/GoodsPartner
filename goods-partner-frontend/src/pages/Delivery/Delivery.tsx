@@ -19,8 +19,12 @@ import Routes from "./Routes/Routes";
 import {reformatDate} from "../../util/util";
 import useAuth from "../../auth/AuthProvider";
 import {useAppDispatch, useAppSelector} from "../../hooks/redux-hooks";
-import {useCalculateDeliveryMutation, useGetDeliveryQuery} from '../../api/deliveries/deliveries.api'
-import {DeliveryFormationStatus} from "../../model/Delivery";
+import {
+    useApproveDeliveryMutation,
+    useCalculateDeliveryMutation,
+    useGetDeliveryQuery
+} from '../../api/deliveries/deliveries.api'
+import {DeliveryFormationStatus, DeliveryStatus} from "../../model/Delivery";
 import {MapPointStatus} from "../../model/MapPointStatus";
 import {UserRole} from "../../model/User";
 import {useGetOrdersForDeliveryQuery} from "../../api/orders/orders.api";
@@ -29,6 +33,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
 import CarLoad from "./CarLoad/CarLoad";
 import Shipping from "./Shipping/Shipping";
+import {DeliveryType} from "../../model/DeliveryType";
 
 
 const Delivery = () => {
@@ -41,9 +46,12 @@ const Delivery = () => {
 
     const {user} = useAuth();
     const [calculateDelivery] = useCalculateDeliveryMutation();
+    const [approveDelivery] = useApproveDeliveryMutation();
     const calculateDeliveryHandler = useCallback(() => calculateDelivery(deliveryId!), [deliveryId]);
 
-    // const approveHandler = () => dispatch(approveDelivery(id));
+    const approveDeliveryHandler = useCallback(() => {
+        approveDelivery(String(deliveryId));
+    }, [deliveryId]);
 
     useEffect(() => {
         dispatch(setTabIndex(0));
@@ -51,23 +59,26 @@ const Delivery = () => {
 
     }, [dispatch, deliveryId]);
 
-    if (isLoading || !delivery) {
+    if (isLoading || !delivery || !orders) {
         return <Loading/>
 
     }
 
+
     const isDriver = user.role === UserRole.DRIVER;
 
-    const isPreCalculationStatus = delivery.formationStatus === DeliveryFormationStatus.READY_FOR_CALCULATION
+    const calculationDisabled = orders
+        .filter(order => order.deliveryType === DeliveryType.REGULAR)
+        .some(order => order.mapPoint.status === MapPointStatus.UNKNOWN);
+
+    const isPreCalculationStatus = delivery.formationStatus === DeliveryFormationStatus.ORDERS_LOADED
         && !isDriver;
     // const isPreCalculationStatus = true;
-    // const isPreApprove = delivery.formationStatus === 'COMPLETED' && !isDriver;
-    //
-    // const isApproveEnabled = delivery.status !== 'APPROVED';
-    //
-    const calculated = delivery?.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED;
+    const isPreApprove = delivery.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED && !isDriver;
 
-    const hasInvalidOrders = orders?.some(order => order.mapPoint.status === MapPointStatus.UNKNOWN);
+    const isApproveEnabled = delivery.status === DeliveryStatus.DRAFT;
+
+    const calculated = delivery?.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED;
 
 
     const tabLabels = [
@@ -96,8 +107,9 @@ const Delivery = () => {
                     <DeliveryStatusChip status={delivery.status}/>
                 </Box>
 
-                {isPreCalculationStatus && <CalculateButton enabled={true} onClick={calculateDeliveryHandler}/>}
-                {/*{isPreApprove && <ApproveButton enabled={isApproveEnabled} approve={approveHandler}/>}*/}
+                {isPreCalculationStatus &&
+                    <CalculateButton enabled={!calculationDisabled} onClick={calculateDeliveryHandler}/>}
+                {isPreApprove && <ApproveButton enabled={isApproveEnabled} onClick={approveDeliveryHandler}/>}
 
             </Box>
 

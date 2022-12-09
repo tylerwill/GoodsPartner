@@ -37,8 +37,16 @@ export const deliveriesApi = createApi({
                 query: (id: string) => ({
                     url: `deliveries/${id}/calculate`,
                     method: 'POST'
-                })
-            //    TODO: think about cache invalidation
+                }),
+                invalidatesTags: (result, error, id) => [{type: 'deliveries', id}]
+            }),
+
+            approveDelivery: builder.mutation<Delivery, string>({
+                query: (id: string) => ({
+                    url: `deliveries/${id}/approve`,
+                    method: 'POST'
+                }),
+                invalidatesTags: (result, error, id) => [{type: 'deliveries', id}]
             }),
         }),
     }
@@ -48,5 +56,6 @@ export const {
     useGetDeliveriesQuery,
     useAddDeliveryMutation,
     useGetDeliveryQuery,
-    useCalculateDeliveryMutation
+    useCalculateDeliveryMutation,
+    useApproveDeliveryMutation
 } = deliveriesApi

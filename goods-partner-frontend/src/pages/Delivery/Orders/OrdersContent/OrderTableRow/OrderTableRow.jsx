@@ -17,6 +17,7 @@ import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import OrderAdditionalInfo from "../OrderAdditionalInfo/OrderAdditionalInfo";
+import OrderActionMenu from "../OrderActionMenu/OrderActionMenu";
 
 
 const OrderTableRow = ({order, keyPrefix, updateOrder, collapseAll, expandAll, reset}) => {
@@ -27,7 +28,7 @@ const OrderTableRow = ({order, keyPrefix, updateOrder, collapseAll, expandAll, r
 
     const isTableOpened = expandAll || (orderTableOpen && !collapseAll);
 
-    const handleOpen = useCallback(() => {
+    const handleChangeAddressDialogOpen = useCallback(() => {
             dispatch(setOrderForAddressModification(order));
             dispatch(setAddressDialogOpen(true));
         }, [dispatch, setAddressDialogOpen]
@@ -52,7 +53,6 @@ const OrderTableRow = ({order, keyPrefix, updateOrder, collapseAll, expandAll, r
                 <TableCell component="th" scope="row">
                     {order.orderNumber}
                 </TableCell>
-                <TableCell>{order.orderWeight} кг</TableCell>
                 <TableCell>{order.clientName}</TableCell>
                 <TableCell>
                     {
@@ -63,6 +63,9 @@ const OrderTableRow = ({order, keyPrefix, updateOrder, collapseAll, expandAll, r
                 </TableCell>
                 <TableCell>{from} - {to}</TableCell>
                 <TableCell>{order.managerFullName}</TableCell>
+                <TableCell align="center">
+                    <OrderActionMenu changeAddress={handleChangeAddressDialogOpen}/>
+                </TableCell>
             </TableRow>
             <TableRow>
                 <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={7}>

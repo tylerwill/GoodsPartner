@@ -28,7 +28,7 @@ public class ShippingController {
             notes = "Provide an id to look up specific Delivery",
             response = ProductShippingDto.class)
     public List<ProductShippingDto> findByDeliveryId(@ApiParam(value = "ID value for the Delivery you need to retrieve", required = true)
-                                                     @RequestParam(value = "deliveries") UUID id) {
+                                                     @RequestParam(value = "deliveryId") UUID id) {
         return shippingService.findByDeliveryId(id);
 
     }

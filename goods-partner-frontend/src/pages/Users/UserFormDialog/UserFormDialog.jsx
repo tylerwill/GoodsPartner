@@ -8,7 +8,8 @@ import {
     FormControl,
     FormControlLabel,
     FormGroup,
-    MenuItem, Select,
+    MenuItem,
+    Select,
     TextField,
     Typography
 } from '@mui/material';
@@ -70,7 +71,7 @@ export default function UserFormDialog({title, closeDialog, open, actionHandler,
                             <FormControl>
                                 <Select
                                     value={user.role}
-                                    onChange={(e) => setUser({...user,role: e.target.value})}
+                                    onChange={(e) => setUser({...user, role: e.target.value})}
                                     autoWidth
                                     MenuProps={{MenuListProps: {disablePadding: true}}}
                                 >

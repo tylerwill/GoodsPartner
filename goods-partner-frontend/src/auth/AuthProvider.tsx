@@ -1,8 +1,7 @@
 import * as React from 'react'
-import {useState, useEffect, useMemo, useContext, ReactNode} from "react";
+import {ReactNode, useContext, useEffect, useMemo, useState} from 'react'
 import {usersApi} from "../api/usersApi";
 import {AuthUserContext} from "./AuthUserContext";
-import {useGetCurrentUserQuery} from "../api/users/users.api";
 import {User} from "../model/User";
 
 const AuthContext = React.createContext<AuthUserContext | null>(null);

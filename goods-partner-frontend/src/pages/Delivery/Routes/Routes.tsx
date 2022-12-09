@@ -1,17 +1,14 @@
-import React, {useCallback} from "react";
+import React from "react";
 import Grid from "@mui/material/Grid";
 import RoutesSidebar from "./RoutesSidebar/RoutesSidebar";
 import RouteContent from "./RouteContent/RouteContent";
-import {useDispatch, useSelector} from "react-redux";
-import {
-    setCurrentRouteIndex,
-    updateRoutePointStatus,
-    updateRouteStatus
-} from "../../../features/currentDelivery/currentDeliverySlice";
+import {useDispatch} from "react-redux";
+import {setCurrentRouteIndex} from "../../../features/currentDelivery/currentDeliverySlice";
 import {useGetRoutesForDeliveryQuery} from "../../../api/routes/routes.api";
 import {useParams} from "react-router-dom";
 import {useAppSelector} from "../../../hooks/redux-hooks";
 import {useGetDeliveryQuery} from "../../../api/deliveries/deliveries.api";
+import Loading from "../../../components/Loading/Loading";
 
 const Routes = () => {
     const dispatch = useDispatch();
@@ -34,7 +31,7 @@ const Routes = () => {
     const setCurrentRouteIndexHandler = (index: number) => dispatch(setCurrentRouteIndex(index));
 
     if (!routes || !delivery) {
-        return <div>Loading</div>
+        return <Loading/>
     }
 
     const currentRoute = routes[currentRouteIndex];
@@ -47,8 +44,6 @@ const Routes = () => {
         <Grid item xs={9}>
             <RouteContent deliveryDate={delivery.deliveryDate}
                           route={currentRoute}
-                           updateRoute={(r)=>{}}
-                           updateRoutePoint={(r)=>{}}
             />
         </Grid>
     </Grid>);

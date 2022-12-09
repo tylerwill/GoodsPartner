@@ -35,7 +35,7 @@ public class ShippingControllerITest extends AbstractWebITest {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get(SHIPPING_API)
-                        .param("deliveries", "00000000-0000-0000-0000-000000000111")
+                        .param("deliveryId", "00000000-0000-0000-0000-000000000111")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()

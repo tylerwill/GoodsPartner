@@ -6,17 +6,15 @@ import {RoutePoint} from "../../../../../model/RoutePoint";
 
 interface RoutePointDetailsProps {
     routePoint: RoutePoint,
-    number: number,
-    updateRoutePoint: (point: RoutePoint) => void
+    orderNumber: number
 }
 
-const RoutePointDetails = ({routePoint, number, updateRoutePoint}: RoutePointDetailsProps) => {
+const RoutePointDetails = ({routePoint, orderNumber}: RoutePointDetailsProps) => {
     return (<Box sx={{
         width: '100%', background: 'rgba(0, 0, 0, 0.02)',
         borderRadius: '6px', p: 2
     }}>
-        <RoutePointDetailsHeader
-            routePoint={routePoint} number={number} updateRoutePoint={updateRoutePoint}/>
+        <RoutePointDetailsHeader routePoint={routePoint} orderNumber={orderNumber}/>
         <Box sx={{mt: 3}}>
             <RoutePointDetailsBody routePoint={routePoint}/>
         </Box>

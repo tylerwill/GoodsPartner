@@ -31,7 +31,7 @@ const AdditionalInfo = ({order, updateOrder}: AdditionalInfoProps) => {
     return (
         <Grid sx={{mt: 2, p: 2, background: 'rgba(0, 0, 0, 0.02)', borderRadius: '6px'}} container spacing={2}>
 
-            <Grid item xs={4}>
+            <Grid item xs={3}>
                 <Typography sx={{mb: 1}} variant="caption" display="block" gutterBottom>
                     Діапазон доставки
                 </Typography>
@@ -41,7 +41,7 @@ const AdditionalInfo = ({order, updateOrder}: AdditionalInfoProps) => {
                 </Box>
             </Grid>
 
-            <Grid item xs={4}>
+            <Grid item xs={3}>
                 <Typography sx={{mb: 1}} variant="caption" display="block" gutterBottom>
                     Заморозка
                 </Typography>
@@ -51,7 +51,17 @@ const AdditionalInfo = ({order, updateOrder}: AdditionalInfoProps) => {
                 </Box>
             </Grid>
 
-            <Grid item xs={4}>
+            <Grid item xs={3}>
+                <Typography sx={{mb: 1}} variant="caption" display="block" gutterBottom>
+                    Вага замовлення
+                </Typography>
+                <Typography variant="caption" display="block" gutterBottom>
+                    {order.orderWeight} кг
+                </Typography>
+            </Grid>
+
+            {/* TODO: Change font fize to 14px in rem*/}
+            <Grid item xs={3}>
                 <Typography sx={{mb: 1}} variant="caption" display="block" gutterBottom>
                     Коментар
                 </Typography>

@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {Box, Button, ListItemIcon, ListItemText, Menu, MenuItem, Typography} from "@mui/material";
+import React, {useState} from "react";
+import {Box, Button, Typography} from "@mui/material";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,20 +7,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
-import IconButton from "@mui/material/IconButton";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import CarFormDialog from "./CarFormDialog/CarFormDialog";
-import {useDispatch, useSelector} from "react-redux";
-import {fetchCars, addCar, updateCar, deleteCar} from "../../features/cars/carsSlice";
-import Loading from "../../components/Loading/Loading";
 import ErrorAlert from "../../components/ErrorAlert/ErrorAlert";
 import {useAppDispatch, useAppSelector} from "../../hooks/redux-hooks";
-import {Car} from "../../model/Car";
 
 const Cars = () => {
     const {cars, loading, error} = useAppSelector(state => state.cars);

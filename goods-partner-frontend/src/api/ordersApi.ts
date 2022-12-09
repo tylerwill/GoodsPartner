@@ -7,7 +7,7 @@ export const ordersApi = {
     fetchSkipped() {
         return axiosWithSetting.get('/orders/skipped');
     },
-    reschedule(rescheduleDate:string, orderIds: Array<number>) {
+    reschedule(rescheduleDate: string, orderIds: Array<number>) {
         return axiosWithSetting.post('/orders/reschedule', {rescheduleDate, orderIds});
     },
 
