@@ -4,6 +4,8 @@ import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
+import com.goodspartner.entity.RouteStatus;
+import com.goodspartner.exception.IllegalRouteStateException;
 import com.goodspartner.exception.RoutePointNotFoundException;
 import com.goodspartner.repository.RoutePointRepository;
 import com.goodspartner.service.EventService;
@@ -42,14 +44,15 @@ public class DefaultRoutePointService implements RoutePointService {
         RoutePoint routePoint = routePointRepository.findById(routePointId)
                 .orElseThrow(() -> new RoutePointNotFoundException(routePointId));
 
+        Route route = routePoint.getRoute();
+        if (!RouteStatus.INPROGRESS.equals(route.getStatus())) {
+            throw new IllegalRouteStateException(RouteStatus.INPROGRESS.getStatus(), "update route point");
+        }
+
         action.perform(routePoint);
 
-        Route route = routePoint.getRoute();
-
         eventService.publishRoutePointUpdated(routePoint, route);
-
         processRouteStatus(route);
-
         return getRoutePointActionResponse(route, routePoint);
     }
 

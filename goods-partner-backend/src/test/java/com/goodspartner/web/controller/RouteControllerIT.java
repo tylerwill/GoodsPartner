@@ -45,7 +45,6 @@ public class RouteControllerIT extends AbstractWebITest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[]"));
-
         assertSelectCount(2);
     }
 

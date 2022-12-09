@@ -1,37 +1,37 @@
 [
   {
-    "refKey": "18ee46a5-8e41-11ec-b3ce-00155dd72305",
-    "orderNumber": "00000003639",
-    "shippingDate": "2022-02-15",
-    "comment": "some-test-comment",
-    "managerFullName": "Крамаренко Леся                                   ",
-    "deliveryId": null,
-    "deliveryType": "REGULAR",
-    "rescheduleDate": "2022-02-20",
-    "deliveryStart": null,
-    "deliveryFinish": null,
-    "clientName": "Новус Україна ТОВ",
-    "address": "м.Київ, пр. Академіка Палладіна, 7-А",
-    "mapPoint": {
-      "address": "проспект Академіка Палладіна, 7А, Київ, Україна, 03179",
-      "latitude": 50.4618259,
-      "longitude": 30.3553835,
-      "status": "AUTOVALIDATED"
+    "refKey":"18ee46a5-8e41-11ec-b3ce-00155dd72305",
+    "orderNumber":"00000003639",
+    "shippingDate":"2022-02-15",
+    "comment":"some-test-comment",
+    "managerFullName":"Крамаренко Леся                                   ",
+    "deliveryId":null,
+    "deliveryType":"REGULAR",
+    "frozen":false,
+    "excluded":false,
+    "dropped":false,
+    "rescheduleDate":"2022-02-20",
+    "deliveryStart":null,
+    "deliveryFinish":null,
+    "clientName":"Новус Україна ТОВ",
+    "address":"м.Київ, пр. Академіка Палладіна, 7-А",
+    "mapPoint":{
+      "address":"проспект Академіка Палладіна, 7А, Київ, Україна, 03179",
+      "latitude":50.4618259,
+      "longitude":30.3553835,
+      "status":"AUTOVALIDATED"
     },
-    "products": [
+    "products":[
       {
-        "productName": "715050B Форми тюльпани 150/50 Коричневі (3200 шт)",
-        "amount": 1,
-        "storeName": "Склад №1",
-        "unitWeight": 3200.0,
-        "totalProductWeight": 1500.0,
-        "coefficient": 0.0,
-        "measure": null
+        "productName":"715050B Форми тюльпани 150/50 Коричневі (3200 шт)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":3200.0,
+        "totalProductWeight":1500.0,
+        "coefficient":0.0,
+        "measure":null
       }
     ],
-    "orderWeight": 1500.0,
-    "frozen": false,
-    "excluded": false,
-    "dropped": false
+    "orderWeight":1500.0
   }
 ]

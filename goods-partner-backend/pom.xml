@@ -360,14 +360,15 @@
                         </executions>
                         <configuration>
                             <excludes>
-                                <exclude>com/goodspartner/configuration/**/*.class</exclude>
+                                <exclude>com/goodspartner/configuration/**/*</exclude>
                                 <exclude>com/goodspartner/dto/**/*.class</exclude>
-                                <exclude>com/goodspartner/entity/**/*.class</exclude>
-                                <exclude>com/goodspartner/exceptions/**/*.class</exclude>
-                                <exclude>com/goodspartner/repository/**/*.class</exclude>
-                                <exclude>com/goodspartner/service/dto/**/*.class</exclude>
-                                <exclude>com/goodspartner/web/controller/response/**/*.class</exclude>
-                                <exclude>com/goodspartner/web/handler</exclude>
+                                <exclude>com/goodspartner/entity/**/*</exclude>
+                                <exclude>com/goodspartner/exceptions/**/*</exclude>
+                                <exclude>com/goodspartner/repository/**/*</exclude>
+                                <exclude>com/goodspartner/service/dto/**/*</exclude>
+                                <exclude>com/goodspartner/web/controller/response/**/*</exclude>
+                                <exclude>com/goodspartner/web/handler/**/*</exclude>
+                                <exclude>com/goodspartner/Starter.java</exclude>
                             </excludes>
                         </configuration>
                     </plugin>

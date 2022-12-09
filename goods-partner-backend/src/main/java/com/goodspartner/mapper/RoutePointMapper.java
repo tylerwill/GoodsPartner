@@ -22,6 +22,8 @@ public interface RoutePointMapper {
 
     List<RoutePointDto> toRoutePointDtosList(List<RoutePoint> routePoints);
 
+    @Mapping(target = "address", source = "routePoint.addressExternal.orderAddressId.orderAddress")
+    @Mapping(target = "clientName", source = "routePoint.addressExternal.orderAddressId.clientName")
     @Mapping(target = "mapPoint", source = "routePoint.addressExternal", qualifiedByName = "getMapPoint")
     RoutePointDto toRoutePointDto(RoutePoint routePoint);
 

@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ class OrderControllerIT extends AbstractWebITest {
     private static final String ORDERS_BY_DELIVERY_ENDPOINT = "/api/v1/orders";
     private static final String SKIPPED_ORDERS_ENDPOINT = "/api/v1/orders/skipped";
     private static final String COMPLETED_ORDERS_ENDPOINT = "/api/v1/orders/completed";
+    private static final String SCHEDULED_ORDERS_ENDPOINT = "/api/v1/orders/scheduled";
     private static final String RESCHEDULE_ORDER_ENDPOINT = "/api/v1/orders/skipped/reschedule";
     private static final String UPDATE_ORDER_ENDPOINT = "/api/v1/orders/%d";
 
@@ -127,6 +129,15 @@ class OrderControllerIT extends AbstractWebITest {
         assertSelectCount(3); // Orders + Delivery + SequenceNextVal. N+1 Verification Passed
         assertUpdateCount(2);
         assertInsertCount(1);
+
+        SQLStatementCountValidator.reset();
+        mockMvc.perform(get(SCHEDULED_ORDERS_ENDPOINT)
+                        .session(getLogistSession())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(getResponseAsString("response/orders/reschedule-order-response.json"))) // id could be different, not matching it
+                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+        assertSelectCount(1);
     }
 
     @Test
@@ -151,7 +162,7 @@ class OrderControllerIT extends AbstractWebITest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/reschedule-order-response-assigned-delivery.json"))); // id could be different, not matching it
         // Then
-    //    assertSelectCount(3); // Orders + Delivery + SequenceNextVal. N+1 Verification Passed
+        assertSelectCount(3); // Orders + Delivery + SequenceNextVal. N+1 Verification Passed
         assertUpdateCount(2);
         assertInsertCount(1);
 
