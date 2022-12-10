@@ -12,6 +12,6 @@ public class RescheduleOrdersRequest {
 
     private LocalDate rescheduleDate;
 
-    private List<Integer> orderIds;
+    private List<Long> orderIds;
 
 }

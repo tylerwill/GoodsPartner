@@ -57,8 +57,8 @@ public class DeliveryApproveControllerIT extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
+    @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml",
+            skipCleaningFor = "flyway_schema_history", cleanAfter = true, cleanBefore = true)
     @DisplayName("when Approve Delivery By Non-Existing Id then Not Found Returned")
     void whenApproveDeliveryByNonExistingId_thenNotFoundReturned() throws Exception {
         SQLStatementCountValidator.reset();
@@ -75,7 +75,8 @@ public class DeliveryApproveControllerIT extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml")
+    @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml",
+            skipCleaningFor = "flyway_schema_history", cleanAfter = true, cleanBefore = true)
     @DisplayName("when Approve Delivery of Non-Draft Status then Exception Thrown")
     void whenApproveDeliveryOfNonDraftStatus_thenExceptionThrown() throws Exception {
         SQLStatementCountValidator.reset();
@@ -92,7 +93,8 @@ public class DeliveryApproveControllerIT extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml")
+    @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml",
+            skipCleaningFor = "flyway_schema_history", cleanAfter = true, cleanBefore = true)
     @DisplayName("when Approve Delivery without Routes then Exception Thrown")
     void whenApproveDeliveryWithoutRoutes_thenExceptionThrown() throws Exception {
         SQLStatementCountValidator.reset();

@@ -9,6 +9,6 @@ import java.util.List;
 @Getter
 public class RemoveOrdersRequest {
 
-    private List<Integer> orderIds;
+    private List<Long> orderIds;
 
 }

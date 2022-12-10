@@ -99,7 +99,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
             return;
         }
 
-        Map<Integer, OrderExternal> orderMap = orders.stream()
+        Map<Long, OrderExternal> orderMap = orders.stream()
                 .collect(Collectors.toMap(OrderExternal::getId, Function.identity()));
 
         solution.getDroppedPoints()

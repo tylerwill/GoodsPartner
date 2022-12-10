@@ -53,7 +53,7 @@ public class OrderController {
             response = OrderDto.class,
             responseContainer = "List"
     )
-    public OrderDto update(@PathVariable int id,
+    public OrderDto update(@PathVariable long id,
                            @RequestBody OrderDto orderDto) {
         return orderExternalMapper.toOrderDto(orderExternalService.update(id, orderDto));
     }

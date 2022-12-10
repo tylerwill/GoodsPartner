@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface OrderExternalRepository extends JpaRepository<OrderExternal, Integer> {
+public interface OrderExternalRepository extends JpaRepository<OrderExternal, Long> {
 
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o WHERE o.delivery.id = :deliveryId")
@@ -45,17 +45,19 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, In
 
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o " +
-            "WHERE o.delivery.id = :deliveryId AND o.deliveryType = 'REGULAR' AND o.addressExternal.status = 'UNKNOWN'")
-    List<OrderExternal> findOrderExternalsByDeliveryId(@Param("deliveryId") UUID deliveryId);
+            "WHERE o.delivery.id = :deliveryId " +
+            "  AND o.deliveryType = 'REGULAR' " +
+            "  AND o.addressExternal.status = 'UNKNOWN'")
+    List<OrderExternal> findRegularOrdersWithUnknownAddressByDeliveryId(@Param("deliveryId") UUID deliveryId);
 
     List<OrderExternal> findByRescheduleDate(LocalDate date);
 
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o WHERE o.id IN :orderIds")
-    List<OrderExternal> findByOrderIds(@Param("orderIds") List<Integer> orderIds);
+    List<OrderExternal> findByOrderIds(@Param("orderIds") List<Long> orderIds);
 
     @Override
     @EntityGraph(attributePaths = {"addressExternal", "delivery"})
     @Query("SELECT o FROM OrderExternal o WHERE o.id = :id")
-    Optional<OrderExternal> findById(@Param("id") Integer id);
+    Optional<OrderExternal> findById(@Param("id") Long id);
 }

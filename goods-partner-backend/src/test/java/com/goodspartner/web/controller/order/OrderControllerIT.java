@@ -1,13 +1,10 @@
-package com.goodspartner.web.controller;
+package com.goodspartner.web.controller.order;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
 import com.goodspartner.config.TestSecurityEnableConfig;
-import com.goodspartner.dto.MapPoint;
-import com.goodspartner.dto.OrderDto;
-import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.OrderExternalRepository;
@@ -22,12 +19,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.goodspartner.entity.DeliveryType.POSTAL;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertInsertCount;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertUpdateCount;
@@ -49,7 +43,6 @@ class OrderControllerIT extends AbstractWebITest {
     private static final String COMPLETED_ORDERS_ENDPOINT = "/api/v1/orders/completed";
     private static final String SCHEDULED_ORDERS_ENDPOINT = "/api/v1/orders/scheduled";
     private static final String RESCHEDULE_ORDER_ENDPOINT = "/api/v1/orders/skipped/reschedule";
-    private static final String UPDATE_ORDER_ENDPOINT = "/api/v1/orders/%d";
 
     @Autowired
     private DeliveryRepository deliveryRepository;
@@ -117,7 +110,7 @@ class OrderControllerIT extends AbstractWebITest {
 
         RescheduleOrdersRequest rescheduleOrdersRequest = new RescheduleOrdersRequest();
         rescheduleOrdersRequest.setRescheduleDate(LocalDate.of(2022, 2, 20));
-        rescheduleOrdersRequest.setOrderIds(List.of(251));
+        rescheduleOrdersRequest.setOrderIds(List.of(251L));
 
         mockMvc.perform(MockMvcRequestBuilders.post(RESCHEDULE_ORDER_ENDPOINT)
                         .session(getLogistSession())
@@ -148,7 +141,7 @@ class OrderControllerIT extends AbstractWebITest {
         UUID deliveryUUID = UUID.fromString("70574dfd-48a3-40c7-8b0c-3e5defe7d080");
 
         RescheduleOrdersRequest rescheduleOrdersRequest = new RescheduleOrdersRequest();
-        rescheduleOrdersRequest.setOrderIds(List.of(151));
+        rescheduleOrdersRequest.setOrderIds(List.of(151L));
         rescheduleOrdersRequest.setRescheduleDate(LocalDate.of(2022, 2, 17)); // Matching existent deliveryId
 
         verifyDatabaseBefore(deliveryUUID);
@@ -179,75 +172,5 @@ class OrderControllerIT extends AbstractWebITest {
         Delivery deliveryAfter = deliveryRepository.findByIdWithOrders(deliveryUUID).get();
         assertEquals(2, deliveryAfter.getOrders().size());
         assertEquals(3, orderExternalRepository.findAll().size());
-    }
-
-    @Test
-    @DataSet(value = "datasets/orders/default-order-dataset.json",
-            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
-    void whenOrderUpdate_orderFieldsGotUpdated() throws Exception {
-        SQLStatementCountValidator.reset();
-
-        mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
-                        .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
-                .andExpect(status().isOk())
-                .andExpect(content().json(getResponseAsString("response/orders/update-order-response.json")));
-
-        assertSelectCount(2); // OrderById + isAllOrdersValid verification
-        assertUpdateCount(4); // Update Orders + Addresses + Delivery
-    }
-
-    @Test
-    @DataSet(value = "datasets/orders/default-order-dataset.json",
-            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
-    void whenOrderUpdateAddressOutOfReqion_BadRequestReturned() throws Exception {
-        SQLStatementCountValidator.reset();
-
-        OrderDto payload = buildRequestUpdateOrderDto();
-        MapPoint mapPoint = payload.getMapPoint();
-        mapPoint.setLatitude(52.03); // Out of Kyiv region
-        mapPoint.setLongitude(28.69);
-        mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
-                        .content(objectMapper.writeValueAsString(payload)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().json("{" +
-                                "   \"status\":\"BAD_REQUEST\"," +
-                                "   \"message\":\"Requested address coordinates out of valid region:\\n проспект Академіка Палладіна, 9А, Київ, Україна, 03179.\\n Change delivery type if needed\"" +
-                                "}"));
-        assertSelectCount(0); // OrderById + isAllOrdersValid verification
-        assertUpdateCount(0); // Update Orders + Addresses + Delivery
-    }
-
-    private OrderDto buildRequestUpdateOrderDto() {
-        return OrderDto.builder()
-                // Unmodifiable
-                .id(251)
-                .orderNumber("00000003639 - This value not modifiable")
-                .managerFullName("Крамаренко Леся - This value not modifiable")
-                .shippingDate(LocalDate.parse("2022-02-20")) // This value not modifiable
-                .clientName("Новус Україна ТОВ - This value not modifiable")
-                .address("м.Київ, пр. Академіка Палладіна, 7-А - This value not modifiable")
-                .orderWeight(1500.00)
-                .products(new ArrayList<>()) // TODO check
-                .refKey("18ee46a5-8e41-11ec-b3ce-00155dd72305 - This value not modifiable")
-                .comment("some-test-comment - This value not modifiable")
-                .deliveryId(UUID.fromString("70574dfd-48a3-40c7-8b0c-3e5defe7d081")) // - This value not modifiable
-                // Modifiable
-                .deliveryType(POSTAL)
-                .excluded(true)
-                .dropped(true)
-                .frozen(true)
-                .deliveryStart(LocalTime.of(10, 0))
-                .deliveryFinish(LocalTime.of(11, 0))
-                .mapPoint(MapPoint.builder()
-                        .status(AddressStatus.KNOWN) // Override status
-                        .address("проспект Академіка Палладіна, 9А, Київ, Україна, 03179")
-                        .longitude(31.3553835000000)
-                        .latitude(51.4618259000000)
-                        .build())
-                .build();
     }
 }

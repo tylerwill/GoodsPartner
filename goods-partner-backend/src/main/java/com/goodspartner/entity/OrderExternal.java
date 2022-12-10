@@ -34,7 +34,7 @@ public class OrderExternal {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orders_external_id_sequence")
     @SequenceGenerator(name = "orders_external_id_sequence", sequenceName = "orders_external_id_sequence")
-    private Integer id;
+    private Long id;
 
     @Column(name = "ref_key")
     private String refKey;

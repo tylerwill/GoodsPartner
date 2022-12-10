@@ -5,7 +5,7 @@
   "comment":"some-test-comment",
   "managerFullName":"Крамаренко Леся                                   ",
   "deliveryId":"70574dfd-48a3-40c7-8b0c-3e5defe7d080",
-  "deliveryType":"REGULAR",
+  "deliveryType":"POSTAL",
   "excluded":true,
   "dropped":true,
   "shippingDate":"2022-02-15",
@@ -15,10 +15,10 @@
   "clientName":"Новус Україна ТОВ",
   "address":"м.Київ, пр. Академіка Палладіна, 7-А",
   "mapPoint":{
-    "address":"проспект Академіка Палладіна, 7А, Київ, Україна, 03179",
-    "latitude":51.4618259,
-    "longitude":31.3553835,
-    "status":"KNOWN"
+    "address":null,
+    "latitude":0,
+    "longitude":0,
+    "status":"UNKNOWN"
   },
   "products":[
     {

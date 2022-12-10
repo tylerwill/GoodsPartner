@@ -1,6 +1,7 @@
 package com.goodspartner.web.controller.delivery;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
@@ -35,7 +36,8 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
     private static final String DELIVERIES_ENDPOINT = "/api/v1/deliveries";
 
     @Test
-    @DataSet("datasets/delivery/default_deliveries_dataset.yml")
+    @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml",
+            skipCleaningFor = "flyway_schema_history", cleanAfter = true, cleanBefore = true)
     @DisplayName("when driver gets deliveries then driver retrieve respective Deliveries assigned except Delivery in Draft status")
     public void whenGetDeliveries_thenDriverCantSeeDeliveryInStatusDRAFT() throws Exception {
         SQLStatementCountValidator.reset();
@@ -49,7 +51,8 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
     }
 
     @Test
-    @DataSet("datasets/delivery/default_deliveries_dataset.yml")
+    @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml",
+            skipCleaningFor = "flyway_schema_history", cleanAfter = true, cleanBefore = true)
     @DisplayName("when logistician gets deliveries then logistician retrieve all deliveries")
     public void whenGetDeliveries_thenLogisticianSeeAllDeliveries() throws Exception {
         SQLStatementCountValidator.reset();
@@ -108,4 +111,18 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
                         "\"message\":\"Unable to delete delivery: 00000000-0000-0000-0000-000000000222 with status: APPROVED\"}\n"));
         assertSelectCount(1);
     }
+
+    @Test
+    @DataSet(value = "datasets/delivery/delete_delivery_dataset.yml", skipCleaningFor = "flyway_schema_history",
+            cleanAfter = true, cleanBefore = true)
+    @ExpectedDataSet(value = "delivery/delete_delivery.yml")
+    @DisplayName("when Delete Delivery then Ok Status Returned")
+    void whenDeleteDelivery_thenOkStatusReturned() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/api/v1/deliveries/f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454")
+                        .session(getLogistSession())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+    // TODO delete wrong status
 }

@@ -14,7 +14,7 @@ import com.goodspartner.service.EventService;
 import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.service.util.DeliveryCalculationHelper;
 import com.goodspartner.web.action.DeliveryAction;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,14 +24,13 @@ import java.util.UUID;
 import static com.goodspartner.entity.AddressStatus.UNKNOWN;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DefaultDeliveryFacade implements DeliveryFacade {
 
     private final DeliveryService deliveryService;
     private final OrderExternalService orderService;
     private final EventService eventService;
     private final DeliveryCalculationHelper deliveryCalculationHelper;
-
 
     @Override
     public Delivery add(DeliveryDto deliveryDto) {

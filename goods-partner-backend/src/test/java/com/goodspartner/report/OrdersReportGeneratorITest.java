@@ -112,7 +112,7 @@ class OrdersReportGeneratorITest extends AbstractBaseITest {
         orderFirst.setProducts(List.of(product));
         orderFirst.setOrderNumber(String.valueOf(35665));
         orderFirst.setOrderWeight(579.52);
-        orderFirst.setId(1);
+        orderFirst.setId(1L);
 
         CarLoad carLoad = new CarLoad();
         carLoad.setCar(car);

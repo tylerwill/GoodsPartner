@@ -3,41 +3,43 @@ package com.goodspartner.web.handler;
 import com.goodspartner.exception.AddressOutOfRegionException;
 import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.exception.GoogleApiException;
-import com.goodspartner.exception.RouteNotFoundException;
+import com.goodspartner.exception.InvalidActionType;
+import com.goodspartner.exception.StoreNotFoundException;
 import com.goodspartner.exception.SubscriberNotFoundException;
 import com.goodspartner.exception.UnknownAddressException;
+import com.goodspartner.web.controller.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 
 @ControllerAdvice
-public class GenericControllerAdvice extends ResponseEntityExceptionHandler { // TODO do ve need extends from ResponseEntityExceptionHandler
+public class GenericControllerAdvice {
 
     @ExceptionHandler(GoogleApiException.class)
-    public ResponseEntity<ErrorMessage> googleApiException(GoogleApiException exception) {
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+    public ResponseEntity<ErrorResponse> googleApiException(GoogleApiException exception) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
     @ExceptionHandler({
             CarNotFoundException.class,
-            RouteNotFoundException.class
     })
-    public ResponseEntity<ErrorMessage> entityNotFoundException(Exception exception) {
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+    public ResponseEntity<ErrorResponse> entityNotFoundException(Exception exception) {
+        ErrorResponse errorMessage = new ErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
     @ExceptionHandler({
             SubscriberNotFoundException.class,
             AddressOutOfRegionException.class,
-            UnknownAddressException.class
+            UnknownAddressException.class,
+            StoreNotFoundException.class,
+            InvalidActionType.class
     })
-    public ResponseEntity<ErrorMessage> badRequestExceptionHandler(Exception exception) {
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+    public ResponseEntity<ErrorResponse> badRequestExceptionHandler(Exception exception) {
+        ErrorResponse errorMessage = new ErrorResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
     }
 }

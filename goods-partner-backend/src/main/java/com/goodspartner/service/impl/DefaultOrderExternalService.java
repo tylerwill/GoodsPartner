@@ -4,6 +4,7 @@ import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
+import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.User;
 import com.goodspartner.event.Action;
@@ -11,6 +12,7 @@ import com.goodspartner.event.ActionType;
 import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.CarNotFoundException;
+import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exception.OrderNotFoundException;
 import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.repository.AddressExternalRepository;
@@ -78,21 +80,25 @@ public class DefaultOrderExternalService implements OrderExternalService {
                 .orElseThrow(() -> new CarNotFoundException(driver));
     }
 
-    @Transactional
     @Override
-    public OrderExternal update(int id, OrderDto orderDto) {
+    public OrderExternal update(long id, OrderDto orderDto) {
         log.info("Updating order with id: {}", id);
-        geocodeService.validateOurOfRegion(orderDto.getMapPoint());
+        geocodeService.validateOurOfRegion(orderDto);
 
         OrderExternal order = orderExternalRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
-        orderExternalMapper.update(order, orderDto);
-        OrderExternal saveOrder = orderExternalRepository.save(order);
-
-        Delivery delivery = saveOrder.getDelivery();
-        if (isAllOrdersValid(delivery)) {
-            delivery.setFormationStatus(DeliveryFormationStatus.READY_FOR_CALCULATION);
+        Delivery delivery = order.getDelivery();
+        if (!DeliveryStatus.DRAFT.equals(delivery.getStatus())) {
+            throw new IllegalDeliveryStatusForOperation(delivery, "update order for");
         }
-        return saveOrder;
+
+        orderExternalMapper.update(order, orderDto);
+        OrderExternal savedOrder = orderExternalRepository.save(order);
+
+        if (isRegularOrdersValid(delivery)) {
+            delivery.setFormationStatus(DeliveryFormationStatus.READY_FOR_CALCULATION);
+            deliveryRepository.save(delivery);
+        }
+        return savedOrder;
     }
 
     @Override
@@ -119,10 +125,9 @@ public class DefaultOrderExternalService implements OrderExternalService {
             List<OrderExternal> orderEntities = saveValidOrdersAndEnrichAddresses(orderDtos);
 
             delivery.setOrders(ListUtils.union(orderEntities, scheduledOrders));
-            delivery.setFormationStatus(isAllOrdersValid(delivery)
+            delivery.setFormationStatus(isRegularOrdersValid(delivery)
                     ? DeliveryFormationStatus.READY_FOR_CALCULATION
                     : DeliveryFormationStatus.ORDERS_LOADED);
-
             deliveryRepository.save(delivery);
 
             eventService.publishOrdersStatus(ORDERS_LOADED, deliveryId);
@@ -136,9 +141,8 @@ public class DefaultOrderExternalService implements OrderExternalService {
         }
     }
 
-    private boolean isAllOrdersValid(Delivery delivery) {
-        List<OrderExternal> unknownOrders = orderExternalRepository.findOrderExternalsByDeliveryId(delivery.getId());
-        return unknownOrders.isEmpty();
+    private boolean isRegularOrdersValid(Delivery delivery) {
+        return orderExternalRepository.findRegularOrdersWithUnknownAddressByDeliveryId(delivery.getId()).isEmpty();
     }
 
     private List<OrderExternal> saveValidOrdersAndEnrichAddresses(List<OrderDto> orderDtos) {
@@ -199,7 +203,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
     @Transactional
     @Override
     public List<OrderExternal> rescheduleSkippedOrders(RescheduleOrdersRequest rescheduleOrdersRequest) {
-        List<Integer> ordersIds = rescheduleOrdersRequest.getOrderIds();
+        List<Long> ordersIds = rescheduleOrdersRequest.getOrderIds();
         List<OrderExternal> ordersExternals = orderExternalRepository.findByOrderIds(ordersIds);
 
         ordersExternals.forEach(order -> order.setRescheduleDate(rescheduleOrdersRequest.getRescheduleDate()));
@@ -220,7 +224,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
 
     @Override
     public List<OrderExternal> removeExcludedOrders(RemoveOrdersRequest removeOrdersRequest) {
-        List<Integer> ordersIds = removeOrdersRequest.getOrderIds();
+        List<Long> ordersIds = removeOrdersRequest.getOrderIds();
         List<OrderExternal> ordersExternals = orderExternalRepository.findAllById(ordersIds);
 
         ordersExternals.forEach(order -> order.setRescheduleDate(LocalDate.EPOCH)); // Set 1970 1 1

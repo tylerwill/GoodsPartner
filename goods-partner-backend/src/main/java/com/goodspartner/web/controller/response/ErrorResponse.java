@@ -1,4 +1,4 @@
-package com.goodspartner.web.handler;
+package com.goodspartner.web.controller.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ErrorMessage {
+public class ErrorResponse {
     private HttpStatus status;
     private String message;
 }

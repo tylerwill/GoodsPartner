@@ -28,7 +28,7 @@ public interface OrderExternalService {
 
     List<OrderExternal> removeExcludedOrders(RemoveOrdersRequest removeOrdersRequest);
 
-    OrderExternal update(int id, OrderDto orderDto);
+    OrderExternal update(long id, OrderDto orderDto);
 
     void saveOrdersForDeliveryAsync(Delivery delivery);
 }

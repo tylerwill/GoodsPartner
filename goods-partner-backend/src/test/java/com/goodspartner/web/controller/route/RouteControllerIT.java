@@ -1,4 +1,4 @@
-package com.goodspartner.web.controller;
+package com.goodspartner.web.controller.route;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;

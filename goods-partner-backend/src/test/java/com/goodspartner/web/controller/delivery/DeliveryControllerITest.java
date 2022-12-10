@@ -1,7 +1,6 @@
 package com.goodspartner.web.controller.delivery;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestSecurityDisableConfig;
@@ -21,10 +20,6 @@ import com.goodspartner.service.VRPSolver;
 import com.goodspartner.service.dto.RoutingSolution;
 import com.goodspartner.service.dto.VRPSolution;
 import com.graphhopper.ResponsePath;
-import com.graphhopper.util.Instruction;
-import com.graphhopper.util.InstructionList;
-import com.graphhopper.util.Translation;
-import com.graphhopper.util.TranslationMap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -42,9 +37,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
@@ -71,9 +64,6 @@ class DeliveryControllerITest extends AbstractWebITest {
     private static final String MOCKED_ROUTE_NEW = "mock/route/mocked-route-entity.json";
     private static final String RESPONSE_DELIVERY_DROPPED_POINTS = "response/delivery/delivery_with_dropped_order.json";
 
-
-    private final LinkedList<RoutePoint> incorrectRoutePoints = new LinkedList<>();
-    private final LinkedList<RoutePoint> routePoints = new LinkedList<>();
     @Autowired
     private StoreService storeService;
 
@@ -85,8 +75,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     private GraphhopperService graphhopperService;
     @MockBean
     private ResponsePath graphhopperResponse;
-    @MockBean
-    private InstructionList instructions;
+
     private MapPoint mapPointAutovalidatedFirst;
     private MapPoint mapPointAutovalidatedSecond;
     private MapPoint mapPointKnown;
@@ -264,17 +253,6 @@ class DeliveryControllerITest extends AbstractWebITest {
         incorrectRoutePoints.add(routePointFourth);*/
     }
 
-    @Test
-    @DataSet(value = "delivery/add_delivery.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet(value = "delivery/delete_delivery.yml")
-    @DisplayName("when Delete Delivery then Ok Status Returned")
-    void whenDeleteDelivery_thenOkStatusReturned() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/api/v1/deliveries/f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
 
     @Test
     @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
@@ -423,209 +401,4 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .andExpect(content().json(getResponseAsString(MOCKED_DELIVERY_DTO)));
     }
 
-
-    @Test
-    @DataSet(value = "common/delivery/calculate/sqlDump.json", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true,
-            executeStatementsBefore = "ALTER SEQUENCE routes_sequence RESTART WITH 1")
-    @DisplayName("when Calculate Delivery With empty orders then Not Found Return")
-    void whenCalculateDelivery_withIncorrectId_thenBadRequestReturn() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/deliveries/70574dfd-48a3-40c7-8b0c-3e5defe7d081/calculate")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet(value = "delivery/save_orders.yml")
-    @DisplayName("when save orders with autovalidated map point status " +
-            "and one of them with already existing address in cache " +
-            "then Ok status returned")
-    @Disabled("Due to changed delivery flow, Refactor")
-    void whenSaveOrdersWithAutovalidatedMapPointStatus_andOneOfThemWithAlreadyExistingAddressInCache_thenOkStatusReturned() throws Exception {
-
-        orderDtoFirst.setMapPoint(mapPointAutovalidatedFirst);
-        orderDtoSecond.setMapPoint(mapPointAutovalidatedSecond);
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(orderDtoFirst, orderDtoSecond))))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DataSet(value = "datasets/delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet(value = "delivery/save_orders_map_point_has_known_status.yml", ignoreCols = {"id"})
-    @DisplayName("when save orders with known map point status then Ok status returned")
-    @Disabled("Due to changed delivery flow, Refactor")
-    void whenSaveOrdersWithKnownMapPointStatus_thenOkStatusReturned() throws Exception {
-
-        orderDtoSecond.setMapPoint(mapPointKnown);
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(orderDtoSecond))))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet(value = "delivery/delivery.yml")
-    @DisplayName("when save orders and non-existing delivery id is passed then not found status returned")
-    @Disabled("Due to changed delivery flow, Refactor")
-    void whenSaveOrdersAndNonExistingDeliveryIdIsPassed_thenNotFoundReturned() throws Exception {
-
-        orderDtoSecond.setMapPoint(mapPointAutovalidatedSecond);
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440005/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(orderDtoSecond))))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DataSet(value = "delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet(value = "delivery/delivery.yml")
-    @DisplayName("when save orders with at least one unknown address provided then not found status returned")
-    @Disabled("Due to changed delivery flow, Refactor")
-    void whenSaveOrdersWithAtLeastOneUnknownAddressProvided_thenNotFoundReturned() throws Exception {
-
-        orderDtoSecond.setMapPoint(mapPointUnknown);
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(orderDtoSecond))))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DataSet(value = "common/recalculate_route/dataset_routes.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet(value = "datasets/common/recalculate_route/expected_dataset_updated_routes.yml")
-    @DisplayName("when Reorder Route then Ok Status Returned")
-    void whenReorderRoute_thenOkStatusReturned() throws Exception {
-
-        Instruction instructionFirst = new Instruction(0, "", null);
-        instructionFirst.setTime(11567);
-
-        Instruction instructionSecond = new Instruction(0, "", null);
-        instructionSecond.setTime(1355789);
-
-        Instruction instructionThird = new Instruction(5, "", null);
-
-        Instruction instructionFourth = new Instruction(0, "", null);
-        instructionFourth.setTime(3556678);
-
-        Instruction instructionFifth = new Instruction(0, "", null);
-        instructionFourth.setTime(578690);
-
-        Instruction instructionSixth = new Instruction(4, "", null);
-
-        Translation translation = new TranslationMap.TranslationHashMap(Locale.UK);
-        instructions = new InstructionList(6, translation);
-
-        instructions.add(0, instructionFirst);
-        instructions.add(1, instructionSecond);
-        instructions.add(2, instructionThird);
-        instructions.add(3, instructionFourth);
-        instructions.add(4, instructionFifth);
-        instructions.add(5, instructionSixth);
-
-        when(graphhopperService.getRoute(anyList())).thenReturn(graphhopperResponse);
-        when(graphhopperResponse.getDistance()).thenReturn(42000.0);
-        when(graphhopperResponse.getTime()).thenReturn(4800000L);
-        when(graphhopperResponse.getInstructions()).thenReturn(instructions);
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
-                                "123e4567-e89b-12d3-a456-556642440000/routes/1/reorder")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(routePoints)))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DataSet(value = "common/recalculate_route/dataset_routes.yml",
-            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
-    @DisplayName("when Reorder Route with Not Existing DeliveryId then Not Found Return")
-    void whenReorderRoute_withNotExistingDeliveryId_thenNotFoundReturn() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
-                                "123e4567-e89b-12d3-a456-556642440035/routes/1/reorder")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(routePoints)))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DataSet(value = "common/recalculate_route/dataset_routes.yml",
-            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
-    @DisplayName("when Reorder Route with Not Existing Route Id then Not Found Return")
-    void whenReorderRoute_withNotExistingRouteId_thenNotFoundReturn() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
-                                "123e4567-e89b-12d3-a456-556642440034/routes/10/reorder")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(routePoints)))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DataSet(value = "common/recalculate_route/dataset_routes.yml",
-            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
-    @DisplayName("when Reorder Route with Incorrect DeliveryId To RouteId then Not Found Return")
-    void whenReorderRoute_withIncorrectDeliveryIdToRouteId_thenNotFoundReturn() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
-                                "123e4567-e89b-12d3-a456-556642440000/routes/2/reorder")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(routePoints)))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DataSet(value = "common/recalculate_route/dataset_routes.yml",
-            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
-    @DisplayName("when Reorder Route with Incorrect Route Status then Exception Thrown")
-    void whenReorderRoute_withIncorrectRouteStatus_thenExceptionThrown() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
-                                "123e4567-e89b-12d3-a456-556642440001/routes/2/reorder")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(routePoints)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DataSet(value = "common/recalculate_route/dataset_routes.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
-    @DisplayName("when Reorder Route with Incorrect Delivery Status then Exception Thrown")
-    void whenReorderRoute_withIncorrectDeliveryStatus_thenExceptionThrown() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
-                                "f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454/routes/3/reorder")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(routePoints)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DataSet(value = "datasets/common/recalculate_route/dataset_routes.yml",
-            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
-    @DisplayName("when Reorder Route Route with Incorrect RoutePointStatus then Exception Thrown")
-    void whenReorderRoute_withIncorrectRoutePointStatus_thenExceptionThrown() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/deliveries/" +
-                                "125e4567-e89b-12d3-a456-556642440005/routes/4/reorder")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(incorrectRoutePoints)))
-                .andExpect(status().isBadRequest());
-    }
 }

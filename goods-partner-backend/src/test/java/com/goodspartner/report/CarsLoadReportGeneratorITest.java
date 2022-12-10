@@ -81,7 +81,7 @@ class CarsLoadReportGeneratorITest {
         orderFirst.setProducts(List.of(product));
         orderFirst.setOrderNumber(String.valueOf(35665));
         orderFirst.setOrderWeight(579.52);
-        orderFirst.setId(1);
+        orderFirst.setId(1L);
 
         CarLoad carLoad = new CarLoad();
         carLoad.setCar(car);
@@ -171,19 +171,19 @@ class CarsLoadReportGeneratorITest {
         orderFirst.setProducts(List.of(productFirst, productSecond));
         orderFirst.setOrderNumber(String.valueOf(35665));
         orderFirst.setOrderWeight(579.52);
-        orderFirst.setId(1);
+        orderFirst.setId(1L);
 
         OrderExternal orderSecond = new OrderExternal();
         orderSecond.setProducts(List.of(productThird));
         orderSecond.setOrderNumber(String.valueOf(36325));
         orderSecond.setOrderWeight(1.52);
-        orderSecond.setId(2);
+        orderSecond.setId(2L);
 
         OrderExternal orderThird = new OrderExternal();
         orderThird.setProducts(List.of(productFirst, productSecond, productThird));
         orderThird.setOrderNumber(String.valueOf(353625));
         orderThird.setOrderWeight(579.52);
-        orderThird.setId(3);
+        orderThird.setId(3L);
 
         CarLoad carLoad = new CarLoad();
         carLoad.setCar(car);

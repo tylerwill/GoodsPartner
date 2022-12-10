@@ -74,13 +74,13 @@ class CarLoadSheetGeneratorTest {
         orderFirst.setProducts(List.of(productFirst, productSecond, productThird));
         orderFirst.setOrderNumber(String.valueOf(35665));
         orderFirst.setOrderWeight(579.52);
-        orderFirst.setId(1);
+        orderFirst.setId(1L);
 
         OrderExternal orderSecond = new OrderExternal();
         orderSecond.setProducts(List.of(productThird));
         orderSecond.setOrderNumber(String.valueOf(36325));
         orderSecond.setOrderWeight(1.52);
-        orderSecond.setId(2);
+        orderSecond.setId(2L);
 
         carLoad = new CarLoad();
         carLoad.setCar(car);

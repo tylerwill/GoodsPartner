@@ -1,0 +1,95 @@
+{
+  "grandedolce_orders": [
+    {
+      "id": 151,
+      "order_number": "00000003433",
+      "shipping_date": "2022-02-14",
+      "client_name": "Новус Україна ТОВ",
+      "address": "м.Київ провулок Політехнічний 1/33",
+      "manager": "Крамаренко Леся                                   ",
+      "order_weight": 999.00,
+      "products": "[{\"amount\": 1, \"storeName\": \"Склад №1\", \"unitWeight\": 8,  \"productName\": \"271008240 Тарілка Камінь Сіра 24*24 (80 шт) 271/24\",\"totalProductWeight\": 999}]",
+      "ref_key": "b5619e6b-8d72-11ec-b3ce-00155dd72305",
+      "comment": null,
+      "delivery_id": "70574dfd-48a3-40c7-8b0c-3e5defe7d080",
+      "delivery_type": "REGULAR",
+      "car_load_id": null,
+      "excluded": false,
+      "dropped": true
+    },
+    {
+      "id": 251,
+      "order_number": "00000003639",
+      "shipping_date": "2022-02-15",
+      "client_name": "Новус Україна ТОВ",
+      "address": "м.Київ, пр. Академіка Палладіна, 7-А",
+      "manager": "Крамаренко Леся                                   ",
+      "order_weight": 1500.00,
+      "products": "[{\"amount\": 1, \"storeName\": \"Склад №1\",  \"unitWeight\": 3200,   \"productName\": \"715050B Форми тюльпани 150/50 Коричневі (3200 шт)\",\"totalProductWeight\": 1500}]",
+      "ref_key": "18ee46a5-8e41-11ec-b3ce-00155dd72305",
+      "comment": "some-test-comment",
+      "delivery_id": "70574dfd-48a3-40c7-8b0c-3e5defe7d080",
+      "delivery_type": "REGULAR",
+      "car_load_id": null,
+      "excluded": false,
+      "dropped": false
+    },
+    {
+      "id": 301,
+      "order_number": "00000003640",
+      "shipping_date": "2022-02-15",
+      "client_name": "ТОВ AШАН",
+      "address": "м.Київ, пр. Лесі Українки, 1Б",
+      "manager": "Крамаренко Леся                                   ",
+      "order_weight": 1500.00,
+      "products": "[{\"amount\": 1, \"storeName\": \"Склад №1\",  \"unitWeight\": 3200,   \"productName\": \"715050B Форми тюльпани 150/50 Коричневі (3200 шт)\",\"totalProductWeight\": 1500}]",
+      "ref_key": "18ee46a5-8e41-11ec-b3ce-00155dd72305",
+      "comment": "separate order and delivery with unknown order to test transitive impact",
+      "delivery_id": "11114dfd-48a3-40c7-8b0c-3e5defe7d081",
+      "delivery_type": "REGULAR",
+      "car_load_id": null,
+      "excluded": false,
+      "dropped": false
+    }
+  ],
+
+  "grandedolce_addresses": [
+    {
+      "order_address": "м.Київ провулок Політехнічний 1/33",
+      "client_name": "Новус Україна ТОВ",
+      "valid_address": "провулок Політехнічний, 1, Київ, Україна, 02000",
+      "latitude": 50.4504636000000,
+      "longitude": 30.4667037000000,
+      "status": "AUTOVALIDATED"
+    },
+    {
+      "order_address": "м.Київ, пр. Академіка Палладіна, 7-А",
+      "client_name": "Новус Україна ТОВ",
+      "latitude": 0,
+      "longitude": 0,
+      "status": "UNKNOWN"
+    },
+    {
+      "order_address": "м.Київ, пр. Лесі Українки, 1Б",
+      "client_name": "ТОВ AШАН",
+      "latitude": 0,
+      "longitude": 0,
+      "status": "UNKNOWN"
+    }
+  ],
+
+  "deliveries": [
+    {
+      "id": "70574dfd-48a3-40c7-8b0c-3e5defe7d080",
+      "delivery_date": "2022-02-17",
+      "status": "DRAFT",
+      "formation_status": "ORDERS_LOADED"
+    },
+    {
+      "id": "11114dfd-48a3-40c7-8b0c-3e5defe7d081",
+      "delivery_date": "2022-02-17",
+      "status": "DRAFT",
+      "formation_status": "ORDERS_LOADED"
+    }
+  ]
+}
