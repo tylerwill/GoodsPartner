@@ -14,7 +14,7 @@ import com.goodspartner.service.RouteService;
 import com.goodspartner.web.action.RouteAction;
 import com.goodspartner.web.action.RoutePointAction;
 import com.goodspartner.web.controller.response.RoutePointActionResponse;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,12 +25,12 @@ import static com.goodspartner.entity.RoutePointStatus.PENDING;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DefaultRoutePointService implements RoutePointService {
 
     private final RoutePointRepository routePointRepository;
     private final EventService eventService;
-    private RouteService routeService;
+    private final RouteService routeService;
 
     @Transactional(readOnly = true)
     @Override
@@ -58,7 +58,7 @@ public class DefaultRoutePointService implements RoutePointService {
 
     @Override
     public List<OrderExternal> getRoutePointOrders(long routePointId) {
-        return routePointRepository.findById(routePointId)
+        return routePointRepository.findByIdWithOrders(routePointId)
                 .map(RoutePoint::getOrders)
                 .orElseThrow(() -> new RoutePointNotFoundException(routePointId));
     }
@@ -85,13 +85,13 @@ public class DefaultRoutePointService implements RoutePointService {
 
     private void processRouteStatus(Route route) {
         List<RoutePoint> routePointDtos = findByRouteId(route.getId());
-        if (isAllRoutePointsDone(routePointDtos)) {
+        if (isAllRoutePointsProcessed(routePointDtos)) {
             routeService.updateRoute(route.getId(), RouteAction.COMPLETE);
             log.info("Route ID {} was automatically close due to all RoutePoints are completed", route.getId());
         }
     }
 
-    private boolean isAllRoutePointsDone(List<RoutePoint> routePointDtos) {
+    private boolean isAllRoutePointsProcessed(List<RoutePoint> routePointDtos) {
         return routePointDtos.stream()
                 .filter(routePoint -> PENDING.equals(routePoint.getStatus()))
                 .findFirst()

@@ -1,0 +1,75 @@
+{
+  "deliveries": [
+    {
+      "id": "49228d27-2ce7-4246-b7c3-e53c143e5550",
+      "delivery_date": "2021-12-19",
+      "status": "APPROVED",
+      "deleted": false,
+      "formation_status": "CALCULATION_COMPLETED",
+      "order_count": null,
+      "route_count": null
+    }
+  ],
+  "routes": [
+    {
+      "id": 1002,
+      "status": "INPROGRESS",
+      "distance": 179.53,
+      "start_time": "2022-11-28 15:02:41",
+      "finish_time": null,
+      "total_weight": 24.0,
+      "total_points": 3,
+      "total_orders": 3,
+      "estimated_time": 230,
+      "spent_time": null,
+      "optimization": true,
+      "delivery_id": "49228d27-2ce7-4246-b7c3-e53c143e5550",
+      "car_id": 151,
+      "store_id": "5688492e-ede4-45d3-923b-5f9773fd3d4b"
+    }
+  ],
+  "route_points": [
+    {
+      "id": 1052,
+      "status": "PENDING",
+      "client_name": "Міа Кучіна ТОВ бн ( Істмен)",
+      "address": "вул.Велика Васильківська, 85-87 (через арку)",
+      "address_total_weight": 15.0,
+      "route_point_distant_time": null,
+      "completed_at": null,
+      "expected_arrival": "10:24:00",
+      "expected_completion": "10:39:00",
+      "delivery_start": "09:00:00",
+      "delivery_end": "18:00:00",
+      "route_id": 1002
+    },
+    {
+      "id": 1053,
+      "status": "DONE",
+      "client_name": "Лила Кейк ",
+      "address": "Київ, вул. Б. Хмеьницького, 40   Тетяна, 050-775-99-40",
+      "address_total_weight": 6.0,
+      "route_point_distant_time": null,
+      "completed_at": null,
+      "expected_arrival": "10:05:00",
+      "expected_completion": "10:20:00",
+      "delivery_start": "09:00:00",
+      "delivery_end": "18:00:00",
+      "route_id": 1002
+    },
+    {
+      "id": 1054,
+      "status": "DONE",
+      "client_name": "ЕКО ТОВ",
+      "address": " м. Київ,  вул. Радунська, 40",
+      "address_total_weight": 3.0,
+      "route_point_distant_time": null,
+      "completed_at": null,
+      "expected_arrival": "09:30:00",
+      "expected_completion": "09:45:00",
+      "delivery_start": "09:00:00",
+      "delivery_end": "18:00:00",
+      "route_id": 1002
+    }
+  ]
+}

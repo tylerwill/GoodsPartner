@@ -9,8 +9,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import static com.goodspartner.entity.RoutePointStatus.DONE;
 import static com.goodspartner.entity.RoutePointStatus.PENDING;
+import static com.goodspartner.entity.RoutePointStatus.SKIPPED;
 
 public enum RouteAction {
 
@@ -43,7 +43,7 @@ public enum RouteAction {
 
             route.getRoutePoints().stream()
                     .filter(routePoint -> PENDING.equals(routePoint.getStatus()))
-                    .forEach(routePoint -> routePoint.setStatus(DONE));
+                    .forEach(routePoint -> routePoint.setStatus(SKIPPED));
         }
     };
 

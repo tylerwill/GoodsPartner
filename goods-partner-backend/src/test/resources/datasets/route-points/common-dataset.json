@@ -1,0 +1,131 @@
+{
+  "grandedolce_orders": [
+    {
+      "id": 501,
+      "order_number": "00000029061",
+      "shipping_date": "2021-12-18",
+      "client_name": "Міа Кучіна ТОВ бн ( Істмен)",
+      "address": "вул.Велика Васильківська, 85-87 (через арку)",
+      "manager": "Наталія Рябченко                                  ",
+      "order_weight": 15.0,
+      "products": "[{\"productName\":\"ACO1C6 Заморожене фруктове пюре з Кокосу з цукром\",\"storeName\":\"Склад №1\",\"amount\":3,\"unitWeight\":5.0,\"totalProductWeight\":15.0,\"coefficient\":1.0,\"measure\":\"кг\"}]",
+      "ref_key": "94690b28-5f13-11ec-b3cd-00155dd72305",
+      "comment": "бн , ТЕРМОБОКС",
+      "delivery_id": "49228d27-2ce7-4246-b7c3-e53c143e5550",
+      "car_load_id": "98929fa8-19d2-4b4a-b685-b1e950807a24",
+      "delivery_start": "09:00:00",
+      "delivery_finish": "18:00:00",
+      "excluded": false,
+      "dropped": false,
+      "delivery_type": "REGULAR",
+      "reschedule_date": null,
+      "route_point_id": 1052
+    },
+    {
+      "id": 502,
+      "order_number": "00000029067",
+      "shipping_date": "2021-12-18",
+      "client_name": "Лила Кейк ",
+      "address": "Київ, вул. Б. Хмеьницького, 40   Тетяна, 050-775-99-40",
+      "manager": "Яна Седляр                                        ",
+      "order_weight": 6.0,
+      "products": "[{\"productName\":\"Зацукровані апельсинові смужки 6*60 мм, коробка 5 кг\",\"storeName\":\"Склад №1\",\"amount\":1,\"unitWeight\":5.0,\"totalProductWeight\":5.0,\"coefficient\":1.0,\"measure\":\"кг\"},{\"productName\":\"AMG0C6 Заморожене фруктове пюре з Манго\",\"storeName\":\"Склад №1\",\"amount\":1,\"unitWeight\":1.0,\"totalProductWeight\":1.0,\"coefficient\":1.0,\"measure\":\"кг\"}]",
+      "ref_key": "c8524ef2-5f15-11ec-b3cd-00155dd72305",
+      "comment": "нал з ОПЛАТОЮ,  ДОСТАВКА до12.-00/// вул. Б. Хмельницького, 40,///Тетяна, 050-775-99-40    ",
+      "delivery_id": "49228d27-2ce7-4246-b7c3-e53c143e5550",
+      "car_load_id": "98929fa8-19d2-4b4a-b685-b1e950807a24",
+      "delivery_start": "09:00:00",
+      "delivery_finish": "18:00:00",
+      "excluded": false,
+      "dropped": false,
+      "delivery_type": "REGULAR",
+      "reschedule_date": null,
+      "route_point_id": 1053
+    },
+    {
+      "id": 503,
+      "order_number": "00000028775",
+      "shipping_date": "2021-12-18",
+      "client_name": "ЕКО ТОВ",
+      "address": " м. Київ,  вул. Радунська, 40",
+      "manager": "Крамаренко Леся                                   ",
+      "order_weight": 3.0,
+      "products": "[{\"productName\":\"Напівфабрикат для тістечка Тарт (солоний з цибулею) (72шт)\",\"amount\":3,\"storeName\":\"Склад №1\",\"unitWeight\":1.0,\"totalProductWeight\":3.0,\"coefficient\":1.0,\"measure\":\"шт\"}]",
+      "ref_key": "2d653fc4-5cf2-11ec-b3cd-00155dd72305",
+      "comment": "бн, Радунська (Пекарня)",
+      "delivery_id": "49228d27-2ce7-4246-b7c3-e53c143e5550",
+      "car_load_id": "98929fa8-19d2-4b4a-b685-b1e950807a24",
+      "delivery_start": "09:00:00",
+      "delivery_finish": "18:00:00",
+      "excluded": false,
+      "dropped": false,
+      "delivery_type": "REGULAR",
+      "reschedule_date": null,
+      "route_point_id": 1054
+    }
+  ],
+  "grandedolce_addresses": [
+    {
+      "order_address": "вул.Велика Васильківська, 85-87 (через арку)",
+      "client_name": "Міа Кучіна ТОВ бн ( Істмен)",
+      "valid_address": "Велика Васильківська, 85-87, Київ, Україна, 02000",
+      "latitude": 50.4254956,
+      "longitude": 30.5182225,
+      "status": null
+    },
+    {
+      "order_address": "Київ, вул. Б. Хмеьницького, 40   Тетяна, 050-775-99-40",
+      "client_name": "Лила Кейк ",
+      "valid_address": "вулиця Богдана Хмельницького, 40, Київ, Україна, 02000",
+      "latitude": 50.4469685,
+      "longitude": 30.50906,
+      "status": null
+    },
+    {
+      "order_address": " м. Київ,  вул. Радунська, 40",
+      "client_name": "ЕКО ТОВ",
+      "valid_address": "вулиця Радунська, 40, Київ, Україна, 02000",
+      "latitude": 50.5301869,
+      "longitude": 30.6007786,
+      "status": null
+    }
+  ],
+  "store": [
+    {
+      "id": "5688492e-ede4-45d3-923b-5f9773fd3d4b",
+      "name": "Склад №1",
+      "address": "15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна",
+      "latitude": 50.08,
+      "longitude": 29.89
+    }
+  ],
+  "users": [
+    {
+      "id": 2,
+      "user_name": "Test Driver",
+      "email": "test-driver@gmail.com",
+      "role": "DRIVER",
+      "enabled": true
+    }
+  ],
+  "cars": [
+    {
+      "id": 151,
+      "name": "Mercedes Vito",
+      "licence_plate": "AA 2222 CT",
+      "weight_capacity": 1000,
+      "cooler": false,
+      "available": true,
+      "travel_cost": 10,
+      "deleted": false,
+      "user_id": 2
+    }
+  ],
+  "car_loads": [
+    {
+      "id": "98929fa8-19d2-4b4a-b685-b1e950807a24",
+      "delivery_id": "49228d27-2ce7-4246-b7c3-e53c143e5550",
+      "car_id": 151
+    }
+  ]
+}
