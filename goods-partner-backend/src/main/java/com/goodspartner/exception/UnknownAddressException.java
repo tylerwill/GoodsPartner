@@ -5,6 +5,7 @@ import com.goodspartner.entity.AddressExternal;
 public class UnknownAddressException extends RuntimeException{
 
     private static final String MESSAGE = "Client: %s with Address: %s is in Unknown status";
+
     public UnknownAddressException(AddressExternal addressExternal) {
         super(formatMessage(addressExternal));
     }

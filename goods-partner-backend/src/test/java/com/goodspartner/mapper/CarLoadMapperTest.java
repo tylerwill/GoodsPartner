@@ -111,7 +111,6 @@ public class CarLoadMapperTest {
         assertEquals("Georg", mappedOrderExternals.get(0).getManagerFullName());
         assertEquals(1340.0, mappedOrderExternals.get(0).getOrderWeight());
         assertEquals(List.of(product), mappedOrderExternals.get(0).getProducts());
-        assertEquals(UUID.fromString("237e9877-e79b-12d4-a765-321741963000"), mappedOrderExternals.get(0).getDelivery().getId());
 
         Assertions.assertNull(carLoad.getDelivery());
     }

@@ -23,9 +23,7 @@ public class DeliveryActionResponse {
     private List<RoutesStatus> routesStatus;
 
     @Getter
-    @Setter
     @AllArgsConstructor
-    @NoArgsConstructor
     public static class RoutesStatus {
         private long id;
         private RouteStatus routeStatus;

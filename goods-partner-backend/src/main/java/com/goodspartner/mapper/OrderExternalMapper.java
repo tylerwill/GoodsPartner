@@ -32,7 +32,6 @@ public interface OrderExternalMapper {
     @Mapping(target = "addressExternal.validAddress", source = "mapPoint.address")
     @Mapping(target = "addressExternal.latitude", source = "mapPoint.latitude")
     @Mapping(target = "addressExternal.longitude", source = "mapPoint.longitude")
-    @Mapping(target = "delivery.id", source = "deliveryId")
     @Mapping(target = "frozen", source = "frozen")
     OrderExternal toOrderExternal(OrderDto orderDto);
 

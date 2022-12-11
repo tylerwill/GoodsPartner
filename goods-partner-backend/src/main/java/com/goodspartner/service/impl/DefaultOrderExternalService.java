@@ -2,9 +2,11 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal;
+import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.DeliveryStatus;
+import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.User;
 import com.goodspartner.event.Action;
@@ -36,6 +38,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -80,7 +83,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
                 .orElseThrow(() -> new CarNotFoundException(driver));
     }
 
-    @Override
+    @Override // Should not be Transactional in order to use READ_COMMITTED isolation level to retrieve delivery orders state
     public OrderExternal update(long id, OrderDto orderDto) {
         log.info("Updating order with id: {}", id);
         geocodeService.validateOurOfRegion(orderDto);
@@ -111,23 +114,15 @@ public class DefaultOrderExternalService implements OrderExternalService {
         log.info("Fetching orders from 1C");
         try {
             eventService.publishOrdersStatus(ORDERS_LOADING, deliveryId);
-            List<OrderDto> orderDtos = integrationService.findAllByShippingDate(deliveryDate);
-            if (orderDtos.isEmpty()) {
-                log.warn("No orders where found in 1C for deliveryDate: {}", deliveryDate);
-                return;
-            }
-
-            orderCommentProcessor.processOrderComments(orderDtos);
-
-            geocodeService.enrichValidAddressForRegularOrders(orderDtos);
 
             List<OrderExternal> scheduledOrders = orderExternalRepository.findByRescheduleDate(deliveryDate);
-            List<OrderExternal> orderEntities = saveValidOrdersAndEnrichAddresses(orderDtos);
+            List<OrderExternal> externalOrders = findExternalOrders(deliveryDate);
 
-            delivery.setOrders(ListUtils.union(orderEntities, scheduledOrders));
-            delivery.setFormationStatus(isRegularOrdersValid(delivery)
+            List<OrderExternal> allOrders = ListUtils.union(externalOrders, scheduledOrders);
+            delivery.setFormationStatus(isRegularOrdersValid(allOrders)
                     ? DeliveryFormationStatus.READY_FOR_CALCULATION
                     : DeliveryFormationStatus.ORDERS_LOADED);
+            delivery.setOrders(allOrders);
             deliveryRepository.save(delivery);
 
             eventService.publishOrdersStatus(ORDERS_LOADED, deliveryId);
@@ -141,8 +136,32 @@ public class DefaultOrderExternalService implements OrderExternalService {
         }
     }
 
+    private List<OrderExternal> findExternalOrders(LocalDate deliveryDate) {
+        List<OrderDto> orderDtos = integrationService.findAllByShippingDate(deliveryDate);
+        if (orderDtos.isEmpty()) {
+            log.warn("No orders where found in 1C for deliveryDate: {}", deliveryDate);
+            return Collections.emptyList();
+        }
+
+        orderCommentProcessor.processOrderComments(orderDtos);
+
+        geocodeService.enrichValidAddressForRegularOrders(orderDtos);
+
+        return saveValidOrdersAndEnrichAddresses(orderDtos);
+    }
+
     private boolean isRegularOrdersValid(Delivery delivery) {
         return orderExternalRepository.findRegularOrdersWithUnknownAddressByDeliveryId(delivery.getId()).isEmpty();
+    }
+
+    private boolean isRegularOrdersValid(List<OrderExternal> orderExternals) {
+        if (orderExternals.isEmpty()) {
+            return false;
+        }
+        return orderExternals.stream()
+                .noneMatch(orderExternal ->
+                        DeliveryType.REGULAR.equals(orderExternal.getDeliveryType())
+                                && AddressStatus.UNKNOWN.equals(orderExternal.getAddressExternal().getStatus()));
     }
 
     private List<OrderExternal> saveValidOrdersAndEnrichAddresses(List<OrderDto> orderDtos) {
@@ -176,16 +195,19 @@ public class DefaultOrderExternalService implements OrderExternalService {
         return orderExternalRepository.saveAll(externalOrders);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<OrderExternal> getSkippedOrders() {
         return orderExternalRepository.findSkippedOrders();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<OrderExternal> getCompletedOrders() {
         return orderExternalRepository.findCompletedOrders();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<OrderExternal> getScheduledOrders() {
         return orderExternalRepository.findScheduledOrders();
@@ -222,13 +244,12 @@ public class DefaultOrderExternalService implements OrderExternalService {
         return orderExternalRepository.saveAll(newScheduledOrders);
     }
 
+    @Transactional
     @Override
     public List<OrderExternal> removeExcludedOrders(RemoveOrdersRequest removeOrdersRequest) {
         List<Long> ordersIds = removeOrdersRequest.getOrderIds();
-        List<OrderExternal> ordersExternals = orderExternalRepository.findAllById(ordersIds);
-
+        List<OrderExternal> ordersExternals = orderExternalRepository.findByOrderIds(ordersIds);
         ordersExternals.forEach(order -> order.setRescheduleDate(LocalDate.EPOCH)); // Set 1970 1 1
-
-        return orderExternalRepository.saveAll(ordersExternals);
+        return ordersExternals;
     }
 }

@@ -1,0 +1,74 @@
+[
+  {
+    "id":1,
+    "refKey":"18ee46a5-8e41-11ec-b3ce-00155dd72305",
+    "orderNumber":"00000001234",
+    "comment":"Skipped point",
+    "managerFullName":"Крамаренко Леся                                   ",
+    "deliveryId":"70574dfd-48a3-40c7-8b0c-3e5defe7d080",
+    "deliveryType":"REGULAR",
+    "frozen":false,
+    "excluded":false,
+    "dropped":false,
+    "shippingDate":"2022-02-15",
+    "rescheduleDate":"1970-01-01",
+    "deliveryStart":null,
+    "deliveryFinish":null,
+    "clientName":"Новус Україна ТОВ",
+    "address":"м.Київ провулок Політехнічний 10",
+    "mapPoint":{
+      "address":"провулок Політехнічний, 10, Київ, Україна, 02000",
+      "latitude":49.4504636,
+      "longitude":29.4667037,
+      "status":"KNOWN"
+    },
+    "products":[
+      {
+        "productName":"715050B Форми тюльпани 150/50 Коричневі (3200 шт)",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":3200.0,
+        "totalProductWeight":1500.0,
+        "coefficient":0.0,
+        "measure":null
+      }
+    ],
+    "orderWeight":1500.0
+  },
+  {
+    "id":51,
+    "refKey":"b5619e6b-8d72-11ec-b3ce-00155dd72305",
+    "orderNumber":"00000003433",
+    "comment":null,
+    "managerFullName":"Крамаренко Леся                                   ",
+    "deliveryId":"70574dfd-48a3-40c7-8b0c-3e5defe7d081",
+    "deliveryType":"REGULAR",
+    "frozen":false,
+    "excluded":true,
+    "dropped":false,
+    "shippingDate":"2022-02-14",
+    "rescheduleDate":"1970-01-01",
+    "deliveryStart":null,
+    "deliveryFinish":null,
+    "clientName":"Новус Україна ТОВ",
+    "address":"м.Київ провулок Політехнічний 1/33",
+    "mapPoint":{
+      "address":"провулок Політехнічний, 1, Київ, Україна, 02000",
+      "latitude":50.4504636,
+      "longitude":30.4667037,
+      "status":"AUTOVALIDATED"
+    },
+    "products":[
+      {
+        "productName":"271008240 Тарілка Камінь Сіра 24*24 (80 шт) 271/24",
+        "amount":1,
+        "storeName":"Склад №1",
+        "unitWeight":8.0,
+        "totalProductWeight":999.0,
+        "coefficient":0.0,
+        "measure":null
+      }
+    ],
+    "orderWeight":999.0
+  }
+]

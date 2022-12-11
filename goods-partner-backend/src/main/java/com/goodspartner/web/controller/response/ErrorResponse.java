@@ -1,13 +1,13 @@
 package com.goodspartner.web.controller.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class ErrorResponse {
     private HttpStatus status;
     private String message;

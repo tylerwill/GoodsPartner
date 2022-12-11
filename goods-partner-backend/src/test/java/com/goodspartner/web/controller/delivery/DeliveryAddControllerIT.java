@@ -15,6 +15,8 @@ import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.event.EventType;
+import com.goodspartner.event.LiveEvent;
 import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.OrderExternalRepository;
@@ -26,6 +28,8 @@ import com.google.maps.model.Geometry;
 import com.google.maps.model.LatLng;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,6 +40,7 @@ import org.testcontainers.shaded.org.awaitility.Durations;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -100,6 +105,9 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
     @Autowired
     private OrderExternalRepository orderExternalRepository;
 
+    @Captor
+    private ArgumentCaptor<LiveEvent> liveEventArgumentCaptor;
+
     // Query count is not applicable in this test due to Async thread
     @Test
     @DataSet(value = "datasets/delivery/add_delivery_fetch_orders.yml",
@@ -151,6 +159,61 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         verifyOrdersFetchedDeliveryEnriched(addedDelivery, 2); // Rescheduled + Known one
         verifyDeliveryState(addedDelivery, READY_FOR_CALCULATION);
         verifyRequiredEventsEmmitted(addedDelivery);
+    }
+
+    @Test
+    @DataSet(value = "datasets/delivery/add_delivery_fetch_orders.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
+    public void addDelivery_NoOrdersFrom1C_RescheduledOrderAttached() throws Exception {
+        // Given
+        when(integrationService.findAllByShippingDate(SHIPPING_DATE)).thenReturn(Collections.emptyList());
+        // When
+        DeliveryDto addedDelivery = objectMapper.readValue(
+                mockMvc.perform(post("/api/v1/deliveries")
+                                .session(getLogistSession())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(
+                                        DeliveryDto.builder().deliveryDate(SHIPPING_DATE).build())))
+                        .andExpect(status().isAccepted())
+                        .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                DeliveryDto.class);
+        // Then
+        verifyOrdersFetchedDeliveryEnriched(addedDelivery, 1); // Rescheduled + Known one
+        verifyDeliveryState(addedDelivery, READY_FOR_CALCULATION);
+        verifyRequiredEventsEmmitted(addedDelivery);
+        verifyRescheduledOrder(addedDelivery);
+    }
+
+    @Test
+    @DataSet(value = "datasets/delivery/add_delivery_fetch_orders.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
+    public void addDelivery_ExceptionWhileFetchingOrders() throws Exception {
+        // Given
+        when(integrationService.findAllByShippingDate(SHIPPING_DATE)).thenThrow(new RuntimeException("Oops"));
+        // When
+        DeliveryDto addedDelivery = objectMapper.readValue(
+                mockMvc.perform(post("/api/v1/deliveries")
+                                .session(getLogistSession())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(
+                                        DeliveryDto.builder().deliveryDate(SHIPPING_DATE).build())))
+                        .andExpect(status().isAccepted())
+                        .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                DeliveryDto.class);
+        // Then
+        Thread.sleep(2000); // Waiting while async thread completes
+        verifyOrdersFetchedDeliveryEnriched(addedDelivery, 0); // Rescheduled + Known one
+        verifyDeliveryState(addedDelivery, ORDERS_LOADING);
+
+        Mockito.verify(eventService, times(1))
+                .publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CREATED, addedDelivery.getId());
+        Mockito.verify(eventService, times(1))
+                .publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADING, addedDelivery.getId());
+        Mockito.verify(eventService, times(1)).publishEvent(liveEventArgumentCaptor.capture());
+
+        LiveEvent errorLiveEvent = liveEventArgumentCaptor.getValue();
+        assertEquals(EventType.ERROR, errorLiveEvent.getType());
+        assertEquals("Помилка під час вивантаження замовлень з 1С", errorLiveEvent.getMessage());
     }
 
     private void verifyDeliveryState(DeliveryDto addedDeliveryResponse,
@@ -224,7 +287,6 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
     private void mockGoogleGeocodeService() {
         mockUnknownAddress();
         mockAddressGeocoding(AUTOVALIDATED_ADDRESS_LATITUDE, AUTOVALIDATED_ADDRESS_LONGITUDE, FORMATTED_AUTOVALIDATED_ADDRESS, AUTOVALIDATED_ADDRESS);
-//        mockAddressGeocoding(PRE_PACKING_ADDRESS_LATITUDE, PRE_PACKING_ADDRESS_LONGITUDE, PRE_PACKING_ADDRESS, PRE_PACKING_ADDRESS);
         mockAddressGeocoding(OUT_OF_REGION_ADDRESS_LATITUDE, OUT_OF_REGION_ADDRESS_LONGITUDE, OUT_OF_REGION_ADDRESS, OUT_OF_REGION_ADDRESS);
     }
 
@@ -292,6 +354,19 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         assertEquals(PRE_PACKING_ADDRESS, order06.getAddressExternal().getOrderAddressId().getOrderAddress());
 
         OrderExternal rescheduled = ordersMap.get("f6f73d76-8005-11ec-b3ce-00155dd72305");
+        assertFalse(rescheduled.isFrozen());
+        assertEquals(REGULAR, rescheduled.getDeliveryType());
+        assertEquals(AUTOVALIDATED, rescheduled.getAddressExternal().getStatus());
+        assertEquals(SHIPPING_DATE, rescheduled.getRescheduleDate());
+    }
+
+    private void verifyRescheduledOrder(DeliveryDto delivery) {
+        List<OrderExternal> deliveryOrders = orderExternalRepository.findByDeliveryId(delivery.getId());
+        assertEquals(1, deliveryOrders.size());
+
+        OrderExternal rescheduled = deliveryOrders.get(0);
+        assertEquals(rescheduled.getRefKey(), "f6f73d76-8005-11ec-b3ce-00155dd72305");
+        assertEquals(rescheduled.getDelivery().getId(), delivery.getId());
         assertFalse(rescheduled.isFrozen());
         assertEquals(REGULAR, rescheduled.getDeliveryType());
         assertEquals(AUTOVALIDATED, rescheduled.getAddressExternal().getStatus());
