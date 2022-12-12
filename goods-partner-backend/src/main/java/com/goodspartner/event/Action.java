@@ -1,17 +1,13 @@
 package com.goodspartner.event;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Action {
     private final ActionType type;
-    private UUID deliveryId;
-
-    public Action(ActionType type) {
-        this.type = type;
-    }
+    private final UUID deliveryId;
 }

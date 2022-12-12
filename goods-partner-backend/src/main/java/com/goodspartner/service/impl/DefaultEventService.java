@@ -23,6 +23,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -51,7 +52,7 @@ public class DefaultEventService implements EventService {
         applicationEventPublisher.publishEvent(deliveryAuditEvent);
 
         EventType type = EventType.INFO;
-        Action eventAction = new Action(ActionType.UPDATE, deliverId);
+        Action eventAction = new Action(ActionType.DELIVERY_UPDATED, deliverId);
 
         if (template.equals(DELIVERY_CALCULATED)) {
             type = EventType.SUCCESS;
@@ -63,11 +64,12 @@ public class DefaultEventService implements EventService {
     @Override
     public void publishDeliveryCompleted(Delivery delivery) {
         String action = DELIVERY_COMPLETED.getTemplate();
+        UUID deliveryId = delivery.getId();
 
-        DeliveryAuditEvent deliveryAuditEvent = new DeliveryAuditEvent(action, delivery.getId());
+        DeliveryAuditEvent deliveryAuditEvent = new DeliveryAuditEvent(action, deliveryId);
 
         applicationEventPublisher.publishEvent(deliveryAuditEvent);
-        liveEventService.publishToAdminAndLogistician(new LiveEvent(deliveryAuditEvent.getAction(), EventType.INFO));
+        liveEventService.publishToAdminAndLogistician(new LiveEvent(deliveryAuditEvent.getAction(), EventType.INFO, new Action(ActionType.INFO, deliveryId)));
     }
 
     @Override
@@ -110,10 +112,10 @@ public class DefaultEventService implements EventService {
 
         if (template.equals(ORDERS_LOADED)) {
             liveEventService.publishToAdminAndLogistician(
-                    new LiveEvent(message, EventType.SUCCESS, new Action(ActionType.UPDATE, deliveryId)));
+                    new LiveEvent(message, EventType.SUCCESS, new Action(ActionType.ORDER_UPDATED, deliveryId)));
         } else {
             liveEventService.publishToAdminAndLogistician(
-                    new LiveEvent(message, EventType.SUCCESS, new Action(ActionType.INFO, deliveryId)));
+                    new LiveEvent(message, EventType.INFO, new Action(ActionType.INFO, deliveryId)));
         }
     }
 
@@ -133,17 +135,26 @@ public class DefaultEventService implements EventService {
     }
 
     private void publishPreparedEvent(Map<String, String> values, DeliveryHistoryTemplate template, Route route) {
+        List<DeliveryHistoryTemplate> templates = List.of(ROUTE_POINT_STATUS, ROUTE_STATUS, ROUTE_STATUS_AUTO);
+
         StringSubstitutor sub = new StringSubstitutor(values);
 
         String action = sub.replace(template.getTemplate());
 
-        DeliveryAuditEvent deliveryAuditEvent = new DeliveryAuditEvent(fillActionWithAuditor(action),
-                route.getDelivery().getId());
+        UUID deliveryId = route.getDelivery().getId();
+
+        DeliveryAuditEvent deliveryAuditEvent = new DeliveryAuditEvent(fillActionWithAuditor(action), deliveryId);
 
         User user = userService.findByRouteId(route.getId());
 
         EventType type = EventType.INFO;
-        Action eventAction = new Action(ActionType.INFO);
+        Action eventAction = null;
+
+        if (templates.contains(template)) {
+            eventAction = new Action(ActionType.ROUTE_UPDATED, deliveryId);
+        } else {
+            eventAction = new Action(ActionType.INFO, deliveryId);
+        }
 
         applicationEventPublisher.publishEvent(deliveryAuditEvent);
 
