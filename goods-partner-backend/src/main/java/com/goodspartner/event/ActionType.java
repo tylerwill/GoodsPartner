@@ -5,7 +5,9 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public enum ActionType {
-    UPDATE("UPDATE"),
+    DELIVERY_UPDATED("DELIVERY_UPDATED"),
+    ROUTE_UPDATED("ROUTE_UPDATED"),
+    ORDER_UPDATED("ORDER_UPDATED"),
     INFO("INFO");
 
     @Getter
