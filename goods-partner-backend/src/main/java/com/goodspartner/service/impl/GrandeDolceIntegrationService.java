@@ -3,17 +3,18 @@ package com.goodspartner.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodspartner.configuration.properties.GrandeDolce1CProperties;
+import com.goodspartner.dto.InvoiceDto;
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.mapper.InvoiceProductMapper;
+import com.goodspartner.mapper.ODataInvoiceMapper;
 import com.goodspartner.mapper.ODataOrderMapper;
 import com.goodspartner.mapper.ProductMapper;
 import com.goodspartner.service.IntegrationService;
-import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataWrapperDto;
+import com.goodspartner.service.dto.external.grandedolce.*;
 import com.goodspartner.util.ExternalOrderDataEnricher;
 import com.goodspartner.util.ODataUrlBuilder;
 import com.google.common.collect.Lists;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -37,43 +38,121 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class GrandeDolceIntegrationService implements IntegrationService {
 
     private static final int PARTITION_SIZE = 100;
+    private static final int RETRY_ATTEMPTS = 3;
+    private static final int RETRY_DELAY = 5;
     private static final int ORDER_FETCH_LIMIT = Integer.MAX_VALUE; // API Key limit
-    private static final String HOST_PREFIX = "test/odata/standard.odata/";
+    //    private static final String HOST_PREFIX = "test/odata/standard.odata/";
+    private static final String HOST_PREFIX = "goodspartnergrande/odata/standard.odata/";
     private static final String FORMAT = "json";
+    private static final String REF_KEY_FILTER = "Ref_Key eq guid'%s'";
+    private static final String DEAL_CAST_REQUEST = "Сделка eq cast(guid'%s','%s')";
+    private static final String OBJECT_CAST_REQUEST = "Объект eq cast(guid'%s','%s')";
+    private static final String ORGANISATION_CATALOG = "Catalog_Организации";
+    private static final String ADDRESS_CONTACT_TYPE = "Адрес";
+    private static final String PHONE_CONTACT_TYPE = "Телефон";
     // Order
     private static final String ORDER_ENTRY_SET_NAME = "Document_ЗаказПокупателя";
     private static final String ORDER_SELECT_FIELDS = "Ref_Key,Number,Date,АдресДоставки,Комментарий,Контрагент/Description,Ответственный/Code";
     private static final String ORDER_EXPAND_FIELDS = "Ответственный/ФизЛицо,Контрагент";
-    // Product
-    private static final String PRODUCT_ENTRY_SET_NAME = "Document_ЗаказПокупателя_Товары";
+    // Order product
+    private static final String ORDER_PRODUCT_ENTRY_SET_NAME = "Document_ЗаказПокупателя_Товары";
     private static final String PRODUCT_SELECT_FIELDS = "Ref_Key,Количество,КоличествоМест,Коэффициент,ЕдиницаИзмерения/Description,Номенклатура/Description";
     private static final String PRODUCT_EXPAND_FIELDS = "Номенклатура,ЕдиницаИзмерения";
+    //Invoice
+    private static final String INVOICE_ENTRY_SET_NAME = "Document_РеализацияТоваровУслуг";
+    private static final String INVOICE_SELECT_FIELDS = "Ref_Key,Организация_Key,Сделка,DeletionMark,Number,Date,Posted,СуммаДокумента,АдресДоставки,ДоговорКонтрагента/Description,Контрагент/НаименованиеПолное,БанковскийСчетОрганизации/НомерСчета,БанковскийСчетОрганизации/Банк/Description,БанковскийСчетОрганизации/Банк/Code,Склад/Местонахождение,Организация/НаименованиеПолное,Ответственный/ФизЛицо/Description";
+    private static final String INVOICE_EXPAND_FIELDS = "Организация,БанковскийСчетОрганизации/Банк,Контрагент,Склад,ДоговорКонтрагента,Ответственный/ФизЛицо";
+    // Invoice product
+    private static final String INVOICE_PRODUCT_ENTRY_SET_NAME = "Document_РеализацияТоваровУслуг_Товары";
+    private static final String INVOICE_PRODUCT_SELECT_FIELDS = "Ref_Key,LineNumber,Количество,Коэффициент,ЕдиницаИзмерения/Description,Номенклатура/Description,Номенклатура/Ref_Key,Номенклатура/НоменклатураГТД,Сумма,СуммаНДС,Цена,СерияНоменклатуры/СертификатФайл";
+    private static final String INVOICE_PRODUCT_EXPAND_FIELDS = "СерияНоменклатуры,Номенклатура,ЕдиницаИзмерения";
+    // Product GTD
+    private static final String PRODUCT_GTD_ENTRY_SET_NAME = "Catalog_НоменклатураГТД";
+    private static final String PRODUCT_GTD_SELECT_FIELDS = "Ref_Key,Owner_Key,КодУКТВЭД_Индекс";
+    //Information register - organisation codes
+    private static final String ORGANISATION_CODES_ENTRY_SET_NAME = "InformationRegister_КодыОрганизации/SliceLast()";
+    private static final String ORGANISATION_CODES_SELECT_FIELDS = "Организация_Key,КодПоЕДРПОУ,ИНН,НомерСвидетельства";
+    //Information register - organisation contacts
+    private static final String ORGANISATION_CONTACTS_ENTRY_SET_NAME = "InformationRegister_КонтактнаяИнформация";
+    private static final String ORGANISATION_CONTACTS_SELECT_FIELDS = "Объект,Тип,Вид,Представление";
+    //Catalog - contacts type
+    private static final String CONTACTS_TYPE_ENTRY_SET_NAME = "Catalog_ВидыКонтактнойИнформации";
+    private static final String CONTACTS_TYPE_SELECT_FIELDS = "Ref_Key,Description";
+    private static final List<String> ORGANISATION_CONTACTS = List.of("Юридична адреса організації", "Телефон організації");
 
     @Value("classpath:mock1CoData/*")
     private Resource[] mockedResponses;
 
     private final GrandeDolce1CProperties properties;
-
     private final WebClient webClient;
     private final ODataOrderMapper odataOrderMapper;
     private final ProductMapper productMapper;
+    private final InvoiceProductMapper invoiceProductMapper;
     private final ExternalOrderDataEnricher enricher;
     private final ObjectMapper objectMapper;
+    private final ODataInvoiceMapper odataInvoiceMapper;
+
+    @Override
+    public List<InvoiceDto> getInvoicesByOrderRefKeys(List<String> orderRefKeys) {
+        List<ODataInvoiceDto> oDataInvoiceDtos = getODataInvoiceDtos(orderRefKeys);
+
+        List<ODataInvoiceProductDto> oDataInvoiceProductDtos = getODataInvoiceProducts(oDataInvoiceDtos);
+
+        List<List<String>> productsGTDKeys = getPartitionOfProductsGTDKeys(oDataInvoiceProductDtos);
+        List<ODataProductGtdDto> oDataProductGTD = getODataProductGTD(productsGTDKeys);
+
+        Map<String, String> uktzedCodeMap = groupUktzedCodeByProductGtdRefKey(oDataProductGTD);
+        addUktzedCodesToInvoiceProducts(oDataInvoiceProductDtos, uktzedCodeMap);
+
+        Map<String, List<ODataInvoiceProductDto>> groupedInvoiceProducts = groupInvoiceProductsByInvoiceRefKey(oDataInvoiceProductDtos);
+        addInvoiceProductsToInvoices(oDataInvoiceDtos, groupedInvoiceProducts);
+
+        URI orderUri = buildOrderUri(createFilter(REF_KEY_FILTER, orderRefKeys));
+        ODataWrapperDto<ODataOrderDto> oDataWrappedOrderDtos = getOrders(orderUri);
+        List<ODataOrderDto> oDataOrderDtos = oDataWrappedOrderDtos.getValue();
+
+        Map<String, ODataOrderDto> groupedOrder = groupOrderByRefKey(oDataOrderDtos);
+        addODataOrderDtoToInvoices(oDataInvoiceDtos, groupedOrder);
+
+        Set<String> organisationsRefKeys = getOrganisationsRefKeys(oDataInvoiceDtos);
+        List<ODataOrganisationCodesDto> organisationCodesDtos = getODataOrganisationCodes(organisationsRefKeys);
+
+        Map<String, ODataOrganisationCodesDto> groupedOrganisationCodes = groupCodesByRefKey(organisationCodesDtos);
+        addOrganisationCodesToInvoices(oDataInvoiceDtos, groupedOrganisationCodes);
+
+        List<ODataContactsTypeDto> oDataContactsType = getODataContactsType(organisationsRefKeys);
+        oDataContactsType = filterContactsType(oDataContactsType);
+        List<String> contactsTypeKeys = getContactsTypeKeys(oDataContactsType);
+
+        List<String> organisationKeysList = organisationsRefKeys.stream().toList();
+        URI organisationContactsUri = buildOrganisationContactsUri(createCastFilterByRefKeys(organisationKeysList, OBJECT_CAST_REQUEST, ORGANISATION_CATALOG));
+        ODataWrapperDto<ODataOrganisationContactsDto> organisationContacts = getOrganisationContacts(organisationContactsUri);
+        List<ODataOrganisationContactsDto> contactValues = organisationContacts.getValue();
+
+        List<ODataOrganisationContactsDto> oDataOrganisationContactsDtos = filterContactValue(contactValues, contactsTypeKeys);
+        Map<String, String> contactMap = getContactMap(oDataOrganisationContactsDtos);
+        addOrganisationContactsToInvoices(oDataInvoiceDtos, contactMap);
+
+        return odataInvoiceMapper.mapList(oDataInvoiceDtos);
+    }
 
     @Override
     public List<OrderDto> findAllByShippingDate(LocalDate deliveryDate) {
         log.info("Start fetching orders for date: {}", deliveryDate);
         long startTime = System.currentTimeMillis();
 
-        ODataWrapperDto<ODataOrderDto> oDataWrappedOrderDtos = getOrders(deliveryDate);
+        URI orderUri = buildOrderUri(createOrderByDateFilter(deliveryDate.atStartOfDay().toString()));
+        ODataWrapperDto<ODataOrderDto> oDataWrappedOrderDtos = getOrders(orderUri);
 
         List<ODataOrderDto> oDataOrderDtosList = oDataWrappedOrderDtos.getValue();
 
@@ -97,11 +176,47 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .sum();
     }
 
+    private List<ODataInvoiceProductDto> getODataInvoiceProducts(List<ODataInvoiceDto> oDataInvoiceDtos) {
+        List<List<String>> invoiceKeys = getPartitionOfInvoiceKeys(oDataInvoiceDtos);
+        return getODataInvoiceProductDtos(invoiceKeys);
+    }
+
+    private List<ODataInvoiceDto> getODataInvoiceDtos(List<String> orderRefKeys) {
+        URI invoiceUri = buildInvoiceUri(createCastFilterByRefKeys(orderRefKeys, DEAL_CAST_REQUEST, ORDER_ENTRY_SET_NAME));
+        ODataWrapperDto<ODataInvoiceDto> oDataWrappedInvoiceDtos = getInvoices(invoiceUri);
+        return oDataWrappedInvoiceDtos.getValue();
+    }
+
+    private Boolean isAddresContactType(ODataOrganisationContactsDto oDataOrganisationContactsDto) {
+        return ADDRESS_CONTACT_TYPE.equalsIgnoreCase(oDataOrganisationContactsDto.getType());
+    }
+
+    private Boolean isPhoneContactType(ODataOrganisationContactsDto oDataOrganisationContactsDto) {
+        return PHONE_CONTACT_TYPE.equalsIgnoreCase(oDataOrganisationContactsDto.getType());
+    }
+
+    private List<ODataOrganisationContactsDto> filterContactValue(List<ODataOrganisationContactsDto> contactsValue, List<String> contactsTypeKeys) {
+        return contactsValue.stream()
+                .filter(contact -> contactsTypeKeys.contains(contact.getView()))
+                .collect(Collectors.toList());
+    }
+
+    private List<ODataContactsTypeDto> filterContactsType(List<ODataContactsTypeDto> oDataContactsType) {
+        return oDataContactsType.stream()
+                .filter(contactsType -> ORGANISATION_CONTACTS.contains(contactsType.getDescription()))
+                .collect(Collectors.toList());
+    }
+
+    private Set<String> getOrganisationsRefKeys(List<ODataInvoiceDto> oDataInvoiceDtos) {
+        return oDataInvoiceDtos.stream()
+                .map(ODataInvoiceDto::getOrganisationRefKey)
+                .collect(Collectors.toSet());
+    }
+
     /**
      * Get orders from 1C
      */
-    private ODataWrapperDto<ODataOrderDto> getOrders(LocalDate deliveryDate) {
-        URI orderUri = buildOrderUri(createOrderByDateFilter(deliveryDate.atStartOfDay().toString()));
+    private ODataWrapperDto<ODataOrderDto> getOrders(URI orderUri) {
         return fetchMockDataByRequest(orderUri, new TypeReference<>() {
                 },
                 () -> webClient.get()
@@ -110,7 +225,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                         .retrieve()
                         .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
                         })
-                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(15)))
+                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
                         .block());
     }
 
@@ -126,11 +241,72 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                         .retrieve()
                         .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataProductDto>>() {
                         })
-                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(15)))
+                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
                         .block());
     }
 
+    private ODataWrapperDto<ODataInvoiceProductDto> getODataInvoiceProductDtos(URI productUri) {
+        return webClient.get()
+                .uri(productUri)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoiceProductDto>>() {
+                })
+                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                .block();
+    }
+
+    private ODataWrapperDto<ODataInvoiceDto> getInvoices(URI uri) {
+        return webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoiceDto>>() {
+                })
+                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                .block();
+    }
+
+    private ODataWrapperDto<ODataOrganisationContactsDto> getOrganisationContacts(URI uri) {
+        return webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrganisationContactsDto>>() {
+                })
+                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                .block();
+    }
+
+    private ODataWrapperDto<ODataProductGtdDto> getODataProductGtdDtos(URI productUri) {
+        return webClient.get()
+                .uri(productUri)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataProductGtdDto>>() {
+                })
+                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                .block();
+    }
+
+    private ODataWrapperDto<ODataOrganisationCodesDto> getODataOrganisationCodesDtos(URI organisationCodesUri) {
+        return webClient.get()
+                .uri(organisationCodesUri)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrganisationCodesDto>>() {
+                })
+                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                .block();
+    }
+
+    private ODataWrapperDto<ODataContactsTypeDto> getODataContactsTypeDtos(URI organisationCodesUri) {
+        return webClient.get()
+                .uri(organisationCodesUri)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataContactsTypeDto>>() {
+                })
+                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                .block();
+    }
+
     /*URI*/
+
     private URI buildOrderUri(String filter) {
         return new ODataUrlBuilder()
                 .baseUrl(properties.getUrl())
@@ -143,15 +319,78 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .top(ORDER_FETCH_LIMIT)
                 .build();
     }
-
     private URI buildProductUri(String filter) {
         return new ODataUrlBuilder()
                 .baseUrl(properties.getUrl())
                 .hostPrefix(HOST_PREFIX)
-                .appendEntitySetSegment(PRODUCT_ENTRY_SET_NAME)
+                .appendEntitySetSegment(ORDER_PRODUCT_ENTRY_SET_NAME)
                 .filter(filter)
                 .expand(PRODUCT_EXPAND_FIELDS)
                 .select(PRODUCT_SELECT_FIELDS)
+                .format(FORMAT)
+                .build();
+    }
+
+    private URI buildInvoiceUri(String filter) {
+        return new ODataUrlBuilder()
+                .baseUrl(properties.getUrl())
+                .hostPrefix(HOST_PREFIX)
+                .appendEntitySetSegment(INVOICE_ENTRY_SET_NAME)
+                .filter(filter)
+                .expand(INVOICE_EXPAND_FIELDS)
+                .select(INVOICE_SELECT_FIELDS)
+                .format(FORMAT)
+                .build();
+    }
+    private URI buildOrganisationContactsUri(String filter) {
+        return new ODataUrlBuilder()
+                .baseUrl(properties.getUrl())
+                .hostPrefix(HOST_PREFIX)
+                .appendEntitySetSegment(ORGANISATION_CONTACTS_ENTRY_SET_NAME)
+                .filter(filter)
+                .select(ORGANISATION_CONTACTS_SELECT_FIELDS)
+                .format(FORMAT)
+                .build();
+    }
+
+    private URI buildInvoiceProductUri(String filter) {
+        return new ODataUrlBuilder()
+                .baseUrl(properties.getUrl())
+                .hostPrefix(HOST_PREFIX)
+                .appendEntitySetSegment(INVOICE_PRODUCT_ENTRY_SET_NAME)
+                .filter(filter)
+                .expand(INVOICE_PRODUCT_EXPAND_FIELDS)
+                .select(INVOICE_PRODUCT_SELECT_FIELDS)
+                .format(FORMAT)
+                .build();
+    }
+    private URI buildProductGTDUri(String filter) {
+        return new ODataUrlBuilder()
+                .baseUrl(properties.getUrl())
+                .hostPrefix(HOST_PREFIX)
+                .appendEntitySetSegment(PRODUCT_GTD_ENTRY_SET_NAME)
+                .filter(filter)
+                .select(PRODUCT_GTD_SELECT_FIELDS)
+                .format(FORMAT)
+                .build();
+    }
+
+    private URI buildOrganisationCodesUri() {
+        return new ODataUrlBuilder()
+                .baseUrl(properties.getUrl())
+                .hostPrefix(HOST_PREFIX)
+                .appendEntitySetSegment(ORGANISATION_CODES_ENTRY_SET_NAME)
+                .select(ORGANISATION_CODES_SELECT_FIELDS)
+                .format(FORMAT)
+                .build();
+    }
+
+    private URI buildContactsTypeUri() {
+        return new ODataUrlBuilder()
+                .baseUrl(properties.getUrl())
+                .hostPrefix(HOST_PREFIX)
+                .appendEntitySetSegment(CONTACTS_TYPE_ENTRY_SET_NAME)
+                .select(CONTACTS_TYPE_SELECT_FIELDS)
                 .format(FORMAT)
                 .build();
     }
@@ -167,6 +406,26 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         return Lists.partition(listRefKeys, PARTITION_SIZE);
     }
 
+    private List<List<String>> getPartitionOfInvoiceKeys(List<ODataInvoiceDto> invoices) {
+        List<String> listRefKeys = invoices.stream()
+                .map(ODataInvoiceDto::getRefKey)
+                .collect(Collectors.toList());
+        return Lists.partition(listRefKeys, PARTITION_SIZE);
+    }
+
+    private List<List<String>> getPartitionOfProductsGTDKeys(List<ODataInvoiceProductDto> invoiceProducts) {
+        List<String> listRefKeys = invoiceProducts.stream()
+                .map(ODataInvoiceProductDto::getProductGTDRefKey)
+                .collect(Collectors.toList());
+        return Lists.partition(listRefKeys, PARTITION_SIZE);
+    }
+
+    private List<String> getContactsTypeKeys(List<ODataContactsTypeDto> invoiceProductsStream) {
+        return invoiceProductsStream.stream()
+                .map(ODataContactsTypeDto::getRefKey)
+                .collect(Collectors.toList());
+    }
+
     /**
      * - From partitions (list of refKeys) create filter
      * - build appropriate URI
@@ -175,13 +434,84 @@ public class GrandeDolceIntegrationService implements IntegrationService {
      */
     private Map<String, List<ODataProductDto>> getProductsByOrders(List<List<String>> partition) {
         return partition.stream()
-                .map(this::createProductsFilter)
+                .map(part -> createFilter(REF_KEY_FILTER, part))
                 .map(this::buildProductUri)
                 .map(this::getProducts)
                 .map(ODataWrapperDto::getValue)
                 .flatMap(Collection::stream)
                 .peek(enricher::enrichODataProduct)
                 .collect(Collectors.groupingBy(ODataProductDto::getRefKey, Collectors.toList()));
+    }
+
+    private List<ODataInvoiceProductDto> getODataInvoiceProductDtos(List<List<String>> partition) {
+        return partition.stream()
+                .map(part -> createFilter(REF_KEY_FILTER, part))
+                .map(this::buildInvoiceProductUri)
+                .map(this::getODataInvoiceProductDtos)
+                .map(ODataWrapperDto::getValue)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    private List<ODataProductGtdDto> getODataProductGTD(List<List<String>> productGTDRefKeys) {
+        return productGTDRefKeys.stream()
+                .map(productGTDRefKey -> createFilter(REF_KEY_FILTER, productGTDRefKey))
+                .map(this::buildProductGTDUri)
+                .map(this::getODataProductGtdDtos)
+                .map(ODataWrapperDto::getValue)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    private List<ODataOrganisationCodesDto> getODataOrganisationCodes(Set<String> organisationRefKeys) {
+        URI organisationCodesUri = buildOrganisationCodesUri();
+        return organisationRefKeys.stream()
+                .map(organisationRefKey -> getODataOrganisationCodesDtos(organisationCodesUri))
+                .map(ODataWrapperDto::getValue)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    private List<ODataContactsTypeDto> getODataContactsType(Set<String> organisationRefKeys) {
+        URI organisationCodesUri = buildContactsTypeUri();
+        return organisationRefKeys.stream()
+                .map(organisationRefKey -> getODataContactsTypeDtos(organisationCodesUri))
+                .map(ODataWrapperDto::getValue)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, List<ODataInvoiceProductDto>> groupInvoiceProductsByInvoiceRefKey(List<ODataInvoiceProductDto> oDataInvoice) {
+        return oDataInvoice.stream()
+                .collect(Collectors.groupingBy(ODataInvoiceProductDto::getRefKey, Collectors.toList()));
+    }
+
+    private Map<String, ODataOrderDto> groupOrderByRefKey(List<ODataOrderDto> oDataOrderDtosList) {
+        return oDataOrderDtosList.stream()
+                .collect(Collectors.toMap(ODataOrderDto::getRefKey, Function.identity()));
+    }
+
+    private Map<String, String> groupUktzedCodeByProductGtdRefKey(List<ODataProductGtdDto> oDataProductGTD) {
+        return oDataProductGTD.stream()
+                .collect(Collectors.toMap(ODataProductGtdDto::getRefKey, ODataProductGtdDto::getUktzedCode));
+    }
+
+    private Map<String, ODataOrganisationCodesDto> groupCodesByRefKey(List<ODataOrganisationCodesDto> organisationCodesDtos) {
+        return organisationCodesDtos.stream()
+                .collect(Collectors.toMap(ODataOrganisationCodesDto::getOrganisationRefKey, Function.identity()));
+    }
+
+    private Map<String, String> getContactMap(List<ODataOrganisationContactsDto> oDataOrganisationContactsDtos) {
+        Map<String, String> contactMap = new HashMap<>();
+        for (ODataOrganisationContactsDto oDataOrganisationContactsDto : oDataOrganisationContactsDtos) {
+            if (isAddresContactType(oDataOrganisationContactsDto)) {
+                contactMap.put(ADDRESS_CONTACT_TYPE, oDataOrganisationContactsDto.getContact());
+            }
+            if (isPhoneContactType(oDataOrganisationContactsDto)) {
+                contactMap.put(PHONE_CONTACT_TYPE, oDataOrganisationContactsDto.getContact());
+            }
+        }
+        return contactMap;
     }
 
     /**
@@ -197,6 +527,45 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         }
     }
 
+    void addInvoiceProductsToInvoices(List<ODataInvoiceDto> oDataInvoiceDtos, Map<String, List<ODataInvoiceProductDto>> allInvoiceProducts) {
+        for (ODataInvoiceDto invoice : oDataInvoiceDtos) {
+            String refKey = invoice.getRefKey();
+            List<ODataInvoiceProductDto> products = allInvoiceProducts.get(refKey);
+            invoice.setProducts(invoiceProductMapper.toInvoiceProductList(products));
+        }
+    }
+
+    private void addUktzedCodesToInvoiceProducts(List<ODataInvoiceProductDto> oDataProductGTD, Map<String, String> productGtdMap) {
+        for (ODataInvoiceProductDto oDataProductGtdDto : oDataProductGTD) {
+            String productGtdDtoRefKey = oDataProductGtdDto.getProductGTDRefKey();
+            String uktzedCode = productGtdMap.get(productGtdDtoRefKey);
+            oDataProductGtdDto.setUktzedCode(uktzedCode);
+        }
+    }
+
+    private void addOrganisationCodesToInvoices(List<ODataInvoiceDto> oDataInvoiceDtos, Map<String, ODataOrganisationCodesDto> organisationCodesMap) {
+        for (ODataInvoiceDto oDataInvoiceDto : oDataInvoiceDtos) {
+            String organisationRefKey = oDataInvoiceDto.getOrganisationRefKey();
+            ODataOrganisationCodesDto oDataOrganisationCodesDto = organisationCodesMap.get(organisationRefKey);
+            oDataInvoiceDto.setOrganisationCodes(oDataOrganisationCodesDto);
+        }
+    }
+
+    private void addOrganisationContactsToInvoices(List<ODataInvoiceDto> oDataInvoiceDtos, Map<String, String> contactMap) {
+        for (ODataInvoiceDto oDataInvoiceDto : oDataInvoiceDtos) {
+            oDataInvoiceDto.setAddress(contactMap.get(ADDRESS_CONTACT_TYPE));
+            oDataInvoiceDto.setPhone(contactMap.get(PHONE_CONTACT_TYPE));
+        }
+    }
+
+    private void addODataOrderDtoToInvoices(List<ODataInvoiceDto> oDataInvoiceDtos, Map<String, ODataOrderDto> oDataGroupedByOrder) {
+        for (ODataInvoiceDto oDataInvoiceDto : oDataInvoiceDtos) {
+            String orderRefKey = oDataInvoiceDto.getOrderRefKey();
+            ODataOrderDto oDataOrderDto = oDataGroupedByOrder.get(orderRefKey);
+            oDataInvoiceDto.setOrder(oDataOrderDto);
+        }
+    }
+
     double getTotalOrderWeight(List<ODataProductDto> products) {
         return products.stream()
                 .mapToDouble(ODataProductDto::getTotalProductWeight)
@@ -206,17 +575,17 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     /**
      * Filters
      */
-    String createProductsFilter(List<String> refKeys) {
+    String createFilter(String filter, List<String> refKeys) {
         StringJoiner stringJoiner = new StringJoiner(" or ");
         refKeys.forEach(
-                key -> stringJoiner.add(createRefKeyFilterRequest(key))
+                key -> stringJoiner.add(createRefKeyFilterRequest(filter, key))
         );
 
         return stringJoiner.toString();
     }
 
-    String createRefKeyFilterRequest(String key) {
-        return String.format("Ref_Key eq guid'%s'", key);
+    String createRefKeyFilterRequest(String filter, String key) {
+        return String.format(filter, key);
     }
 
     /*
@@ -253,5 +622,15 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         boolean found = decodedUrlQuery.contains(mockFileName == null ? "" : mockFileName);
         log.debug("Trying to find mockFile by url: {} - {} -> {}", decodedUrlQuery, mockFileName, found);
         return found;
+    }
+
+    private String createFilterByRefKey(String refKey, String castRequest, String entrySet) {
+        return String.format(castRequest, refKey, entrySet);
+    }
+
+    private String createCastFilterByRefKeys(List<String> orderRefKeys, String castRequest, String entrySet) {
+        StringJoiner stringJoiner = new StringJoiner(" or ", "", "");
+        orderRefKeys.forEach(refKey -> stringJoiner.add(createFilterByRefKey(refKey, castRequest, entrySet)));
+        return stringJoiner.toString();
     }
 }

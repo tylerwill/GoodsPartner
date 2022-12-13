@@ -27,7 +27,7 @@ class GrandeDolceIntegrationServiceTest {
     private final GrandeDolce1CProperties properties = new GrandeDolce1CProperties();
     private final ProductMapper productMapper = new ProductMapperImpl();
     private final GrandeDolceIntegrationService orderService = new GrandeDolceIntegrationService(
-            null, properties, null, null, productMapper, null, null);
+            properties, null, null, productMapper, null, null, null, null);
 
     private final List<ODataOrderDto> orderList = List.of(
             ODataOrderDto.builder().refKey("ecdc9069-84f4-11ec-b3ce-00155dd72305").build(),
@@ -110,7 +110,7 @@ class GrandeDolceIntegrationServiceTest {
                 "ecdc9069-84f4-11ec-b3ce-00155dd72305",
                 "5c7c3687-84f2-11ec-b3ce-00155dd72305",
                 "e1759d35-84cd-11ec-b3ce-00155dd72305");
-        var productsFilter = orderService.createProductsFilter(keyList);
+        var productsFilter = orderService.createFilter("Ref_Key eq guid'%s'", keyList);
         var expectedProductFilter =
                 "Ref_Key eq guid'ecdc9069-84f4-11ec-b3ce-00155dd72305' or " +
                         "Ref_Key eq guid'5c7c3687-84f2-11ec-b3ce-00155dd72305' or " +
@@ -121,7 +121,7 @@ class GrandeDolceIntegrationServiceTest {
 
     @Test
     void testCreateRefKeyFilterRequest() {
-        var filter = orderService.createRefKeyFilterRequest("ecdc9069-84f4-11ec-b3ce-00155dd72305");
+        var filter = orderService.createRefKeyFilterRequest("Ref_Key eq guid'%s'", "ecdc9069-84f4-11ec-b3ce-00155dd72305");
         var expectedFilter = "Ref_Key eq guid'ecdc9069-84f4-11ec-b3ce-00155dd72305'";
 
         assertEquals(expectedFilter, filter);
