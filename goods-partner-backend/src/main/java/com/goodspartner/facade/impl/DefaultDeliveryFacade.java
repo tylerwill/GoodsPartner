@@ -9,9 +9,9 @@ import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.exception.UnknownAddressException;
 import com.goodspartner.facade.DeliveryFacade;
+import com.goodspartner.facade.OrderFacade;
 import com.goodspartner.service.DeliveryService;
 import com.goodspartner.service.EventService;
-import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.service.util.DeliveryCalculationHelper;
 import com.goodspartner.web.action.DeliveryAction;
 import lombok.RequiredArgsConstructor;
@@ -28,14 +28,14 @@ import static com.goodspartner.entity.AddressStatus.UNKNOWN;
 public class DefaultDeliveryFacade implements DeliveryFacade {
 
     private final DeliveryService deliveryService;
-    private final OrderExternalService orderService;
+    private final OrderFacade orderFacade;
     private final EventService eventService;
     private final DeliveryCalculationHelper deliveryCalculationHelper;
 
     @Override
     public Delivery add(DeliveryDto deliveryDto) {
         Delivery delivery = deliveryService.add(deliveryDto);
-        orderService.saveOrdersForDeliveryAsync(delivery); // Async
+        orderFacade.processOrdersForDeliveryAsync(delivery); // Async
         eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CREATED, delivery.getId());
         return delivery;
     }

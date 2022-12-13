@@ -67,7 +67,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isNotFound())
                 .andExpect(content().json("{\"status\":\"NOT_FOUND\",\"message\":\"Order with id: 9999999 not found\"}"));
-        assertSelectCount(1); // OrderById
+        assertSelectCount(2); // OrderById + Delivery
         assertUpdateCount(0); // Nothing updated
     }
 
@@ -106,7 +106,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
                         .content(objectMapper.writeValueAsString(orderDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-no-address-response.json")));
-        assertSelectCount(4); // OrderById + isAllOrdersValid verification
+        assertSelectCount(3); // OrderById + isAllOrdersValid verification + Delivery
         assertUpdateCount(1); // Update Orders + Addresses + Delivery
 
         Delivery deliveryAfter = deliveryRepository.findByIdWithOrders(DELIVERY_ID).get();
@@ -134,7 +134,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
                         .content(objectMapper.writeValueAsString(orderDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-delivery-type-postal-response.json")));
-        assertSelectCount(5); // OrderById + isAllOrdersValid verification
+        assertSelectCount(4); // OrderById + isAllOrdersValid verification + Delivery
         assertUpdateCount(2); // Update Orders + Addresses + Delivery
 
         Delivery deliveryAfter = deliveryRepository.findByIdWithOrders(DELIVERY_ID).get();
@@ -178,7 +178,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-response.json")));
-        assertSelectCount(5); // 3хOrderById + 2xDeliveryById
+        assertSelectCount(4); // 2хOrderById + 2xDeliveryById
         assertUpdateCount(3); // Update Orders + Addresses + Delivery
 
         Delivery deliveryAfter = deliveryRepository.findByIdWithOrders(DELIVERY_ID).get();
@@ -198,7 +198,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
                 .products(new ArrayList<>()) // TODO check
                 .refKey("18ee46a5-8e41-11ec-b3ce-00155dd72305 - This value not modifiable")
                 .comment("some-test-comment - This value not modifiable")
-                .deliveryId(UUID.fromString("70574dfd-48a3-40c7-8b0c-3e5defe7d081")) // - This value not modifiable
+                .deliveryId(UUID.fromString("70574dfd-48a3-40c7-8b0c-3e5defe7d080")) // - This value not modifiable
                 // Modifiable
                 .deliveryType(REGULAR)
                 .excluded(true)

@@ -6,6 +6,7 @@ import com.goodspartner.entity.DeliveryStatus;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -33,4 +34,8 @@ public interface DeliveryRepository extends JpaRepository<Delivery, UUID> {
     @Query("SELECT d FROM Delivery d JOIN d.carLoads c WHERE c.car = :car " +
             "AND d.status = 'APPROVED' OR d.status = 'COMPLETED'")
     List<Delivery> findDeliveriesByCarAndStatus(@Param("car") Car car, Sort sortByDeliveryDate);
+
+    @Modifying
+    @Query("UPDATE Delivery SET deleted = true WHERE id=:id")
+    void softDeleteById(@Param("id") UUID id);
 }

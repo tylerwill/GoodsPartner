@@ -42,7 +42,7 @@ public class GoogleGeocodeService implements GeocodeService {
     }
 
     @Override
-    public void validateOurOfRegion(OrderDto orderDto) {
+    public void validateOutOfRegion(OrderDto orderDto) {
         if (orderDto.getMapPoint() == null) {
             log.warn("MapPoint is not specified for order: {}", orderDto.getId());
             return;

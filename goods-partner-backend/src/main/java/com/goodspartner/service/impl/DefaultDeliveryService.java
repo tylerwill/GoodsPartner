@@ -56,6 +56,7 @@ public class DefaultDeliveryService implements DeliveryService {
                 .orElseThrow(() -> new CarNotFoundException(driver));
     }
 
+    @Transactional
     @Override
     public Delivery delete(UUID deliveryId) {
         Delivery deliveryToDelete = deliveryRepository.findById(deliveryId)
@@ -65,7 +66,7 @@ public class DefaultDeliveryService implements DeliveryService {
             throw new IllegalDeliveryStatusForOperation(deliveryToDelete, "delete");
         }
 
-        deliveryRepository.deleteById(deliveryId);
+        deliveryRepository.softDeleteById(deliveryToDelete.getId());
 
         return deliveryToDelete;
     }

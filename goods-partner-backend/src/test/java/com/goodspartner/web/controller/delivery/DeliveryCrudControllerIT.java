@@ -15,7 +15,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static com.vladmihalcea.sql.SQLStatementCountValidator.assertDeleteCount;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
+import static com.vladmihalcea.sql.SQLStatementCountValidator.assertUpdateCount;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -92,7 +94,9 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/delivery/get-delivery-response.json")));
-        assertSelectCount(8); // TODO works strange, do not cascadde delete. Do we need to delete respective routes
+        assertSelectCount(1);
+        assertUpdateCount(1);
+        assertDeleteCount(0);
     }
 
     @Test

@@ -61,6 +61,9 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private static final String ADDRESS_CONTACT_TYPE = "Адрес";
     private static final String PHONE_CONTACT_TYPE = "Телефон";
     // Order
+    // We dont need now address filtering coz it could cause missed orders
+    // e.g. "and like(АдресДоставки , '[^""][^"   "]______%%')"
+    private static final String DATE_FILTER = "ДатаОтгрузки eq datetime'%s'";
     private static final String ORDER_ENTRY_SET_NAME = "Document_ЗаказПокупателя";
     private static final String ORDER_SELECT_FIELDS = "Ref_Key,Number,Date,АдресДоставки,Комментарий,Контрагент/Description,Ответственный/Code";
     private static final String ORDER_EXPAND_FIELDS = "Ответственный/ФизЛицо,Контрагент";
@@ -151,7 +154,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         log.info("Start fetching orders for date: {}", deliveryDate);
         long startTime = System.currentTimeMillis();
 
-        URI orderUri = buildOrderUri(createOrderByDateFilter(deliveryDate.atStartOfDay().toString()));
+        URI orderUri = buildOrderUri(buildFilter(DATE_FILTER, deliveryDate.atStartOfDay().toString()));
         ODataWrapperDto<ODataOrderDto> oDataWrappedOrderDtos = getOrders(orderUri);
 
         List<ODataOrderDto> oDataOrderDtosList = oDataWrappedOrderDtos.getValue();
@@ -578,21 +581,14 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     String createFilter(String filter, List<String> refKeys) {
         StringJoiner stringJoiner = new StringJoiner(" or ");
         refKeys.forEach(
-                key -> stringJoiner.add(createRefKeyFilterRequest(filter, key))
+                key -> stringJoiner.add(buildFilter(filter, key))
         );
 
         return stringJoiner.toString();
     }
 
-    String createRefKeyFilterRequest(String filter, String key) {
+    String buildFilter(String filter, String key) {
         return String.format(filter, key);
-    }
-
-    /*
-    Not empty line and minimum 6 symbols - "м.Київ"
-     */
-    String createOrderByDateFilter(String date) {
-        return String.format("ДатаОтгрузки eq datetime'%s' and like(АдресДоставки , '[^\"\"][^\"   \"]______%%')", date);
     }
 
     private <T> ODataWrapperDto<T> fetchMockDataByRequest(URI integrationServiceUri,

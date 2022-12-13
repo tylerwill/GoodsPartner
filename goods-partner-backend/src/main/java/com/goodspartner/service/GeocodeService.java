@@ -8,6 +8,6 @@ public interface GeocodeService {
 
     void enrichValidAddressForRegularOrders(List<OrderDto> orders);
 
-    void validateOurOfRegion(OrderDto orderdDto);
+    void validateOutOfRegion(OrderDto orderdDto);
 
 }

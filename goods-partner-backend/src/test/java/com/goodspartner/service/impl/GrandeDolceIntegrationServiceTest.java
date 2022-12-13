@@ -6,7 +6,6 @@ import com.goodspartner.mapper.ProductMapperImpl;
 import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
 import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
 import com.goodspartner.service.dto.external.grandedolce.ODataWrapperDto;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -55,9 +54,9 @@ class GrandeDolceIntegrationServiceTest {
         orderService.enrichOrders(orderList, productMap);
 
         ODataOrderDto order_5c7c3687_84f2 = orderList.stream().
-                filter(orderDto -> "5c7c3687-84f2-11ec-b3ce-00155dd72305".equals(orderDto.getRefKey())).findFirst().get();
+                filter(orderDto -> "5c7c3687-84f2-11ec-b3ce-00155dd72305" .equals(orderDto.getRefKey())).findFirst().get();
         ODataOrderDto order_ecdc9069_84f4 = orderList.stream().
-                filter(orderDto -> "ecdc9069-84f4-11ec-b3ce-00155dd72305".equals(orderDto.getRefKey())).findFirst().get();
+                filter(orderDto -> "ecdc9069-84f4-11ec-b3ce-00155dd72305" .equals(orderDto.getRefKey())).findFirst().get();
 
         assertNotNull(order_ecdc9069_84f4.getProducts());
         assertEquals(16.4, order_ecdc9069_84f4.getOrderWeight());
@@ -121,17 +120,8 @@ class GrandeDolceIntegrationServiceTest {
 
     @Test
     void testCreateRefKeyFilterRequest() {
-        var filter = orderService.createRefKeyFilterRequest("Ref_Key eq guid'%s'", "ecdc9069-84f4-11ec-b3ce-00155dd72305");
+        var filter = orderService.buildFilter("Ref_Key eq guid'%s'", "ecdc9069-84f4-11ec-b3ce-00155dd72305");
         var expectedFilter = "Ref_Key eq guid'ecdc9069-84f4-11ec-b3ce-00155dd72305'";
-
-        assertEquals(expectedFilter, filter);
-    }
-
-    @Disabled
-    @Test
-    void testCreateOrderByDateFilter() {
-        var filter = orderService.createOrderByDateFilter("2022-02-04T00:00:00");
-        var expectedFilter = "ДатаОтгрузки eq datetime'2022-02-04T00:00:00'";
 
         assertEquals(expectedFilter, filter);
     }

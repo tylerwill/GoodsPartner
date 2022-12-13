@@ -1,6 +1,7 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.facade.OrderFacade;
 import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.web.controller.request.RemoveOrdersRequest;
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/v1/orders", produces = MediaType.APPLICATION_JSON_VALUE)
 public class OrderController {
 
+    private final OrderFacade orderFacade;
+
     private final OrderExternalService orderExternalService;
 
     private final OrderExternalMapper orderExternalMapper;
@@ -55,7 +58,7 @@ public class OrderController {
     )
     public OrderDto update(@PathVariable long id,
                            @RequestBody OrderDto orderDto) {
-        return orderExternalMapper.toOrderDto(orderExternalService.update(id, orderDto));
+        return orderExternalMapper.toOrderDto(orderFacade.update(id, orderDto));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")

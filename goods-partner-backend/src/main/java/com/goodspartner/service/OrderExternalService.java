@@ -30,5 +30,8 @@ public interface OrderExternalService {
 
     OrderExternal update(long id, OrderDto orderDto);
 
-    void saveOrdersForDeliveryAsync(Delivery delivery);
+    void bindExternalOrdersWithDelivery(List<OrderExternal> externalOrders,
+                                        Delivery delivery);
+
+    void checkOrdersCompletion(Delivery delivery);
 }

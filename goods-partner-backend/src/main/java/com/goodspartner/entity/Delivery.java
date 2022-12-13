@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.CascadeType;
@@ -31,7 +30,6 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "deliveries")
-@SQLDelete(sql = "UPDATE deliveries SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 public class Delivery {
 
@@ -44,14 +42,14 @@ public class Delivery {
     @Column(name = "delivery_date")
     private LocalDate deliveryDate;
 
-    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
+    private List<OrderExternal> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
     @OrderBy("id ASC")
     private List<Route> routes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "delivery", orphanRemoval = true)
-    private List<OrderExternal> orders = new ArrayList<>();
-
-    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
     private List<CarLoad> carLoads = new ArrayList<>();
 
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
