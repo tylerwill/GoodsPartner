@@ -1,19 +1,23 @@
 {
-  "routes": [],
   "totalTimeInRoutes": 0,
   "orderCount": 0,
-  "weight": 0,
+  "weight": 0.0,
   "fuelConsumption": 0,
   "incompleteRoutePointsCount": 0,
   "car": {
-    "id": 51,
-    "name": "Mercedes Sprinter",
-    "licencePlate": "AA 1111 CT",
-    "driver": "Oleg Dudka",
+    "id": 155,
+    "name": "Mercedes Vito",
+    "licencePlate": "AA 5555 CT",
+    "driver": {
+      "id": 3,
+      "userName": "Test Fake Driver",
+      "email": "test-fake-driver@gmail.com",
+      "role": "DRIVER",
+      "enabled": true
+    },
     "weightCapacity": 2000,
     "cooler": false,
     "available": true,
-    "loadSize": 0,
-    "travelCost": 12
+    "travelCost": 18
   }
 }

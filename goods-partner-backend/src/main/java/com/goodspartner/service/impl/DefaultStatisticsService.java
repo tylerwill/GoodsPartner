@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.goodspartner.entity.DeliveryStatus.COMPLETED;
@@ -130,15 +131,14 @@ public class DefaultStatisticsService implements StatisticsService {
         CarDto car = getCar(carId);
         DeliveryDto delivery = getCompletedDelivery(date);
 
-        Route routeResponse = routeService.findByDeliveryId(delivery.getId())
+        Optional<Route> routeResponse = routeService.findByDeliveryId(delivery.getId())
                 .stream()
                 .filter(route -> route.getCar().getId() == carId)
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);// This car was not used at this date
+                .findFirst();
 
         return DailyCarStatisticsResponse.builder()
                 .car(car)
-                .orderCount(routeResponse.getTotalOrders())
+                .orderCount(routeResponse.isPresent() ? routeResponse.get().getTotalOrders() : 0)
                 .build();
     }
 

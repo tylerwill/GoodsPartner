@@ -1,14 +1,19 @@
 {
-  "orderCount": 9,
+  "orderCount": 3,
   "car": {
-    "id": 101,
+    "id": 151,
     "name": "Mercedes Vito",
     "licencePlate": "AA 2222 CT",
-    "driver": "Ivan Piddubny",
+    "driver": {
+      "id": 2,
+      "userName": "Test Driver",
+      "email": "test-driver@gmail.com",
+      "role": "DRIVER",
+      "enabled": true
+    },
     "weightCapacity": 1000,
     "cooler": false,
     "available": true,
-    "loadSize": 0.0,
     "travelCost": 10
   }
 }

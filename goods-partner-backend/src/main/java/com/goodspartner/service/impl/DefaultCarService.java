@@ -81,7 +81,7 @@ public class DefaultCarService implements CarService {
     @Override
     public Car findById(int id) {
         return carRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("No car for id: " + id));
+                .orElseThrow(() -> new CarNotFoundException("No car for id: " + id));
     }
 
     @Override
