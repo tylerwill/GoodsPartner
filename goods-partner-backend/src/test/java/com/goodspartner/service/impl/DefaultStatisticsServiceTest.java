@@ -2,10 +2,10 @@ package com.goodspartner.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.goodspartner.AbstractBaseITest;
-import com.goodspartner.entity.Car;
+import com.goodspartner.dto.CarDto;
 import com.goodspartner.entity.Route;
+import com.goodspartner.mapper.CarMapper;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,21 +17,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
-@Disabled
-// TODO rework after moving RoutePoints to separate table
 class DefaultStatisticsServiceTest extends AbstractBaseITest {
 
     private static final String MOCK_ROUTES_PATH = "mock/route/mocked-statistic-routes.json";
     private List<Route> routes;
-    private Car car;
+    private CarDto carDto;
 
     @Autowired
     private DefaultStatisticsService defaultStatisticsService;
+    @Autowired
+    private CarMapper carMapper;
 
     @BeforeAll
     void before() throws JsonProcessingException {
         routes = Arrays.asList(objectMapper.readValue(getResponseAsString(MOCK_ROUTES_PATH), Route[].class));
-        car = routes.get(0).getCar();
+        carDto = carMapper.toCarDto(routes.get(0).getCar());
     }
 
     @Test
@@ -39,17 +39,21 @@ class DefaultStatisticsServiceTest extends AbstractBaseITest {
         DefaultStatisticsService.CalculationRoutesResult calculationRoutesResult =
                 defaultStatisticsService.calculateRoutesStatistic(routes);
 
-        assertEquals(calculationRoutesResult, new DefaultStatisticsService.CalculationRoutesResult(
-                19, 539.5, 30));
+        DefaultStatisticsService.CalculationRoutesResult expectedCalculationResult =
+                new DefaultStatisticsService.CalculationRoutesResult(4, 39.0, 36);
+
+        assertEquals(expectedCalculationResult, calculationRoutesResult);
     }
 
     @Test
     void testCalculateRoutesStatisticWithCarDtoAsParameter() {
-//        DefaultStatisticsService.CalculationRoutesResult calculationRoutesResult =
-//                defaultStatisticsService.calculateRoutesStatistic(routes, car);
+        DefaultStatisticsService.CalculationRoutesResult calculationRoutesResult =
+                defaultStatisticsService.calculateRoutesStatistic(routes, carDto);
 
-//        assertEquals(calculationRoutesResult, new DefaultStatisticsService.CalculationRoutesResult(
-//                19, 539.5, 30, 360, 2));
+        DefaultStatisticsService.CalculationRoutesResult expectedCalculationResult =
+                new DefaultStatisticsService.CalculationRoutesResult(
+                        4, 39.0, 36, 380, 1);
+
+        assertEquals(expectedCalculationResult, calculationRoutesResult);
     }
-
 }
