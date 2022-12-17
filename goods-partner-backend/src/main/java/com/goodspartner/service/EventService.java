@@ -1,5 +1,6 @@
 package com.goodspartner.service;
 
+import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.Route;
@@ -23,4 +24,6 @@ public interface EventService {
     void publishOrdersStatus(DeliveryHistoryTemplate template, UUID id);
 
     void publishEvent(LiveEvent event);
+
+    void publishCoordinatesUpdated(RoutePoint routePoint, AddressExternal addressExternal);
 }

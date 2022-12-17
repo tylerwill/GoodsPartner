@@ -29,6 +29,7 @@ import java.util.UUID;
 
 import static com.goodspartner.entity.DeliveryHistoryTemplate.DELIVERY_CALCULATED;
 import static com.goodspartner.entity.DeliveryHistoryTemplate.DELIVERY_COMPLETED;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.DRIVER_CLIENT_ADDRESS_UPDATE;
 import static com.goodspartner.entity.DeliveryHistoryTemplate.ORDERS_LOADED;
 import static com.goodspartner.entity.DeliveryHistoryTemplate.ROUTE_POINT_STATUS;
 import static com.goodspartner.entity.DeliveryHistoryTemplate.ROUTE_START;
@@ -104,6 +105,22 @@ public class DefaultEventService implements EventService {
         values.put("clientAddress", orderAddressId.getOrderAddress());
 
         publishPreparedEvent(values, ROUTE_POINT_STATUS, route);
+    }
+
+    @Override
+    public void publishCoordinatesUpdated(RoutePoint routePoint, AddressExternal addressExternal) {
+        Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
+
+        Route route = routePoint.getRoute();
+        values.put("carName", route.getCar().getName());
+        values.put("carLicensePlate", route.getCar().getLicencePlate());
+        values.put("routePointStatus", routePoint.getStatus().toString());
+
+        OrderAddressId orderAddressId = addressExternal.getOrderAddressId();
+        values.put("clientName", orderAddressId.getClientName());
+        values.put("clientAddress", orderAddressId.getOrderAddress());
+
+        publishPreparedEvent(values, DRIVER_CLIENT_ADDRESS_UPDATE, route);
     }
 
     @Override

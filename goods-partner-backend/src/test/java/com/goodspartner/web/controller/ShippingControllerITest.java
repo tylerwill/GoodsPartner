@@ -28,7 +28,8 @@ public class ShippingControllerITest extends AbstractWebITest {
     private static final String SHIPPING_API = "/api/v1/shipping";
 
     @Test
-    @DataSet(value = "datasets/delivery/delivery-shipping-controller-test.yml")
+    @DataSet(value = "datasets/delivery/delivery-shipping-controller-test.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Find By Delivery Id then List Of Product Shipping Dto Returned")
     public void whenFindByDeliveryId_thenProductShippingDtoListReturned() throws Exception {
         SQLStatementCountValidator.reset();

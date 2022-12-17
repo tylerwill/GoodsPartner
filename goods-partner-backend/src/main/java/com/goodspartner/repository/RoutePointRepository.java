@@ -15,6 +15,10 @@ public interface RoutePointRepository extends JpaRepository<RoutePoint, Long> {
     @Query(value = "SELECT rp FROM RoutePoint rp WHERE rp.route.id = :id")
     List<RoutePoint> findByRouteId(@Param("id") Long routeId);
 
+    @EntityGraph(attributePaths = {"addressExternal"})
+    @Query(value = "SELECT rp FROM RoutePoint rp WHERE rp.id = :id")
+    Optional<RoutePoint> findByRoutePointId(@Param("id") Long routePointId);
+
     @EntityGraph(attributePaths = {"orders", "addressExternal"})
     @Query(value = "SELECT rp FROM RoutePoint rp WHERE rp.id = :id")
     Optional<RoutePoint> findByIdWithOrders(@Param("id") Long routePointId);

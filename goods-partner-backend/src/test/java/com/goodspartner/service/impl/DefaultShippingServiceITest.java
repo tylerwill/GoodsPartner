@@ -22,7 +22,8 @@ class DefaultShippingServiceITest extends AbstractBaseITest {
     private DefaultShippingService defaultShippingService;
 
     @Test
-    @DataSet(value = "datasets/delivery/delivery-shipping-controller-test.yml")
+    @DataSet(value = "datasets/delivery/delivery-shipping-controller-test.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Find By Delivery Id then Expected Product Shipping Dto List Returned")
     public void whenFindByDeliveryId_ThenProductShippingDtoListReturned() {
 

@@ -15,7 +15,9 @@ public enum DeliveryHistoryTemplate {
     ROUTE_STATUS_AUTO("Змінився статус маршрута до авто ${carName} ${carLicensePlate} на ${routeStatus}"),
     ROUTE_START("${roleTranslated} ${userName} розпочав(ла) маршрут до авто ${carName} ${carLicensePlate}"),
     ORDERS_LOADING("${roleTranslated} ${userName} вивантажує замовлення замовлення з 1С"),
-    ORDERS_LOADED("${roleTranslated} ${userName} вивантажив(ла) замовлення з 1С");
+    ORDERS_LOADED("${roleTranslated} ${userName} вивантажив(ла) замовлення з 1С"),
+    DRIVER_CLIENT_ADDRESS_UPDATE("${roleTranslated} ${userName} уточнив координати адресси клієнта: ${clientName}, адреса: ${clientAddress}");
+
 
     @Getter
     private final String template;
