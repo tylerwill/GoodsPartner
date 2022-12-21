@@ -18,6 +18,17 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.projectKey>com.goodspartner:goods-partner</sonar.projectKey>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+        <sonar.coverage.exclusions>
+            **/configuration/**/*,
+            **/dto/**/*,
+            **/entity/**/*,
+            **/exception/**/*,
+            **/repository/**/*,
+            **/service/dto/**/*,
+            **/web/controller/response/**/*,
+            **/web/handler/**/*,
+            **/Starter.java
+        </sonar.coverage.exclusions>
     </properties>
 
 </project>
