@@ -8,11 +8,12 @@ import ordersReducer from "../features/orders/ordersSlice";
 import deliveryOrdersReducer from "../features/delivery-orders/deliveryOrdersSlice";
 import {deliveriesApi} from "../api/deliveries/deliveries.api";
 import {setupListeners} from "@reduxjs/toolkit/query";
-import {ordersApi} from "../api/orders/orders.api";
+import {deliveryOrdersApi} from "../api/delivery-orders/delivery-orders.api";
 import {routesApi} from "../api/routes/routes.api";
 import {usersApi} from "../api/users/users.api";
 import {historyApi} from "../api/history/history.api";
 import {shippingApi} from "../api/shipping/shipping.api";
+import {ordersApi} from "../api/orders/orders.api";
 
 const store = configureStore({
     reducer: {
@@ -25,18 +26,19 @@ const store = configureStore({
 
         // api
         [deliveriesApi.reducerPath]: deliveriesApi.reducer,
-        [ordersApi.reducerPath]: ordersApi.reducer,
+        [deliveryOrdersApi.reducerPath]: deliveryOrdersApi.reducer,
         [routesApi.reducerPath]: routesApi.reducer,
         [usersApi.reducerPath]: usersApi.reducer,
         [historyApi.reducerPath]: historyApi.reducer,
         [shippingApi.reducerPath]: shippingApi.reducer,
+        [ordersApi.reducerPath]: ordersApi.reducer,
 
     },
 
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
             .concat(deliveriesApi.middleware)
-            .concat(ordersApi.middleware)
+            .concat(deliveryOrdersApi.middleware)
             .concat(routesApi.middleware)
             .concat(usersApi.middleware)
             .concat(historyApi.middleware)

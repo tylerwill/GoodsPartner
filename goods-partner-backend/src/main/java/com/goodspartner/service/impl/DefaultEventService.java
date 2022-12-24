@@ -1,18 +1,8 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.entity.AddressExternal;
+import com.goodspartner.entity.*;
 import com.goodspartner.entity.AddressExternal.OrderAddressId;
-import com.goodspartner.entity.Delivery;
-import com.goodspartner.entity.DeliveryHistoryTemplate;
-import com.goodspartner.entity.Route;
-import com.goodspartner.entity.RoutePoint;
-import com.goodspartner.entity.RouteStatus;
-import com.goodspartner.entity.User;
-import com.goodspartner.event.Action;
-import com.goodspartner.event.ActionType;
-import com.goodspartner.event.DeliveryAuditEvent;
-import com.goodspartner.event.EventType;
-import com.goodspartner.event.LiveEvent;
+import com.goodspartner.event.*;
 import com.goodspartner.service.EventService;
 import com.goodspartner.service.LiveEventService;
 import com.goodspartner.service.UserService;
@@ -27,14 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.goodspartner.entity.DeliveryHistoryTemplate.DELIVERY_CALCULATED;
-import static com.goodspartner.entity.DeliveryHistoryTemplate.DELIVERY_COMPLETED;
-import static com.goodspartner.entity.DeliveryHistoryTemplate.DRIVER_CLIENT_ADDRESS_UPDATE;
-import static com.goodspartner.entity.DeliveryHistoryTemplate.ORDERS_LOADED;
-import static com.goodspartner.entity.DeliveryHistoryTemplate.ROUTE_POINT_STATUS;
-import static com.goodspartner.entity.DeliveryHistoryTemplate.ROUTE_START;
-import static com.goodspartner.entity.DeliveryHistoryTemplate.ROUTE_STATUS;
-import static com.goodspartner.entity.DeliveryHistoryTemplate.ROUTE_STATUS_AUTO;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.*;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +36,10 @@ public class DefaultEventService implements EventService {
         applicationEventPublisher.publishEvent(deliveryAuditEvent);
 
         EventType type = EventType.INFO;
-        Action eventAction = new Action(ActionType.DELIVERY_UPDATED, deliverId);
+
+        ActionType actionType = template == DELIVERY_CREATED ? ActionType.DELIVERY_CREATED : ActionType.DELIVERY_UPDATED;
+
+        Action eventAction = new Action(actionType, deliverId);
 
         if (template.equals(DELIVERY_CALCULATED)) {
             type = EventType.SUCCESS;

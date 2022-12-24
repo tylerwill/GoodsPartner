@@ -8,10 +8,10 @@ export const ordersApi = {
         return axiosWithSetting.get('/orders/skipped');
     },
     reschedule(rescheduleDate: string, orderIds: Array<number>) {
-        return axiosWithSetting.post('/orders/reschedule', {rescheduleDate, orderIds});
+        return axiosWithSetting.post('/orders/skipped/reschedule', {rescheduleDate, orderIds});
     },
 
     delete(orderIds: Array<number>) {
-        return axiosWithSetting.post('/orders/remove', {orderIds});
+        return axiosWithSetting.post('/orders/skipped/remove', {orderIds});
     }
 }

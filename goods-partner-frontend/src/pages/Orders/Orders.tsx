@@ -1,20 +1,19 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {Box, Typography} from "@mui/material";
 import BasicTabs from "../../hoc/BasicTabs/BasicTabs";
 import {useAppDispatch, useAppSelector} from "../../hooks/redux-hooks";
 import DeliveredOrders from "./DiliveredOrders/DiliveredOrders";
 import SkippedOrders from "./SkippedOrders/SkippedOrders";
-import {fetchCompletedOrders, fetchSkippedOrders, setTabIndex} from "../../features/orders/ordersSlice";
-
+import {setTabIndex} from "../../features/orders/ordersSlice";
+import useAuth from "../../auth/AuthProvider";
 
 const Orders = () => {
     const dispatch = useAppDispatch();
-    const {tabIndex, completedOrders} = useAppSelector(state => state.orders);
+    const {tabIndex} = useAppSelector(state => state.orders);
 
-    useEffect(() => {
-        dispatch(fetchCompletedOrders());
-        dispatch(fetchSkippedOrders());
-    }, []);
+
+    // @ts-ignore
+    const {user} = useAuth();
 
 
     const tabLabels = [
@@ -39,7 +38,7 @@ const Orders = () => {
         <Box sx={{marginTop: '16px'}}>
             <BasicTabs labels={tabLabels} tabIndex={tabIndex}
                        setTabIndex={(index: number) => dispatch(setTabIndex(index))} fullWidth={false} styles={styles}>
-                <DeliveredOrders completedOrders={completedOrders}/>
+                <DeliveredOrders/>
                 <SkippedOrders/>
             </BasicTabs>
 

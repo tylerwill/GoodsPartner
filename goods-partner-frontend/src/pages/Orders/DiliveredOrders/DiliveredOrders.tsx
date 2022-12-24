@@ -11,15 +11,13 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import TablePagination from "@mui/material/TablePagination";
-import Order from "../../../model/Order";
 import ProductRow from './OrderRow/OrderRow';
+import {useGetCompletedQuery} from "../../../api/orders/orders.api";
+import Loading from "../../../components/Loading/Loading";
 
+const DeliveredOrders = () => {
+    const {data: completedOrders} = useGetCompletedQuery();
 
-interface Props {
-    completedOrders: Array<Order>
-}
-
-const DeliveredOrders = ({completedOrders}: Props) => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -50,9 +48,15 @@ const DeliveredOrders = ({completedOrders}: Props) => {
         setPage(0);
     };
 
+    if(!completedOrders) {
+        return <Loading/>
+    }
+
+
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - completedOrders.length) : 0;
+
 
     console.log('completedOrders', completedOrders);
     return (

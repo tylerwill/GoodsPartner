@@ -31,8 +31,7 @@ import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertUpdateCount;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,7 +46,7 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
     private static final String SKIPPED_ORDERS_ENDPOINT = "/api/v1/orders/skipped";
     private static final String SCHEDULED_ORDERS_ENDPOINT = "/api/v1/orders/scheduled";
     private static final String RESCHEDULE_SKIPPED_ORDER_ENDPOINT = "/api/v1/orders/skipped/reschedule";
-    private static final String REMOVE_SKIPPED_ORDER_ENDPOINT = "/api/v1/orders/skipped/remove";
+    private static final String REMOVE_SKIPPED_ORDER_ENDPOINT = "/api/v1/orders/skipped";
 
     @Autowired
     private DeliveryRepository deliveryRepository;
@@ -101,7 +100,7 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
         removeOrdersRequest.setOrderIds(Arrays.asList(1L, 51L)); // Remove only 2 from 3
         // When - Then
         SQLStatementCountValidator.reset();
-        mockMvc.perform(post(REMOVE_SKIPPED_ORDER_ENDPOINT)
+        mockMvc.perform(delete(REMOVE_SKIPPED_ORDER_ENDPOINT)
                         .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(removeOrdersRequest)))

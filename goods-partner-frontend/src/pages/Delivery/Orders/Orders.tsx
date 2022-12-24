@@ -4,7 +4,7 @@ import OrdersTable from "./OrdersContent/OrdersTable";
 import {setOrderTabIndex} from "../../../features/currentDelivery/currentDeliverySlice";
 import BasicTabs from "../../../hoc/BasicTabs/BasicTabs";
 import {useParams} from "react-router-dom";
-import {useGetOrdersForDeliveryQuery, useUpdateOrderMutation} from "../../../api/orders/orders.api";
+import {useGetOrdersForDeliveryQuery, useUpdateOrderMutation} from "../../../api/delivery-orders/delivery-orders.api";
 import {useAppDispatch, useAppSelector} from "../../../hooks/redux-hooks";
 import {MapPointStatus} from "../../../model/MapPointStatus";
 import Order from "../../../model/Order";

@@ -51,8 +51,8 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private static final int RETRY_ATTEMPTS = 3;
     private static final int RETRY_DELAY = 5;
     private static final int ORDER_FETCH_LIMIT = Integer.MAX_VALUE; // API Key limit
-    //    private static final String HOST_PREFIX = "test/odata/standard.odata/";
-    private static final String HOST_PREFIX = "goodspartnergrande/odata/standard.odata/";
+    private static final String HOST_PREFIX = "test/odata/standard.odata/";
+//    private static final String HOST_PREFIX = "goodspartnergrande/odata/standard.odata/";
     private static final String FORMAT = "json";
     private static final String REF_KEY_FILTER = "Ref_Key eq guid'%s'";
     private static final String DEAL_CAST_REQUEST = "Сделка eq cast(guid'%s','%s')";

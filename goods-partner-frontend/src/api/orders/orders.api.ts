@@ -4,6 +4,10 @@ import Order from "../../model/Order";
 
 type OrdersResponse = Order[];
 
+interface RescheduleRequest {
+    rescheduleDate: string,
+    orderIds: Array<number>
+}
 
 export const ordersApi = createApi({
     reducerPath: 'ordersApi',
@@ -13,28 +17,48 @@ export const ordersApi = createApi({
         credentials: "include",
     }),
     endpoints: (builder) => ({
-        getOrdersForDelivery: builder.query<OrdersResponse, string>({
-            query: (deliveryId) => ({
-                url: `orders`,
-                params: {
-                    deliveryId
-                }
+        getCompleted: builder.query<OrdersResponse, void>({
+            query: () => ({
+                url: `/orders/completed`,
             }),
-            providesTags: [{type: 'orders', id: 'forDelivery'}],
+            providesTags: [{type: 'orders', id: 'completed'}],
         }),
 
-        updateOrder: builder.mutation<Order, Order>({
-            query: (orderToUpdate) => (
+        getSkipped: builder.query<OrdersResponse, void>({
+            query: () => ({
+                url: `/orders/skipped`,
+            }),
+            providesTags: [{type: 'orders', id: 'skipped'}],
+        }),
+
+        rescheduleOrders: builder.mutation<Order, RescheduleRequest>({
+            query: (rescheduleRequest) => (
                 {
-                    url: `orders/${orderToUpdate.id}`,
-                    method: 'PUT',
-                    body: orderToUpdate,
+                    url: `orders/skipped/reschedule`,
+                    method: 'POST',
+                    body: rescheduleRequest,
 
                 }),
-            invalidatesTags: [{type: 'orders', id: 'forDelivery'}]
+            invalidatesTags: [{type: 'orders', id: 'skipped'}]
+        }),
+
+        deleteOrders: builder.mutation<void, Array<number>>({
+            query: (orderIds) => (
+                {
+                    url: `/orders/skipped`,
+                    method: 'DELETE',
+                    body: {orderIds},
+
+                }),
+            invalidatesTags: [{type: 'orders', id: 'skipped'}]
         }),
 
     }),
 })
 
-export const {useGetOrdersForDeliveryQuery, useUpdateOrderMutation} = ordersApi
+export const {
+    useDeleteOrdersMutation,
+    useRescheduleOrdersMutation,
+    useGetCompletedQuery,
+    useGetSkippedQuery
+} = ordersApi

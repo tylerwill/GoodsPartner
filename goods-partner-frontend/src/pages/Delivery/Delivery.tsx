@@ -25,25 +25,21 @@ import {
     useGetDeliveryQuery
 } from '../../api/deliveries/deliveries.api'
 import {DeliveryFormationStatus, DeliveryStatus} from "../../model/Delivery";
-import {MapPointStatus} from "../../model/MapPointStatus";
 import {UserRole} from "../../model/User";
-import {useGetOrdersForDeliveryQuery} from "../../api/orders/orders.api";
 import InventoryIcon from '@mui/icons-material/Inventory';
 
 import FactCheckIcon from '@mui/icons-material/FactCheck';
 import CarLoad from "./CarLoad/CarLoad";
 import Shipping from "./Shipping/Shipping";
-import {DeliveryType} from "../../model/DeliveryType";
 
 
 const Delivery = () => {
     const {deliveryId} = useParams();
     const dispatch = useAppDispatch();
     const {tabIndex} = useAppSelector(state => state.currentDelivery);
-    const {data: orders} = useGetOrdersForDeliveryQuery(String(deliveryId));
     const {data: delivery, isLoading, error} = useGetDeliveryQuery(String(deliveryId));
-    // @ts-ignore
 
+    // @ts-ignore
     const {user} = useAuth();
     const [calculateDelivery] = useCalculateDeliveryMutation();
     const [approveDelivery] = useApproveDeliveryMutation();
@@ -59,7 +55,7 @@ const Delivery = () => {
 
     }, [dispatch, deliveryId]);
 
-    if (isLoading || !delivery || !orders) {
+    if (isLoading || !delivery) {
         return <Loading/>
 
     }
@@ -67,15 +63,13 @@ const Delivery = () => {
 
     const isDriver = user.role === UserRole.DRIVER;
 
-    const calculationDisabled = orders
-        .filter(order => order.deliveryType === DeliveryType.REGULAR)
-        .some(order => order.mapPoint.status === MapPointStatus.UNKNOWN);
-
-    const isPreCalculationStatus = delivery.formationStatus === DeliveryFormationStatus.ORDERS_LOADED
+    const calculationEnabled = delivery.formationStatus === DeliveryFormationStatus.READY_FOR_CALCULATION;
+    const isPreCalculationStatus =
+        (delivery.formationStatus === DeliveryFormationStatus.ORDERS_LOADED ||
+            delivery.formationStatus === DeliveryFormationStatus.READY_FOR_CALCULATION)
         && !isDriver;
-    // const isPreCalculationStatus = true;
-    const isPreApprove = delivery.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED && !isDriver;
 
+    const isPreApprove = delivery.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED && !isDriver;
     const isApproveEnabled = delivery.status === DeliveryStatus.DRAFT;
 
     const calculated = delivery?.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED;
@@ -108,7 +102,7 @@ const Delivery = () => {
                 </Box>
 
                 {isPreCalculationStatus &&
-                    <CalculateButton enabled={!calculationDisabled} onClick={calculateDeliveryHandler}/>}
+                    <CalculateButton enabled={calculationEnabled} onClick={calculateDeliveryHandler}/>}
                 {isPreApprove && <ApproveButton enabled={isApproveEnabled} onClick={approveDeliveryHandler}/>}
 
             </Box>

@@ -1,5 +1,4 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {ordersApi} from "../../api/ordersApi";
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import Order from '../../model/Order';
 
 const initialState = {
@@ -13,37 +12,6 @@ const initialState = {
     rescheduleDialogOpen: false,
     deleteOrdersDialogOpen: false
 };
-
-interface RescheduleData {
-    rescheduleDate: string,
-    orderIds: Array<number>
-}
-
-export const fetchCompletedOrders = createAsyncThunk('orders/fetchCompleted',
-    () => {
-        return ordersApi.fetchCompleted()
-            .then(response => response.data);
-    })
-
-export const fetchSkippedOrders = createAsyncThunk('orders/fetchSkipped',
-    () => {
-        return ordersApi.fetchSkipped()
-            .then(response => response.data);
-    })
-
-export const rescheduleSkippedOrders = createAsyncThunk('orders/reschedule',
-    ({rescheduleDate, orderIds}: RescheduleData) => {
-        return ordersApi.reschedule(rescheduleDate, orderIds)
-            .then(() => ordersApi.fetchSkipped()).then(response => response.data);
-    })
-
-export const deleteSkippedOrders = createAsyncThunk('orders/delete',
-    (orderIds: Array<number>) => {
-        return ordersApi.delete(orderIds)
-            .then(() => ordersApi.fetchSkipped()).then(response => response.data);
-        ;
-    })
-
 
 const ordersSlice = createSlice({
     name: 'orders',
@@ -81,39 +49,6 @@ const ordersSlice = createSlice({
             state.deleteOrdersDialogOpen = payload.payload;
         }
     },
-    extraReducers: builder => {
-        // load completedorders
-        builder.addCase(fetchCompletedOrders.pending, state => {
-            state.loading = true
-        })
-        builder.addCase(fetchCompletedOrders.fulfilled, (state, action) => {
-            state.loading = false
-            state.completedOrders = action.payload
-            state.error = ''
-        })
-
-        // load fetchSkippedOrders
-        builder.addCase(fetchSkippedOrders.pending, state => {
-            state.loading = true
-        })
-        builder.addCase(fetchSkippedOrders.fulfilled, (state, action) => {
-            state.loading = false
-            state.skippedOrders = action.payload
-            state.error = ''
-        })
-
-        builder.addCase(deleteSkippedOrders.fulfilled, (state, action) => {
-            state.loading = false
-            state.skippedOrders = action.payload
-            state.error = ''
-        })
-
-        builder.addCase(rescheduleSkippedOrders.fulfilled, (state, action) => {
-            state.loading = false
-            state.skippedOrders = action.payload
-            state.error = ''
-        })
-    }
 })
 
 export default ordersSlice.reducer

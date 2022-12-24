@@ -4,7 +4,7 @@ import {Autocomplete, GoogleMap, MarkerF} from "@react-google-maps/api";
 import {MapPointStatus} from "../../../../../model/MapPointStatus";
 import {useAppDispatch, useAppSelector} from "../../../../../hooks/redux-hooks";
 import {setAddressDialogOpen} from "../../../../../features/delivery-orders/deliveryOrdersSlice";
-import {useUpdateOrderMutation} from "../../../../../api/orders/orders.api";
+import {useUpdateOrderMutation} from "../../../../../api/delivery-orders/delivery-orders.api";
 import Order from "../../../../../model/Order";
 import MapPoint from "../../../../../model/MapPoint";
 

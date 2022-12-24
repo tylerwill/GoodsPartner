@@ -14,34 +14,37 @@ import OrderRow from "./OrderRow/OrderRow";
 import TablePagination from "@mui/material/TablePagination";
 import {useAppDispatch, useAppSelector} from "../../../hooks/redux-hooks";
 import {
-    deleteSkippedOrders,
     deselectAll,
-    rescheduleSkippedOrders,
     selectAll,
     setDeleteOrdersDialogOpen,
     setRescheduleDialogOpen
 } from "../../../features/orders/ordersSlice";
 import RescheduleDialog from "./RescheduleDialog/RescheduleDialog";
 import DeleteConfirmDialog from "./DeleteConfirmDialog/DeleteConfirmDialog";
+import {useDeleteOrdersMutation, useGetSkippedQuery, useRescheduleOrdersMutation} from "../../../api/orders/orders.api";
+import Loading from "../../../components/Loading/Loading";
 
 const SkippedOrders = () => {
     const dispatch = useAppDispatch();
-    const {skippedOrders, allSelected, selectedOrderIds, rescheduleDialogOpen, deleteOrdersDialogOpen}
+
+    const {data: skippedOrders} = useGetSkippedQuery();
+
+    const {allSelected, selectedOrderIds, rescheduleDialogOpen, deleteOrdersDialogOpen}
         = useAppSelector(state => state.orders);
 
-    const hasSelected = selectedOrderIds.length !== 0;
+    const [rescheduleOrders] = useRescheduleOrdersMutation();
+    const [deleteOrders] = useDeleteOrdersMutation();
 
     const setDialogOpenHandler = (isOpen: boolean) => dispatch(setRescheduleDialogOpen(isOpen));
     const setDeleteDialogOpenHandler = (isOpen: boolean) => dispatch(setDeleteOrdersDialogOpen(isOpen));
 
     const reschedule = (rescheduleDate: string) => {
-        dispatch(rescheduleSkippedOrders({rescheduleDate, orderIds: selectedOrderIds}));
+        rescheduleOrders({rescheduleDate, orderIds: selectedOrderIds});
     }
 
-    const deleteOrders = () => {
-        dispatch(deleteSkippedOrders(selectedOrderIds));
+    const deleteOrdersHandler = () => {
+        deleteOrders(selectedOrderIds);
     }
-
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -73,9 +76,6 @@ const SkippedOrders = () => {
         setPage(0);
     };
 
-    // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - skippedOrders.length) : 0;
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
@@ -84,6 +84,16 @@ const SkippedOrders = () => {
         }
         dispatch(deselectAll());
     };
+
+    if (!skippedOrders) {
+        return <Loading/>
+    }
+
+    // Avoid a layout jump when reaching the last page with empty rows.
+    const emptyRows =
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - skippedOrders.length) : 0;
+
+    const hasSelected = selectedOrderIds.length !== 0;
 
     console.log('skippedOrders', skippedOrders);
     return (
@@ -172,7 +182,7 @@ const SkippedOrders = () => {
             <RescheduleDialog open={rescheduleDialogOpen} setOpen={setDialogOpenHandler}
                               onAction={reschedule}/>
             <DeleteConfirmDialog open={deleteOrdersDialogOpen} setOpen={setDeleteDialogOpenHandler}
-                                 onAction={deleteOrders}/>
+                                 onAction={deleteOrdersHandler}/>
         </Box>
     );
 }
