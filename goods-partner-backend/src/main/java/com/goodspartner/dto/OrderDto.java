@@ -28,6 +28,7 @@ public class OrderDto {
     private String orderNumber;
     private String comment;
     private String managerFullName;
+    private String excludeReason;
 
     private UUID deliveryId;
     private DeliveryType deliveryType;

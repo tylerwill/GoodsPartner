@@ -31,7 +31,9 @@ import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertUpdateCount;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,7 +58,40 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
     @Test
     @DataSet(value = "datasets/orders/default-order-dataset.json",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
-    void givenNewShippingDate_whenRescheduleOrder_newOrderGotCreated() throws Exception {
+    void givenNewShippingDate_whenRescheduleDroppedOrder_newOrderGotCreated() throws Exception {
+        // Given
+        RescheduleOrdersRequest rescheduleOrdersRequest = new RescheduleOrdersRequest();
+        rescheduleOrdersRequest.setRescheduleDate(LocalDate.of(2022, 2, 20));
+        rescheduleOrdersRequest.setOrderIds(List.of(251L));
+        // When
+        SQLStatementCountValidator.reset();
+        mockMvc.perform(post(RESCHEDULE_SKIPPED_ORDER_ENDPOINT)
+                        .session(getLogistSession())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(rescheduleOrdersRequest)))
+                .andExpect(status().isOk())
+                .andExpect(content().json(getResponseAsString("response/orders/reschedule-order-response.json"))); // id could be different, not matching it
+        // TODO due to sequence fetch in various test phases Select count could be deifferent
+        QueryCount queryCount = QueryCountHolder.getGrandTotal();
+        long recordedSelectCount = queryCount.getSelect();
+        assertTrue(recordedSelectCount <= 3); // Orders + Delivery + SequenceNextVal. N+1 Verification Passed
+        assertUpdateCount(2);
+        assertInsertCount(1);
+        // Then
+        SQLStatementCountValidator.reset();
+        mockMvc.perform(get(SCHEDULED_ORDERS_ENDPOINT)
+                        .session(getLogistSession())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(getResponseAsString("response/orders/reschedule-order-response.json"))) // id could be different, not matching it
+                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+        assertSelectCount(1);
+    }
+
+    @Test
+    @DataSet(value = "datasets/orders/excluded-order-dataset.json",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
+    void givenNewShippingDate_whenRescheduleExcludedOrder_newOrderGotCreated() throws Exception {
         // Given
         RescheduleOrdersRequest rescheduleOrdersRequest = new RescheduleOrdersRequest();
         rescheduleOrdersRequest.setRescheduleDate(LocalDate.of(2022, 2, 20));

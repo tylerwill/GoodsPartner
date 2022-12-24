@@ -3,6 +3,7 @@ package com.goodspartner.web.controller.order;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
+import com.goodspartner.web.controller.request.ExcludeOrderRequest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
 import com.goodspartner.config.TestSecurityEnableConfig;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
+import static com.vladmihalcea.sql.SQLStatementCountValidator.assertUpdateCount;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,6 +30,7 @@ class OrderControllerIT extends AbstractWebITest {
     private static final String ORDERS_BY_DELIVERY_ENDPOINT = "/api/v1/orders";
     private static final String SKIPPED_ORDERS_ENDPOINT = "/api/v1/orders/skipped";
     private static final String COMPLETED_ORDERS_ENDPOINT = "/api/v1/orders/completed";
+    private static final String EXCLUDE_ORDER_ENDPOINT = "/api/v1/orders/%d/exclude";
 
     @Test
     @DataSet(value = "datasets/orders/order-filter-dataset.json",
@@ -94,5 +97,24 @@ class OrderControllerIT extends AbstractWebITest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/skipped-orders-response.json")));
         assertSelectCount(1);
+    }
+
+    @Test
+    @DataSet(value = "datasets/orders/default-order-dataset.json",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
+    void whenOrderRemoveWithExcludeReason() throws Exception {
+        SQLStatementCountValidator.reset();
+
+        var excludeOrderRequest = new ExcludeOrderRequest();
+        excludeOrderRequest.setExcludeReason("Тест");
+
+        mockMvc.perform(MockMvcRequestBuilders.post(String.format(EXCLUDE_ORDER_ENDPOINT, 251))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .session(getLogistSession())
+                        .content(objectMapper.writeValueAsString(excludeOrderRequest)))
+                .andExpect(status().isOk())
+                .andExpect(content().json(getResponseAsString("response/orders/delete-order-response.json")));
+        assertSelectCount(3); // OrderById + isAllOrdersValid verification
+        assertUpdateCount(1); // Update Orders + Addresses + Delivery
     }
 }

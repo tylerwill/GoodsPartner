@@ -49,15 +49,17 @@ public interface OrderExternalMapper {
     @Mapping(target = "excluded", source = "excluded")
     @Mapping(target = "dropped", source = "dropped")
     @Mapping(target = "frozen", source = "frozen")
+    @Mapping(target = "excludeReason", source = "excludeReason")
     void update(@MappingTarget OrderExternal order, OrderDto orderDto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "excluded", ignore = true)
+    @Mapping(target = "excludeReason", ignore = true)
     @Mapping(target = "dropped", ignore = true)
     @Mapping(target = "delivery", ignore = true)
     @Mapping(target = "carLoad", ignore = true)
     @Mapping(target = "routePoint", ignore = true)
-    OrderExternal copyNew(OrderExternal orderExternal);
+    OrderExternal copyRescheduled(OrderExternal orderExternal);
 
     @Named("mapMapPoint")
     default MapPoint mapMapPoint(AddressExternal addressExternal) {

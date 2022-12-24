@@ -9,6 +9,7 @@
     "deliveryType":"REGULAR",
     "frozen":false,
     "excluded":false,
+    "excludeReason": null,
     "dropped":false,
     "rescheduleDate":"2022-02-20",
     "deliveryStart":null,

@@ -17,6 +17,7 @@ import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.OrderExternalRepository;
 import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.service.UserService;
+import com.goodspartner.web.controller.request.ExcludeOrderRequest;
 import com.goodspartner.web.controller.request.RemoveOrdersRequest;
 import com.goodspartner.web.controller.request.RescheduleOrdersRequest;
 import lombok.RequiredArgsConstructor;
@@ -72,6 +73,16 @@ public class DefaultOrderExternalService implements OrderExternalService {
     public OrderExternal update(long id, OrderDto orderDto) {
         OrderExternal order = orderExternalRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
         orderExternalMapper.update(order, orderDto);
+        return orderExternalRepository.save(order);
+    }
+
+    @Override
+    public OrderExternal excludeOrder(long id, ExcludeOrderRequest excludeOrderRequest) {
+        log.info("Excluding order with id: {}", id);
+        OrderExternal order = orderExternalRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+        order.setExcluded(true);
+        order.setExcludeReason(excludeOrderRequest.getExcludeReason());
+
         return orderExternalRepository.save(order);
     }
 
@@ -175,7 +186,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
 
         List<OrderExternal> newScheduledOrders = updatedSkippedOrders
                 .stream()
-                .map(orderExternalMapper::copyNew)
+                .map(orderExternalMapper::copyRescheduled)
                 .toList();
 
         // If delivery already exist for specified date -> link to delivery.

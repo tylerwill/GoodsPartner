@@ -70,6 +70,9 @@ public class OrderExternal {
     @Column(name = "excluded")
     private boolean excluded;
 
+    @Column(name = "exclude_reason")
+    private String excludeReason;
+
     @Column(name = "dropped")
     private boolean dropped;
 

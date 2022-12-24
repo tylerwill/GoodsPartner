@@ -32,7 +32,8 @@ class RoutePointControllerITest extends AbstractWebITest {
 
 
     @Test
-    @DataSet(value = "datasets/common/update_client_coordinates/routes_dataset.yml")
+    @DataSet(value = "datasets/common/update_client_coordinates/routes_dataset.yml",
+            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet(value = "datasets/common/update_client_coordinates/dataset_routes_expected.yml")
     @DisplayName("when Update Client Coordinates then Coordinates Successful Updated And OK Status Returned")
     void whenUpdateCoordinates_thenOkStatusReturned() throws Exception {

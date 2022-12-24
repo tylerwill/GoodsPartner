@@ -15,7 +15,8 @@
       "car_load_id": null,
       "excluded": false,
       "dropped": false,
-      "route_point_id": 2
+      "route_point_id": 2,
+      "exclude_reason": null
     },
     {
       "id": 51,

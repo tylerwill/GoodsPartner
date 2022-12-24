@@ -3,6 +3,7 @@ package com.goodspartner.service;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.web.controller.request.ExcludeOrderRequest;
 import com.goodspartner.web.controller.request.RemoveOrdersRequest;
 import com.goodspartner.web.controller.request.RescheduleOrdersRequest;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -34,4 +35,7 @@ public interface OrderExternalService {
                                         Delivery delivery);
 
     void checkOrdersCompletion(Delivery delivery);
+
+    OrderExternal excludeOrder(long id, ExcludeOrderRequest excludeOrderRequest);
+
 }

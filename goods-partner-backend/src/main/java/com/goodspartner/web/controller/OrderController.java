@@ -4,6 +4,7 @@ import com.goodspartner.dto.OrderDto;
 import com.goodspartner.facade.OrderFacade;
 import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.service.OrderExternalService;
+import com.goodspartner.web.controller.request.ExcludeOrderRequest;
 import com.goodspartner.web.controller.request.RemoveOrdersRequest;
 import com.goodspartner.web.controller.request.RescheduleOrdersRequest;
 import io.swagger.annotations.ApiOperation;
@@ -127,6 +128,19 @@ public class OrderController {
                 .toList();
 
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
+    @PostMapping("/{id}/exclude")
+    @ApiOperation(value = "Update order",
+            notes = "Return updated order",
+            response = OrderDto.class,
+            responseContainer = "List"
+    )
+    public OrderDto excludeOrder(@PathVariable int id,
+                                 @RequestBody ExcludeOrderRequest excludeOrderRequest) {
+        return orderExternalMapper.toOrderDto(orderExternalService.excludeOrder(id, excludeOrderRequest));
+    }
+
 
 }
 
