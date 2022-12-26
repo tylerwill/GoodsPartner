@@ -4,6 +4,7 @@ import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.web.localization.DefaultInterpreter;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,7 +15,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import java.util.List;
 
 
-@Mapper(componentModel = "spring",
+@Mapper(componentModel = "spring", uses = DefaultInterpreter.class,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface OrderExternalMapper {
 
@@ -23,6 +24,7 @@ public interface OrderExternalMapper {
     @Mapping(target = "clientName", source = "addressExternal.orderAddressId.clientName")
     @Mapping(target = "deliveryId", source = "delivery.id")
     @Mapping(target = "frozen", source = "frozen")
+    @Mapping(target = "deliveryType", source = "deliveryType", qualifiedByName = "enumToString")
     OrderDto toOrderDto(OrderExternal orderExternal);
 
     List<OrderDto> toOrderDtosList(List<OrderExternal> orderDtos);
@@ -33,6 +35,7 @@ public interface OrderExternalMapper {
     @Mapping(target = "addressExternal.latitude", source = "mapPoint.latitude")
     @Mapping(target = "addressExternal.longitude", source = "mapPoint.longitude")
     @Mapping(target = "frozen", source = "frozen")
+    @Mapping(target = "deliveryType", source = "deliveryType", qualifiedByName = "stringToEnum")
     OrderExternal toOrderExternal(OrderDto orderDto);
 
     List<OrderExternal> toOrderExternalList(List<OrderDto> orderDtos);
@@ -43,7 +46,7 @@ public interface OrderExternalMapper {
     @Mapping(target = "addressExternal.latitude", source = "mapPoint.latitude")
     @Mapping(target = "addressExternal.longitude", source = "mapPoint.longitude")
     // Other
-    @Mapping(target = "deliveryType", source = "deliveryType")
+    @Mapping(target = "deliveryType", source = "deliveryType", qualifiedByName = "stringToEnum")
     @Mapping(target = "deliveryStart", source = "deliveryStart")
     @Mapping(target = "deliveryFinish", source = "deliveryFinish")
     @Mapping(target = "excluded", source = "excluded")

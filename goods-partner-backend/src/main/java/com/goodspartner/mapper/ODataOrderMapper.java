@@ -14,7 +14,7 @@ public interface ODataOrderMapper {
     // With Defaults // TODO move to properties and more graceful enrichment
     @Mapping(target = "deliveryStart", expression = "java(LocalTime.of(9, 0))")
     @Mapping(target = "deliveryFinish", expression = "java(LocalTime.of(18, 0))")
-    @Mapping(target = "deliveryType", expression = "java(com.goodspartner.entity.DeliveryType.REGULAR)")
+    @Mapping(target = "deliveryType", expression = "java(com.goodspartner.entity.DeliveryType.REGULAR.toString())")
     OrderDto toOrderDto(ODataOrderDto oDataOrderDto);
 
     List<OrderDto> toOrderDtosList(List<ODataOrderDto> oDataOrderDtos);

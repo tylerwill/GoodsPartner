@@ -24,8 +24,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static com.goodspartner.entity.DeliveryType.POSTAL;
-import static com.goodspartner.entity.DeliveryType.REGULAR;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertUpdateCount;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,6 +50,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(getDriverSession())
+                        .header("Accept-Language", "ua")
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isForbidden());
     }
@@ -64,6 +63,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 9999999L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(getLogistSession())
+                        .header("Accept-Language", "ua")
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isNotFound())
                 .andExpect(content().json("{\"status\":\"NOT_FOUND\",\"message\":\"Order with id: 9999999 not found\"}"));
@@ -79,6 +79,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(getLogistSession())
+                        .header("Accept-Language", "ua")
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{\"status\":\"BAD_REQUEST\",\"message\":\"Unable to update order for delivery: 70574dfd-48a3-40c7-8b0c-3e5defe7d080 with status: APPROVED\"}\n"));
@@ -103,6 +104,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(getLogistSession())
+                        .header("Accept-Language", "ua")
                         .content(objectMapper.writeValueAsString(orderDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-no-address-response.json")));
@@ -124,13 +126,14 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
 
         OrderDto orderDto = buildRequestUpdateOrderDto();
         orderDto.setMapPoint(null);
-        orderDto.setDeliveryType(POSTAL);
+        orderDto.setDeliveryType("Пошта");
 
         // When
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(getLogistSession())
+                        .header("Accept-Language", "en")
                         .content(objectMapper.writeValueAsString(orderDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-delivery-type-postal-response.json")));
@@ -156,6 +159,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(getLogistSession())
+                        .header("Accept-Language", "ua")
                         .content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{\"status\":\"BAD_REQUEST\",\"message\":\"Requested address coordinates out of valid region:\\n проспект Академіка Палладіна, 7А, Київ, Україна, 03179.\\n Change delivery type if needed\"}"));
@@ -175,6 +179,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(getLogistSession())
+                        .header("Accept-Language", "ua")
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-response.json")));
@@ -200,7 +205,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
                 .comment("some-test-comment - This value not modifiable")
                 .deliveryId(UUID.fromString("70574dfd-48a3-40c7-8b0c-3e5defe7d080")) // - This value not modifiable
                 // Modifiable
-                .deliveryType(REGULAR)
+                .deliveryType("Стандартний")
                 .excluded(true)
                 .dropped(true)
                 .frozen(true)

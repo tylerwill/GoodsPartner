@@ -1,5 +1,6 @@
 package com.goodspartner.mapper;
 
+import com.goodspartner.configuration.WebMvcConfiguration;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.CarLoadDto;
 import com.goodspartner.dto.MapPoint;
@@ -11,6 +12,7 @@ import com.goodspartner.entity.Car;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.User;
+import com.goodspartner.web.localization.DefaultInterpreter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(classes = {CarLoadMapperImpl.class, OrderExternalMapperImpl.class, CarMapperImpl.class, OrderExternalMapperImpl.class})
+@SpringBootTest(classes = {CarLoadMapperImpl.class, OrderExternalMapperImpl.class, CarMapperImpl.class, OrderExternalMapperImpl.class, DefaultInterpreter.class, WebMvcConfiguration.class})
 public class CarLoadMapperTest {
 
     @Autowired
@@ -60,6 +62,7 @@ public class CarLoadMapperTest {
                 .shippingDate(LocalDate.of(2022, 2, 17))
                 .comment("Urgent")
                 .managerFullName("Georg")
+                .deliveryType("Стандартний")
                 .clientName("ABS")
                 .address("Бровари, Марії Лагунової, 11")
                 .mapPoint(mapPoint)

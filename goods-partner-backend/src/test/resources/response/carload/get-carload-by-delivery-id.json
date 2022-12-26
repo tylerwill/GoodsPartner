@@ -24,7 +24,7 @@
         "comment":"реп",
         "managerFullName":"Наталія Рябченко",
         "deliveryId":"00000000-0000-0000-0000-000000000111",
-        "deliveryType":"REGULAR",
+        "deliveryType":"Стандартний",
         "excluded":false,
         "dropped":false,
         "shippingDate":"2022-01-28",

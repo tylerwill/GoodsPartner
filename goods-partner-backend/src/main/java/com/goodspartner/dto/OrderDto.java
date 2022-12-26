@@ -30,7 +30,7 @@ public class OrderDto {
     private String managerFullName;
 
     private UUID deliveryId;
-    private DeliveryType deliveryType;
+    private String deliveryType;
 
     private boolean frozen;
     private boolean excluded;

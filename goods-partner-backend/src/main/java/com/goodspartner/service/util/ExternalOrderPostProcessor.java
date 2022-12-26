@@ -43,7 +43,7 @@ public class ExternalOrderPostProcessor {
         orderDtos.stream()
                 .filter(this::checkCommentIfShippedByPostal)
                 .forEach(orderDto -> {
-                    orderDto.setDeliveryType(DeliveryType.POSTAL);
+                    orderDto.setDeliveryType(DeliveryType.POSTAL.toString());
                     orderDto.setAddress(grandeDolceBusinessProperties.getPostal().getAddress());
                     orderDto.setMapPoint(getPostProcessMapPoint(grandeDolceBusinessProperties.getPostal().getAddress()));
                 });
@@ -60,7 +60,7 @@ public class ExternalOrderPostProcessor {
         orderDtos.stream()
                 .filter(this::checkCommentIdSelfService)
                 .forEach(orderDto -> {
-                    orderDto.setDeliveryType(DeliveryType.SELF_SERVICE);
+                    orderDto.setDeliveryType(DeliveryType.SELF_SERVICE.toString());
                     orderDto.setAddress(grandeDolceBusinessProperties.getSelfService().getAddress());
                     orderDto.setMapPoint(getPostProcessMapPoint(grandeDolceBusinessProperties.getSelfService().getAddress()));
                 });
@@ -70,7 +70,7 @@ public class ExternalOrderPostProcessor {
         orderDtos.stream()
                 .filter(this::checkCommentIfPrePacking)
                 .forEach(orderDto -> {
-                    orderDto.setDeliveryType(DeliveryType.PRE_PACKING);
+                    orderDto.setDeliveryType(DeliveryType.PRE_PACKING.toString());
                     orderDto.setAddress(grandeDolceBusinessProperties.getPrePacking().getAddress());
                     orderDto.setMapPoint(getPostProcessMapPoint(grandeDolceBusinessProperties.getPrePacking().getAddress()));
                 });
