@@ -5,6 +5,7 @@ import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal.OrderAddressId;
 import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.exception.AddressOutOfRegionException;
+import com.goodspartner.exception.GoogleApiException;
 import com.goodspartner.mapper.RoutePointMapper;
 import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.service.client.GoogleClient;
@@ -67,27 +68,32 @@ public class GoogleGeocodeService implements GeocodeService {
     }
 
     private MapPoint autovalidate(OrderDto orderDto) {
-        GeocodingResult[] geocodingResults = googleClient.getGeocodingResults(orderDto.getAddress());
-        if (geocodingResults == null || geocodingResults.length == 0) { // Nothing found
+        try {
+            GeocodingResult[] geocodingResults = googleClient.getGeocodingResults(orderDto.getAddress());
+            if (geocodingResults == null || geocodingResults.length == 0) { // Nothing found
+                return routePointMapper.getUnknownMapPoint();
+            }
+
+            GeocodingResult geocodingResult = geocodingResults[0]; // Always get the first available result
+            String geocodedAddress = geocodingResult.formattedAddress;
+            double latitude = geocodingResult.geometry.location.lat;
+            double longitude = geocodingResult.geometry.location.lng;
+
+            //address outside defined area
+            if (isInvalidRegionBoundaries(latitude, longitude)) {
+                return routePointMapper.getUnknownMapPoint();
+            }
+            return MapPoint.builder()
+                    .address(geocodedAddress)
+                    .longitude(longitude)
+                    .latitude(latitude)
+                    .status(AUTOVALIDATED)
+                    .build();
+
+        } catch (GoogleApiException e) {
+            log.error("Exception thrown while trying to geocode order with address: {}", orderDto.getAddress(), e);
             return routePointMapper.getUnknownMapPoint();
         }
-
-        GeocodingResult geocodingResult = geocodingResults[0]; // Always get the first available result
-        String geocodedAddress = geocodingResult.formattedAddress;
-        double latitude = geocodingResult.geometry.location.lat;
-        double longitude = geocodingResult.geometry.location.lng;
-
-        //address outside defined area
-        if (isInvalidRegionBoundaries(latitude, longitude)) {
-            return routePointMapper.getUnknownMapPoint();
-        }
-
-        return MapPoint.builder()
-                .address(geocodedAddress)
-                .longitude(longitude)
-                .latitude(latitude)
-                .status(AUTOVALIDATED)
-                .build();
     }
 
     private boolean isInvalidRegionBoundaries(double latitude, double longitude) {

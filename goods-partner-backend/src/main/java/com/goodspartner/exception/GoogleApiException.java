@@ -2,7 +2,12 @@ package com.goodspartner.exception;
 
 
 public class GoogleApiException extends RuntimeException {
-    public GoogleApiException(Throwable cause) {
-        super(cause);
+    private static final String MESSAGE = "Exception while trying to geocode address: %s";
+
+    public GoogleApiException(String address, Throwable cause) {
+        super(String.format(MESSAGE, address), cause);
+    }
+
+    public GoogleApiException() {
     }
 }

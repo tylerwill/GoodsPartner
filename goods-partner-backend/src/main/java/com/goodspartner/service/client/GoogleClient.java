@@ -26,7 +26,7 @@ public class GoogleClient {
         try {
             return GeocodingApi.geocode(context, address).language(DEFAULT_LANGUAGE).await();
         } catch (IOException | ApiException | InterruptedException e) {
-            throw new GoogleApiException(e);
+            throw new GoogleApiException(address, e);
         }
     }
 
