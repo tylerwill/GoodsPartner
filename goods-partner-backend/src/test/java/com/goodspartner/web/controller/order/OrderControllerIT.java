@@ -114,7 +114,8 @@ class OrderControllerIT extends AbstractWebITest {
                         .content(objectMapper.writeValueAsString(excludeOrderRequest)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/delete-order-response.json")));
-        assertSelectCount(3); // OrderById + isAllOrdersValid verification
-        assertUpdateCount(1); // Update Orders + Addresses + Delivery
+
+        assertSelectCount(5); // OrderById + isAllOrdersValid verification + Exclude check
+        assertUpdateCount(2); // Update Orders  + Delivery
     }
 }

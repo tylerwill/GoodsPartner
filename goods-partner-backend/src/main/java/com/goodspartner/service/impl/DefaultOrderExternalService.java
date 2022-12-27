@@ -5,9 +5,14 @@ import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
+import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.User;
+import com.goodspartner.event.Action;
+import com.goodspartner.event.ActionType;
+import com.goodspartner.event.EventType;
+import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.exception.OrderNotFoundException;
 import com.goodspartner.mapper.OrderExternalMapper;
@@ -15,6 +20,7 @@ import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.OrderExternalRepository;
+import com.goodspartner.service.LiveEventService;
 import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.service.UserService;
 import com.goodspartner.web.controller.request.ExcludeOrderRequest;
@@ -23,6 +29,7 @@ import com.goodspartner.web.controller.request.RescheduleOrdersRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,13 +51,16 @@ import static com.goodspartner.entity.User.UserRole.DRIVER;
 @Service
 public class DefaultOrderExternalService implements OrderExternalService {
 
-    private final OrderExternalMapper orderExternalMapper;
+    private static final Sort DEFAULT_ORDER_EXTERNAL_SORT = Sort.by(Sort.Direction.DESC, "orderNumber");
 
+    private final OrderExternalMapper orderExternalMapper;
+    // Repos
     private final OrderExternalRepository orderExternalRepository;
     private final AddressExternalRepository addressExternalRepository;
     private final DeliveryRepository deliveryRepository;
     private final CarRepository carRepository;
-
+    // Services
+    private final LiveEventService liveEventService;
     private final UserService userService;
 
     @Transactional(readOnly = true)
@@ -59,12 +69,12 @@ public class DefaultOrderExternalService implements OrderExternalService {
         return Optional.of(userService.findByAuthentication(authentication))
                 .filter(user -> DRIVER.equals(user.getRole()))
                 .map(driver -> findByDeliveryAndDriver(deliveryId, driver))
-                .orElseGet(() -> orderExternalRepository.findByDeliveryId(deliveryId));
+                .orElseGet(() -> orderExternalRepository.findByDeliveryId(deliveryId, DEFAULT_ORDER_EXTERNAL_SORT));
     }
 
     private List<OrderExternal> findByDeliveryAndDriver(UUID deliveryId, User driver) {
         return carRepository.findCarByDriver(driver)
-                .map(car -> orderExternalRepository.findAllByDeliveryAndCar(deliveryId, car))
+                .map(car -> orderExternalRepository.findAllByDeliveryAndCar(deliveryId, car, DEFAULT_ORDER_EXTERNAL_SORT))
                 .orElseThrow(() -> new CarNotFoundException(driver));
     }
 
@@ -108,14 +118,20 @@ public class DefaultOrderExternalService implements OrderExternalService {
         deliveryRepository.save(delivery);
     }
 
+    // No transaction required. In case if yes -> extract live even propagation to Facade
     @Override
-    public void checkOrdersCompletion(Delivery delivery) {
+    public void checkDeliveryReadiness(Delivery delivery) {
         List<OrderExternal> incompleteOrders =
                 orderExternalRepository.findRegularOrdersWithUnknownAddressByDeliveryId(delivery.getId());
         if (incompleteOrders.isEmpty()) {
-            log.info("All orders has valid Addresses. Uopdate Delivery as READY_FOR_CALCULATION");
+            log.info("All orders has valid Addresses. Updating Delivery as READY_FOR_CALCULATION");
             delivery.setFormationStatus(DeliveryFormationStatus.READY_FOR_CALCULATION);
             deliveryRepository.save(delivery);
+            // Publishing refresh event to FE
+            liveEventService.publishToAdminAndLogistician(
+                    new LiveEvent(DeliveryHistoryTemplate.DELIVERY_READY.getTemplate(),
+                            EventType.INFO,
+                            new Action(ActionType.DELIVERY_UPDATED, delivery.getId())));
         }
     }
 
@@ -151,19 +167,19 @@ public class DefaultOrderExternalService implements OrderExternalService {
     @Transactional(readOnly = true)
     @Override
     public List<OrderExternal> getSkippedOrders() {
-        return orderExternalRepository.findSkippedOrders();
+        return orderExternalRepository.findSkippedOrders(DEFAULT_ORDER_EXTERNAL_SORT);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<OrderExternal> getCompletedOrders() {
-        return orderExternalRepository.findCompletedOrders();
+        return orderExternalRepository.findCompletedOrders(DEFAULT_ORDER_EXTERNAL_SORT);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<OrderExternal> getScheduledOrders() {
-        return orderExternalRepository.findScheduledOrders();
+        return orderExternalRepository.findScheduledOrders(DEFAULT_ORDER_EXTERNAL_SORT);
     }
 
     /**

@@ -61,13 +61,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     @Override
     public List<Route> calculateRoutes(List<OrderExternal> orders, RouteMode routeMode) {
 
-        // TODO require clarification with client. We want to highlight orders outside of the Kyiv in response
-        List<OrderExternal> kyivOrders = orders.stream()
-                .filter(orderExternal -> orderExternal.getAddressExternal().getValidAddress().contains("Київська обл")
-                        || orderExternal.getAddressExternal().getValidAddress().contains("Київ"))
-                .toList();
-
-        List<OrderExternal> filteredOrders = kyivOrders
+        List<OrderExternal> filteredOrders = orders
                 .stream()
                 .filter(orderExternal -> orderExternal.isFrozen() == routeMode.isCoolerNecessary())
                 .toList();
@@ -81,9 +75,9 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
         List<Car> cars = carRepository.findByAvailableTrueAndCoolerIs(routeMode.isCoolerNecessary());
         List<RoutePoint> routePoints = mapToRoutePoints(filteredOrders);
 
-        log.info("Start route optimisation for {} orders", orders.size());
+        log.info("Start route optimisation for {} orders and cooler: {}", filteredOrders.size(), routeMode.isCoolerNecessary());
         VRPSolution solution = vrpSolver.optimize(cars, store, routePoints);
-        log.info("Finished route optimisation for {} orders", orders.size());
+        log.info("Finished route optimisation for {} orders and cooler: {}", filteredOrders.size(), routeMode.isCoolerNecessary());
 
         updateDroppedOrders(filteredOrders, solution);
 

@@ -34,7 +34,7 @@ public interface OrderExternalService {
     void bindExternalOrdersWithDelivery(List<OrderExternal> externalOrders,
                                         Delivery delivery);
 
-    void checkOrdersCompletion(Delivery delivery);
+    void checkDeliveryReadiness(Delivery delivery);
 
     OrderExternal excludeOrder(long id, ExcludeOrderRequest excludeOrderRequest);
 

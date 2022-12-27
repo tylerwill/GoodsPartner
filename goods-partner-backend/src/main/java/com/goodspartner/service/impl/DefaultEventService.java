@@ -28,10 +28,10 @@ public class DefaultEventService implements EventService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
-    public void publishDeliveryEvent(DeliveryHistoryTemplate template, UUID deliverId) {
+    public void publishDeliveryEvent(DeliveryHistoryTemplate template, UUID deliveryId) {
         String action = fillActionWithAuditor(template.getTemplate());
 
-        DeliveryAuditEvent deliveryAuditEvent = new DeliveryAuditEvent(action, deliverId);
+        DeliveryAuditEvent deliveryAuditEvent = new DeliveryAuditEvent(action, deliveryId);
 
         applicationEventPublisher.publishEvent(deliveryAuditEvent);
 
@@ -39,7 +39,7 @@ public class DefaultEventService implements EventService {
 
         ActionType actionType = template == DELIVERY_CREATED ? ActionType.DELIVERY_CREATED : ActionType.DELIVERY_UPDATED;
 
-        Action eventAction = new Action(actionType, deliverId);
+        Action eventAction = new Action(actionType, deliveryId);
 
         if (template.equals(DELIVERY_CALCULATED)) {
             type = EventType.SUCCESS;

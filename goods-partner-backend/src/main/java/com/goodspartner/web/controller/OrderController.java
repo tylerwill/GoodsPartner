@@ -138,7 +138,7 @@ public class OrderController {
     )
     public OrderDto excludeOrder(@PathVariable int id,
                                  @RequestBody ExcludeOrderRequest excludeOrderRequest) {
-        return orderExternalMapper.toOrderDto(orderExternalService.excludeOrder(id, excludeOrderRequest));
+        return orderExternalMapper.toOrderDto(orderFacade.excludeOrder(id, excludeOrderRequest));
     }
 
 

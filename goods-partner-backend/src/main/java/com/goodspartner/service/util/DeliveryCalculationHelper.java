@@ -13,6 +13,7 @@ import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.repository.DeliveryRepository;
+import com.goodspartner.repository.OrderExternalRepository;
 import com.goodspartner.service.CarLoadService;
 import com.goodspartner.service.EventService;
 import com.goodspartner.service.RouteCalculationService;
@@ -20,12 +21,13 @@ import com.goodspartner.service.dto.RouteMode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,19 +36,18 @@ public class DeliveryCalculationHelper {
 
     private final RouteCalculationService routeCalculationService;
     private final CarLoadService carLoadService;
-    private final DeliveryRepository deliveryRepository;
     private final EventService eventService;
+    private final TxWrapper txWrapper;
+
+    private final OrderExternalRepository orderExternalRepository;
+    private final DeliveryRepository deliveryRepository;
 
     @Async("goodsPartnerThreadPoolTaskExecutor")
-    @Transactional
     public void calculate(UUID deliveryId) {
-        log.info("Start calculation");
+        log.info("Started calculation for delivery with id: {}", deliveryId);
 
         try {
-            Delivery delivery = deliveryRepository.findById(deliveryId)
-                    .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
-
-            List<OrderExternal> orderExternals = delivery.getOrders();
+            List<OrderExternal> orderExternals = orderExternalRepository.findByDeliveryId(deliveryId, Sort.unsorted());
 
             List<OrderExternal> includedOrders = orderExternals.stream()
                     .filter(orderExternal -> !orderExternal.isExcluded())
@@ -62,23 +63,27 @@ public class DeliveryCalculationHelper {
             List<CarLoad> regularCarLoads = carLoadService.buildCarLoad(regularRoutes, includedOrders);
 
             List<Route> routes = ListUtils.union(coolerRoutes, regularRoutes);
+            List<CarLoad> carLoads = ListUtils.union(coolerCarLoad, regularCarLoads);
+
             // Update Delivery
-            delivery.setRoutes(routes);
-            delivery.setRouteCount(routes.size());
-            delivery.setCarLoads(ListUtils.union(coolerCarLoad, regularCarLoads));
+            txWrapper.runNewTransaction(() -> {
+                log.info("Saving calculation result ot delivery");
+                Delivery delivery = deliveryRepository.findById(deliveryId)
+                        .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
+                delivery.setRoutes(routes);
+                delivery.setRouteCount(routes.size());
+                delivery.setCarLoads(carLoads);
+                delivery.setFormationStatus(DeliveryFormationStatus.CALCULATION_COMPLETED);
+                return deliveryRepository.save(delivery);
+            });
 
-            delivery.setFormationStatus(DeliveryFormationStatus.CALCULATION_COMPLETED);
-
-            deliveryRepository.save(delivery);
-
+            log.info("Sending notification for calculation status");
             eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, deliveryId);
+            log.info("Finished calculation for delivery with id: {}", deliveryId);
         } catch (Exception exception) {
             eventService.publishEvent(new LiveEvent("Помилка розрахування доставки", EventType.ERROR,
                     new Action(ActionType.INFO, deliveryId)));
             throw new RuntimeException(exception);
         }
-
-        log.info("Delivery: {} has been calculated", deliveryId);
-
     }
 }

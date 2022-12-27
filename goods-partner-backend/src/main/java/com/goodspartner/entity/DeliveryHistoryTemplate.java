@@ -6,9 +6,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum DeliveryHistoryTemplate {
     DELIVERY_CREATED("${roleTranslated} ${userName} створив(ла) доставку"),
-    DELIVERY_UPDATED("${roleTranslated} ${userName} оновив(ла) доставку"),
-    DELIVERY_APPROVED("${roleTranslated} ${userName} підтвердив(ла) доставку"),
+    DELIVERY_READY("Доставка готова до калькуляції"),
     DELIVERY_CALCULATED("${roleTranslated} ${userName} розрахував(ла) доставку"),
+    DELIVERY_APPROVED("${roleTranslated} ${userName} підтвердив(ла) доставку"),
     DELIVERY_COMPLETED("Доставка переведена в статус виконана"),
     ROUTE_POINT_STATUS("${roleTranslated} ${userName} змінив(ла) статус точки маршрута до авто ${carName} ${carLicensePlate}, клієнт ${clientName}, адреса ${clientAddress} на ${routePointStatus}"),
     ROUTE_STATUS("${roleTranslated} ${userName} змінив(ла) статус маршрута до авто ${carName} ${carLicensePlate} на ${routeStatus}"),

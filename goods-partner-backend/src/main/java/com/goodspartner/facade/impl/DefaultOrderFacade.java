@@ -2,6 +2,8 @@ package com.goodspartner.facade.impl;
 
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.Delivery;
+import com.goodspartner.entity.DeliveryFormationStatus;
+import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.event.Action;
@@ -15,8 +17,10 @@ import com.goodspartner.service.DeliveryService;
 import com.goodspartner.service.EventService;
 import com.goodspartner.service.GeocodeService;
 import com.goodspartner.service.IntegrationService;
+import com.goodspartner.service.LiveEventService;
 import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.service.util.ExternalOrderPostProcessor;
+import com.goodspartner.web.controller.request.ExcludeOrderRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -37,6 +41,7 @@ public class DefaultOrderFacade implements OrderFacade {
     private final DeliveryService deliveryService;
     private final OrderExternalService orderExternalService;
     private final EventService eventService;
+    private final LiveEventService liveEventService;
     private final GeocodeService geocodeService;
     private final IntegrationService integrationService; // GrangeDolceIntegration
     // Utils
@@ -73,6 +78,7 @@ public class DefaultOrderFacade implements OrderFacade {
         }
     }
 
+    @Override
     public OrderExternal update(long id, OrderDto orderDto) {
         log.info("Updating order with id: {}", id);
         geocodeService.validateOutOfRegion(orderDto);
@@ -85,8 +91,20 @@ public class DefaultOrderFacade implements OrderFacade {
         OrderExternal updatedOrder = orderExternalService.update(id, orderDto);
 
         // Should be executed under separate transaction to fetch state after update
-        orderExternalService.checkOrdersCompletion(delivery);
+        orderExternalService.checkDeliveryReadiness(delivery);
 
         return updatedOrder;
+    }
+
+    // TODO do we need to check delivery status == DRAFT here
+    @Override
+    public OrderExternal excludeOrder(long id, ExcludeOrderRequest excludeOrderRequest) {
+        log.info("Excluding order with id: {}", id);
+
+        OrderExternal orderExternal = orderExternalService.excludeOrder(id, excludeOrderRequest);
+
+        orderExternalService.checkDeliveryReadiness(orderExternal.getDelivery()); // Should be executed under separate transaction to fetch state after update
+
+        return orderExternal;
     }
 }

@@ -18,6 +18,7 @@ values  (1, 'Mercedes Sprinter', 'AA 3333 CT', 2500, true, true, 15, 1),
 
 insert into public.store(id, name, address, latitude, longitude)
 values ('5688492e-ede4-45d3-923b-5f9773fd3d4b', 'Склад №1', '15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна', 50.08340335, 29.885050630832627);
+
 insert into public.grandedolce_addresses (order_address, client_name, valid_address, latitude, longitude)
 values  ('м. Київ, вул. Металістів, 8, оф. 4-24', 'ТОВ "Пекарня', 'м. Київ, вул. Металістів, 8, оф. 4-24', 50.4500010000000, 30.5233330000000),
         ('м. Київ, вул. Хрещатик, 1', 'ТОВ "Кондитерська', 'м. Київ, вул. Хрещатик, 1', 50.4500011000000, 30.5233334000000),

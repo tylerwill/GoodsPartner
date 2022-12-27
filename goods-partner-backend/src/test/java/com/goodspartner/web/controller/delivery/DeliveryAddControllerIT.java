@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.testcontainers.shaded.org.awaitility.Durations;
 
@@ -311,7 +312,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
     }
 
     private void verifyOrdersState(DeliveryDto delivery) {
-        List<OrderExternal> deliveryOrders = orderExternalRepository.findByDeliveryId(delivery.getId());
+        List<OrderExternal> deliveryOrders = orderExternalRepository.findByDeliveryId(delivery.getId(), Sort.unsorted());
         Map<String, OrderExternal> ordersMap = deliveryOrders.stream()
                 .collect(Collectors.toMap(OrderExternal::getRefKey, Function.identity()));
         assertEquals(7, ordersMap.size());
@@ -361,7 +362,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
     }
 
     private void verifyRescheduledOrder(DeliveryDto delivery) {
-        List<OrderExternal> deliveryOrders = orderExternalRepository.findByDeliveryId(delivery.getId());
+        List<OrderExternal> deliveryOrders = orderExternalRepository.findByDeliveryId(delivery.getId(), Sort.unsorted());
         assertEquals(1, deliveryOrders.size());
 
         OrderExternal rescheduled = deliveryOrders.get(0);

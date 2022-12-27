@@ -27,7 +27,7 @@ public interface DeliveryRepository extends JpaRepository<Delivery, UUID> {
     @EntityGraph(attributePaths = {"routes", "routes.car", "routes.store"})
     List<Delivery> findByStatusAndDeliveryDateBetween(DeliveryStatus status, LocalDate dateFrom, LocalDate dateTo);
 
-    @EntityGraph(attributePaths = {"orders"})
+    @EntityGraph(attributePaths = {"orders", "orders.addressExternal"})
     @Query("SELECT d FROM Delivery d WHERE d.id = :id")
     Optional<Delivery> findByIdWithOrders(UUID id);
 

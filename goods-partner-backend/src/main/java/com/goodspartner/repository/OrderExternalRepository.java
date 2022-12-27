@@ -2,6 +2,7 @@ package com.goodspartner.repository;
 
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.OrderExternal;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,38 +19,39 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, Lo
 
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o WHERE o.delivery.id = :deliveryId")
-    List<OrderExternal> findByDeliveryId(@Param("deliveryId") UUID deliveryId);
+    List<OrderExternal> findByDeliveryId(@Param("deliveryId") UUID deliveryId, Sort sort);
 
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o WHERE o.delivery.id = :deliveryId AND o.carLoad.car = :car")
     List<OrderExternal> findAllByDeliveryAndCar(@Param("deliveryId") UUID deliveryId,
-                                                @Param("car") Car car);
+                                                @Param("car") Car car, Sort sort);
 
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o LEFT JOIN o.routePoint rp " +
             "WHERE o.rescheduleDate IS NULL " +
             "  AND (o.excluded = TRUE OR o.dropped = TRUE OR rp.status = 'SKIPPED')")
-    List<OrderExternal> findSkippedOrders();
+    List<OrderExternal> findSkippedOrders(Sort sort);
 
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o " +
             "WHERE o.excluded = FALSE " +
             "  AND o.dropped = FALSE " +
             "  AND o.routePoint.status = 'DONE'")
-    List<OrderExternal> findCompletedOrders();
+    List<OrderExternal> findCompletedOrders(Sort sort);
 
     // Order has not been linked with delivery
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o " +
             "WHERE o.rescheduleDate IS NOT NULL " +
             "  AND o.delivery IS NULL")
-    List<OrderExternal> findScheduledOrders();
+    List<OrderExternal> findScheduledOrders(Sort sort);
 
 
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o " +
             "WHERE o.delivery.id = :deliveryId " +
             "  AND o.deliveryType = 'REGULAR' " +
+            "  AND o.excluded = false " +
             "  AND o.addressExternal.status = 'UNKNOWN'")
     List<OrderExternal> findRegularOrdersWithUnknownAddressByDeliveryId(@Param("deliveryId") UUID deliveryId);
 

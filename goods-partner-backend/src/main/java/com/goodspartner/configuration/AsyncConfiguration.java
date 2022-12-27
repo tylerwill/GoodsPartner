@@ -37,8 +37,8 @@ public class AsyncConfiguration implements AsyncConfigurer {
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return (exception, method, params) -> {
-            log.warn("Exception with message : {}\nMethod: {}\nParameters :{}",
-                    exception.getMessage(), method, Arrays.toString(params));
+            log.error("Exception with message : {}\nMethod: {}\nParameters :{}",
+                    exception.getMessage(), method, Arrays.toString(params), exception);
         };
     }
 }

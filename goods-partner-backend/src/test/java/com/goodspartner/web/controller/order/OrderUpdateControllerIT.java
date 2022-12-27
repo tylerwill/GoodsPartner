@@ -106,11 +106,11 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
                         .content(objectMapper.writeValueAsString(orderDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-no-address-response.json")));
-        assertSelectCount(3); // OrderById + isAllOrdersValid verification + Delivery
-        assertUpdateCount(1); // Update Orders + Addresses + Delivery
+        assertSelectCount(4); // OrderById + isAllOrdersValid verification + Delivery
+        assertUpdateCount(2); // Update Orders + Addresses + Delivery
 
         Delivery deliveryAfter = deliveryRepository.findByIdWithOrders(DELIVERY_ID).get();
-        assertEquals(DeliveryFormationStatus.ORDERS_LOADED, deliveryAfter.getFormationStatus());
+        assertEquals(DeliveryFormationStatus.READY_FOR_CALCULATION, deliveryAfter.getFormationStatus()); // AddressExternal is not updated, Delivery Updated
     }
 
     @Test

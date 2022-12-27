@@ -69,7 +69,7 @@ public class DefaultDeliveryFacade implements DeliveryFacade {
 
         delivery.setFormationStatus(DeliveryFormationStatus.ROUTE_CALCULATION);
 
-        deliveryCalculationHelper.calculate(deliveryId);  //Calculated in async method
+        deliveryCalculationHelper.calculate(deliveryId);  // Calculated in async method
 
         return delivery;
     }

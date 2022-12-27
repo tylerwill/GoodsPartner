@@ -95,4 +95,16 @@ public class Delivery {
         this.carLoads.addAll(requiredCarLoads);
         this.carLoads.forEach(carLoad -> carLoad.setDelivery(this));
     }
+
+    @Override
+    public String toString() {
+        return "Delivery{" +
+                "id=" + id +
+                ", deliveryDate=" + deliveryDate +
+                ", status=" + status +
+                ", formationStatus=" + formationStatus +
+                ", orderCount=" + orderCount +
+                ", routeCount=" + routeCount +
+                '}';
+    }
 }
