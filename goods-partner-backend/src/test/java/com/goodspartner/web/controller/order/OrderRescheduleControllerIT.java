@@ -75,7 +75,7 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
         QueryCount queryCount = QueryCountHolder.getGrandTotal();
         long recordedSelectCount = queryCount.getSelect();
         assertTrue(recordedSelectCount <= 3); // Orders + Delivery + SequenceNextVal. N+1 Verification Passed
-        assertUpdateCount(2);
+        assertUpdateCount(1);
         assertInsertCount(1);
         // Then
         SQLStatementCountValidator.reset();
@@ -108,7 +108,7 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
         QueryCount queryCount = QueryCountHolder.getGrandTotal();
         long recordedSelectCount = queryCount.getSelect();
         assertTrue(recordedSelectCount <= 3); // Orders + Delivery + SequenceNextVal. N+1 Verification Passed
-        assertUpdateCount(2);
+        assertUpdateCount(1);
         assertInsertCount(1);
         // Then
         SQLStatementCountValidator.reset();
@@ -178,7 +178,7 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
         QueryCount queryCount = QueryCountHolder.getGrandTotal();
         long recordedSelectCount = queryCount.getSelect();
         assertTrue(recordedSelectCount <= 3); // Orders + Delivery + SequenceNextVal. N+1 Verification Passed
-        assertUpdateCount(2);
+        assertUpdateCount(1);
         assertInsertCount(1);
 
         verifyDatabaseAfter(deliveryUUID);

@@ -2,24 +2,28 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.InvoiceDto;
 import com.goodspartner.dto.InvoiceProduct;
-import com.goodspartner.exception.DocumentNotFoundException;
-import com.goodspartner.report.ReportResult;
-import com.goodspartner.service.util.DocumentCreator;
+import com.goodspartner.exception.RoutePointNotFoundException;
+import com.goodspartner.repository.RoutePointRepository;
 import com.goodspartner.service.DocumentService;
 import com.goodspartner.service.IntegrationService;
 import com.goodspartner.service.dto.CellStyles;
 import com.goodspartner.service.dto.DocumentCellInfoDto;
 import com.goodspartner.service.dto.PreparedDocumentData;
+import com.goodspartner.service.util.DocumentCreator;
+import com.goodspartner.util.ObjectConverterUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
+
+import static com.goodspartner.util.ObjectConverterUtil.getOrdersRefKeysFromRoutePointList;
 
 @Service("billDocumentService")
 @Slf4j
@@ -32,31 +36,29 @@ public class BillDocumentService implements DocumentService {
     private static final String DOCUMENT_NAME_SEPARATOR = "_";
     private final IntegrationService integrationService;
     private final DocumentCreator documentCreator;
+    private final RoutePointRepository routePointRepository;
 
     @Override
-    public void saveDocumentsByOrderRefKeys(ZipOutputStream zipOutputStream, List<String> orderRefKeys) {
+    @Transactional(readOnly = true)
+    public void saveDocumentsByRouteId(ZipOutputStream zipOutputStream, Long routeId) {
+        List<String> orderRefKeys = getOrdersRefKeysFromRoutePointList(routePointRepository.findByRouteId(routeId));
+        saveBills(zipOutputStream, orderRefKeys);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void saveDocumentByRoutePointId(ZipOutputStream zipOutputStream, Long routePointId) {
+        List<String> orderRefKeys = routePointRepository.findByIdWithOrders(routePointId)
+                .map(ObjectConverterUtil::getOrdersRefKeysFromRoutePoint)
+                .orElseThrow(() -> new RoutePointNotFoundException(routePointId));
+        saveBills(zipOutputStream, orderRefKeys);
+    }
+
+    private void saveBills(ZipOutputStream zipOutputStream, List<String> orderRefKeys) {
         List<InvoiceDto> invoiceByOrderRefKey = integrationService.getInvoicesByOrderRefKeys(orderRefKeys);
         List<PreparedDocumentData> preparedInvoicesData = getPreparedBillsData(invoiceByOrderRefKey);
         documentCreator.createDocuments(zipOutputStream, preparedInvoicesData, BILL_NAME_PREFIX, HEADER_SIZE + 1);
-    }
 
-    @Override
-    public ReportResult saveDocumentByOrderRefKey(String orderRefKey) {
-        List<InvoiceDto> invoiceByOrderRefKey = integrationService.getInvoicesByOrderRefKeys(List.of(orderRefKey));
-        PreparedDocumentData preparedDocumentData = invoiceByOrderRefKey.stream()
-                .findFirst()
-                .map(this::getPreparedBillsData)
-                .orElseThrow(() -> new DocumentNotFoundException(String.format("Invoice associated with order with ref_key %s does not exist", orderRefKey)));
-        return documentCreator.createDocument(preparedDocumentData, BILL_NAME_PREFIX, HEADER_SIZE + 1);
-    }
-
-    private PreparedDocumentData getPreparedBillsData(InvoiceDto invoiceDto) {
-        return PreparedDocumentData.builder()
-                .documentName(getDocumentName(invoiceDto))
-                .header(getBillHeader(invoiceDto))
-                .table(getBillTable(invoiceDto.getProducts()))
-                .signature(getBillSignature(invoiceDto))
-                .build();
     }
 
     private List<PreparedDocumentData> getPreparedBillsData(List<InvoiceDto> invoiceDtos) {

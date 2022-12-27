@@ -1,6 +1,6 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.configuration.properties.GrandeDolce1CProperties;
+import com.goodspartner.configuration.properties.ClientProperties;
 import com.goodspartner.mapper.ProductMapper;
 import com.goodspartner.mapper.ProductMapperImpl;
 import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 
 class GrandeDolceIntegrationServiceTest {
 
-    private final GrandeDolce1CProperties properties = new GrandeDolce1CProperties();
+    private final ClientProperties properties = new ClientProperties();
     private final ProductMapper productMapper = new ProductMapperImpl();
     private final GrandeDolceIntegrationService orderService = new GrandeDolceIntegrationService(
             properties, null, null, productMapper, null, null, null, null);

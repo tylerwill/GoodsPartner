@@ -1,6 +1,6 @@
 package com.goodspartner.service.util;
 
-import com.goodspartner.configuration.properties.GrandeDolceBusinessProperties;
+import com.goodspartner.configuration.properties.ClientBusinessProperties;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressStatus;
@@ -24,7 +24,7 @@ public class ExternalOrderPostProcessor {
     private static final String PRE_PACKING = "фасовк"; // Include "фасовка"
     private static final String SELF_SERVICE = "самовивіз";
 
-    private final GrandeDolceBusinessProperties grandeDolceBusinessProperties;
+    private final ClientBusinessProperties clientBusinessProperties;
 
     public void processOrderComments(List<OrderDto> orderDtos) {
         checkIfFrozen(orderDtos);
@@ -44,8 +44,8 @@ public class ExternalOrderPostProcessor {
                 .filter(this::checkCommentIfShippedByPostal)
                 .forEach(orderDto -> {
                     orderDto.setDeliveryType(DeliveryType.POSTAL);
-                    orderDto.setAddress(grandeDolceBusinessProperties.getPostal().getAddress());
-                    orderDto.setMapPoint(getPostProcessMapPoint(grandeDolceBusinessProperties.getPostal().getAddress()));
+                    orderDto.setAddress(clientBusinessProperties.getPostal().getAddress());
+                    orderDto.setMapPoint(getPostProcessMapPoint(clientBusinessProperties.getPostal().getAddress()));
                 });
     }
 
@@ -61,8 +61,8 @@ public class ExternalOrderPostProcessor {
                 .filter(this::checkCommentIdSelfService)
                 .forEach(orderDto -> {
                     orderDto.setDeliveryType(DeliveryType.SELF_SERVICE);
-                    orderDto.setAddress(grandeDolceBusinessProperties.getSelfService().getAddress());
-                    orderDto.setMapPoint(getPostProcessMapPoint(grandeDolceBusinessProperties.getSelfService().getAddress()));
+                    orderDto.setAddress(clientBusinessProperties.getSelfService().getAddress());
+                    orderDto.setMapPoint(getPostProcessMapPoint(clientBusinessProperties.getSelfService().getAddress()));
                 });
     }
 
@@ -71,8 +71,8 @@ public class ExternalOrderPostProcessor {
                 .filter(this::checkCommentIfPrePacking)
                 .forEach(orderDto -> {
                     orderDto.setDeliveryType(DeliveryType.PRE_PACKING);
-                    orderDto.setAddress(grandeDolceBusinessProperties.getPrePacking().getAddress());
-                    orderDto.setMapPoint(getPostProcessMapPoint(grandeDolceBusinessProperties.getPrePacking().getAddress()));
+                    orderDto.setAddress(clientBusinessProperties.getPrePacking().getAddress());
+                    orderDto.setMapPoint(getPostProcessMapPoint(clientBusinessProperties.getPrePacking().getAddress()));
                 });
     }
 

@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface RoutePointRepository extends JpaRepository<RoutePoint, Long> {
 
-    @EntityGraph(attributePaths = {"addressExternal"})
+    @EntityGraph(attributePaths = {"orders", "addressExternal"})
     @Query(value = "SELECT rp FROM RoutePoint rp WHERE rp.route.id = :id")
     List<RoutePoint> findByRouteId(@Param("id") Long routeId);
 

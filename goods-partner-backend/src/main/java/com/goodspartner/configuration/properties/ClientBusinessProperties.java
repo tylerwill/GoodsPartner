@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @ToString
 @Configuration
-@ConfigurationProperties(prefix = "grandedolce.business")
-public class GrandeDolceBusinessProperties {
+@ConfigurationProperties(prefix = "client.business")
+public class ClientBusinessProperties {
 
     private PrePacking prePacking;
     private SelfService selfService;

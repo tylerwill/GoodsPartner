@@ -2,7 +2,7 @@ package com.goodspartner.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.goodspartner.configuration.properties.GrandeDolce1CProperties;
+import com.goodspartner.configuration.properties.ClientProperties;
 import com.goodspartner.dto.InvoiceDto;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.mapper.InvoiceProductMapper;
@@ -51,8 +51,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private static final int RETRY_ATTEMPTS = 3;
     private static final int RETRY_DELAY = 5;
     private static final int ORDER_FETCH_LIMIT = Integer.MAX_VALUE; // API Key limit
-    private static final String HOST_PREFIX = "test/odata/standard.odata/";
-//    private static final String HOST_PREFIX = "goodspartnergrande/odata/standard.odata/";
+    private static final String PREFIX_ODATA = "/odata/standard.odata/";
     private static final String FORMAT = "json";
     private static final String REF_KEY_FILTER = "Ref_Key eq guid'%s'";
     private static final String DEAL_CAST_REQUEST = "Сделка eq cast(guid'%s','%s')";
@@ -93,10 +92,11 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private static final String CONTACTS_TYPE_SELECT_FIELDS = "Ref_Key,Description";
     private static final List<String> ORGANISATION_CONTACTS = List.of("Юридична адреса організації", "Телефон організації");
 
+    // Props
     @Value("classpath:mock1CoData/*")
     private Resource[] mockedResponses;
-
-    private final GrandeDolce1CProperties properties;
+    private final ClientProperties properties;
+    // Services
     private final WebClient webClient;
     private final ODataOrderMapper odataOrderMapper;
     private final ProductMapper productMapper;
@@ -312,8 +312,8 @@ public class GrandeDolceIntegrationService implements IntegrationService {
 
     private URI buildOrderUri(String filter) {
         return new ODataUrlBuilder()
-                .baseUrl(properties.getUrl())
-                .hostPrefix(HOST_PREFIX)
+                .baseUrl(properties.getClientServerURL())
+                .hostPrefix(properties.getServer1CUriPrefix() + PREFIX_ODATA)
                 .appendEntitySetSegment(ORDER_ENTRY_SET_NAME)
                 .filter(filter)
                 .expand(ORDER_EXPAND_FIELDS)
@@ -324,8 +324,8 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     }
     private URI buildProductUri(String filter) {
         return new ODataUrlBuilder()
-                .baseUrl(properties.getUrl())
-                .hostPrefix(HOST_PREFIX)
+                .baseUrl(properties.getClientServerURL())
+                .hostPrefix(properties.getServer1CUriPrefix() + PREFIX_ODATA)
                 .appendEntitySetSegment(ORDER_PRODUCT_ENTRY_SET_NAME)
                 .filter(filter)
                 .expand(PRODUCT_EXPAND_FIELDS)
@@ -336,8 +336,8 @@ public class GrandeDolceIntegrationService implements IntegrationService {
 
     private URI buildInvoiceUri(String filter) {
         return new ODataUrlBuilder()
-                .baseUrl(properties.getUrl())
-                .hostPrefix(HOST_PREFIX)
+                .baseUrl(properties.getClientServerURL())
+                .hostPrefix(properties.getServer1CUriPrefix() + PREFIX_ODATA)
                 .appendEntitySetSegment(INVOICE_ENTRY_SET_NAME)
                 .filter(filter)
                 .expand(INVOICE_EXPAND_FIELDS)
@@ -347,8 +347,8 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     }
     private URI buildOrganisationContactsUri(String filter) {
         return new ODataUrlBuilder()
-                .baseUrl(properties.getUrl())
-                .hostPrefix(HOST_PREFIX)
+                .baseUrl(properties.getClientServerURL())
+                .hostPrefix(properties.getServer1CUriPrefix() + PREFIX_ODATA)
                 .appendEntitySetSegment(ORGANISATION_CONTACTS_ENTRY_SET_NAME)
                 .filter(filter)
                 .select(ORGANISATION_CONTACTS_SELECT_FIELDS)
@@ -358,8 +358,8 @@ public class GrandeDolceIntegrationService implements IntegrationService {
 
     private URI buildInvoiceProductUri(String filter) {
         return new ODataUrlBuilder()
-                .baseUrl(properties.getUrl())
-                .hostPrefix(HOST_PREFIX)
+                .baseUrl(properties.getClientServerURL())
+                .hostPrefix(properties.getServer1CUriPrefix() + PREFIX_ODATA)
                 .appendEntitySetSegment(INVOICE_PRODUCT_ENTRY_SET_NAME)
                 .filter(filter)
                 .expand(INVOICE_PRODUCT_EXPAND_FIELDS)
@@ -369,8 +369,8 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     }
     private URI buildProductGTDUri(String filter) {
         return new ODataUrlBuilder()
-                .baseUrl(properties.getUrl())
-                .hostPrefix(HOST_PREFIX)
+                .baseUrl(properties.getClientServerURL())
+                .hostPrefix(properties.getServer1CUriPrefix() + PREFIX_ODATA)
                 .appendEntitySetSegment(PRODUCT_GTD_ENTRY_SET_NAME)
                 .filter(filter)
                 .select(PRODUCT_GTD_SELECT_FIELDS)
@@ -380,8 +380,8 @@ public class GrandeDolceIntegrationService implements IntegrationService {
 
     private URI buildOrganisationCodesUri() {
         return new ODataUrlBuilder()
-                .baseUrl(properties.getUrl())
-                .hostPrefix(HOST_PREFIX)
+                .baseUrl(properties.getClientServerURL())
+                .hostPrefix(properties.getServer1CUriPrefix() + PREFIX_ODATA)
                 .appendEntitySetSegment(ORGANISATION_CODES_ENTRY_SET_NAME)
                 .select(ORGANISATION_CODES_SELECT_FIELDS)
                 .format(FORMAT)
@@ -390,8 +390,8 @@ public class GrandeDolceIntegrationService implements IntegrationService {
 
     private URI buildContactsTypeUri() {
         return new ODataUrlBuilder()
-                .baseUrl(properties.getUrl())
-                .hostPrefix(HOST_PREFIX)
+                .baseUrl(properties.getClientServerURL())
+                .hostPrefix(properties.getServer1CUriPrefix() + PREFIX_ODATA)
                 .appendEntitySetSegment(CONTACTS_TYPE_ENTRY_SET_NAME)
                 .select(CONTACTS_TYPE_SELECT_FIELDS)
                 .format(FORMAT)

@@ -1,7 +1,7 @@
 package com.goodspartner.entity;
 
 import com.goodspartner.dto.Product;
-import com.vladmihalcea.hibernate.type.json.JsonType;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
@@ -28,7 +28,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "grandedolce_orders")
-@TypeDef(name = "json", typeClass = JsonType.class)
+@TypeDef(name = "JSONB", typeClass = JsonBinaryType.class)
 public class OrderExternal {
 
     @Id
@@ -83,8 +83,8 @@ public class OrderExternal {
     })
     private AddressExternal addressExternal;
 
-    @Type(type = "json")
-    @Column(columnDefinition = "jsonb")
+    @Type(type = "JSONB")
+    @Column(columnDefinition = "jsonb", updatable = false) // We dont update Products on our side !!
     private List<Product> products;
 
     @Column(name = "order_weight")

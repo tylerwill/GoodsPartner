@@ -2,24 +2,28 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.InvoiceDto;
 import com.goodspartner.dto.InvoiceProduct;
-import com.goodspartner.exception.DocumentNotFoundException;
-import com.goodspartner.report.ReportResult;
-import com.goodspartner.service.util.DocumentCreator;
+import com.goodspartner.exception.RoutePointNotFoundException;
+import com.goodspartner.repository.RoutePointRepository;
 import com.goodspartner.service.DocumentService;
 import com.goodspartner.service.IntegrationService;
 import com.goodspartner.service.dto.CellStyles;
 import com.goodspartner.service.dto.DocumentCellInfoDto;
 import com.goodspartner.service.dto.PreparedDocumentData;
+import com.goodspartner.service.util.DocumentCreator;
+import com.goodspartner.util.ObjectConverterUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
+
+import static com.goodspartner.util.ObjectConverterUtil.getOrdersRefKeysFromRoutePointList;
 
 @Service("invoiceDocumentService")
 @Slf4j
@@ -32,31 +36,28 @@ public class InvoiceDocumentService implements DocumentService {
     private static final String DOCUMENT_NAME_SEPARATOR = "_";
     private final IntegrationService integrationService;
     private final DocumentCreator documentCreator;
+    private final RoutePointRepository routePointRepository;
 
     @Override
-    public void saveDocumentsByOrderRefKeys(ZipOutputStream zipOutputStream, List<String> orderRefKeys) {
+    @Transactional(readOnly = true)
+    public void saveDocumentsByRouteId(ZipOutputStream zipOutputStream, Long routeId) {
+        List<String> orderRefKeys = getOrdersRefKeysFromRoutePointList(routePointRepository.findByRouteId(routeId));
+        saveInvoices(zipOutputStream, orderRefKeys);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void saveDocumentByRoutePointId(ZipOutputStream zipOutputStream, Long routePointId) {
+        List<String> orderRefKeys = routePointRepository.findByIdWithOrders(routePointId)
+                .map(ObjectConverterUtil::getOrdersRefKeysFromRoutePoint)
+                .orElseThrow(() -> new RoutePointNotFoundException(routePointId));
+        saveInvoices(zipOutputStream, orderRefKeys);
+    }
+
+    private void saveInvoices(ZipOutputStream zipOutputStream, List<String> orderRefKeys) {
         List<InvoiceDto> invoiceByOrderRefKey = integrationService.getInvoicesByOrderRefKeys(orderRefKeys);
         List<PreparedDocumentData> preparedInvoicesData = getPreparedInvoicesData(invoiceByOrderRefKey);
         documentCreator.createDocuments(zipOutputStream, preparedInvoicesData, INVOICE_NAME_PREFIX, HEADER_SIZE + 1);
-    }
-
-    @Override
-    public ReportResult saveDocumentByOrderRefKey(String orderRefKey) {
-        List<InvoiceDto> invoiceByOrderRefKey = integrationService.getInvoicesByOrderRefKeys(List.of(orderRefKey));
-        PreparedDocumentData preparedDocumentData = invoiceByOrderRefKey.stream()
-                .findFirst()
-                .map(this::getPreparedInvoicesData)
-                .orElseThrow(() -> new DocumentNotFoundException(String.format("Invoice associated with order with ref_key %s does not exist", orderRefKey)));
-        return documentCreator.createDocument(preparedDocumentData, INVOICE_NAME_PREFIX, HEADER_SIZE + 1);
-    }
-
-    private PreparedDocumentData getPreparedInvoicesData(InvoiceDto invoiceDto) {
-        return PreparedDocumentData.builder()
-                .documentName(getDocumentName(invoiceDto))
-                .header(getInvoiceHeader(invoiceDto))
-                .table(getInvoiceTable(invoiceDto.getProducts()))
-                .signature(getInvoiceSignature(invoiceDto))
-                .build();
     }
 
     private List<PreparedDocumentData> getPreparedInvoicesData(List<InvoiceDto> invoiceDtos) {

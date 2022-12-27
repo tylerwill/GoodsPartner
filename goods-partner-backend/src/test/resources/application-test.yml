@@ -28,6 +28,14 @@ grandedolce:
     login: some-test-login
     password: some-test-password
 
+client:
+  accounting:
+    client-server-url: http://192.168.0.1:3002/ #Client-Apache-server
+    server-1c-uri-prefix: server-1c
+    login: some-test-login
+    password: some-test-password
+    documents-uri-prefix: link-to-doc
+
 reports:
   destination: reports
 
