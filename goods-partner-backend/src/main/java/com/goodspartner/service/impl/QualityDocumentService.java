@@ -94,7 +94,7 @@ public class QualityDocumentService implements DocumentService {
     }
 
     private String getFileName(InvoiceProduct product) {
-        return getDocumentName(product.getQualityUrl());
+        return product.getProductName() + VALID_SEPARATOR + getDocumentName(product.getQualityUrl());
     }
 
     private String getDocumentName(String qualityUrl) {
