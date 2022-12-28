@@ -5,7 +5,7 @@
   "comment":"some-test-comment",
   "managerFullName":"Крамаренко Леся                                   ",
   "deliveryId":"70574dfd-48a3-40c7-8b0c-3e5defe7d080",
-  "deliveryType":"REGULAR",
+  "deliveryType":"Regular",
   "excluded":true,
   "dropped":true,
   "shippingDate":"2022-02-15",

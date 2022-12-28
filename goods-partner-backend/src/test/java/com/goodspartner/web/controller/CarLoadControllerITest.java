@@ -38,6 +38,7 @@ class CarLoadControllerITest extends AbstractWebITest {
                         .get(CAR_LOADS_API)
                         .param("deliveryId", "00000000-0000-0000-0000-000000000111")
                         .session(getDriverSession())
+                        .header("Accept-Language", "ua")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/carload/get-carload-by-delivery-id.json")));

@@ -53,6 +53,10 @@ public class AbstractBaseITest {
         }
     }
 
+    protected String getJsonRequestAsString(String jsonPath) {
+        return getResponseAsString(jsonPath);
+    }
+
     protected <T> List<T> getMockedListObjects(String mockPath, Class<T> contentClass) {
         URL resource = getClass().getClassLoader().getResource(mockPath);
         try {

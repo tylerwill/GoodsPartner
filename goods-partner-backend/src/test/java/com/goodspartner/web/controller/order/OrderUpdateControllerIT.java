@@ -24,7 +24,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static com.goodspartner.entity.DeliveryType.POSTAL;
 import static com.goodspartner.entity.DeliveryType.REGULAR;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertUpdateCount;
@@ -95,15 +94,13 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         assertEquals(2, deliveryBefore.getOrders().size());
         assertEquals(DeliveryFormationStatus.ORDERS_LOADED, deliveryBefore.getFormationStatus());
 
-        OrderDto orderDto = buildRequestUpdateOrderDto();
-        orderDto.setMapPoint(null);
-
         // When
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(getLogistSession())
-                        .content(objectMapper.writeValueAsString(orderDto)))
+                        .header("Accept-Language", "ua")
+                        .content(getJsonRequestAsString("datasets/orders/orderDto-ua-regular-for-update-request.json")))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-no-address-response.json")));
         assertSelectCount(3); // OrderById + isAllOrdersValid verification + Delivery
@@ -122,16 +119,13 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         assertEquals(2, deliveryBefore.getOrders().size());
         assertEquals(DeliveryFormationStatus.ORDERS_LOADED, deliveryBefore.getFormationStatus());
 
-        OrderDto orderDto = buildRequestUpdateOrderDto();
-        orderDto.setMapPoint(null);
-        orderDto.setDeliveryType(POSTAL);
-
         // When
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(getLogistSession())
-                        .content(objectMapper.writeValueAsString(orderDto)))
+                        .header("Accept-Language", "ua")
+                        .content(getJsonRequestAsString("datasets/orders/orderDto-ua-postal-for-update-request.json")))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-delivery-type-postal-response.json")));
         assertSelectCount(4); // OrderById + isAllOrdersValid verification + Delivery
@@ -175,7 +169,8 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(getLogistSession())
-                        .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
+                        .header("Accept-Language", "en")
+                        .content(getJsonRequestAsString("datasets/orders/orderDto-en-regular-with-address.json")))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-response.json")));
         assertSelectCount(4); // 2хOrderById + 2xDeliveryById
@@ -184,7 +179,6 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         Delivery deliveryAfter = deliveryRepository.findByIdWithOrders(DELIVERY_ID).get();
         assertEquals(DeliveryFormationStatus.READY_FOR_CALCULATION, deliveryAfter.getFormationStatus());
     }
-
     private OrderDto buildRequestUpdateOrderDto() {
         return OrderDto.builder()
                 // Unmodifiable

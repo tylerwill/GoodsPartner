@@ -1,0 +1,27 @@
+{
+  "id": 251,
+  "refKey": "18ee46a5-8e41-11ec-b3ce-00155dd72305 - This value not modifiable",
+  "orderNumber": "00000003639 - This value not modifiable",
+  "comment": "some-test-comment - This value not modifiable",
+  "managerFullName": "Крамаренко Леся - This value not modifiable",
+  "excludeReason": null,
+  "deliveryId": "70574dfd-48a3-40c7-8b0c-3e5defe7d080",
+  "deliveryType": "Regular",
+  "frozen": true,
+  "excluded": true,
+  "dropped": true,
+  "shippingDate": "2022-02-20",
+  "rescheduleDate": null,
+  "deliveryStart": "10:00",
+  "deliveryFinish": "11:00",
+  "clientName": "Новус Україна ТОВ - This value not modifiable",
+  "address": "м.Київ, пр. Академіка Палладіна, 7-А - This value not modifiable",
+  "mapPoint": {
+    "address": "проспект Академіка Палладіна, 7А, Київ, Україна, 03179",
+    "latitude": 51.4618259,
+    "longitude": 31.3553835,
+    "status": "KNOWN"
+  },
+  "products": [],
+  "orderWeight": 1500.0
+}

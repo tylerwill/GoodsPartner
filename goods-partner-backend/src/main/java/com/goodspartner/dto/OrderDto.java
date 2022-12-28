@@ -1,7 +1,11 @@
 package com.goodspartner.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.goodspartner.entity.DeliveryType;
+import com.goodspartner.web.localization.DeliveryTypeDeserializer;
+import com.goodspartner.web.localization.DeliveryTypeSerializer;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +35,9 @@ public class OrderDto {
     private String excludeReason;
 
     private UUID deliveryId;
+
+    @JsonSerialize(using = DeliveryTypeSerializer.class)
+    @JsonDeserialize(using = DeliveryTypeDeserializer.class)
     private DeliveryType deliveryType;
 
     private boolean frozen;
