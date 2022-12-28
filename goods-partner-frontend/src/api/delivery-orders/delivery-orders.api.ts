@@ -4,7 +4,13 @@ import Order from "../../model/Order";
 
 type OrdersResponse = Order[];
 
+interface ExcludeRequest {
+    excludeReason: string,
+    orderId: number
+}
 
+
+// TODO: Cache should contain delivery Id
 export const deliveryOrdersApi = createApi({
     reducerPath: 'delivery-ordersApi',
     tagTypes: ['delivery-orders'],
@@ -34,7 +40,19 @@ export const deliveryOrdersApi = createApi({
             invalidatesTags: [{type: 'delivery-orders', id: 'forDelivery'}]
         }),
 
+        excludeOrder: builder.mutation<void, ExcludeRequest>({
+            query: (request) => (
+                {
+                    url: `/orders/${request.orderId}/exclude`,
+                    method: 'POST',
+                    body: {excludeReason: request.excludeReason},
+
+                }),
+            invalidatesTags: [{type: 'delivery-orders', id: 'forDelivery'}]
+        }),
+
+
     }),
 })
 
-export const {useGetOrdersForDeliveryQuery, useUpdateOrderMutation} = deliveryOrdersApi
+export const {useGetOrdersForDeliveryQuery, useUpdateOrderMutation, useExcludeOrderMutation} = deliveryOrdersApi

@@ -51,13 +51,17 @@ function useProcessNotifications(currentNotification, enqueueSnackbar, dispatch)
         if (currentNotification.action?.type === 'DELIVERY_CREATED') {
             dispatch(deliveriesApi.util.invalidateTags([{type: 'deliveries', id: 'list'}]));
 
+        } else if (currentNotification.action?.type === 'DELIVERY_UPDATED') {
+            const {deliveryId} = currentNotification.action;
+
+            dispatch(deliveriesApi.util.invalidateTags([{type: 'deliveries', id: deliveryId}]));
         } else if (currentNotification.action?.type === 'ORDER_UPDATED') {
             const {deliveryId} = currentNotification.action;
 
             dispatch(deliveriesApi.util.invalidateTags([{type: 'deliveries', id: deliveryId}]));
             dispatch(deliveryOrdersApi.util.invalidateTags([{type: 'delivery-orders', id: 'forDelivery'}]));
 
-        } else if (currentNotification.action?.type === 'ROUTE_UPDATED') {
+        }else if (currentNotification.action?.type === 'ROUTE_UPDATED') {
             const {deliveryId} = currentNotification.action;
             dispatch(deliveriesApi.util.invalidateTags([{type: 'deliveries', id: deliveryId}]));
             dispatch(routesApi.util.invalidateTags([{type: 'routes', id: 'forDelivery'}]));

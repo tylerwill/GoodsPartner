@@ -2,7 +2,9 @@ import {useAppDispatch} from "../../../../../hooks/redux-hooks";
 import React, {useCallback} from "react";
 import {
     setAddressDialogOpen,
-    setOrderForAddressModification
+    setExcludeDialogOpen,
+    setOrderForAddressModification,
+    setOrderToExclude
 } from "../../../../../features/delivery-orders/deliveryOrdersSlice";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
@@ -31,13 +33,30 @@ const OrderTableRow = ({order, keyPrefix, updateOrder, collapseAll, expandAll, r
     const handleChangeAddressDialogOpen = useCallback(() => {
             dispatch(setOrderForAddressModification(order));
             dispatch(setAddressDialogOpen(true));
-        }, [dispatch, setAddressDialogOpen]
+        }, [dispatch, setAddressDialogOpen, order]
     );
 
+    const handleExcludeOrderDialogOpen = useCallback(() => {
+            dispatch(setOrderToExclude(order));
+            dispatch(setExcludeDialogOpen(true));
+        }, [dispatch, setExcludeDialogOpen, order]
+    );
+
+    let styles = {
+        '& > *': {borderBottom: 'unset'},
+    };
+
+    if (order.excluded) {
+        styles = {...styles,
+            background: 'rgba(0, 0, 0, 0.04)'}
+    }
+
+    //  background: 'rgba(0, 0, 0, 0.04)'
     const isInvalid = order.mapPoint.status === "UNKNOWN";
     return (
         <>
-            <TableRow sx={{'& > *': {borderBottom: 'unset'}}}>
+            <TableRow
+                sx={styles}>
                 <TableCell>
                     <IconButton
                         aria-label="expand row"
@@ -50,7 +69,7 @@ const OrderTableRow = ({order, keyPrefix, updateOrder, collapseAll, expandAll, r
                         {isTableOpened ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
                     </IconButton>
                 </TableCell>
-                <TableCell component="th" scope="row">
+                <TableCell>
                     {order.orderNumber}
                 </TableCell>
                 <TableCell>{order.clientName}</TableCell>
@@ -64,7 +83,10 @@ const OrderTableRow = ({order, keyPrefix, updateOrder, collapseAll, expandAll, r
                 <TableCell>{from} - {to}</TableCell>
                 <TableCell>{order.managerFullName}</TableCell>
                 <TableCell align="center">
-                    <OrderActionMenu changeAddress={handleChangeAddressDialogOpen}/>
+                    <OrderActionMenu
+                        changeAddress={handleChangeAddressDialogOpen}
+                        exclude={handleExcludeOrderDialogOpen}
+                    />
                 </TableCell>
             </TableRow>
             <TableRow>

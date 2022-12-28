@@ -2,14 +2,16 @@ import React from "react";
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {ListItemText, Menu, MenuItem} from "@mui/material";
+import Order from "../../../../../model/Order";
 
 interface Props {
-    changeAddress: () => void
+    changeAddress: () => void,
+    exclude: () => void
 }
 
 // : React.FC<Props>
 // {user, deleteUser, setEditedUser, openEditDialog}
-const OrderActionMenu: React.FC<Props> = ({changeAddress}) => {
+const OrderActionMenu: React.FC<Props> = ({changeAddress, exclude}) => {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>();
     const open = Boolean(anchorEl);
     const handleClick = React.useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
@@ -23,13 +25,17 @@ const OrderActionMenu: React.FC<Props> = ({changeAddress}) => {
     const handleChangeAddress = React.useCallback(() => {
         changeAddress();
         handleClose()
-    }, []);
+    }, [changeAddress]);
+
+    const handleExcludeOrder = React.useCallback(() => {
+        exclude();
+        handleClose();
+    }, [exclude]);
 
     return (
         <div>
             <IconButton
                 aria-label="more"
-                id="long-button"
                 aria-controls={open ? 'long-menu' : undefined}
                 aria-expanded={open ? 'true' : undefined}
                 aria-haspopup="true"
@@ -52,7 +58,7 @@ const OrderActionMenu: React.FC<Props> = ({changeAddress}) => {
                 <MenuItem>
                     <ListItemText>Змінити тип доставки</ListItemText>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem onClick={handleExcludeOrder}>
                     <ListItemText>Вилучити</ListItemText>
                 </MenuItem>
             </Menu>

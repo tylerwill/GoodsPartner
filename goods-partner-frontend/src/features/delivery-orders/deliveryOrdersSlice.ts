@@ -3,7 +3,9 @@ import Order from '../../model/Order';
 
 const initialState = {
     isOrderAddressDialogOpen: false,
-    orderForAddressModification: {} as Order
+    isExcludeOrderDialogOpen: false,
+    orderForAddressModification: {} as Order,
+    orderToExclude: {} as Order
 };
 
 
@@ -17,7 +19,12 @@ const deliveryOrdersSlice = createSlice({
         setOrderForAddressModification: (state, action: PayloadAction<Order>) => {
             state.orderForAddressModification = action.payload;
         },
-
+        setExcludeDialogOpen: (state, action: PayloadAction<boolean>) => {
+            state.isExcludeOrderDialogOpen = action.payload;
+        },
+        setOrderToExclude: (state, action: PayloadAction<Order>) => {
+            state.orderToExclude = action.payload;
+        },
 
     }
 })
@@ -26,4 +33,6 @@ export default deliveryOrdersSlice.reducer
 export const {
     setAddressDialogOpen,
     setOrderForAddressModification,
+    setExcludeDialogOpen,
+    setOrderToExclude
 } = deliveryOrdersSlice.actions
