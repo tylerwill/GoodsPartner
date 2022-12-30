@@ -9,7 +9,7 @@ export const shippingApi = createApi({
     reducerPath: 'shippingApi',
     tagTypes: ['shipping'],
     baseQuery: fetchBaseQuery({
-        baseUrl: apiUrl(),
+        baseUrl: apiUrl,
         credentials: "include",
     }),
     endpoints: (builder) => ({

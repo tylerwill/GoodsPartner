@@ -7,6 +7,8 @@ import InfoTableItem from "../../../../../components/InfoTableItem/InfoTableItem
 import RouteMapDialog from "../RouteMapDialog/RouteMapDialog";
 import {Route} from "../../../../../model/Route";
 import {useCompleteRouteMutation, useStartRouteMutation} from "../../../../../api/routes/routes.api";
+import DocumentsDialog from "../DocumentsDialog/DocumentsDialog";
+import DownloadIcon from '@mui/icons-material/Download';
 
 interface RouteDetailsProps {
     route: Route,
@@ -30,21 +32,29 @@ export default RouteDetails;
 
 const RouteDetailsHeader: React.FC<RouteDetailsProps> = ({route, deliveryDate}) => {
     const [routeMapOpen, setRouteMapOpen] = React.useState(false);
+    const [routeDocumentsOpen, setRouteDocumentsOpen] = React.useState(false);
 
     return (<Box sx={{width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <Typography sx={{fontWeight: "bold"}} variant="body2" component="h2">
-            {/*TODO: replace with real date*/}
             Маршрут №{route.id} від {deliveryDate}
         </Typography>
         <Box>
 
-            <Box sx={{display: 'flex'}}>
+            <Box sx={{display: 'flex', alignItems: 'center'}}>
                 <Button sx={{mr: 2}} onClick={() => setRouteMapOpen(true)} variant="text">Показати на
                     мапі</Button>
+                <Button sx={{mr: 2}} onClick={() => setRouteDocumentsOpen(true)} variant="outlined">
+                    <DownloadIcon sx={{mr: 1}}/> документи для
+                    водія</Button>
                 <RouteStatusSelect route={route}/>
             </Box>
 
             <RouteMapDialog route={route} open={routeMapOpen} closeDialog={() => setRouteMapOpen(false)}/>
+
+            <DocumentsDialog isOpen={routeDocumentsOpen}
+                             handleClose={() => setRouteDocumentsOpen(false)}
+                             type={"route"}
+                             id={route.id}/>
         </Box>
     </Box>);
 }
@@ -110,9 +120,9 @@ const RouteStatusSelect = ({route}: { route: Route }) => {
     }
     const CustomSelect = styled(Select)(() => ({
         '& .MuiOutlinedInput-input': {
-            padding: '4px 16px',
+            padding: '6px 16px',
             textTransform: 'uppercase',
-            fontSize: '13px',
+            fontSize: '14px',
             fontWeight: 500,
             backgroundColor: '#1565C0',
             color: '#fff',
@@ -125,13 +135,14 @@ const RouteStatusSelect = ({route}: { route: Route }) => {
     }));
 
     return <div>
-        <FormControl disabled={status === 'COMPLETED'}>
+        <FormControl disabled={status === 'COMPLETED' || status === 'DRAFT'}>
             <CustomSelect
                 value={status}
                 onChange={handleChange}
                 autoWidth
                 MenuProps={{MenuListProps: {disablePadding: true}}}
             >
+                <MenuItem value={'DRAFT'}>Створений</MenuItem>
                 <MenuItem value={'INPROGRESS'}>В роботі</MenuItem>
                 <MenuItem disabled value={'APPROVED'}>Підтверджений</MenuItem>
                 <MenuItem value={'COMPLETED'}>Закінчений</MenuItem>

@@ -6,7 +6,7 @@ export const currentHost = () => {
         : process.env.REACT_APP_HEROKU_BASE_URL;
 }
 
-export const apiUrl = () => `${currentHost()}api/v1`;
+export const apiUrl = `${currentHost()}api/v1`;
 
 export const generateReportLink = (type: any, date: string) => {
     const reportLink = `${currentHost()}api/v1/reports/${type}?date=${date}`;

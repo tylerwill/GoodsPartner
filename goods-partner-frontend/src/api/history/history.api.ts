@@ -9,7 +9,7 @@ export const historyApi = createApi({
     reducerPath: 'historyApi',
     tagTypes: ['history'],
     baseQuery: fetchBaseQuery({
-        baseUrl: apiUrl(),
+        baseUrl: apiUrl,
         credentials: "include",
     }),
     endpoints: (builder) => ({

@@ -10,7 +10,7 @@ export const routesApi = createApi({
     reducerPath: 'routesApi',
     tagTypes: ['routes'],
     baseQuery: fetchBaseQuery({
-        baseUrl: apiUrl(),
+        baseUrl: apiUrl,
         credentials: "include",
     }),
     endpoints: (builder) => ({
