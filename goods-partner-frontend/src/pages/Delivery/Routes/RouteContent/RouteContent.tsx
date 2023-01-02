@@ -41,7 +41,7 @@ const RouteContent = ({deliveryDate, route}: RouteContentProps) => {
             <ListItem
                 key={routePoint.id}>
                 <RoutePointDetails
-                    routePoint={routePoint} orderNumber={index + 1}/>
+                    routePoint={routePoint} routePointNumber={index + 1}/>
             </ListItem>)}
     </List>
 }

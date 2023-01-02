@@ -6,4 +6,5 @@ export default interface Product {
     storeName: string,
     totalProductWeight: number,
     unitWeight: number,
+    refKey:string
 }

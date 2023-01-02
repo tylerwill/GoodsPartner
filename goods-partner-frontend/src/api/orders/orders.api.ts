@@ -61,5 +61,5 @@ export const {
     useDeleteOrdersMutation,
     useRescheduleOrdersMutation,
     useGetCompletedQuery,
-    useGetSkippedQuery
+    useGetSkippedQuery,
 } = ordersApi

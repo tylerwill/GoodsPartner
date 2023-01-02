@@ -2,6 +2,7 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 import {apiUrl} from "../../util/util";
 import {Route} from "../../model/Route";
 import {RoutePoint} from "../../model/RoutePoint";
+import Order from "../../model/Order";
 
 type RoutesResponse = Route[];
 
@@ -63,10 +64,18 @@ export const routesApi = createApi({
             }),
             invalidatesTags: [{type: 'routes', id: 'forDelivery'}]
         }),
+
+        getRoutePointOrders: builder.query<Array<Order>, number>({
+            query: (id: number) => ({
+                url: `route-points/${id}/orders`,
+                method: 'GET'
+            })
+        }),
     }),
 })
 
 export const {
     useGetRoutesForDeliveryQuery, useStartRouteMutation, useCompleteRouteMutation,
-    useResetRoutePointMutation, useCompleteRoutePointMutation, useSkipRoutePointMutation
+    useResetRoutePointMutation, useCompleteRoutePointMutation, useSkipRoutePointMutation,
+    useGetRoutePointOrdersQuery
 } = routesApi
