@@ -25,8 +25,8 @@ values  ('м. Київ, вул. Металістів, 8, оф. 4-24', 'ТОВ "�
         ('м. Київ, вул. Глибочицька, 12Б, оф. 3', 'ТОВ "Хлібзавод', 'м. Київ, вул. Глибочицька, 12Б, оф. 3', 50.4500011000000, 30.5233334000000);
 
 insert into public.deliveries (id, delivery_date, status, formation_status)
-values  ('4f0a02c1-083c-4d62-b678-2c5eea17f6d1', '2022-09-15', 'DRAFT', 'COMPLETED'),
-        ('d667c8f0-b961-49c6-b6bc-3f9a98b6c5da', '2022-09-14', 'APPROVED', 'COMPLETED');
+values  ('4f0a02c1-083c-4d62-b678-2c5eea17f6d1', '2022-09-15', 'DRAFT', 'CALCULATION_COMPLETED'),
+        ('d667c8f0-b961-49c6-b6bc-3f9a98b6c5da', '2022-09-14', 'APPROVED', 'CALCULATION_COMPLETED');
 
 insert into public.car_loads (id, delivery_id, car_id)
 values  ('a7bdd2c5-1d65-4dad-8ae5-57213c96f7ba', '4f0a02c1-083c-4d62-b678-2c5eea17f6d1', 51),
