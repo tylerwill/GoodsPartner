@@ -3,6 +3,7 @@ package com.goodspartner.service;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
+import com.goodspartner.entity.Route;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 import java.time.LocalDate;
@@ -27,4 +28,5 @@ public interface DeliveryService {
 
     List<DeliveryDto> findByStatusAndDeliveryDateBetween(DeliveryStatus status, LocalDate dateFrom, LocalDate dateTo);
 
+    Delivery processDeliveryStatus(Route route);
 }

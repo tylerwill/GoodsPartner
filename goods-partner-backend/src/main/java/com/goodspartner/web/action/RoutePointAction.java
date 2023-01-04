@@ -34,6 +34,8 @@ public enum RoutePointAction {
         @Override
         public void perform(RoutePoint routePoint) {
             routePoint.setStatus(SKIPPED);
+            routePoint.setExpectedArrival(null);
+            routePoint.setExpectedCompletion(null);
         }
     };
 

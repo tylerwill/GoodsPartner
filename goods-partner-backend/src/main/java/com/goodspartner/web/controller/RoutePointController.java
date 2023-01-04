@@ -2,6 +2,7 @@ package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.Coordinates;
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.facade.RoutingFacade;
 import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.service.RoutePointService;
 import com.goodspartner.web.action.RoutePointAction;
@@ -29,13 +30,15 @@ public class RoutePointController {
 
     private final RoutePointService routePointService;
 
+    private final RoutingFacade routingFacade;
+
     private final OrderExternalMapper orderExternalMapper;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
     @PostMapping("/{routePointId}/{action}")
     public RoutePointActionResponse apply(@PathVariable long routePointId,
                                           @PathVariable String action) {
-        return routePointService.updateRoutePoint(routePointId, RoutePointAction.of(action));
+        return routingFacade.updateRoutePoint(routePointId, RoutePointAction.of(action));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")

@@ -59,6 +59,8 @@ public class RoutePoint {
     private LocalTime deliveryStart;
     @Column(name = "delivery_end")
     private LocalTime deliveryEnd;
+    @Column(name = "matching_time")
+    private boolean matchingExpectedDeliveryTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_id", referencedColumnName = "id")

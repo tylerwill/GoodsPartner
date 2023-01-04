@@ -22,6 +22,7 @@ public class RoutePointDto {
     private String address;
     private double addressTotalWeight;
     private long routePointDistantTime;
+    private boolean matchingExpectedDeliveryTime;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalDateTime completedAt;

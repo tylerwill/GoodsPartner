@@ -6,8 +6,12 @@ import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
 import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.web.action.RoutePointAction;
+import com.graphhopper.GHResponse;
+import com.graphhopper.ResponsePath;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 
@@ -15,6 +19,7 @@ import static com.vladmihalcea.sql.SQLStatementCountValidator.assertInsertCount;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertUpdateCount;
 import static org.hamcrest.Matchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -32,12 +37,23 @@ public class RoutePointControllerIT extends AbstractWebITest {
     private static final String ORDERS_BY_ROUTE_POINT_ENDPOINT = "/api/v1/route-points/%d/orders";
     private static final long ROUTE_POINT_ID = 1052L;
 
+    @Mock
+    private GHResponse ghResponse;
+
+    @Mock
+    private ResponsePath responsePath;
+
     @Test
     @DataSet(value = {"datasets/route-points/common-dataset.json",
             "datasets/route-points/route-point-complete-dataset.json"},
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenDeliveryWithRoute_whenUpdateRoutePointStatus_thenJsonWithRoutePointActionResponseReturned() throws Exception {
         RoutePointAction complete = RoutePointAction.COMPLETE;
+
+        when(hopper.route(Mockito.any())).thenReturn(ghResponse);
+        when(ghResponse.hasErrors()).thenReturn(false);
+        when(ghResponse.getBest()).thenReturn(responsePath);
+        when(responsePath.getTime()).thenReturn(5*60*1000L); // 5 min in mills
 
         SQLStatementCountValidator.reset();
         mockMvc.perform(post(String.format(UPDATE_ROUTE_POINT_ENDPOINT, ROUTE_POINT_ID, complete))
@@ -51,9 +67,9 @@ public class RoutePointControllerIT extends AbstractWebITest {
                 .andExpect(jsonPath("$.routePointId").value("1052"))
                 .andExpect(jsonPath("$.routePointStatus").value("DONE"))
                 .andExpect(jsonPath("$.pointCompletedAt").value(any(String.class)));
-        assertSelectCount(5);
-        assertInsertCount(1);
-        assertUpdateCount(1);
+        assertSelectCount(14);
+        assertInsertCount(2);
+        assertUpdateCount(3);
     }
 
     @Test
@@ -76,7 +92,7 @@ public class RoutePointControllerIT extends AbstractWebITest {
                 .andExpect(jsonPath("$.routePointId").value("1052"))
                 .andExpect(jsonPath("$.routePointStatus").value("DONE"))
                 .andExpect(jsonPath("$.pointCompletedAt").value(any(String.class)));
-        assertSelectCount(8);
+        assertSelectCount(13);
         assertInsertCount(3);
         assertUpdateCount(3);
     }

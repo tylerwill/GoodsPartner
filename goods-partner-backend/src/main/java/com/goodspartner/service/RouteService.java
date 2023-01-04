@@ -3,7 +3,6 @@ package com.goodspartner.service;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Route;
 import com.goodspartner.web.action.RouteAction;
-import com.goodspartner.web.controller.response.RouteActionResponse;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 import java.util.LinkedList;
@@ -18,9 +17,11 @@ public interface RouteService {
 
     List<Route> findByDeliveryId(UUID deliveryId);
 
-    RouteActionResponse updateRoute(long routeId, RouteAction action);
+    Route updateRoute(long routeId, RouteAction action);
 
     void reorderRoutePoints(long routeId, LinkedList<RoutePointDto> routePointDtos);
+
+    Route findExtendedById(Long route);
 
 }
 

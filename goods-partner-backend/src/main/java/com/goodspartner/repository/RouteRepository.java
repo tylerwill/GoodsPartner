@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface RouteRepository extends JpaRepository<Route, Long> {
@@ -21,4 +22,9 @@ public interface RouteRepository extends JpaRepository<Route, Long> {
 
     @EntityGraph(attributePaths = {"routePoints", "car.driver"})
     List<Route> findByDeliveryId(@Param("id") UUID deliveryId);
+
+    @EntityGraph(attributePaths = {"routePoints", "routePoints.addressExternal", "car", "store"})
+    @Query(value = "SELECT r FROM Route r WHERE r.id = :routeId")
+    Optional<Route> findExtendedById(@Param("routeId") Long routeId);
+
 }

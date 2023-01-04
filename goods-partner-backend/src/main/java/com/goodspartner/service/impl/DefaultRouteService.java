@@ -2,7 +2,6 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Delivery;
-import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.entity.User;
@@ -15,11 +14,10 @@ import com.goodspartner.exception.RouteNotFoundException;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.RouteRepository;
-import com.goodspartner.service.EventService;
+import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.RouteService;
 import com.goodspartner.service.UserService;
 import com.goodspartner.web.action.RouteAction;
-import com.goodspartner.web.controller.response.RouteActionResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -43,10 +41,9 @@ public class DefaultRouteService implements RouteService {
     private final RouteRepository routeRepository;
     private final DeliveryRepository deliveryRepository;
     private final CarRepository carRepository;
-
     private final UserService userService;
     private final DefaultRouteCalculationService routeCalculationService;
-    private final EventService eventService;
+    private final GraphhopperService graphhopperService;
 
     @Transactional(readOnly = true)
     @Override
@@ -75,36 +72,20 @@ public class DefaultRouteService implements RouteService {
 
     @Override
     @Transactional
-    public RouteActionResponse updateRoute(long routeId, RouteAction action) {
+    public Route updateRoute(long routeId, RouteAction action) {
 
-        Route route = routeRepository.findById(routeId) // TODO fetch with delivery?
+        Route route = routeRepository.findExtendedById(routeId) // TODO fetch with delivery?
                 .orElseThrow(() -> new RouteNotFoundException("Route not found"));
 
         action.perform(route);
 
+        if (RouteAction.START.equals(action)) {
+            graphhopperService.routePointTimeActualize(route.getStore(), route.getRoutePoints());
+        }
+
         routeRepository.save(route);
 
-        eventService.publishRouteUpdated(route);
-
-        processDeliveryStatus(route);
-
-        return getRouteActionResponse(route);
-    }
-
-    // MapStruct?
-    private RouteActionResponse getRouteActionResponse(Route route) {
-        RouteActionResponse routeActionResponse = new RouteActionResponse();
-
-        // Route
-        routeActionResponse.setRouteId(route.getId());
-        routeActionResponse.setRouteStatus(route.getStatus());
-        routeActionResponse.setRouteFinishTime(route.getFinishTime());
-
-        // Delivery
-        Delivery delivery = route.getDelivery();
-        routeActionResponse.setDeliveryId(delivery.getId());
-        routeActionResponse.setDeliveryStatus(delivery.getStatus());
-        return routeActionResponse;
+        return route;
     }
 
     @Override
@@ -127,24 +108,10 @@ public class DefaultRouteService implements RouteService {
         }
     }
 
-    private boolean isAllRoutesCompleted(Delivery delivery) {
-        return delivery.getRoutes().stream()
-                .filter(route -> !route.getStatus().equals(RouteStatus.COMPLETED))
-                .findFirst()
-                .isEmpty();
-    }
-
-
-    private void processDeliveryStatus(Route route) {
-        Delivery delivery = route.getDelivery();
-        if (isAllRoutesCompleted(delivery)) {
-            delivery.setStatus(DeliveryStatus.COMPLETED);
-
-            eventService.publishDeliveryCompleted(delivery);
-
-            deliveryRepository.save(delivery);
-            log.info("Delivery ID {} was automatically close due to all Routes are COMPLETED", route.getId());
-        }
+    @Override
+    public Route findExtendedById(Long routeId) {
+        return routeRepository.findExtendedById(routeId)
+                .orElseThrow(() -> new RouteNotFoundException(routeId));
     }
 
     private boolean isAllRoutePointsPending(List<RoutePointDto> routePointDtos) {

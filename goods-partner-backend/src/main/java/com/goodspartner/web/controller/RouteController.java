@@ -2,6 +2,7 @@ package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.RoutePointDto;
+import com.goodspartner.facade.RoutingFacade;
 import com.goodspartner.mapper.RouteMapper;
 import com.goodspartner.service.RouteService;
 import com.goodspartner.web.action.RouteAction;
@@ -32,6 +33,8 @@ public class RouteController {
 
     private final RouteService routeService;
 
+    private final RoutingFacade routingFacade;
+
     private final RouteMapper routeMapper;
 
     @GetMapping
@@ -51,7 +54,7 @@ public class RouteController {
     @PostMapping("/{id}/{action}")
     public RouteActionResponse apply(@PathVariable long id,
                                      @PathVariable String action) {
-        return routeService.updateRoute(id, RouteAction.of(action));
+        return routingFacade.updateRoute(id, RouteAction.of(action));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")

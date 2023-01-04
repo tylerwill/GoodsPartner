@@ -16,8 +16,8 @@ public enum DeliveryHistoryTemplate {
     ROUTE_START("${roleTranslated} ${userName} розпочав(ла) маршрут до авто ${carName} ${carLicensePlate}"),
     ORDERS_LOADING("${roleTranslated} ${userName} вивантажує замовлення замовлення з 1С"),
     ORDERS_LOADED("${roleTranslated} ${userName} вивантажив(ла) замовлення з 1С"),
-    DRIVER_CLIENT_ADDRESS_UPDATE("${roleTranslated} ${userName} уточнив координати адресси клієнта: ${clientName}, адреса: ${clientAddress}");
-
+    DRIVER_CLIENT_ADDRESS_UPDATE("${roleTranslated} ${userName} уточнив координати адресси клієнта: ${clientName}, адреса: ${clientAddress}"),
+    ROUTE_POINT_TIME_RANGE_WARNING("Увага! Маршрут ${carName} ${carLicensePlate} має зупинки що не потрапляють у заданий час доставки. При потребі перебудуйте маршрут.");
 
     @Getter
     private final String template;

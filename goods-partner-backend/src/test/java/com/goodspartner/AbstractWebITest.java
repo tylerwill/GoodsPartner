@@ -1,8 +1,10 @@
 package com.goodspartner;
 
 import com.goodspartner.service.dto.GoodsPartnerOAuth2User;
+import com.graphhopper.GraphHopper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,6 +32,9 @@ public class AbstractWebITest extends AbstractBaseITest {
 
     @Autowired
     protected MockMvc mockMvc;
+
+    @MockBean
+    protected GraphHopper hopper;
 
     protected MockHttpSession getDriverSession() {
         return getMockSession(DEFAULT_DRIVER_NAME, DEFAULT_DRIVER_EMAIL, DRIVER_ROLE);

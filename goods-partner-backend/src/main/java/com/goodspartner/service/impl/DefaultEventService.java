@@ -23,6 +23,9 @@ import static com.goodspartner.entity.DeliveryHistoryTemplate.*;
 @RequiredArgsConstructor
 public class DefaultEventService implements EventService {
 
+    private static final List<DeliveryHistoryTemplate> ROUTE_IMPACT_TEMPLATES =
+            List.of(ROUTE_POINT_STATUS, ROUTE_STATUS, ROUTE_STATUS_AUTO, ROUTE_POINT_TIME_RANGE_WARNING);
+
     private final LiveEventService liveEventService;
     private final UserService userService;
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -94,6 +97,14 @@ public class DefaultEventService implements EventService {
     }
 
     @Override
+    public void publishDeliveryTimeRangeWarning(Route route) {
+        Map<String, String> values = new HashMap<>();
+        values.put("carName", route.getCar().getName());
+        values.put("carLicensePlate", route.getCar().getLicencePlate());
+        publishPreparedEvent(values, ROUTE_POINT_TIME_RANGE_WARNING, route);
+    }
+
+    @Override
     public void publishCoordinatesUpdated(RoutePoint routePoint, AddressExternal addressExternal) {
         Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
 
@@ -138,7 +149,6 @@ public class DefaultEventService implements EventService {
     }
 
     private void publishPreparedEvent(Map<String, String> values, DeliveryHistoryTemplate template, Route route) {
-        List<DeliveryHistoryTemplate> templates = List.of(ROUTE_POINT_STATUS, ROUTE_STATUS, ROUTE_STATUS_AUTO);
 
         StringSubstitutor sub = new StringSubstitutor(values);
 
@@ -151,9 +161,9 @@ public class DefaultEventService implements EventService {
         User user = userService.findByRouteId(route.getId());
 
         EventType type = EventType.INFO;
-        Action eventAction = null;
 
-        if (templates.contains(template)) {
+        Action eventAction;
+        if (ROUTE_IMPACT_TEMPLATES.contains(template)) {
             eventAction = new Action(ActionType.ROUTE_UPDATED, deliveryId);
         } else {
             eventAction = new Action(ActionType.INFO, deliveryId);

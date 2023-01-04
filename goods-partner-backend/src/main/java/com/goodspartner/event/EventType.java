@@ -8,7 +8,8 @@ public enum EventType {
     INFO("INFO"),
     SUCCESS("SUCCESS"),
     ERROR("ERROR"),
-    HEARTBEAT("HEARTBEAT");
+    HEARTBEAT("HEARTBEAT"),
+    ;
 
     @Getter
     private final String type;

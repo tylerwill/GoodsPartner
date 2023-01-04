@@ -1,6 +1,5 @@
 package com.goodspartner.service.google;
 
-import com.goodspartner.service.dto.DistanceMatrix;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.RoutePoint;
@@ -9,6 +8,7 @@ import com.goodspartner.mapper.RoutePointMapper;
 import com.goodspartner.mapper.StoreMapper;
 import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.VRPSolver;
+import com.goodspartner.service.dto.DistanceMatrix;
 import com.goodspartner.service.dto.GoogleVRPSolverStatus;
 import com.goodspartner.service.dto.RoutingSolution;
 import com.goodspartner.service.dto.VRPSolution;
@@ -133,6 +133,7 @@ public class GoogleVRPSolver implements VRPSolver {
                         long pointArrivalMinutes = pointCompletionMinutes - SERVICE_TIME_AT_LOCATION_MIN;
                         routePoint.setExpectedArrival(LocalTime.ofSecondOfDay(pointArrivalMinutes * 60L));
 
+                        graphhopperService.checkDeliveryTimeRange(routePoint);
                         carRoutePoints.add(routePoint);
                     }
                     index = solution.value(routing.nextVar(index));

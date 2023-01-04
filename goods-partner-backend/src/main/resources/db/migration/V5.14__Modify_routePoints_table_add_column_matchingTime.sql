@@ -1,0 +1,1 @@
+ALTER TABLE route_points ADD COLUMN matching_time BOOLEAN DEFAULT FALSE;

@@ -3,6 +3,8 @@ package com.goodspartner.service.impl;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
+import com.goodspartner.entity.Route;
+import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.entity.User;
 import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.exception.DeliveryNotFoundException;
@@ -91,6 +93,26 @@ public class DefaultDeliveryService implements DeliveryService {
                 .stream()
                 .map(deliveryMapper::toDeliveryDto)
                 .toList();
+    }
+
+    @Transactional
+    @Override
+    public Delivery processDeliveryStatus(Route route) {
+        Delivery delivery = deliveryRepository.findById(route.getDelivery().getId())
+                .orElseThrow(() -> new DeliveryNotFoundException(route.getDelivery().getId()));
+        if (isAllRoutesCompleted(delivery)) {
+            delivery.setStatus(DeliveryStatus.COMPLETED);
+            deliveryRepository.save(delivery);
+            log.info("Delivery ID {} was automatically close due to all Routes are COMPLETED", route.getId());
+        }
+        return delivery;
+    }
+
+    private boolean isAllRoutesCompleted(Delivery delivery) {
+        return delivery.getRoutes().stream()
+                .filter(route -> !route.getStatus().equals(RouteStatus.COMPLETED))
+                .findFirst()
+                .isEmpty();
     }
 
     @Override

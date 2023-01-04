@@ -50,7 +50,7 @@ public class Route {
     private Boolean optimization;
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
-    @OrderBy("expectedCompletion ASC")
+    @OrderBy("completedAt ASC, expectedCompletion ASC")
     private List<RoutePoint> routePoints = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

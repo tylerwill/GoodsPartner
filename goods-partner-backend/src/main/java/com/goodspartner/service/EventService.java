@@ -26,4 +26,6 @@ public interface EventService {
     void publishEvent(LiveEvent event);
 
     void publishCoordinatesUpdated(RoutePoint routePoint, AddressExternal addressExternal);
+
+    void publishDeliveryTimeRangeWarning(Route route);
 }
