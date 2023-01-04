@@ -2,7 +2,7 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Grid from '@mui/material/Grid';
-import {Button, Checkbox, FormControlLabel, FormGroup, TextField, Typography} from '@mui/material';
+import {Button, Checkbox, FormControlLabel, FormGroup, MenuItem, Select, TextField, Typography} from '@mui/material';
 
 const style = {
     position: 'absolute',
@@ -16,13 +16,19 @@ const style = {
     padding: '16px 24px',
 };
 
-export default function CarFormDialog({title, closeDialog, open, actionHandler, car, setCar}) {
+export default function CarFormDialog({title, closeDialog, open, actionHandler, car, setCar, drivers}) {
     function handleACooler(e) {
         setCar({...car, cooler: e.target.checked});
     }
 
     function handleAvailable(e) {
         setCar({...car, available: e.target.checked});
+    }
+
+    function handleDriver(e) {
+        const driverName = e.target.value;
+        const driver = drivers.find(driver => driver.userName === driverName);
+        setCar({...car, driver: driver});
     }
 
     const saveHandler = () => {
@@ -61,10 +67,12 @@ export default function CarFormDialog({title, closeDialog, open, actionHandler, 
                         </Grid>
 
                         <Grid item xs={6}>
-                            <TextField id="outlined-basic"
-                                       value={car.driver}
-                                       onChange={(e) => setCar({...car, driver: e.target.value})} label="Водій"
-                                       required variant="outlined"/>
+                            {/*<TextField id="outlined-basic"*/}
+                            {/*           value={car.driver?.userName}*/}
+                            {/*           onChange={(e) => setCar({...car, driver: e.target.value})} label="Водій"*/}
+                            {/*           required variant="outlined"/>*/}
+                            <DriverSelect drivers={drivers} currentDriver={car.driver.userName}
+                                          onChange={handleDriver}/>
                         </Grid>
                         <Grid item xs={6}>
                             <TextField id="outlined-basic"
@@ -102,4 +110,19 @@ export default function CarFormDialog({title, closeDialog, open, actionHandler, 
             </Modal>
         </div>
     );
+}
+
+const DriverSelect = ({currentDriver, drivers, onChange}) => {
+    const menuItems = drivers
+        .map(driver => driver.userName)
+        .map(userName => <MenuItem key={"driverSelect" + userName} value={userName}>{userName}</MenuItem>);
+    // FIXME: Strange shitty 95%
+    // FIXME: Add label
+    return (<Select
+        value={currentDriver}
+        onChange={onChange}
+        sx={{width: "95%"}}
+    >
+        {menuItems}
+    </Select>)
 }

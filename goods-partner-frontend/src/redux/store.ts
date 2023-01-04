@@ -1,4 +1,4 @@
-import carsReducer from "../features/cars/carsSlice";
+
 import currentDeliveryReducer from "../features/currentDelivery/currentDeliverySlice";
 import reportsReducer from "../features/reports/reportsSlice";
 import notificationsReducer from "../features/notifications/notificationsSlice";
@@ -11,13 +11,13 @@ import {setupListeners} from "@reduxjs/toolkit/query";
 import {deliveryOrdersApi} from "../api/delivery-orders/delivery-orders.api";
 import {routesApi} from "../api/routes/routes.api";
 import {usersApi} from "../api/users/users.api";
+import {carsApi} from "../api/cars/cars.api";
 import {historyApi} from "../api/history/history.api";
 import {shippingApi} from "../api/shipping/shipping.api";
 import {ordersApi} from "../api/orders/orders.api";
 
 const store = configureStore({
     reducer: {
-        cars: carsReducer,
         reports: reportsReducer,
         currentDelivery: currentDeliveryReducer,
         notifications: notificationsReducer,
@@ -32,6 +32,7 @@ const store = configureStore({
         [historyApi.reducerPath]: historyApi.reducer,
         [shippingApi.reducerPath]: shippingApi.reducer,
         [ordersApi.reducerPath]: ordersApi.reducer,
+        [carsApi.reducerPath]: carsApi.reducer,
 
     },
 
@@ -43,6 +44,7 @@ const store = configureStore({
             .concat(usersApi.middleware)
             .concat(historyApi.middleware)
             .concat(shippingApi.middleware)
+            .concat(carsApi.middleware)
 })
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors
