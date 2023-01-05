@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface RoutePointRepository extends JpaRepository<RoutePoint, Long> {
 
     @EntityGraph(attributePaths = {"orders", "addressExternal"})
-    @Query(value = "SELECT rp FROM RoutePoint rp WHERE rp.route.id = :id")
+    @Query(value = "SELECT rp FROM RoutePoint rp WHERE rp.route.id = :id ORDER BY rp.completedAt ASC, rp.expectedCompletion ASC")
     List<RoutePoint> findByRouteId(@Param("id") Long routeId);
 
     @EntityGraph(attributePaths = {"addressExternal"})

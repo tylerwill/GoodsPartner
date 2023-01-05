@@ -14,9 +14,6 @@ spring:
       date: yyyy-MM-dd
     pathmatch:
       matching-strategy: ant_path_matcher
-google:
-  api:
-    key: ${GOOGLE_API_KEY}
 
 client:
   accounting:
@@ -44,6 +41,17 @@ graphhopper:
     name: car
     vehicle: car
     weighting: fastest
+
+google:
+  geocode:
+    apiKey: ${GOOGLE_API_KEY}
+    region: ua
+    language: uk-UK
+    boundaries:
+      north: 51.53115
+      south: 49.179171
+      east: 32.160730
+      west: 29.266897
 
 
 

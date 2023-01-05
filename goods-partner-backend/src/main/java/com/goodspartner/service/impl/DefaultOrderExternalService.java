@@ -121,6 +121,11 @@ public class DefaultOrderExternalService implements OrderExternalService {
     // No transaction required. In case if yes -> extract live even propagation to Facade
     @Override
     public void checkDeliveryReadiness(Delivery delivery) {
+        if (DeliveryFormationStatus.READY_FOR_CALCULATION.equals(delivery.getFormationStatus())) {
+            log.trace("Delivery: {} already in READY_FOR_CALCULATION formation state, skip readiness verification", delivery);
+            return;
+        }
+
         List<OrderExternal> incompleteOrders =
                 orderExternalRepository.findRegularOrdersWithUnknownAddressByDeliveryId(delivery.getId());
         if (incompleteOrders.isEmpty()) {

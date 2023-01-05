@@ -53,7 +53,7 @@ public class RoutePointControllerIT extends AbstractWebITest {
         when(hopper.route(Mockito.any())).thenReturn(ghResponse);
         when(ghResponse.hasErrors()).thenReturn(false);
         when(ghResponse.getBest()).thenReturn(responsePath);
-        when(responsePath.getTime()).thenReturn(5*60*1000L); // 5 min in mills
+        when(responsePath.getTime()).thenReturn(5 * 60 * 1000L); // 5 min in mills
 
         SQLStatementCountValidator.reset();
         mockMvc.perform(post(String.format(UPDATE_ROUTE_POINT_ENDPOINT, ROUTE_POINT_ID, complete))
@@ -67,7 +67,7 @@ public class RoutePointControllerIT extends AbstractWebITest {
                 .andExpect(jsonPath("$.routePointId").value("1052"))
                 .andExpect(jsonPath("$.routePointStatus").value("DONE"))
                 .andExpect(jsonPath("$.pointCompletedAt").value(any(String.class)));
-        assertSelectCount(14);
+        assertSelectCount(10);
         assertInsertCount(2);
         assertUpdateCount(3);
     }

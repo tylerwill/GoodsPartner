@@ -29,7 +29,7 @@ public class GraphhopperProperties {
     }
 
     @Data
-    public static class Profiles{
+    public static class Profiles {
         private String name;
         private String vehicle;
         private String weighting;

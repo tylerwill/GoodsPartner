@@ -86,7 +86,7 @@ public class DefaultRoutePointService implements RoutePointService {
     @Override
     @Transactional
     public List<RoutePoint> actualizePendingRoutePoints(RoutePoint current, Route route) {
-        List<RoutePoint> pendingRoutePoints = route.getRoutePoints()
+        List<RoutePoint> pendingRoutePoints = routePointRepository.findByRouteId(route.getId())
                 .stream()
                 .filter(routePoint -> PENDING.equals(routePoint.getStatus()))
                 .collect(Collectors.toList());
