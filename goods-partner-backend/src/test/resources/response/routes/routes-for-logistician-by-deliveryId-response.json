@@ -22,8 +22,8 @@
         "completedAt":null,
         "expectedArrival":"09:30",
         "expectedCompletion":"09:45",
-        "deliveryStart":"09:00",
-        "deliveryEnd":"18:00",
+        "deliveryStart": "00:00",
+        "deliveryEnd": "23:59",
         "mapPoint":{
           "address":"вулиця Радунська, 40, Київ, Україна, 02000",
           "latitude":50.5301869,
@@ -41,8 +41,8 @@
         "completedAt":null,
         "expectedArrival":"10:05",
         "expectedCompletion":"10:20",
-        "deliveryStart":"09:00",
-        "deliveryEnd":"18:00",
+        "deliveryStart": "00:00",
+        "deliveryEnd": "23:59",
         "mapPoint":{
           "address":"вулиця Богдана Хмельницького, 40, Київ, Україна, 02000",
           "latitude":50.4469685,
@@ -60,8 +60,8 @@
         "completedAt":null,
         "expectedArrival":"10:24",
         "expectedCompletion":"10:39",
-        "deliveryStart":"09:00",
-        "deliveryEnd":"18:00",
+        "deliveryStart": "00:00",
+        "deliveryEnd": "23:59",
         "mapPoint":{
           "address":"Велика Васильківська, 85-87, Київ, Україна, 02000",
           "latitude":50.4254956,
@@ -120,8 +120,8 @@
         "completedAt":null,
         "expectedArrival":"09:44",
         "expectedCompletion":"09:59",
-        "deliveryStart":"09:00",
-        "deliveryEnd":"18:00",
+        "deliveryStart": "00:00",
+        "deliveryEnd": "23:59",
         "mapPoint":{
           "address":"вулиця Воскресенська, 14Д, Київ, Україна, 02000",
           "latitude":50.4681723,

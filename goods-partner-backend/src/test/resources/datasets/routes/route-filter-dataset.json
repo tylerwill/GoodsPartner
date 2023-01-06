@@ -55,8 +55,8 @@
       "completed_at": null,
       "expected_arrival": "10:24:00",
       "expected_completion": "10:39:00",
-      "delivery_start": "09:00:00",
-      "delivery_end": "18:00:00",
+      "delivery_start": "00:00:00",
+      "delivery_end": "23:59:00",
       "route_id": 1002
     },
     {
@@ -69,8 +69,8 @@
       "completed_at": null,
       "expected_arrival": "10:05:00",
       "expected_completion": "10:20:00",
-      "delivery_start": "09:00:00",
-      "delivery_end": "18:00:00",
+      "delivery_start": "00:00:00",
+      "delivery_end": "23:59:00",
       "route_id": 1002
     },
     {
@@ -83,8 +83,8 @@
       "completed_at": null,
       "expected_arrival": "09:30:00",
       "expected_completion": "09:45:00",
-      "delivery_start": "09:00:00",
-      "delivery_end": "18:00:00",
+      "delivery_start": "00:00:00",
+      "delivery_end": "23:59:00",
       "route_id": 1002
     },
     {
@@ -97,8 +97,8 @@
       "completed_at": null,
       "expected_arrival": "09:44:00",
       "expected_completion": "09:59:00",
-      "delivery_start": "09:00:00",
-      "delivery_end": "18:00:00",
+      "delivery_start": "00:00:00",
+      "delivery_end": "23:59:00",
       "route_id": 1003
     }
   ]

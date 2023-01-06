@@ -105,9 +105,9 @@ public class RouteControllerIT extends AbstractWebITest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/routes/route-start-response.json")));
-        assertSelectCount(7);
+        assertSelectCount(5);
         assertUpdateCount(4); // Should be 4 for 3 RoutePints
-        assertInsertCount(2); // Delivery + Route update history
+        assertInsertCount(1); // Delivery + Route update history
     }
 
     @Test

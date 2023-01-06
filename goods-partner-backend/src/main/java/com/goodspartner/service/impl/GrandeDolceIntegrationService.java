@@ -93,8 +93,12 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private static final List<String> ORGANISATION_CONTACTS = List.of("Юридична адреса організації", "Телефон організації");
 
     // Props
-    @Value("classpath:mock1CoData/*")
-    private Resource[] mockedResponses;
+    @Value("classpath:mock1CoData/orders-by-shipping-date/*")
+    private Resource[] mockedOrdersByShippingDate;
+
+    @Value("classpath:mock1CoData/products-by-orders-ref-key/*")
+    private Resource[] mockedProductsByOrdersRefKey;
+
     private final ClientProperties properties;
     // Services
     private final WebClient webClient;
@@ -121,7 +125,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         addInvoiceProductsToInvoices(oDataInvoiceDtos, groupedInvoiceProducts);
 
         URI orderUri = buildOrderUri(createFilter(REF_KEY_FILTER, orderRefKeys));
-        ODataWrapperDto<ODataOrderDto> oDataWrappedOrderDtos = getOrders(orderUri);
+        ODataWrapperDto<ODataOrderDto> oDataWrappedOrderDtos = getOrdersByRefKeys(orderUri);
         List<ODataOrderDto> oDataOrderDtos = oDataWrappedOrderDtos.getValue();
 
         Map<String, ODataOrderDto> groupedOrder = groupOrderByRefKey(oDataOrderDtos);
@@ -155,7 +159,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         long startTime = System.currentTimeMillis();
 
         URI orderUri = buildOrderUri(buildFilter(DATE_FILTER, deliveryDate.atStartOfDay().toString()));
-        ODataWrapperDto<ODataOrderDto> oDataWrappedOrderDtos = getOrders(orderUri);
+        ODataWrapperDto<ODataOrderDto> oDataWrappedOrderDtos = getOrdersByShippingDate(orderUri);
 
         List<ODataOrderDto> oDataOrderDtosList = oDataWrappedOrderDtos.getValue();
 
@@ -219,11 +223,22 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     /**
      * Get orders from 1C
      */
-    private ODataWrapperDto<ODataOrderDto> getOrders(URI orderUri) {
-        return fetchMockDataByRequest(orderUri, new TypeReference<>() {
+    private ODataWrapperDto<ODataOrderDto> getOrdersByRefKeys(URI orderUriByRefKeys) {
+        return webClient.get()
+                .uri(orderUriByRefKeys)
+//                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
+                })
+                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                .block();
+    }
+
+    private ODataWrapperDto<ODataOrderDto> getOrdersByShippingDate(URI orderUriByShippingDate) {
+        return fetchMockDataByRequest(orderUriByShippingDate, mockedOrdersByShippingDate, new TypeReference<>() {
                 },
                 () -> webClient.get()
-                        .uri(orderUri)
+                        .uri(orderUriByShippingDate)
 //                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
                         .retrieve()
                         .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
@@ -236,7 +251,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
      * Get products from 1C
      */
     private ODataWrapperDto<ODataProductDto> getProducts(URI productUri) {
-        return fetchMockDataByRequest(productUri, new TypeReference<>() {
+        return fetchMockDataByRequest(productUri, mockedProductsByOrdersRefKey, new TypeReference<>() {
                 },
                 () -> webClient.get()
                         .uri(productUri)
@@ -591,10 +606,10 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         return String.format(filter, key);
     }
 
-    private <T> ODataWrapperDto<T> fetchMockDataByRequest(URI integrationServiceUri,
+    private <T> ODataWrapperDto<T> fetchMockDataByRequest(URI integrationServiceUri, Resource[] mockResource,
                                                           TypeReference<ODataWrapperDto<T>> typeRef,
                                                           Supplier<ODataWrapperDto<T>> supplier) {
-        return Arrays.stream(mockedResponses)
+        return Arrays.stream(mockResource)
                 .filter(resource -> Objects.nonNull(resource.getFilename()))
                 .filter(resource -> checkIfMockResourceMathRequest(integrationServiceUri, resource))
                 .findFirst()
