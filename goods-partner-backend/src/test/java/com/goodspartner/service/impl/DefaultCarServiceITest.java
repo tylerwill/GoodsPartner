@@ -1,6 +1,7 @@
 package com.goodspartner.service.impl;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractBaseITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
@@ -120,5 +121,37 @@ class DefaultCarServiceITest extends AbstractBaseITest {
         Assertions.assertFalse(carAfter.isCooler());
         Assertions.assertFalse(carAfter.isAvailable());
         Assertions.assertEquals(10, carAfter.getTravelCost());
+    }
+
+    @Test
+    @DataSet("common/car/dataset_cars.yml")
+    @ExpectedDataSet("common/car/update_driver_expected.yml")
+    @DisplayName("when Update Car Driver then CarDto With Updated Driver Returned")
+    void whenUpdateCarDriver_thenCarDtoWithUpdatedDriverReturned() {
+        // Given
+        UserDto userDto = new UserDto(555,
+                "Vasya Pupkin",
+                "userEmail@gmail.com",
+                User.UserRole.DRIVER.getName(),
+                true);
+
+        CarDto payload = new CarDto();
+        payload.setName("Mercedes Sprinter");
+        payload.setLicencePlate("AA 1111 CT");
+        payload.setDriver(userDto);
+        payload.setWeightCapacity(3000);
+        payload.setCooler(false);
+        payload.setAvailable(true);
+        payload.setTravelCost(10);
+
+        // When
+        CarDto carDto = carService.update(CAR_ID, payload);
+
+        // Then
+        Assertions.assertEquals(CAR_ID, carDto.getId());
+        Assertions.assertEquals("Vasya Pupkin", carDto.getDriver().getUserName());
+        Assertions.assertEquals("userEmail@gmail.com", carDto.getDriver().getEmail());
+        Assertions.assertEquals(555, carDto.getDriver().getId());
+        Assertions.assertEquals("DRIVER", carDto.getDriver().getRole());
     }
 }

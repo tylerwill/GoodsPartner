@@ -40,6 +40,7 @@ public class CarControllerITest extends AbstractWebITest {
     @Autowired
     private CarLocationCache carLocationCache;
 
+
     @Test
     @DataSet(value = "datasets/common/car/dataset_cars.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
@@ -306,4 +307,50 @@ public class CarControllerITest extends AbstractWebITest {
         Assertions.assertEquals(20.323434, actualLocation.getLongitude());
         Assertions.assertEquals(DATE_TIME, actualLocation.getDateTime());
     }
+
+    @Test
+    @DataSet("common/car/dataset_cars.yml")
+    @ExpectedDataSet("common/car/update_driver_expected.yml")
+    @DisplayName("when Update Car Driver then CarDto With Updated Driver Returned")
+    void whenUpdateCarDriver_thenCarDtoWithUpdatedDriverReturned() throws Exception {
+
+        UserDto userDto = new UserDto(555,
+                "Vasya Pupkin",
+                "userEmail@gmail.com",
+                User.UserRole.DRIVER.getName(),
+                true);
+
+        CarDto payload = new CarDto();
+        payload.setName("Mercedes Sprinter");
+        payload.setLicencePlate("AA 1111 CT");
+        payload.setDriver(userDto);
+        payload.setWeightCapacity(3000);
+        payload.setCooler(false);
+        payload.setAvailable(true);
+        payload.setTravelCost(10);
+
+        mockMvc.perform(put("/api/v1/cars/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(payload)))
+                .andExpect(content()
+                        .json("""
+                                {
+                                 "id": 1,
+                                 "name":"Mercedes Sprinter",
+                                 "licencePlate":"AA 1111 CT",
+                                 "driver":{
+                                    "id":555,
+                                    "userName":"Vasya Pupkin",
+                                    "email":"userEmail@gmail.com",
+                                    "role":"DRIVER",
+                                    "enabled":true
+                                    },
+                                 "weightCapacity":3000,
+                                 "cooler":false,
+                                 "available":true,
+                                 "travelCost": 10}
+                                """))
+                .andExpect(status().isOk());
+    }
+
 }

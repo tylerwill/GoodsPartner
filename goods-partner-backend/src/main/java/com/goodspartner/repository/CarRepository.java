@@ -2,6 +2,7 @@ package com.goodspartner.repository;
 
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.User;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -22,5 +23,5 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
     Optional<Car> findById(int id);
 
     @EntityGraph(attributePaths = {"driver"})
-    List<Car> findAll();
+    List<Car> findAll(Sort sort);
 }

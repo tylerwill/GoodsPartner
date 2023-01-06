@@ -13,6 +13,7 @@ import com.goodspartner.repository.UserRepository;
 import com.goodspartner.service.CarService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,8 @@ import static com.goodspartner.entity.User.UserRole.DRIVER;
 @RequiredArgsConstructor
 @Slf4j
 public class DefaultCarService implements CarService {
+
+    private static final Sort DEFAULT_CAR_SORT = Sort.by(Sort.Direction.ASC, "id");
     private final CarLocationCache carLocationCache;
     private final CarRepository carRepository;
     private final UserRepository userRepository;
@@ -33,7 +36,7 @@ public class DefaultCarService implements CarService {
     @Override
     @Transactional(readOnly = true)
     public List<CarDto> findAll() {
-        return carMapper.toCarDtosList(carRepository.findAll());
+        return carMapper.toCarDtosList(carRepository.findAll(DEFAULT_CAR_SORT));
     }
 
     @Override
