@@ -12,6 +12,7 @@ import ChooseAddressDialog from "./OrdersContent/ChooseAddressDialog/ChooseAddre
 import {DeliveryType} from "../../../model/DeliveryType";
 import Loading from "../../../components/Loading/Loading";
 import ExcludeOrderDialog from "./OrdersContent/ExcludeOrderDialog/ExcludeOrderDialog";
+import DeliveryTypeDialog from "./OrdersContent/DeliveryTypeDialog/DeliveryTypeDialog";
 
 
 const Orders = () => {
@@ -21,6 +22,7 @@ const Orders = () => {
 
     const isOrderAddressDialogOpen = useAppSelector(state => state.deliveryOrders.isOrderAddressDialogOpen);
     const isExcludeOrderDialogOpen = useAppSelector(state => state.deliveryOrders.isExcludeOrderDialogOpen);
+    const isDeliveryTypeDialogOpen = useAppSelector(state => state.deliveryOrders.isDeliveryTypeDialogOpen);
 
     const [updateOrder] = useUpdateOrderMutation();
     const {orderTabIndex} = useAppSelector(state => state.currentDelivery);
@@ -67,6 +69,10 @@ const Orders = () => {
 
         {
             isExcludeOrderDialogOpen && <ExcludeOrderDialog/>
+        }
+
+        {
+            isDeliveryTypeDialogOpen && <DeliveryTypeDialog/>
         }
     </Box>
 }

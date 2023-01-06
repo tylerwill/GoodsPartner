@@ -71,6 +71,7 @@ const OrdersTable = ({orders, keyPrefix, updateOrder}) => {
                                 <TableCell sx={{minWidth: '135px'}}>№ замовлення</TableCell>
                                 <TableCell>Клієнт</TableCell>
                                 <TableCell>Адреса</TableCell>
+                                <TableCell>Доставка</TableCell>
                                 <TableCell sx={{minWidth: '135px'}}>Час доставки</TableCell>
                                 <TableCell>Менеджер</TableCell>
                                 <TableCell/>

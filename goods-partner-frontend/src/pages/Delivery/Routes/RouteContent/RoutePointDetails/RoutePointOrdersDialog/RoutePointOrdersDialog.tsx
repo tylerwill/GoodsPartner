@@ -18,6 +18,7 @@ import Paper from "@mui/material/Paper";
 import TableBody from "@mui/material/TableBody";
 import {useGetRoutePointOrdersQuery} from "../../../../../../api/routes/routes.api";
 import Loading from "../../../../../../components/Loading/Loading";
+import {formatDecimalNumber} from "../../../../../../util/util";
 
 interface RoutePointOrdersDialogProps {
     open: boolean,
@@ -75,8 +76,8 @@ const RoutePointOrdersDialog = ({open, closeDialog, routePoint}: RoutePointOrder
                                         <TableCell>{order.orderNumber}</TableCell>
                                         <TableCell>{product.productName}</TableCell>
                                         <TableCell> {product.amount}</TableCell>
-                                        <TableCell> {product.unitWeight} {product.measure}</TableCell>
-                                        <TableCell> {product.totalProductWeight} кг</TableCell>
+                                        <TableCell> {formatDecimalNumber(product.unitWeight)} {product.measure}</TableCell>
+                                        <TableCell> {formatDecimalNumber(product.totalProductWeight)} кг</TableCell>
 
                                     </TableRow>);
                             })

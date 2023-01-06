@@ -1,10 +1,9 @@
 import {useAppDispatch} from "../../../../../hooks/redux-hooks";
 import React, {useCallback} from "react";
 import {
-    setAddressDialogOpen,
+    setAddressDialogOpen, setDeliveryTypeDialogOpen,
     setExcludeDialogOpen,
-    setOrderForAddressModification,
-    setOrderToExclude
+    setOrderForModification
 } from "../../../../../features/delivery-orders/deliveryOrdersSlice";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
@@ -20,6 +19,7 @@ import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import OrderAdditionalInfo from "../OrderAdditionalInfo/OrderAdditionalInfo";
 import OrderActionMenu from "../OrderActionMenu/OrderActionMenu";
+import {formatDecimalNumber, toDeliveryTypeString} from "../../../../../util/util";
 
 
 const OrderTableRow = ({order, keyPrefix, updateOrder, collapseAll, expandAll, reset}) => {
@@ -31,15 +31,21 @@ const OrderTableRow = ({order, keyPrefix, updateOrder, collapseAll, expandAll, r
     const isTableOpened = expandAll || (orderTableOpen && !collapseAll);
 
     const handleChangeAddressDialogOpen = useCallback(() => {
-            dispatch(setOrderForAddressModification(order));
+            dispatch(setOrderForModification(order));
             dispatch(setAddressDialogOpen(true));
         }, [dispatch, setAddressDialogOpen, order]
     );
 
     const handleExcludeOrderDialogOpen = useCallback(() => {
-            dispatch(setOrderToExclude(order));
+            dispatch(setOrderForModification(order));
             dispatch(setExcludeDialogOpen(true));
         }, [dispatch, setExcludeDialogOpen, order]
+    );
+
+    const handleChangeDeliveryTypeDialogOpen = useCallback(() => {
+            dispatch(setOrderForModification(order));
+            dispatch(setDeliveryTypeDialogOpen(true));
+        }, [dispatch, setDeliveryTypeDialogOpen, order]
     );
 
     let styles = {
@@ -51,7 +57,6 @@ const OrderTableRow = ({order, keyPrefix, updateOrder, collapseAll, expandAll, r
             background: 'rgba(0, 0, 0, 0.04)'}
     }
 
-    //  background: 'rgba(0, 0, 0, 0.04)'
     const isInvalid = order.mapPoint.status === "UNKNOWN";
     return (
         <>
@@ -80,12 +85,14 @@ const OrderTableRow = ({order, keyPrefix, updateOrder, collapseAll, expandAll, r
                     }
 
                 </TableCell>
+                <TableCell>{toDeliveryTypeString(order.deliveryType)}</TableCell>
                 <TableCell>{from} - {to}</TableCell>
                 <TableCell>{order.managerFullName}</TableCell>
                 <TableCell align="center">
                     <OrderActionMenu
                         changeAddress={handleChangeAddressDialogOpen}
                         exclude={handleExcludeOrderDialogOpen}
+                        changeDeliveryType={handleChangeDeliveryTypeDialogOpen}
                     />
                 </TableCell>
             </TableRow>
@@ -113,8 +120,8 @@ const OrderTableRow = ({order, keyPrefix, updateOrder, collapseAll, expandAll, r
                                                     {product.productName}
                                                 </TableCell>
                                                 <TableCell> {product.amount}</TableCell>
-                                                <TableCell> {product.unitWeight} {product.measure}</TableCell>
-                                                <TableCell> {product.totalProductWeight} кг</TableCell>
+                                                <TableCell> {formatDecimalNumber(product.unitWeight)} {product.measure}</TableCell>
+                                                <TableCell> {formatDecimalNumber(product.totalProductWeight)} кг</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>

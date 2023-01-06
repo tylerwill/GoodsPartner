@@ -12,7 +12,7 @@ import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import Order from "../../../../model/Order";
-import {reformatDate} from "../../../../util/util";
+import {formatDecimalNumber, reformatDate} from "../../../../util/util";
 import {Checkbox} from "@mui/material";
 import {useAppDispatch, useAppSelector} from "../../../../hooks/redux-hooks";
 import {deselectOrder, selectOrder} from "../../../../features/orders/ordersSlice";
@@ -105,8 +105,8 @@ const OrderRow = ({
                                                     {product.productName}
                                                 </TableCell>
                                                 <TableCell> {product.amount}</TableCell>
-                                                <TableCell> {product.unitWeight} {product.measure}</TableCell>
-                                                <TableCell> {product.totalProductWeight} кг</TableCell>
+                                                <TableCell> {formatDecimalNumber(product.unitWeight)} {product.measure}</TableCell>
+                                                <TableCell> {formatDecimalNumber(product.totalProductWeight)} кг</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>

@@ -20,7 +20,7 @@ const DocumentsDialog = ({isOpen, handleClose, id, type}: DocumentsDialogProps) 
                 <Grid item xs={4}>
                     <Button sx={{mr: 2, width: '100%'}} href={`${apiUrl}/document/save/bill/by-${type}/${id}`}
                             target={"_blank"} variant="outlined">
-                        <DownloadIcon sx={{mr: 1}}/> Накладні </Button>
+                        <DownloadIcon sx={{mr: 1}}/> Рахунки </Button>
                 </Grid>
                 <Grid item xs={4}>
                     <Button sx={{mr: 2, width: '100%'}} href={`${apiUrl}/document/save/quality/by-${type}/${id}`}

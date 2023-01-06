@@ -17,6 +17,7 @@ const libraries = ['places'];
 
 function App() {
     const key = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    console.log(key);
 
     //TODO: [UI] check if we are using specific region
     const {isLoaded} = useJsApiLoader({

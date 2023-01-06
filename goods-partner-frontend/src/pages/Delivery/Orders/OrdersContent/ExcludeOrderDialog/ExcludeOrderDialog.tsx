@@ -10,7 +10,7 @@ const ExcludeOrderDialog = () => {
 
     const [excludeReason, setExcludeReason] = useState('');
 
-    const order = useAppSelector(state => state.deliveryOrders.orderToExclude);
+    const order = useAppSelector(state => state.deliveryOrders.orderForModification);
     const isOpen = useAppSelector(state => state.deliveryOrders.isExcludeOrderDialogOpen);
 
     const [excludeOrder] = useExcludeOrderMutation();

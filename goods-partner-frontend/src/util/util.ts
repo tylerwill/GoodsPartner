@@ -1,4 +1,5 @@
 import {format} from 'date-fns'
+import {DeliveryType} from "../model/DeliveryType";
 
 export const currentHost = () => {
     return process.env.NODE_ENV === "development"
@@ -7,12 +8,6 @@ export const currentHost = () => {
 }
 
 export const apiUrl = `${currentHost()}api/v1`;
-
-export const generateReportLink = (type: any, date: string) => {
-    const reportLink = `${currentHost()}api/v1/reports/${type}?date=${date}`;
-    console.log("report link:", reportLink);
-    return reportLink;
-}
 
 export const toHoursAndMinutes = (totalMinutes: number) => {
     const minutes = totalMinutes % 60;
@@ -23,4 +18,21 @@ export const toHoursAndMinutes = (totalMinutes: number) => {
 
 export const reformatDate = (date: string) => {
     return format(new Date(date), 'dd.MM.yy')
+}
+
+export const toDeliveryTypeString = (deliveryType: DeliveryType) => {
+    switch (deliveryType) {
+        case DeliveryType.POSTAL:
+            return "Доставка поштою";
+        case DeliveryType.PRE_PACKING:
+            return "Фасовка";
+        case DeliveryType.REGULAR:
+            return "Гранде Дольче"
+        case DeliveryType.SELF_SERVICE:
+            return "Самовивіз"
+    }
+}
+
+export const formatDecimalNumber = (value:number) => {
+    return value.toFixed(2);
 }

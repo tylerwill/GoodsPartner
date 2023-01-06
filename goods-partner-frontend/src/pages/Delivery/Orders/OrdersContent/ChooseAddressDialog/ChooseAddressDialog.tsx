@@ -11,7 +11,7 @@ import MapPoint from "../../../../../model/MapPoint";
 
 const ChooseAddressDialog = () => {
     const dispatch = useAppDispatch();
-    const order = useAppSelector(state => state.deliveryOrders.orderForAddressModification);
+    const order = useAppSelector(state => state.deliveryOrders.orderForModification);
     const isOpen = useAppSelector(state => state.deliveryOrders.isOrderAddressDialogOpen);
 
     const [updateOrder] = useUpdateOrderMutation();
