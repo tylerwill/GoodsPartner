@@ -34,6 +34,7 @@ public class QualityDocumentService implements DocumentService {
     private static final String ROOT_QUALITY_PATH = "C:\\Посвідчення якості";
     private static final String VALID_SEPARATOR = "/";
     private static final String INVALID_SEPARATOR = "\\";
+    private static final String FILE_NAME_SEPARATOR = "_";
     private static final String ENCODED_SPACE = "%20";
     private final IntegrationService integrationService;
     private final DocumentCreator documentCreator;
@@ -94,7 +95,13 @@ public class QualityDocumentService implements DocumentService {
     }
 
     private String getFileName(InvoiceProduct product) {
-        return product.getProductName() + VALID_SEPARATOR + getDocumentName(product.getQualityUrl());
+        return getProductName(product.getProductName()) + VALID_SEPARATOR + getDocumentName(product.getQualityUrl());
+    }
+
+    private String getProductName(String productName){
+        return productName
+                .replace(VALID_SEPARATOR, FILE_NAME_SEPARATOR)
+                .replace(INVALID_SEPARATOR, FILE_NAME_SEPARATOR);
     }
 
     private String getDocumentName(String qualityUrl) {

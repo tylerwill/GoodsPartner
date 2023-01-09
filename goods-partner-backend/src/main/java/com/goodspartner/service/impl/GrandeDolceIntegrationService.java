@@ -31,15 +31,9 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.StringJoiner;
-import java.util.function.Supplier;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -191,7 +185,23 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private List<ODataInvoiceDto> getODataInvoiceDtos(List<String> orderRefKeys) {
         URI invoiceUri = buildInvoiceUri(createCastFilterByRefKeys(orderRefKeys, DEAL_CAST_REQUEST, ORDER_ENTRY_SET_NAME));
         ODataWrapperDto<ODataInvoiceDto> oDataWrappedInvoiceDtos = getInvoices(invoiceUri);
-        return oDataWrappedInvoiceDtos.getValue();
+        return filterInvoicesByDeletionMark(oDataWrappedInvoiceDtos.getValue());
+    }
+
+    private List<ODataInvoiceDto> filterInvoicesByDeletionMark(List<ODataInvoiceDto> source) {
+        List<ODataInvoiceDto> oDataInvoiceDtos = new ArrayList<>();
+        for (ODataInvoiceDto oDataInvoiceDto : source) {
+            if (oDataInvoiceDto.getDeletionMark()) {
+                log.info("Ignored invoice due to deletionMark is {}. Number of invoice {}, date - {}, client - {}",
+                        oDataInvoiceDto.getDeletionMark(),
+                        oDataInvoiceDto.getNumber(),
+                        oDataInvoiceDto.getDocumentDate(),
+                        oDataInvoiceDto.getClientName());
+            } else {
+                oDataInvoiceDtos.add(oDataInvoiceDto);
+            }
+        }
+        return oDataInvoiceDtos;
     }
 
     private Boolean isAddresContactType(ODataOrganisationContactsDto oDataOrganisationContactsDto) {
@@ -337,6 +347,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .top(ORDER_FETCH_LIMIT)
                 .build();
     }
+
     private URI buildProductUri(String filter) {
         return new ODataUrlBuilder()
                 .baseUrl(properties.getClientServerURL())
@@ -360,6 +371,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .format(FORMAT)
                 .build();
     }
+
     private URI buildOrganisationContactsUri(String filter) {
         return new ODataUrlBuilder()
                 .baseUrl(properties.getClientServerURL())
@@ -382,6 +394,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .format(FORMAT)
                 .build();
     }
+
     private URI buildProductGTDUri(String filter) {
         return new ODataUrlBuilder()
                 .baseUrl(properties.getClientServerURL())
