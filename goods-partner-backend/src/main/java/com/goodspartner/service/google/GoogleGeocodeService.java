@@ -15,11 +15,13 @@ import com.goodspartner.service.client.GoogleClient;
 import com.google.maps.model.GeocodingResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static com.goodspartner.entity.AddressStatus.AUTOVALIDATED;
+import static com.goodspartner.entity.AddressStatus.UNKNOWN;
 
 @Slf4j
 @Service
@@ -47,6 +49,10 @@ public class GoogleGeocodeService implements GeocodeService {
             return;
         }
         MapPoint mapPoint = orderDto.getMapPoint();
+        if (UNKNOWN.equals(mapPoint.getStatus())) {
+            log.debug("Skip address and coordinates validation for UNKNOWN mapPoint, order: {}", orderDto);
+            return;
+        }
         if (isInvalidRegionBoundaries(mapPoint.getLatitude(), mapPoint.getLongitude())) {
             throw new AddressOutOfRegionException(mapPoint);
         }
@@ -66,6 +72,11 @@ public class GoogleGeocodeService implements GeocodeService {
     }
 
     private MapPoint autovalidate(OrderDto orderDto) {
+        if (StringUtils.isEmpty(orderDto.getAddress())) {
+            log.warn("Skipping address geocode. Empty address for order: {}", orderDto);
+            return routePointMapper.getUnknownMapPoint();
+        }
+
         try {
             GeocodingResult[] geocodingResults = googleClient.getGeocodingResults(orderDto.getAddress());
             if (geocodingResults == null || geocodingResults.length == 0) { // Nothing found

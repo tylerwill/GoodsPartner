@@ -4,6 +4,7 @@ import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
+import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RouteStatus;
@@ -64,7 +65,7 @@ public class DefaultDeliveryFacade implements DeliveryFacade {
         Delivery delivery = deliveryService.findById(deliveryId);
 
         List<OrderExternal> orders = delivery.getOrders();
-        validateOrderAddresses(orders); // Do not create Delivery with UNKNOWN orders address
+        validateOrdersAddressesForDeliveryCalculation(orders); // Do not create Delivery with UNKNOWN orders address
         resetOrders(orders); // If delivery already have order silently reset and exit for recalculation
 
         delivery.setFormationStatus(DeliveryFormationStatus.ROUTE_CALCULATION);
@@ -74,8 +75,9 @@ public class DefaultDeliveryFacade implements DeliveryFacade {
         return delivery;
     }
 
-    private void validateOrderAddresses(List<OrderExternal> orders) {
+    private void validateOrdersAddressesForDeliveryCalculation(List<OrderExternal> orders) {
         orders.stream()
+                .filter(order -> DeliveryType.REGULAR.equals(order.getDeliveryType()))
                 .map(OrderExternal::getAddressExternal)
                 .filter(addressExternal -> UNKNOWN.equals(addressExternal.getStatus()))
                 .findFirst()

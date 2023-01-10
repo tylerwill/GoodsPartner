@@ -1,5 +1,6 @@
 package com.goodspartner.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.goodspartner.entity.RouteStatus;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -24,10 +25,9 @@ public class RouteDto {
     private double distance;
     private long estimatedTime;
 
-    // TODO: fix formats globally
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "DD MMMM HH:mm", locale = "uk")
     private LocalDateTime startTime;
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "DD MMMM HH:mm", locale = "uk")
     private LocalDateTime finishTime;
 
     private long spentTime;

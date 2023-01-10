@@ -8,6 +8,7 @@ import com.goodspartner.entity.DeliveryType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,9 +18,7 @@ public class ExternalOrderPostProcessor {
 
     private static final String FROZEN = "заморозка";
 
-    private static final String POSTAL = "нова пошта";
-    private static final String POSTAL_BINDED = "новапошта";
-    private static final String POSTAL_SHORT = " НП ";
+    private static final List<String> POSTAL_KEYWORDS = Arrays.asList("нова пошта", "новапошта", " НП ");
 
     private static final String PRE_PACKING = "фасовк"; // Include "фасовка"
     private static final String SELF_SERVICE = "самовивіз";
@@ -89,9 +88,9 @@ public class ExternalOrderPostProcessor {
         return Optional.ofNullable(orderDto.getComment())
                 .map(String::toLowerCase)
                 .map(orderCommentLowerCase ->
-                        orderCommentLowerCase.contains(POSTAL)
-                                || orderCommentLowerCase.contains(POSTAL_BINDED)
-                                || orderCommentLowerCase.contains(POSTAL_SHORT))
+                                POSTAL_KEYWORDS.stream()
+                                        .map(String::toLowerCase)
+                                        .anyMatch(orderCommentLowerCase::contains))
                 .orElse(false);
     }
 

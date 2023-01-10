@@ -20,6 +20,7 @@ import com.goodspartner.service.UserService;
 import com.goodspartner.web.action.RouteAction;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,8 @@ import static com.goodspartner.entity.User.UserRole.DRIVER;
 @Service
 @Slf4j
 public class DefaultRouteService implements RouteService {
+
+    private static final Sort DEFAULT_ROUTE_SORT = Sort.by(Sort.Direction.ASC, "id");
 
     private final RouteRepository routeRepository;
     private final DeliveryRepository deliveryRepository;
@@ -56,13 +59,13 @@ public class DefaultRouteService implements RouteService {
 
     private List<Route> findByDeliveryAndDriver(UUID deliveryId, User driver) {
         return carRepository.findCarByDriver(driver)
-                .map(car -> routeRepository.findByDeliveryIdAndCar(deliveryId, car))
+                .map(car -> routeRepository.findByDeliveryIdAndCar(deliveryId, car, DEFAULT_ROUTE_SORT))
                 .orElseThrow(() -> new CarNotFoundException(driver));
     }
 
     @Override
     public List<Route> findByDeliveryIdExtended(UUID deliveryId) {
-        return routeRepository.findByDeliveryIdExtended(deliveryId);
+        return routeRepository.findByDeliveryIdExtended(deliveryId, DEFAULT_ROUTE_SORT);
     }
 
     @Override
