@@ -1,8 +1,7 @@
-import {axiosWithSetting} from "./api";
+import { axiosWithSetting } from './api'
 
 export const usersApi = {
-
-    getCurrentUser() {
-        return axiosWithSetting.get(`/users/auth`);
-    }
+	getCurrentUser() {
+		return axiosWithSetting.get(`/users/auth`)
+	}
 }

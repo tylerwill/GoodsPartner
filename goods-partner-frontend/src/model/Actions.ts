@@ -1,11 +1,14 @@
 export enum RoutePointAction {
-    RESET, COMPLETE, SKIP
+	RESET,
+	COMPLETE,
+	SKIP
 }
 
 export enum RouteAction {
-    START, COMPLETE
+	START,
+	COMPLETE
 }
 
 export enum DeliveryAction {
-    APPROVE
+	APPROVE
 }

@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'
 
 const CarLoad = () => {
-    return <div>Under construction</div>
+	return <div>Under construction</div>
 }
 
-export default CarLoad;
+export default CarLoad
