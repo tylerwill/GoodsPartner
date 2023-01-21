@@ -49,6 +49,7 @@ public class DefaultLiveEventService implements LiveEventService {
                 .orElseThrow(SubscriberNotFoundException::new);
         subscriber.setLastAccessed(System.currentTimeMillis());
         subscriber.getConsumer().accept(event);
+        log.debug("Received heartbeat for subscriber: {}", authentication.getPrincipal().getName());
     }
 
     @Override
@@ -63,7 +64,7 @@ public class DefaultLiveEventService implements LiveEventService {
 
     @Scheduled(fixedRate = TIME_TO_LIVE)
     public void clearSubscribers() {
-        log.debug("Scan subscribers");
+        log.debug("Clearing stale scan subscribers");
 
         listeners.entrySet()
                 .removeIf(entry -> {

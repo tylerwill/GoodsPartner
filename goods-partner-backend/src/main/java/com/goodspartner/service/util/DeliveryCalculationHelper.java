@@ -4,7 +4,6 @@ import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
-import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
 import com.goodspartner.event.Action;
@@ -21,15 +20,13 @@ import com.goodspartner.service.dto.RouteMode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
-import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Executors;
 
-@Service
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class DeliveryCalculationHelper {
@@ -47,12 +44,7 @@ public class DeliveryCalculationHelper {
         log.info("Started calculation for delivery with id: {}", deliveryId);
 
         try {
-            List<OrderExternal> orderExternals = orderExternalRepository.findByDeliveryId(deliveryId, Sort.unsorted());
-
-            List<OrderExternal> includedOrders = orderExternals.stream()
-                    .filter(orderExternal -> !orderExternal.isExcluded())
-                    .filter(orderExternal -> DeliveryType.REGULAR.equals(orderExternal.getDeliveryType()))
-                    .toList();
+            List<OrderExternal> includedOrders = orderExternalRepository.findOrdersForCalculation(deliveryId);
 
             // Routes
             List<Route> coolerRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.COOLER);

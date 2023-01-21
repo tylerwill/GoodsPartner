@@ -42,10 +42,9 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, Lo
     // Order has not been linked with delivery
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o " +
-            "WHERE o.rescheduleDate IS NOT NULL " +
+            "WHERE o.shippingDate IS NOT NULL " +
             "  AND o.delivery IS NULL")
     List<OrderExternal> findScheduledOrders(Sort sort);
-
 
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o " +
@@ -53,9 +52,16 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, Lo
             "  AND o.deliveryType = 'REGULAR' " +
             "  AND o.excluded = false " +
             "  AND o.addressExternal.status = 'UNKNOWN'")
-    List<OrderExternal> findRegularOrdersWithUnknownAddressByDeliveryId(@Param("deliveryId") UUID deliveryId);
+    List<OrderExternal> findIncludedRegularOrdersWithUnknownAddressByDeliveryId(@Param("deliveryId") UUID deliveryId);
 
-    List<OrderExternal> findByRescheduleDate(LocalDate date);
+    @EntityGraph(attributePaths = {"addressExternal"})
+    @Query("SELECT o FROM OrderExternal o " +
+            "WHERE o.delivery.id = :deliveryId " +
+            "  AND o.deliveryType = 'REGULAR' " +
+            "  AND o.excluded = false ")
+    List<OrderExternal> findOrdersForCalculation(@Param("deliveryId") UUID deliveryId);
+
+    List<OrderExternal> findByShippingDate(LocalDate date);
 
     @EntityGraph(attributePaths = {"addressExternal", "delivery"})
     @Query("SELECT o FROM OrderExternal o WHERE o.id IN :orderIds")

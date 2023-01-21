@@ -5,13 +5,11 @@ import com.goodspartner.event.LiveEvent;
 import com.goodspartner.service.HeartbeatService;
 import com.goodspartner.service.LiveEventService;
 import lombok.AllArgsConstructor;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
-@EnableScheduling
 public class DefaultHeartbeatService implements HeartbeatService {
 
     private static final LiveEvent HEAR_BEAT_EVENT = new LiveEvent("Keep alive", EventType.HEARTBEAT);

@@ -2,8 +2,6 @@ package com.goodspartner.facade.impl;
 
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.Delivery;
-import com.goodspartner.entity.DeliveryFormationStatus;
-import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.event.Action;
@@ -11,6 +9,7 @@ import com.goodspartner.event.ActionType;
 import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
+import com.goodspartner.exception.UnknownAddressException;
 import com.goodspartner.facade.OrderFacade;
 import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.service.DeliveryService;
@@ -106,5 +105,17 @@ public class DefaultOrderFacade implements OrderFacade {
         orderExternalService.checkDeliveryReadiness(orderExternal.getDelivery()); // Should be executed under separate transaction to fetch state after update
 
         return orderExternal;
+    }
+
+    @Override
+    public void validateOrdersForDeliveryCalculation(UUID deliveryId) {
+        orderExternalService.getInvalidOrdersForCalculation(deliveryId)
+                .stream()
+                .findFirst()
+                .map(OrderExternal::getAddressExternal)
+                .ifPresent(addressExternal -> {
+                    throw new UnknownAddressException(addressExternal);
+                });
+
     }
 }

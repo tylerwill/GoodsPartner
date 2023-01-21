@@ -13,6 +13,7 @@ import com.goodspartner.entity.Store;
 import com.goodspartner.mapper.RoutePointMapper;
 import com.goodspartner.mapper.StoreMapper;
 import com.goodspartner.repository.CarRepository;
+import com.goodspartner.repository.OrderExternalRepository;
 import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.RouteCalculationService;
 import com.goodspartner.service.StoreService;
@@ -55,8 +56,10 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     private final StoreMapper storeMapper;
     private final VRPSolver vrpSolver;
     private final GraphhopperService graphhopperService;
-    private final CarRepository carRepository;
     private final RoutePointMapper routePointMapper;
+
+    private final CarRepository carRepository;
+    private final OrderExternalRepository orderExternalRepository;
 
     @Override
     public List<Route> calculateRoutes(List<OrderExternal> orders, RouteMode routeMode) {
@@ -90,6 +93,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
 
     private void updateDroppedOrders(List<OrderExternal> orders, VRPSolution solution) {
         if (solution.getDroppedPoints() == null || solution.getDroppedPoints().isEmpty()) {
+            log.debug("No dropped RoutePoints found skipping Orders update");
             return;
         }
 
@@ -102,6 +106,8 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                 .flatMap(Collection::stream)
                 .map(orderDto -> orderMap.get(orderDto.getId()))
                 .forEach(orderExternal -> orderExternal.setDropped(true));
+
+        orderExternalRepository.saveAll(orders);
     }
 
     @VisibleForTesting

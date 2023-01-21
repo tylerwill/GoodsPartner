@@ -104,7 +104,7 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
                         .content(objectMapper.writeValueAsString(rescheduleOrdersRequest)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/reschedule-order-response.json"))); // id could be different, not matching it
-        // TODO due to sequence fetch in various test phases Select count could be deifferent
+        // TODO due to sequence fetch in various test phases Select count could be different
         QueryCount queryCount = QueryCountHolder.getGrandTotal();
         long recordedSelectCount = queryCount.getSelect();
         assertTrue(recordedSelectCount <= 3); // Orders + Delivery + SequenceNextVal. N+1 Verification Passed

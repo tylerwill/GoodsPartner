@@ -38,4 +38,6 @@ public interface OrderExternalService {
 
     OrderExternal excludeOrder(long id, ExcludeOrderRequest excludeOrderRequest);
 
+    List<OrderExternal> getInvalidOrdersForCalculation(UUID deliveryId);
+
 }

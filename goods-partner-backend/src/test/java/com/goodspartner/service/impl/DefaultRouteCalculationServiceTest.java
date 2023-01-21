@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 // TODO rework after moving RoutePoints to separate table
 class DefaultRouteCalculationServiceTest {
     private final DefaultRouteCalculationService routeService = new DefaultRouteCalculationService(
-            null, null, null, null, null, null);
+            null, null, null, null, null, null, null);
     private List<RoutePoint> routePoints;
     private RoutePoint firstRoutePoint;
     private RoutePoint secondRoutePoint;

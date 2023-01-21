@@ -27,6 +27,12 @@ public class ExternalOrderDataEnricher {
 
     @VisibleForTesting
     double calculateProductUnitWeight(ODataProductDto product) {
+        if (product.getAmount() == 0) { // TODO check why from 1C could come 0 Amount
+            return 1; // Safe value
+        }
+        if (product.getCoefficient() == 0) {
+            return 1; // Safe value
+        }
         return product.getTotalProductWeight() / product.getAmount() * product.getCoefficient();
     }
 

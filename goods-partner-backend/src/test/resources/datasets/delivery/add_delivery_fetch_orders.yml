@@ -9,7 +9,7 @@ GRANDEDOLCE_ORDERS:
   - ID: 0
     REF_KEY: "f6f73d76-8005-11ec-b3ce-00155dd72305"
     ORDER_NUMBER: "00000002055"
-    SHIPPING_DATE: "2022-01-28"
+    SHIPPING_DATE: "2022-07-10"
     COMMENT: "бн"
     MANAGER: "Наталія Рябченко"
     FROZEN: false

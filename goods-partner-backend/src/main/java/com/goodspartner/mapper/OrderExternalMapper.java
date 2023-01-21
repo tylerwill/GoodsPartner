@@ -59,6 +59,8 @@ public interface OrderExternalMapper {
     @Mapping(target = "delivery", ignore = true)
     @Mapping(target = "carLoad", ignore = true)
     @Mapping(target = "routePoint", ignore = true)
+    @Mapping(target = "rescheduleDate", ignore = true)
+    @Mapping(target = "shippingDate", source = "rescheduleDate")
     OrderExternal copyRescheduled(OrderExternal orderExternal);
 
     @Named("mapMapPoint")

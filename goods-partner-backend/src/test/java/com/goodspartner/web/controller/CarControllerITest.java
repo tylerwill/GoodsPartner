@@ -40,7 +40,6 @@ public class CarControllerITest extends AbstractWebITest {
     @Autowired
     private CarLocationCache carLocationCache;
 
-
     @Test
     @DataSet(value = "datasets/common/car/dataset_cars.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")

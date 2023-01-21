@@ -96,10 +96,17 @@ public class DefaultOrderExternalService implements OrderExternalService {
         return orderExternalRepository.save(order);
     }
 
+    @Override
+    public List<OrderExternal> getInvalidOrdersForCalculation(UUID deliveryId) {
+        return orderExternalRepository.findIncludedRegularOrdersWithUnknownAddressByDeliveryId(deliveryId);
+    }
+
     @Transactional
     @Override
     public void bindExternalOrdersWithDelivery(List<OrderExternal> externalOrders, Delivery delivery) {
-
+        // Fetching rescheduled orders
+        List<OrderExternal> rescheduledOrders = orderExternalRepository.findByShippingDate(delivery.getDeliveryDate());
+        // Address reconciliation
         Set<AddressExternal> addresses = externalOrders
                 .stream()
                 .map(OrderExternal::getAddressExternal)
@@ -109,7 +116,6 @@ public class DefaultOrderExternalService implements OrderExternalService {
         enrichManagedAddresses(externalOrders, addressExternals);
 
         List<OrderExternal> savedNewExternalOrders = orderExternalRepository.saveAll(externalOrders);
-        List<OrderExternal> rescheduledOrders = orderExternalRepository.findByRescheduleDate(delivery.getDeliveryDate());
         List<OrderExternal> allAvailableOrdersByDate = ListUtils.union(savedNewExternalOrders, rescheduledOrders);
 
         delivery.setFormationStatus(getFormationStatus(allAvailableOrdersByDate));
@@ -127,7 +133,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
         }
 
         List<OrderExternal> incompleteOrders =
-                orderExternalRepository.findRegularOrdersWithUnknownAddressByDeliveryId(delivery.getId());
+                orderExternalRepository.findIncludedRegularOrdersWithUnknownAddressByDeliveryId(delivery.getId());
         if (incompleteOrders.isEmpty()) {
             log.info("All orders has valid Addresses. Updating Delivery as READY_FOR_CALCULATION");
             delivery.setFormationStatus(DeliveryFormationStatus.READY_FOR_CALCULATION);

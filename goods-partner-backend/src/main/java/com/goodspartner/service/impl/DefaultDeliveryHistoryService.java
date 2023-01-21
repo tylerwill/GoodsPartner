@@ -43,7 +43,7 @@ public class DefaultDeliveryHistoryService implements DeliveryHistoryService {
                 .orElseThrow(() -> new DeliveryNotFoundException(event.getDeliveryId()));
 
         Map<String, String> currentAuditorData = AuditorBuilder.getCurrentAuditorData();
-        String role = currentAuditorData.get("role");
+        String role = currentAuditorData.get("roleTranslated");
         String userEmail = currentAuditorData.get("userEmail");
 
         return DeliveryHistory.builder()

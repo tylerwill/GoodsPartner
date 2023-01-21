@@ -2,7 +2,7 @@
   {
     "refKey":"18ee46a5-8e41-11ec-b3ce-00155dd72305",
     "orderNumber":"00000003639",
-    "shippingDate":"2022-02-15",
+    "shippingDate":"2022-02-20",
     "comment":"some-test-comment",
     "managerFullName":"Крамаренко Леся                                   ",
     "deliveryId":null,
@@ -11,7 +11,7 @@
     "excluded":false,
     "excludeReason": null,
     "dropped":false,
-    "rescheduleDate":"2022-02-20",
+    "rescheduleDate": null,
     "deliveryStart":null,
     "deliveryFinish":null,
     "clientName":"Новус Україна ТОВ",

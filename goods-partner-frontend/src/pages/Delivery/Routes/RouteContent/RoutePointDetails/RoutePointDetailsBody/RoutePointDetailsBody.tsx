@@ -13,7 +13,7 @@ const RoutePointDetailsBody = ({ routePoint }: { routePoint: RoutePoint }) => {
 				<InfoTableItem
 					title={'Час доставки'}
 					data={
-						routePoint.expectedArrival + ' - ' + routePoint.expectedCompletion
+						routePoint.deliveryStart + ' - ' + routePoint.deliveryEnd
 					}
 				/>
 			</Grid>

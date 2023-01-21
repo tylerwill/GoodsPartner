@@ -62,10 +62,10 @@ public class DefaultDeliveryFacade implements DeliveryFacade {
     @Override
     public Delivery calculateDelivery(UUID deliveryId) {
 
-        Delivery delivery = deliveryService.findById(deliveryId);
+        orderFacade.validateOrdersForDeliveryCalculation(deliveryId); // Do not create Delivery with UNKNOWN orders address
 
+        Delivery delivery = deliveryService.findById(deliveryId);
         List<OrderExternal> orders = delivery.getOrders();
-        validateOrdersAddressesForDeliveryCalculation(orders); // Do not create Delivery with UNKNOWN orders address
         resetOrders(orders); // If delivery already have order silently reset and exit for recalculation
 
         delivery.setFormationStatus(DeliveryFormationStatus.ROUTE_CALCULATION);

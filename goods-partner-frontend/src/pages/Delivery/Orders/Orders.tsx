@@ -56,6 +56,7 @@ const Orders = () => {
     const ordersWithInvalidAddress = orders
         .filter(order => order.deliveryType === DeliveryType.REGULAR)
         .filter(order => order.mapPoint.status === MapPointStatus.UNKNOWN)
+		.filter(order => !order.excluded)
 
     const excludedOrders = orders.filter(order => order.excluded)
 
