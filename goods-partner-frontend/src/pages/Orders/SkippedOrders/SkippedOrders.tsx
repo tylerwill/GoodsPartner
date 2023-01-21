@@ -57,7 +57,7 @@ const SkippedOrders = () => {
 	}
 
 	const [page, setPage] = React.useState(0)
-	const [rowsPerPage, setRowsPerPage] = React.useState(10)
+	const [rowsPerPage, setRowsPerPage] = React.useState(25)
 
 	const [collapseAll, setCollapseAll] = React.useState(false)
 	const [expandAll, setExpandAll] = React.useState(false)
@@ -201,7 +201,7 @@ const SkippedOrders = () => {
 					</Table>
 				</TableContainer>
 				<TablePagination
-					rowsPerPageOptions={[10, 25, 50]}
+					rowsPerPageOptions={[25, 50, 100]}
 					component='div'
 					count={skippedOrders.length}
 					rowsPerPage={rowsPerPage}

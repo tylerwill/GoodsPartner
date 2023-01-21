@@ -39,6 +39,7 @@ export default function BasicTabs({
 	const handleChange = (event, newValue) => {
 		setTabIndex(newValue)
 	}
+
 	return (
 		<Box sx={{ bgcolor: 'background.paper', ...styles }}>
 			{createTabsPanel(tabIndex, handleChange, labels, fullWidth)}

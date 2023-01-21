@@ -31,6 +31,13 @@ export const ordersApi = createApi({
 			providesTags: [{ type: 'orders', id: 'skipped' }]
 		}),
 
+		getScheduled: builder.query<OrdersResponse, void>({
+			query: () => ({
+				url: `/orders/scheduled`
+			}),
+			providesTags: [{ type: 'orders', id: 'scheduled' }]
+		}),
+
 		rescheduleOrders: builder.mutation<Order, RescheduleRequest>({
 			query: rescheduleRequest => ({
 				url: `orders/skipped/reschedule`,
@@ -55,5 +62,6 @@ export const {
 	useDeleteOrdersMutation,
 	useRescheduleOrdersMutation,
 	useGetCompletedQuery,
-	useGetSkippedQuery
+	useGetSkippedQuery,
+	useGetScheduledQuery
 } = ordersApi

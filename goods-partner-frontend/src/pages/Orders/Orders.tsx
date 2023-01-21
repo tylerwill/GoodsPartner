@@ -6,6 +6,7 @@ import DeliveredOrders from './DiliveredOrders/DiliveredOrders'
 import SkippedOrders from './SkippedOrders/SkippedOrders'
 import { setTabIndex } from '../../features/orders/ordersSlice'
 import useAuth from '../../auth/AuthProvider'
+import ScheduledOrders from "./ScheduledOrders/ScheduledOrders";
 
 const Orders = () => {
 	const dispatch = useAppDispatch()
@@ -16,7 +17,8 @@ const Orders = () => {
 
 	const tabLabels = [
 		{ name: 'Доставленні', enabled: true },
-		{ name: 'Не доставленні', enabled: true }
+		{ name: 'Не доставленні', enabled: true },
+		{ name: 'Заплановані', enabled: true },
 	]
 
 	const styles = { p: 4 }
@@ -48,6 +50,7 @@ const Orders = () => {
 				>
 					<DeliveredOrders />
 					<SkippedOrders />
+					<ScheduledOrders/>
 				</BasicTabs>
 			</Box>
 		</section>

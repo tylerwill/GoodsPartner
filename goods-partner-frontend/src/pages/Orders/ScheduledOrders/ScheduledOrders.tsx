@@ -12,11 +12,11 @@ import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
 import TablePagination from '@mui/material/TablePagination'
 import ProductRow from './OrderRow/OrderRow'
-import { useGetCompletedQuery } from '../../../api/orders/orders.api'
+import { useGetScheduledQuery } from '../../../api/orders/orders.api'
 import Loading from '../../../components/Loading/Loading'
 
-const DeliveredOrders = () => {
-	const { data: completedOrders } = useGetCompletedQuery()
+const ScheduledOrders = () => {
+	const { data: scheduledOrders } = useGetScheduledQuery()
 
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(25)
@@ -48,17 +48,17 @@ const DeliveredOrders = () => {
 		setPage(0)
 	}
 
-	if (!completedOrders) {
+	if (!scheduledOrders) {
 		return <Loading />
 	}
 
 	// Avoid a layout jump when reaching the last page with empty rows.
 	const emptyRows =
 		page > 0
-			? Math.max(0, (1 + page) * rowsPerPage - completedOrders.length)
+			? Math.max(0, (1 + page) * rowsPerPage - scheduledOrders.length)
 			: 0
 
-	console.log('completedOrders', completedOrders)
+	console.log('scheduledOrders', scheduledOrders)
 	return (
 		<Box>
 			<Box sx={{ display: 'flex', mb: 2 }}>
@@ -95,14 +95,14 @@ const DeliveredOrders = () => {
 						</TableHead>
 						<TableBody>
 							{/*TODO: [Tolik] Think about keys */}
-							{completedOrders
+							{scheduledOrders
 								.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 								.map((order, index) => {
 									return (
 										<ProductRow
 											order={order}
-											key={'completedOrder' + index}
-											keyPrefix={'completedOrder' + 'subTable'}
+											key={'scheduledOrders' + index}
+											keyPrefix={'scheduledOrders' + 'subTable'}
 											expandAll={expandAll}
 											collapseAll={collapseAll}
 											reset={reset}
@@ -124,7 +124,7 @@ const DeliveredOrders = () => {
 				<TablePagination
 					rowsPerPageOptions={[25, 50, 100]}
 					component='div'
-					count={completedOrders.length}
+					count={scheduledOrders.length}
 					rowsPerPage={rowsPerPage}
 					page={page}
 					onPageChange={handleChangePage}
@@ -135,4 +135,4 @@ const DeliveredOrders = () => {
 	)
 }
 
-export default DeliveredOrders
+export default ScheduledOrders

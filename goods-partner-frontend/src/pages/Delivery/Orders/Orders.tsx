@@ -70,12 +70,44 @@ const Orders = () => {
         .filter(order => !order.excluded)
         .filter(order => !order.dropped);
 
+    const droppedOrders = orders.filter(order => order.dropped);
+
     const tabLabels = [
-        {name: `Grande Dolhe (${grandeDolceOrders.length})`, enabled: true},
+        {name: `Grande Dolce (${grandeDolceOrders.length})`, enabled: true},
         {name: `Інше (${otherOrders.length})`, enabled: true},
         {name: `Потребують уточнення (${ordersWithInvalidAddress.length})`, enabled: true},
         {name: `Вилучені (${excludedOrders.length})`, enabled: true}
     ]
+
+
+    const tabs = [{
+        orders: grandeDolceOrders,
+        keyPrefix: 'grandeDolce'
+    },
+        {
+            orders: otherOrders,
+            keyPrefix: 'other'
+        },
+        {
+            orders: ordersWithInvalidAddress,
+            keyPrefix: 'invalid'
+        },
+        {
+            orders: excludedOrders,
+            keyPrefix: 'excluded'
+        }
+
+    ];
+
+
+    if (droppedOrders.length !== 0) {
+        tabLabels.push({name: `Нерозраховані (${droppedOrders.length})`, enabled: true});
+        tabs.push({
+            orders: droppedOrders,
+            keyPrefix: 'dropped'
+        });
+    }
+
 
     return (
         <Box sx={{padding: '0 24px'}}>
@@ -84,29 +116,16 @@ const Orders = () => {
                 setTabIndex={setOrdersTabHandler}
                 tabIndex={orderTabIndex}
             >
-                <OrdersTable
-                    orders={grandeDolceOrders}
-                    keyPrefix={'grandeDolce'}
-                    updateOrder={updateOrderHandler}
-                />
 
-                <OrdersTable
-                    orders={otherOrders}
-                    keyPrefix={'other'}
-                    updateOrder={updateOrderHandler}
-                />
+                {
+                    tabs.map(e => <OrdersTable
+                        orders={e.orders}
+                        keyPrefix={e.keyPrefix}
+                        key={"OrderTab" + e.keyPrefix}
+                        updateOrder={updateOrderHandler}
+                    />)
+                }
 
-                <OrdersTable
-                    orders={ordersWithInvalidAddress}
-                    keyPrefix={'invalid'}
-                    updateOrder={updateOrderHandler}
-                />
-
-                <OrdersTable
-                    orders={excludedOrders}
-                    keyPrefix={'excluded'}
-                    updateOrder={updateOrderHandler}
-                />
             </BasicTabs>
 
             {isOrderAddressDialogOpen && <ChooseAddressDialog/>}
