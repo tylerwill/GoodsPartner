@@ -8,13 +8,27 @@ values  (1, 'Maxym', 'belosh59@gmail.com', 'ADMIN', true),
         (301, 'Nastya', 'nastyabondarenko870@gmail.com', 'ADMIN', true),
         (351, 'Sasha', 'abhramatanga@gmail.com', 'ADMIN', true),
         (401, 'Natali', 'natali.poroshina@gmail.com', 'ADMIN', true),
-        (451, 'Artem', 'artemzhivolup@gmail.com', 'ADMIN', true);
+        (451, 'Artem', 'artemzhivolup@gmail.com', 'ADMIN', true),
+        (501, 'Гаєвський В.В.', 'gaevskyi@gmail.com', 'ADMIN', true);
 
-insert into public.cars (id, name, licence_plate, weight_capacity, cooler, available, travel_cost, user_id)
-values  (1, 'Mercedes Sprinter', 'AA 3333 CT', 2500, true, true, 15, 1),
-        (51, 'Mercedes 818', 'AA 4444 CT', 4000, false, true, 20, 51),
-        (101, 'Mercedes Sprinter', 'AA 1111 CT', 2000, false, true, 12, 101),
-        (151, 'Mercedes Vito', 'AA 2222 CT', 1000, false, true, 10, 151);
+INSERT INTO public.cars (name, licence_plate, user_id, weight_capacity, cooler, available, travel_cost, deleted)
+VALUES  ('Мерседес Віто Mersedes Vito', 'АІ6399ЕР', 1, 1100, false, true, 9, false),
+        ('Мерседес Віто Mersedes Vito', 'АІ1649ЕР', 51, 800, false, true, 9, false),
+        ('Mersedes-Benz 316 СDІ', 'AI0992ЕР', 101, 1450, false, true, 11, false),
+        ('Mersedes-Benz', 'АІ6349HA', 151, 800, true, true, 11, false),
+        ('Mersedes Vito', 'АІ7860НА', 201, 800, false, true, 9, false),
+        ('Мерседес 818', 'АІ4091СР', 251, 4200, false, true, 20, false),
+        ('Mersedes-Benz Sprinter 314', 'AI3092ОА', 301, 1900, false, true, 11, false),
+        ('Mersedes-Benz Sprinter 513CDI', 'AI3097OB', 351, 2000, true, true, 13, false),
+        ('Mersedes-Benz Sprinter 314 CDI', 'AI1060ОА', 401, 2500, false, true, 11, false),
+        ('Mersedes-Benz Sprinter', 'AI2940CM', 451, 2000, false, false, 10, false),
+        ('Renault Kangoo', 'АІ3256КН', 501, 650, false, true, 6, false);
+
+-- insert into public.cars (id, name, licence_plate, weight_capacity, cooler, available, travel_cost, user_id)
+-- values  (1, 'Mercedes Sprinter', 'AA 3333 CT', 2500, true, true, 15, 1),
+--         (51, 'Mercedes 818', 'AA 4444 CT', 4000, false, true, 20, 51),
+--         (101, 'Mercedes Sprinter', 'AA 1111 CT', 2000, false, true, 12, 101),
+--         (151, 'Mercedes Vito', 'AA 2222 CT', 1000, false, true, 10, 151);
 
 insert into public.store(id, name, address, latitude, longitude)
 values ('5688492e-ede4-45d3-923b-5f9773fd3d4b', 'Склад №1', '15, Калинова вулиця, Фастів, Фастівська міська громада, Фастівський район, Київська область, 08500, Україна', 50.08340335, 29.885050630832627);
