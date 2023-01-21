@@ -20,6 +20,7 @@ export default interface Order {
 	orderWeight: number
 	products: Array<Product>
 	refKey: string
+	excludeReason:string
 
 	rescheduleDate: string
 

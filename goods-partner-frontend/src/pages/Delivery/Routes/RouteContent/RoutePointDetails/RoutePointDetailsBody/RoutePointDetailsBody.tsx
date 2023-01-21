@@ -4,7 +4,7 @@ import React from 'react'
 import { RoutePoint } from '../../../../../../model/RoutePoint'
 
 const RoutePointDetailsBody = ({ routePoint }: { routePoint: RoutePoint }) => {
-	// const orderNumber = routePoint.orders[0].orderNumber;
+
 	const completedAt =
 		routePoint.completedAt === null ? '-' : routePoint.completedAt
 	return (

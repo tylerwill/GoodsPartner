@@ -19,20 +19,6 @@ const OrderAdditionalInfo = ({ order }: { order: Order }) => {
 			container
 			spacing={2}
 		>
-			<Grid item xs={2}>
-				<Typography
-					sx={{ mb: 1 }}
-					variant='caption'
-					display='block'
-					gutterBottom
-				>
-					Статус
-				</Typography>
-				<Typography variant='caption' display='block' gutterBottom>
-					???
-				</Typography>
-			</Grid>
-
 			<Grid item xs={1}>
 				<Typography
 					sx={{ mb: 1 }}

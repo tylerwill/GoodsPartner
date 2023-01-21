@@ -106,7 +106,6 @@ const SkippedOrders = () => {
 
 	const hasSelected = selectedOrderIds.length !== 0
 
-	console.log('skippedOrders', skippedOrders)
 	return (
 		<Box>
 			<Box sx={{ display: 'flex', mb: 2, justifyContent: 'space-between' }}>
@@ -155,7 +154,7 @@ const SkippedOrders = () => {
 					<Table aria-label='collapsible table'>
 						<TableHead>
 							<TableRow>
-								<TableCell />
+								<TableCell padding={'checkbox'}/>
 								<TableCell padding='checkbox'>
 									<Checkbox
 										color='primary'
@@ -170,6 +169,7 @@ const SkippedOrders = () => {
 								<TableCell>Дата</TableCell>
 								<TableCell>Клієнт</TableCell>
 								<TableCell>Адреса</TableCell>
+								<TableCell>Причина вилучення</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>

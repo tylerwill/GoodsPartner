@@ -66,7 +66,7 @@ const OrderTableRow = ({
 		}
 	}
 
-	const isInvalid = order.mapPoint.status === 'UNKNOWN'
+	const isInvalid = order.mapPoint.status === 'UNKNOWN' && order.deliveryType === 'REGULAR';
 	return (
 		<>
 			<TableRow sx={styles}>
@@ -125,9 +125,9 @@ const OrderTableRow = ({
 										</TableRow>
 									</TableHead>
 									<TableBody>
-										{order.products.map(product => (
+										{order.products.map((product, index) => (
 											<TableRow
-												key={keyPrefix + product.productName}
+												key={keyPrefix + index + product.productName}
 												sx={{
 													'&:last-child td, &:last-child th': { border: 0 }
 												}}

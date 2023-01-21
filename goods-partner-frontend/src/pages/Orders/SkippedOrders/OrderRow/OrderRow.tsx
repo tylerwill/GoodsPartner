@@ -55,9 +55,8 @@ const OrderRow = ({
 	return (
 		<>
 			<TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-				<TableCell>
+				<TableCell padding={'checkbox'}>
 					<IconButton
-						aria-label='expand row'
 						size='small'
 						onClick={() => {
 							setOrderTableOpen(!orderTableOpen)
@@ -84,6 +83,7 @@ const OrderRow = ({
 				<TableCell>{reformatDate(order.shippingDate)}</TableCell>
 				<TableCell>{order.clientName}</TableCell>
 				<TableCell>{order.address}</TableCell>
+				<TableCell>{order.excludeReason}</TableCell>
 			</TableRow>
 			<TableRow>
 				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>

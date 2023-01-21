@@ -16,7 +16,7 @@ import OrderTableRow from './OrderTableRow/OrderTableRow'
 
 const OrdersTable = ({ orders, keyPrefix, updateOrder }) => {
 	const [page, setPage] = React.useState(0)
-	const [rowsPerPage, setRowsPerPage] = React.useState(10)
+	const [rowsPerPage, setRowsPerPage] = React.useState(25)
 
 	const [collapseAll, setCollapseAll] = React.useState(false)
 	const [expandAll, setExpandAll] = React.useState(false)
@@ -115,7 +115,7 @@ const OrdersTable = ({ orders, keyPrefix, updateOrder }) => {
 					</Table>
 				</TableContainer>
 				<TablePagination
-					rowsPerPageOptions={[10, 25, 50]}
+					rowsPerPageOptions={[25, 50, 100]}
 					component='div'
 					count={orders.length}
 					rowsPerPage={rowsPerPage}
