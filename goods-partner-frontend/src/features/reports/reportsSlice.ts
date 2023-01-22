@@ -21,7 +21,7 @@ export const fetchDeliveriesStatistics = createAsyncThunk(
 	}
 )
 
-const reportsSlice = createSlice({
+export const reportsSlice = createSlice({
 	reducers: {},
 	name: 'reports',
 	initialState,

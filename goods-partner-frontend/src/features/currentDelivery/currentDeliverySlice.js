@@ -6,7 +6,7 @@ const initialState = {
 	currentRouteIndex: 0
 }
 
-const currentDeliverySlice = createSlice({
+export const currentDeliverySlice = createSlice({
 	name: 'currentDelivery',
 	initialState,
 	reducers: {

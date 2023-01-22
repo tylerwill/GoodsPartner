@@ -2,49 +2,66 @@ import currentDeliveryReducer from '../features/currentDelivery/currentDeliveryS
 import reportsReducer from '../features/reports/reportsSlice'
 import notificationsReducer from '../features/notifications/notificationsSlice'
 
-import { configureStore } from '@reduxjs/toolkit'
+import {configureStore, isRejectedWithValue, Middleware, MiddlewareAPI} from '@reduxjs/toolkit'
 import ordersReducer from '../features/orders/ordersSlice'
 import deliveryOrdersReducer from '../features/delivery-orders/deliveryOrdersSlice'
-import { deliveriesApi } from '../api/deliveries/deliveries.api'
-import { setupListeners } from '@reduxjs/toolkit/query'
-import { deliveryOrdersApi } from '../api/delivery-orders/delivery-orders.api'
-import { routesApi } from '../api/routes/routes.api'
-import { usersApi } from '../api/users/users.api'
-import { carsApi } from '../api/cars/cars.api'
-import { historyApi } from '../api/history/history.api'
-import { shippingApi } from '../api/shipping/shipping.api'
-import { ordersApi } from '../api/orders/orders.api'
+import {deliveriesApi} from '../api/deliveries/deliveries.api'
+import {setupListeners} from '@reduxjs/toolkit/query'
+import {deliveryOrdersApi} from '../api/delivery-orders/delivery-orders.api'
+import {routesApi} from '../api/routes/routes.api'
+import {usersApi} from '../api/users/users.api'
+import {carsApi} from '../api/cars/cars.api'
+import {historyApi} from '../api/history/history.api'
+import {shippingApi} from '../api/shipping/shipping.api'
+import {ordersApi} from '../api/orders/orders.api'
+import {enqueueSnackbar} from "notistack";
+
+
+const rtkQueryErrorLogger: Middleware =
+    (api: MiddlewareAPI) => (next) => (action) => {
+        if (isRejectedWithValue(action)) {
+            enqueueSnackbar(action.payload.data.message, {
+                autoHideDuration: null,
+                variant: "error",
+                hideIconVariant: true
+            });
+        }
+
+        return next(action)
+    }
 
 const store = configureStore({
-	reducer: {
-		reports: reportsReducer,
-		currentDelivery: currentDeliveryReducer,
-		notifications: notificationsReducer,
-		orders: ordersReducer,
-		deliveryOrders: deliveryOrdersReducer,
+    reducer: {
+        reports: reportsReducer,
+        currentDelivery: currentDeliveryReducer,
+        notifications: notificationsReducer,
+        orders: ordersReducer,
+        deliveryOrders: deliveryOrdersReducer,
 
-		// api
-		[deliveriesApi.reducerPath]: deliveriesApi.reducer,
-		[deliveryOrdersApi.reducerPath]: deliveryOrdersApi.reducer,
-		[routesApi.reducerPath]: routesApi.reducer,
-		[usersApi.reducerPath]: usersApi.reducer,
-		[historyApi.reducerPath]: historyApi.reducer,
-		[shippingApi.reducerPath]: shippingApi.reducer,
-		[ordersApi.reducerPath]: ordersApi.reducer,
-		[carsApi.reducerPath]: carsApi.reducer
-	},
+        // api
+        [deliveriesApi.reducerPath]: deliveriesApi.reducer,
+        [deliveryOrdersApi.reducerPath]: deliveryOrdersApi.reducer,
+        [routesApi.reducerPath]: routesApi.reducer,
+        [usersApi.reducerPath]: usersApi.reducer,
+        [historyApi.reducerPath]: historyApi.reducer,
+        [shippingApi.reducerPath]: shippingApi.reducer,
+        [ordersApi.reducerPath]: ordersApi.reducer,
+        [carsApi.reducerPath]: carsApi.reducer
+    },
 
-	middleware: getDefaultMiddleware =>
-		getDefaultMiddleware()
-			.concat(deliveriesApi.middleware)
-			.concat(deliveryOrdersApi.middleware)
-			.concat(routesApi.middleware)
-			.concat(usersApi.middleware)
-			.concat(historyApi.middleware)
-			.concat(shippingApi.middleware)
-			.concat(carsApi.middleware)
-			.concat(ordersApi.middleware)
+    middleware: getDefaultMiddleware =>
+        getDefaultMiddleware()
+            .concat(deliveriesApi.middleware)
+            .concat(deliveryOrdersApi.middleware)
+            .concat(routesApi.middleware)
+            .concat(usersApi.middleware)
+            .concat(historyApi.middleware)
+            .concat(shippingApi.middleware)
+            .concat(carsApi.middleware)
+            .concat(ordersApi.middleware)
+            .concat(rtkQueryErrorLogger)
 })
+
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors
 // see `setupListeners` docs - takes an optional callback as the 2nd arg for customization

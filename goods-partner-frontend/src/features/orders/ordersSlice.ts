@@ -13,7 +13,7 @@ const initialState = {
 	deleteOrdersDialogOpen: false
 }
 
-const ordersSlice = createSlice({
+export const ordersSlice = createSlice({
 	name: 'orders',
 	initialState,
 	reducers: {
