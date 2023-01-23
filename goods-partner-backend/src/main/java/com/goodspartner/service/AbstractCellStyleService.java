@@ -7,11 +7,11 @@ import org.apache.poi.ss.util.RegionUtil;
 public abstract class AbstractCellStyleService implements CellStyleService {
     protected String ARIAL_FONT = "Arial";
 
-    protected void setThinCellBorder(CellStyle cellStyle) {
-        cellStyle.setBorderBottom(BorderStyle.THIN);
-        cellStyle.setBorderTop(BorderStyle.THIN);
-        cellStyle.setBorderLeft(BorderStyle.THIN);
-        cellStyle.setBorderRight(BorderStyle.THIN);
+    protected void setBorderCell(CellStyle cellStyle, BorderStyle borderStyle) {
+        cellStyle.setBorderBottom(borderStyle);
+        cellStyle.setBorderTop(borderStyle);
+        cellStyle.setBorderLeft(borderStyle);
+        cellStyle.setBorderRight(borderStyle);
     }
 
     protected void setThinCellRangeBorder(CellRangeAddress region, Sheet excelSheet) {

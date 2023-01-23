@@ -86,7 +86,7 @@ public class BillDocumentService implements DocumentService {
                         Pair.of(5,
                                 DocumentCellInfoDto.builder()
                                         .value(invoiceDto.getEdrpouCode())
-                                        .style(CellStyles.HEADER_BOLD)
+                                        .style(CellStyles.BILL_HEADER_BOLD)
                                         .build())
                 ));
         header.put(HEADER_ROW_1 + 1,
@@ -94,7 +94,7 @@ public class BillDocumentService implements DocumentService {
                         Pair.of(21,
                                 DocumentCellInfoDto.builder()
                                         .value(invoiceDto.getCompanyAccount())
-                                        .style(CellStyles.HEADER_BOLD)
+                                        .style(CellStyles.BILL_HEADER_BOLD)
                                         .build())
                 ));
         header.put(HEADER_ROW_1 + 3,
@@ -102,7 +102,7 @@ public class BillDocumentService implements DocumentService {
                         Pair.of(16,
                                 DocumentCellInfoDto.builder()
                                         .value(invoiceDto.getMfoCode())
-                                        .style(CellStyles.HEADER_BOLD)
+                                        .style(CellStyles.BILL_HEADER_BOLD)
                                         .build())
                 ));
         header.put(HEADER_ROW_1 + 4,

@@ -13,6 +13,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         return switch (cellStyles) {
             case AMOUNT_SIGNATURE -> getAmountSignatureCellStyle(workbook, excelSheet);
             case HEADER_BOLD -> getHeaderBoldCellStyle(workbook, excelSheet);
+            case BILL_HEADER_BOLD -> getBillHeaderBoldCellStyle(workbook, excelSheet);
             case HEADER -> getHeaderCellStyle(workbook, excelSheet);
             case HEADER_ORGANISATION -> getHeaderOrganisationCellStyle(workbook, excelSheet);
             case MAIN_HEADER -> getMainHeaderCellStyle(workbook, excelSheet);
@@ -53,6 +54,18 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         CellStyle cellStyle = workbook.createCellStyle();
         cellStyle.setAlignment(HorizontalAlignment.LEFT);
         cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 9, true));
+
+        return cellStyle;
+    }
+
+    private CellStyle getBillHeaderBoldCellStyle(Workbook workbook, Sheet excelSheet) {
+        CellStyle cellStyle = workbook.createCellStyle();
+        cellStyle.setAlignment(HorizontalAlignment.LEFT);
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        setBorderCell(cellStyle, BorderStyle.MEDIUM);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 9, true));
 
@@ -103,8 +116,8 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
 
     private CellStyle getResultSignatureCellStyle(Workbook workbook, Sheet excelSheet) {
         CellStyle cellStyle = workbook.createCellStyle();
-        cellStyle.setAlignment(HorizontalAlignment.RIGHT);
-        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellStyle.setVerticalAlignment(VerticalAlignment.BOTTOM);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 8, false));
 
@@ -122,7 +135,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
 
         row.setHeight((short) 800);
 
-        setThinCellBorder(cellStyle);
+        setBorderCell(cellStyle, BorderStyle.THIN);
         setThinCellRangeBorder(region, excelSheet);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 10, false));
@@ -139,7 +152,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         CellRangeAddress region = new CellRangeAddress(row.getRowNum(), row.getRowNum(), 3, 5);
         excelSheet.addMergedRegion(region);
 
-        setThinCellBorder(cellStyle);
+        setBorderCell(cellStyle, BorderStyle.THIN);
         setThinCellRangeBorder(region, excelSheet);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 10, false));
@@ -156,7 +169,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         CellRangeAddress region = new CellRangeAddress(row.getRowNum(), row.getRowNum(), 6, 14);
         excelSheet.addMergedRegion(region);
 
-        setThinCellBorder(cellStyle);
+        setBorderCell(cellStyle, BorderStyle.THIN);
         setThinCellRangeBorder(region, excelSheet);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 10, false));
@@ -173,7 +186,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         CellRangeAddress region = new CellRangeAddress(row.getRowNum(), row.getRowNum(), 3, 19);
         excelSheet.addMergedRegion(region);
 
-        setThinCellBorder(cellStyle);
+        setBorderCell(cellStyle, BorderStyle.THIN);
         setThinCellRangeBorder(region, excelSheet);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 10, false));
@@ -190,7 +203,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         CellRangeAddress region = new CellRangeAddress(row.getRowNum(), row.getRowNum(), 15, 17);
         excelSheet.addMergedRegion(region);
 
-        setThinCellBorder(cellStyle);
+        setBorderCell(cellStyle, BorderStyle.THIN);
         setThinCellRangeBorder(region, excelSheet);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 10, false));
@@ -207,7 +220,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         CellRangeAddress region = new CellRangeAddress(row.getRowNum(), row.getRowNum(), 20, 22);
         excelSheet.addMergedRegion(region);
 
-        setThinCellBorder(cellStyle);
+        setBorderCell(cellStyle, BorderStyle.THIN);
         setThinCellRangeBorder(region, excelSheet);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 10, false));
@@ -224,7 +237,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         CellRangeAddress region = new CellRangeAddress(row.getRowNum(), row.getRowNum(), 18, 19);
         excelSheet.addMergedRegion(region);
 
-        setThinCellBorder(cellStyle);
+        setBorderCell(cellStyle, BorderStyle.THIN);
         setThinCellRangeBorder(region, excelSheet);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 10, false));
@@ -241,7 +254,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         CellRangeAddress region = new CellRangeAddress(row.getRowNum(), row.getRowNum(), 23, 24);
         excelSheet.addMergedRegion(region);
 
-        setThinCellBorder(cellStyle);
+        setBorderCell(cellStyle, BorderStyle.THIN);
         setThinCellRangeBorder(region, excelSheet);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 10, false));
@@ -258,7 +271,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         CellRangeAddress region = new CellRangeAddress(row.getRowNum(), row.getRowNum(), 20, 23);
         excelSheet.addMergedRegion(region);
 
-        setThinCellBorder(cellStyle);
+        setBorderCell(cellStyle, BorderStyle.THIN);
         setThinCellRangeBorder(region, excelSheet);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 10, false));
@@ -275,7 +288,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         CellRangeAddress region = new CellRangeAddress(row.getRowNum(), row.getRowNum(), 24, 27);
         excelSheet.addMergedRegion(region);
 
-        setThinCellBorder(cellStyle);
+        setBorderCell(cellStyle, BorderStyle.THIN);
         setThinCellRangeBorder(region, excelSheet);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 10, false));
@@ -292,7 +305,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         CellRangeAddress region = new CellRangeAddress(row.getRowNum(), row.getRowNum(), 28, 31);
         excelSheet.addMergedRegion(region);
 
-        setThinCellBorder(cellStyle);
+        setBorderCell(cellStyle, BorderStyle.THIN);
         setThinCellRangeBorder(region, excelSheet);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 10, false));
@@ -309,7 +322,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         CellRangeAddress region = new CellRangeAddress(row.getRowNum(), row.getRowNum(), 32, 35);
         excelSheet.addMergedRegion(region);
 
-        setThinCellBorder(cellStyle);
+        setBorderCell(cellStyle, BorderStyle.THIN);
         setThinCellRangeBorder(region, excelSheet);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 10, false));
@@ -326,7 +339,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         CellRangeAddress region = new CellRangeAddress(row.getRowNum(), row.getRowNum(), 25, 28);
         excelSheet.addMergedRegion(region);
 
-        setThinCellBorder(cellStyle);
+        setBorderCell(cellStyle, BorderStyle.THIN);
         setThinCellRangeBorder(region, excelSheet);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 10, false));
@@ -343,7 +356,7 @@ public class DefaultCellStyleService extends AbstractCellStyleService {
         CellRangeAddress region = new CellRangeAddress(row.getRowNum(), row.getRowNum(), 29, 32);
         excelSheet.addMergedRegion(region);
 
-        setThinCellBorder(cellStyle);
+        setBorderCell(cellStyle, BorderStyle.THIN);
         setThinCellRangeBorder(region, excelSheet);
 
         cellStyle.setFont(getFont(workbook, ARIAL_FONT, (short) 10, false));
