@@ -7,33 +7,30 @@ import com.goodspartner.entity.Store;
 import com.goodspartner.service.StoreService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletWebRequest;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.when;
 
-// Test integration with 1C server
+// Test integration with 1C server and mockData processing
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Import({TestSecurityDisableConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 class GrandeDolceIntegrationServiceITest extends AbstractBaseITest {
+
+    private static final LocalDate DATE = LocalDate.of(2022, 2, 4);
 
     @MockBean
     private StoreService mockStoreService;
@@ -53,22 +50,39 @@ class GrandeDolceIntegrationServiceITest extends AbstractBaseITest {
         when(mockStoreService.getMainStore()).thenReturn(store);
     }
 
-    /*
-    For some reason 1C is not responding for an orders fo 2020/02/02
-     */
-    private static final LocalDate DATE = LocalDate.of(2022, 2, 4);
 
     @Test
     void getOrdersFromExternalSource() {
-
+        // given
+        final String orderExcludedByDeletedMark = "00000002414";
+        final String orderExcludedByDeletedInvoice = "00000002515";
+        final String orderExcludedAsNoInvoiceFound = "00000002413";
+        // when
         List<OrderDto> orders = grandeDolceOrderService.findAllByShippingDate(DATE);
-
+        // then
         Assertions.assertEquals(9, orders.size());
 
         orders.forEach(order -> {
             Assertions.assertNotNull(order.getAddress());
             Assertions.assertNotEquals("", order.getAddress());
         });
+
+        Map<String, String> excludedList = orders.stream()
+                .filter(OrderDto::isExcluded)
+                .collect(Collectors.toMap(OrderDto::getOrderNumber, OrderDto::getExcludeReason));
+
+        Assertions.assertEquals(3, excludedList.size());
+        Assertions.assertEquals("Замовлення: 00000002414 має флаг видалення в 1С", excludedList.get(orderExcludedByDeletedMark));
+        Assertions.assertEquals("Відсутні або видалені транспортні документи в 1С для замовлення: 00000002515", excludedList.get(orderExcludedByDeletedInvoice));
+        Assertions.assertEquals("Відсутні або видалені транспортні документи в 1С для замовлення: 00000002413", excludedList.get(orderExcludedAsNoInvoiceFound));
+    }
+
+    @Test
+    void testMockDataFetchingAndMapping() {
+        grandeDolceOrderService.findAllByShippingDate(LocalDate.of(2022, 2, 4));
+        grandeDolceOrderService.findAllByShippingDate(LocalDate.of(2022, 2, 7));
+        grandeDolceOrderService.findAllByShippingDate(LocalDate.of(2022, 2, 17));
+        grandeDolceOrderService.findAllByShippingDate(LocalDate.of(2022, 2, 21));
     }
 
     @Test
@@ -81,5 +95,4 @@ class GrandeDolceIntegrationServiceITest extends AbstractBaseITest {
 
         Assertions.assertEquals(expectedTotalWeight, totalOrdersWeight);
     }
-
 }

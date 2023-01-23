@@ -56,5 +56,6 @@ graphhopper:
     file: ~
     graph: ~
 
-
-
+logging:
+  level:
+    com.goodspartner: DEBUG

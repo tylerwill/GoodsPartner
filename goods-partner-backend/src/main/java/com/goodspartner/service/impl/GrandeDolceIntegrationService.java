@@ -10,7 +10,15 @@ import com.goodspartner.mapper.ODataInvoiceMapper;
 import com.goodspartner.mapper.ODataOrderMapper;
 import com.goodspartner.mapper.ProductMapper;
 import com.goodspartner.service.IntegrationService;
-import com.goodspartner.service.dto.external.grandedolce.*;
+import com.goodspartner.service.dto.external.grandedolce.ODataContactsTypeDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataInvoiceDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataInvoiceProductDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataOrganisationCodesDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataOrganisationContactsDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataProductGtdDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataWrapperDto;
 import com.goodspartner.util.ExternalOrderDataEnricher;
 import com.goodspartner.util.ODataUrlBuilder;
 import com.google.common.collect.Lists;
@@ -31,7 +39,15 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -40,11 +56,16 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class GrandeDolceIntegrationService implements IntegrationService {
-
+    // Order exclude resons
+    private static final String DELETED_ORDER_EXCLUDE_REASON = "Замовлення: %s має флаг видалення в 1С";
+    private static final String INVOICE_MISSED_EXCLUDE_REASON = "Відсутні або видалені транспортні документи в 1С для замовлення: %s";
+    // 1C data fetch configuration // TODO move to properties.yml and later to configuration
     private static final int PARTITION_SIZE = 100;
+    private static final int INVOICE_PARTITION_SIZE = 25;
     private static final int RETRY_ATTEMPTS = 3;
     private static final int RETRY_DELAY = 5;
     private static final int ORDER_FETCH_LIMIT = Integer.MAX_VALUE; // API Key limit
+    // Generic fetching
     private static final String PREFIX_ODATA = "/odata/standard.odata/";
     private static final String FORMAT = "json";
     private static final String REF_KEY_FILTER = "Ref_Key eq guid'%s'";
@@ -53,47 +74,36 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private static final String ORGANISATION_CATALOG = "Catalog_Организации";
     private static final String ADDRESS_CONTACT_TYPE = "Адрес";
     private static final String PHONE_CONTACT_TYPE = "Телефон";
-    // Order
-    // We dont need now address filtering coz it could cause missed orders
-    // e.g. "and like(АдресДоставки , '[^""][^"   "]______%%')"
+    // Order fetching
     private static final String DATE_FILTER = "ДатаОтгрузки eq datetime'%s'";
     private static final String ORDER_ENTRY_SET_NAME = "Document_ЗаказПокупателя";
-    private static final String ORDER_SELECT_FIELDS = "Ref_Key,Number,Date,АдресДоставки,Комментарий,Контрагент/Description,Ответственный/Code";
+    private static final String ORDER_SELECT_FIELDS = "Ref_Key,Number,ДатаОтгрузки,Date,DeletionMark,АдресДоставки,Комментарий,Контрагент/Description,Ответственный/Code";
     private static final String ORDER_EXPAND_FIELDS = "Ответственный/ФизЛицо,Контрагент";
-    // Order product
+    // Order product fetching
     private static final String ORDER_PRODUCT_ENTRY_SET_NAME = "Document_ЗаказПокупателя_Товары";
     private static final String PRODUCT_SELECT_FIELDS = "Ref_Key,Количество,КоличествоМест,Коэффициент,ЕдиницаИзмерения/Description,Номенклатура/Description";
     private static final String PRODUCT_EXPAND_FIELDS = "Номенклатура,ЕдиницаИзмерения";
-    //Invoice
+    // Invoice fetching
     private static final String INVOICE_ENTRY_SET_NAME = "Document_РеализацияТоваровУслуг";
     private static final String INVOICE_SELECT_FIELDS = "Ref_Key,Организация_Key,Сделка,DeletionMark,Number,Date,Posted,СуммаДокумента,АдресДоставки,ДоговорКонтрагента/Description,Контрагент/НаименованиеПолное,БанковскийСчетОрганизации/НомерСчета,БанковскийСчетОрганизации/Банк/Description,БанковскийСчетОрганизации/Банк/Code,Склад/Местонахождение,Организация/НаименованиеПолное,Ответственный/ФизЛицо/Description";
     private static final String INVOICE_EXPAND_FIELDS = "Организация,БанковскийСчетОрганизации/Банк,Контрагент,Склад,ДоговорКонтрагента,Ответственный/ФизЛицо";
-    // Invoice product
+    // Invoice product fetching
     private static final String INVOICE_PRODUCT_ENTRY_SET_NAME = "Document_РеализацияТоваровУслуг_Товары";
     private static final String INVOICE_PRODUCT_SELECT_FIELDS = "Ref_Key,LineNumber,Количество,Коэффициент,ЕдиницаИзмерения/Description,Номенклатура/Description,Номенклатура/Ref_Key,Номенклатура/НоменклатураГТД,Сумма,СуммаНДС,Цена,СерияНоменклатуры/СертификатФайл";
     private static final String INVOICE_PRODUCT_EXPAND_FIELDS = "СерияНоменклатуры,Номенклатура,ЕдиницаИзмерения";
     // Product GTD
     private static final String PRODUCT_GTD_ENTRY_SET_NAME = "Catalog_НоменклатураГТД";
     private static final String PRODUCT_GTD_SELECT_FIELDS = "Ref_Key,Owner_Key,КодУКТВЭД_Индекс";
-    //Information register - organisation codes
+    // Information register - organisation codes
     private static final String ORGANISATION_CODES_ENTRY_SET_NAME = "InformationRegister_КодыОрганизации/SliceLast()";
     private static final String ORGANISATION_CODES_SELECT_FIELDS = "Организация_Key,КодПоЕДРПОУ,ИНН,НомерСвидетельства";
-    //Information register - organisation contacts
+    // Information register - organisation contacts
     private static final String ORGANISATION_CONTACTS_ENTRY_SET_NAME = "InformationRegister_КонтактнаяИнформация";
     private static final String ORGANISATION_CONTACTS_SELECT_FIELDS = "Объект,Тип,Вид,Представление";
     //Catalog - contacts type
     private static final String CONTACTS_TYPE_ENTRY_SET_NAME = "Catalog_ВидыКонтактнойИнформации";
     private static final String CONTACTS_TYPE_SELECT_FIELDS = "Ref_Key,Description";
     private static final List<String> ORGANISATION_CONTACTS = List.of("Юридична адреса організації", "Телефон організації");
-
-    // Props
-    @Value("classpath:mock1CoData/orders-by-shipping-date/*")
-    private Resource[] mockedOrdersByShippingDate;
-
-    @Value("classpath:mock1CoData/products-by-orders-ref-key/*")
-    private Resource[] mockedProductsByOrdersRefKey;
-
-    private final ClientProperties properties;
     // Services
     private final WebClient webClient;
     private final ODataOrderMapper odataOrderMapper;
@@ -102,10 +112,18 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private final ExternalOrderDataEnricher enricher;
     private final ObjectMapper objectMapper;
     private final ODataInvoiceMapper odataInvoiceMapper;
+    // Props
+    private final ClientProperties properties;
+    @Value("classpath:mock1CoData/orders-by-shipping-date/*")
+    private Resource[] mockedOrdersByShippingDate;
+    @Value("classpath:mock1CoData/products-by-orders-ref-key/*")
+    private Resource[] mockedProductsByOrdersRefKey;
+    @Value("classpath:mock1CoData/invoices-by-orders-ref-key/*")
+    private Resource[] mockedInvoicesByOrdersRefKey;
 
     @Override
     public List<InvoiceDto> getInvoicesByOrderRefKeys(List<String> orderRefKeys) {
-        List<ODataInvoiceDto> oDataInvoiceDtos = getODataInvoiceDtos(orderRefKeys);
+        List<ODataInvoiceDto> oDataInvoiceDtos = getValidInvoicesForOrders(orderRefKeys);
 
         List<ODataInvoiceProductDto> oDataInvoiceProductDtos = getODataInvoiceProducts(oDataInvoiceDtos);
 
@@ -154,14 +172,14 @@ public class GrandeDolceIntegrationService implements IntegrationService {
 
         URI orderUri = buildOrderUri(buildFilter(DATE_FILTER, deliveryDate.atStartOfDay().toString()));
         ODataWrapperDto<ODataOrderDto> oDataWrappedOrderDtos = getOrdersByShippingDate(orderUri);
-
         List<ODataOrderDto> oDataOrderDtosList = oDataWrappedOrderDtos.getValue();
 
         List<List<String>> partitionedOrders = getPartitionOfProductKeys(oDataOrderDtosList);
-
         Map<String, List<ODataProductDto>> allProducts = getProductsByOrders(partitionedOrders);
 
         enrichOrders(oDataOrderDtosList, allProducts);
+
+        excludeInvalidOrders(oDataOrderDtosList);
 
         log.info("{} Orders has been fetched from 1C for date: {} in {}",
                 oDataOrderDtosList.size(), deliveryDate, System.currentTimeMillis() - startTime);
@@ -177,18 +195,65 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .sum();
     }
 
+    private void excludeInvalidOrders(List<ODataOrderDto> allOrders) {
+        List<String> orderRefKeys = getOrderRefKeys(allOrders);
+        List<ODataInvoiceDto> validOrdersInvoices = getValidInvoicesForOrders(orderRefKeys);
+        List<String> validOrdersRefKeys = getRelevantOrderRefKeys(validOrdersInvoices);
+        excludingInvalidOrders(validOrdersRefKeys, allOrders);
+    }
+
+    private void excludingInvalidOrders(List<String> relevantOrderRefKeys, List<ODataOrderDto> source) {
+        for (ODataOrderDto oDataOrderDto : source) {
+            if (oDataOrderDto.getDeletionMark()) {
+                log.info(String.format("Order has been excluded due to deletionMark is true. Number of order %s, shipping date - %s, client - %s",
+                        oDataOrderDto.getOrderNumber(),
+                        oDataOrderDto.getShippingDate(),
+                        oDataOrderDto.getClientName()));
+                excludeOrder(oDataOrderDto, String.format(DELETED_ORDER_EXCLUDE_REASON, oDataOrderDto.getOrderNumber()));
+            } else if (!relevantOrderRefKeys.contains(oDataOrderDto.getRefKey())) {
+                log.info(String.format("Order with number %s, shipping date %s and client %s has been excluded because it does not apply to any invoices",
+                        oDataOrderDto.getOrderNumber(),
+                        oDataOrderDto.getShippingDate(),
+                        oDataOrderDto.getClientName()));
+                excludeOrder(oDataOrderDto, String.format(INVOICE_MISSED_EXCLUDE_REASON, oDataOrderDto.getOrderNumber()));
+            }
+        }
+    }
+
+    private void excludeOrder(ODataOrderDto oDataOrderDto, String reason) {
+        oDataOrderDto.setExcluded(true);
+        oDataOrderDto.setExcludeReason(reason);
+    }
+
+    private List<String> getRelevantOrderRefKeys(List<ODataInvoiceDto> oDataInvoiceDtos) {
+        return oDataInvoiceDtos.stream()
+                .map(ODataInvoiceDto::getOrderRefKey)
+                .collect(Collectors.toList());
+    }
+
+    private List<String> getOrderRefKeys(List<ODataOrderDto> orders) {
+        return orders.stream()
+                .map(ODataOrderDto::getRefKey)
+                .collect(Collectors.toList());
+    }
+
     private List<ODataInvoiceProductDto> getODataInvoiceProducts(List<ODataInvoiceDto> oDataInvoiceDtos) {
         List<List<String>> invoiceKeys = getPartitionOfInvoiceKeys(oDataInvoiceDtos);
         return getODataInvoiceProductDtos(invoiceKeys);
     }
 
-    private List<ODataInvoiceDto> getODataInvoiceDtos(List<String> orderRefKeys) {
-        URI invoiceUri = buildInvoiceUri(createCastFilterByRefKeys(orderRefKeys, DEAL_CAST_REQUEST, ORDER_ENTRY_SET_NAME));
-        ODataWrapperDto<ODataInvoiceDto> oDataWrappedInvoiceDtos = getInvoices(invoiceUri);
-        return filterInvoicesByDeletionMark(oDataWrappedInvoiceDtos.getValue());
+    private List<ODataInvoiceDto> getValidInvoicesForOrders(List<String> orderRefKeys) {
+        return Lists.partition(orderRefKeys, INVOICE_PARTITION_SIZE)
+                .stream()
+                .map(orderKeysPart -> buildInvoiceUri(createCastFilterByRefKeys(orderKeysPart, DEAL_CAST_REQUEST, ORDER_ENTRY_SET_NAME)))
+                .map(this::getInvoices)
+                .map(ODataWrapperDto::getValue)
+                .map(this::filterValidInvoices)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
-    private List<ODataInvoiceDto> filterInvoicesByDeletionMark(List<ODataInvoiceDto> source) {
+    private List<ODataInvoiceDto> filterValidInvoices(List<ODataInvoiceDto> source) {
         List<ODataInvoiceDto> oDataInvoiceDtos = new ArrayList<>();
         for (ODataInvoiceDto oDataInvoiceDto : source) {
             if (oDataInvoiceDto.getDeletionMark()) {
@@ -284,13 +349,16 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     }
 
     private ODataWrapperDto<ODataInvoiceDto> getInvoices(URI uri) {
-        return webClient.get()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoiceDto>>() {
-                })
-                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
-                .block();
+        log.info("Invoice uri: {}", URLDecoder.decode(uri.toString(), StandardCharsets.UTF_8));
+        return fetchMockDataByRequest(uri, mockedInvoicesByOrdersRefKey, new TypeReference<>() {
+                },
+                () -> webClient.get()
+                        .uri(uri)
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoiceDto>>() {
+                        })
+                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                        .block());
     }
 
     private ODataWrapperDto<ODataOrganisationContactsDto> getOrganisationContacts(URI uri) {
@@ -624,7 +692,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                                                           Supplier<ODataWrapperDto<T>> supplier) {
         return Arrays.stream(mockResource)
                 .filter(resource -> Objects.nonNull(resource.getFilename()))
-                .filter(resource -> checkIfMockResourceMathRequest(integrationServiceUri, resource))
+                .filter(resource -> checkIfMockResourceMatchRequest(integrationServiceUri, resource))
                 .findFirst()
                 .map(resource -> {
                     try {
@@ -640,7 +708,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .orElseGet(supplier);
     }
 
-    private boolean checkIfMockResourceMathRequest(URI integrationServiceUri, Resource resource) {
+    private boolean checkIfMockResourceMatchRequest(URI integrationServiceUri, Resource resource) {
         String decodedUrlQuery = URLDecoder.decode(integrationServiceUri.toString(), StandardCharsets.UTF_8);
         String mockFileName = FilenameUtils.removeExtension(resource.getFilename());
         boolean found = decodedUrlQuery.contains(mockFileName == null ? "" : mockFileName);

@@ -26,26 +26,32 @@ public class ODataOrderDto {
     private String refKey;
     @JsonAlias("Number")
     private String orderNumber;
-    @JsonAlias("Date")
+    @JsonAlias("ДатаОтгрузки")
     private LocalDate shippingDate;
+    @JsonAlias("Date")
+    private LocalDate creationDate; // TODO not mapping so far. Clarify if required
     @JsonAlias("АдресДоставки")
     private String address;
     @JsonAlias("Комментарий")
     private String comment;
+    @JsonAlias("DeletionMark")
+    private Boolean deletionMark;
 
     private String clientName;
     private String managerFullName;
     //Enrichment
     private List<Product> products;
     private double orderWeight;
+    private boolean excluded;
+    private String excludeReason;
 
     @JsonProperty("Контрагент")
     private void mapClientName(Map<String, String> value) {
-        this.clientName = value.get("Description");
+        this.clientName = value != null ? value.get("Description") : "Не вказано";
     }
 
     @JsonProperty("Ответственный")
     private void mapManager(Map<String, String> value) {
-        this.managerFullName = value.get("Code");
+        this.managerFullName = value != null ? value.get("Code") : "Не вказано";
     }
 }
