@@ -18,7 +18,8 @@ export const historyApi = createApi({
 				params: {
 					deliveryId
 				}
-			})
+			}),
+			keepUnusedDataFor: 15,
 		})
 	})
 })

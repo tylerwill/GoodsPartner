@@ -14,7 +14,7 @@ import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore'
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess'
 import OrderTableRow from './OrderTableRow/OrderTableRow'
 
-const OrdersTable = ({ orders, keyPrefix, updateOrder }) => {
+const OrdersTable = ({ orders, keyPrefix, updateOrder, isExcluded}) => {
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(25)
 
@@ -82,6 +82,7 @@ const OrdersTable = ({ orders, keyPrefix, updateOrder }) => {
 								<TableCell>Доставка</TableCell>
 								<TableCell sx={{ minWidth: '135px' }}>Час доставки</TableCell>
 								<TableCell>Менеджер</TableCell>
+								{isExcluded && <TableCell>Причина вилучення</TableCell>}
 								<TableCell />
 							</TableRow>
 						</TableHead>
@@ -92,6 +93,7 @@ const OrdersTable = ({ orders, keyPrefix, updateOrder }) => {
 								.map((order, index) => {
 									return (
 										<OrderTableRow
+											isExcluded={isExcluded}
 											order={order}
 											key={keyPrefix + index}
 											keyPrefix={keyPrefix + 'subTable'}

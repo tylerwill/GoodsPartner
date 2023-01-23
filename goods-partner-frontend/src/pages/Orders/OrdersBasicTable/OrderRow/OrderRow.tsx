@@ -8,9 +8,6 @@ import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import Order from '../../../../model/Order'
 import {reformatDate} from '../../../../util/util'
-import {Checkbox} from '@mui/material'
-import {useAppDispatch, useAppSelector} from '../../../../hooks/redux-hooks'
-import {deselectOrder, selectOrder} from '../../../../features/orders/ordersSlice'
 import OrderAdditionalInfo from '../../OrderAdditionalInfo/OrderAdditionalInfo'
 import {ProductsInfoTable} from "../../../../components/ProductsInfoTable/ProductsInfoTable";
 
@@ -32,24 +29,12 @@ const OrderRow = ({
     const [orderTableOpen, setOrderTableOpen] = React.useState(false)
     const isTableOpened = expandAll || (orderTableOpen && !collapseAll)
 
-    const {selectedOrderIds} = useAppSelector(state => state.orders)
-
-    const dispatch = useAppDispatch()
-    const isSelected = selectedOrderIds.includes(order.id)
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.checked) {
-            dispatch(selectOrder(order.id))
-        } else {
-            dispatch(deselectOrder(order.id))
-        }
-        event.preventDefault()
-    }
-
     return (
         <>
             <TableRow sx={{'& > *': {borderBottom: 'unset'}}}>
-                <TableCell padding={'checkbox'}>
+                <TableCell>
                     <IconButton
+                        aria-label='expand row'
                         size='small'
                         onClick={() => {
                             setOrderTableOpen(!orderTableOpen)
@@ -63,20 +48,12 @@ const OrderRow = ({
                         )}
                     </IconButton>
                 </TableCell>
-                <TableCell padding='checkbox'>
-                    <Checkbox
-                        color='primary'
-                        checked={isSelected}
-                        onChange={handleChange}
-                    />
-                </TableCell>
                 <TableCell component='th' scope='row'>
                     {order.orderNumber}
                 </TableCell>
                 <TableCell>{reformatDate(order.shippingDate)}</TableCell>
                 <TableCell>{order.clientName}</TableCell>
                 <TableCell>{order.address}</TableCell>
-                <TableCell>{order.excludeReason}</TableCell>
             </TableRow>
             <TableRow>
                 <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={7}>

@@ -1,6 +1,5 @@
 import {format} from 'date-fns'
 import {DeliveryType} from '../model/DeliveryType'
-import {UserRole} from "../model/User";
 
 export const currentHost = () => {
     return process.env.NODE_ENV === 'development'
@@ -36,18 +35,4 @@ export const toDeliveryTypeString = (deliveryType: DeliveryType) => {
 
 export const formatDecimalNumber = (value: number) => {
     return value.toFixed(2)
-}
-
-export const toUserRoleString = (role: UserRole) => {
-    switch (role) {
-        case UserRole.DRIVER:
-            return 'Водій'
-        case UserRole.ADMIN:
-            return 'Адміністратор'
-        case UserRole.LOGISTICIAN:
-            return 'Логіст'
-
-        default:
-            return "Невідома роль";
-    }
 }

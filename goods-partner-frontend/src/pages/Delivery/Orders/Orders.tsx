@@ -94,7 +94,8 @@ const Orders = () => {
         },
         {
             orders: excludedOrders,
-            keyPrefix: 'excluded'
+            keyPrefix: 'excluded',
+            isExcluded: true
         }
 
     ];
@@ -119,6 +120,7 @@ const Orders = () => {
 
                 {
                     tabs.map(e => <OrdersTable
+                        isExcluded={e.isExcluded}
                         orders={e.orders}
                         keyPrefix={e.keyPrefix}
                         key={"OrderTab" + e.keyPrefix}

@@ -45,7 +45,15 @@ export const deliveriesApi = createApi({
 				method: 'POST'
 			}),
 			invalidatesTags: (result, error, id) => [{ type: 'deliveries', id }]
-		})
+		}),
+
+		deleteDelivery: builder.mutation<Delivery, string>({
+			query: id => ({
+				url: `deliveries/${id}`,
+				method: 'DELETE'
+			}),
+			invalidatesTags: [{ type: 'deliveries', id: 'list' }]
+		}),
 	})
 })
 
@@ -54,5 +62,6 @@ export const {
 	useAddDeliveryMutation,
 	useGetDeliveryQuery,
 	useCalculateDeliveryMutation,
-	useApproveDeliveryMutation
+	useApproveDeliveryMutation,
+	useDeleteDeliveryMutation
 } = deliveriesApi

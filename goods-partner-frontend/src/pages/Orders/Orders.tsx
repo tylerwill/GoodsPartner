@@ -1,10 +1,10 @@
 import React from 'react'
 import {Box, Typography} from '@mui/material'
 import BasicTabs from '../../hoc/BasicTabs/BasicTabs'
-import {useActions, useAppDispatch, useAppSelector} from '../../hooks/redux-hooks'
-import DeliveredOrders from './DiliveredOrders/DiliveredOrders'
+import {useActions, useAppSelector} from '../../hooks/redux-hooks'
 import SkippedOrders from './SkippedOrders/SkippedOrders'
-import ScheduledOrders from "./ScheduledOrders/ScheduledOrders";
+import {DeliveredOrdersContainer} from "./DeliveredOrdersContainer/DeliveredOrdersContainer";
+import { ScheduledOrdersContainer } from './ScheduledOrdersContainer/ScheduledOrdersContainer'
 
 const Orders = () => {
     const {tabIndex} = useAppSelector(state => state.orders)
@@ -44,9 +44,9 @@ const Orders = () => {
                     fullWidth={false}
                     styles={styles}
                 >
-                    <DeliveredOrders/>
+                    <DeliveredOrdersContainer/>
                     <SkippedOrders/>
-                    <ScheduledOrders/>
+                    <ScheduledOrdersContainer/>
                 </BasicTabs>
             </Box>
         </section>
