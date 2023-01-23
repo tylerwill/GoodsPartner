@@ -1,4 +1,4 @@
-package com.goodspartner.service;
+package com.goodspartner.service.document.style;
 
 import com.goodspartner.service.dto.CellStyles;
 import org.apache.poi.ss.usermodel.CellStyle;

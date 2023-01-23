@@ -22,6 +22,7 @@ public interface RouteRepository extends JpaRepository<Route, Long> {
     List<Route> findByDeliveryIdExtended(@Param("id") UUID deliveryId, Sort defaultRouteSort);
 
     @EntityGraph(attributePaths = {"routePoints", "car.driver"})
+    @Query(value = "SELECT r FROM Route r WHERE r.delivery.id = :id")
     List<Route> findByDeliveryId(@Param("id") UUID deliveryId);
 
     @EntityGraph(attributePaths = {"routePoints", "routePoints.addressExternal", "car", "store"})

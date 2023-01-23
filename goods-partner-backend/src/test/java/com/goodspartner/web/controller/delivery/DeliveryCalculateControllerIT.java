@@ -48,10 +48,10 @@ public class DeliveryCalculateControllerIT extends AbstractWebITest {
                 .andExpect(status().isForbidden());
     }
 
-    @Disabled // TODO fix dataset
+    @Disabled // TODO required fix. Flow is not covered!!
     @Test
-    @DataSet(value = "datasets/delivery/delivery.yml", skipCleaningFor = "flyway_schema_history",
-            cleanAfter = true, cleanBefore = true)
+    @DataSet(value = "datasets/delivery/delivery.yml",
+            skipCleaningFor = "flyway_schema_history", cleanAfter = true, cleanBefore = true)
     @ExpectedDataSet(value = "delivery/delivery.yml")
     @DisplayName("when save orders with at least one unknown address provided then not found status returned")
     void whenSaveOrdersWithAtLeastOneUnknownAddressProvided_thenNotFoundReturned() throws Exception {

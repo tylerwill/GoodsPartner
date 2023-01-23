@@ -1,4 +1,4 @@
-package com.goodspartner.service.impl;
+package com.goodspartner.service.document;
 
 import com.goodspartner.configuration.properties.ClientProperties;
 import com.goodspartner.dto.InvoiceDto;
@@ -6,7 +6,6 @@ import com.goodspartner.dto.InvoiceProduct;
 import com.goodspartner.exception.RoutePointNotFoundException;
 import com.goodspartner.report.ReportResult;
 import com.goodspartner.repository.RoutePointRepository;
-import com.goodspartner.service.DocumentService;
 import com.goodspartner.service.IntegrationService;
 import com.goodspartner.service.util.DocumentCreator;
 import com.goodspartner.util.ObjectConverterUtil;

@@ -13,8 +13,7 @@ public class ReportUtils {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
 
     public static String reportGenerationTime() {
-        String currentTime = DATE_TIME_FORMATTER.format(LocalDateTime.now());
-        return currentTime;
+        return DATE_TIME_FORMATTER.format(LocalDateTime.now());
     }
 
     public static InputStream getTemplate(String templatePath) {
@@ -22,8 +21,7 @@ public class ReportUtils {
     }
 
     public static String generateReportName(String name, LocalDate date) {
-        String reportName = "[" + reportGenerationTime() + "]" + name + date + ".xlsx";
-        return reportName;
+        return "[" + reportGenerationTime() + "]" + name + date + ".xlsx";
     }
 
     public static void copyCells(Row sourceRow, Row destinationRow) {

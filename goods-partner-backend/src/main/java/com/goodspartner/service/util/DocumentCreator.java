@@ -2,7 +2,7 @@ package com.goodspartner.service.util;
 
 import com.goodspartner.report.ReportResult;
 import com.goodspartner.report.ReportUtils;
-import com.goodspartner.service.CellStyleService;
+import com.goodspartner.service.document.style.CellStyleService;
 import com.goodspartner.service.dto.CellStyles;
 import com.goodspartner.service.dto.DocumentCellInfoDto;
 import com.goodspartner.service.dto.PreparedDocumentData;
@@ -16,7 +16,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

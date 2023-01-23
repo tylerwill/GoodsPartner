@@ -17,9 +17,7 @@ import java.util.Optional;
 public class ExternalOrderPostProcessor {
 
     private static final String FROZEN = "заморозка";
-
-    private static final List<String> POSTAL_KEYWORDS = Arrays.asList("нова пошта", "новапошта", " НП ");
-
+    private static final List<String> POSTAL_KEYWORDS = Arrays.asList("нова пошта", "новапошта", " НП ", "делівері", "delivery");
     private static final String PRE_PACKING = "фасовк"; // Include "фасовка"
     private static final String SELF_SERVICE = "самовивіз";
 

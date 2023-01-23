@@ -1,6 +1,6 @@
 package com.goodspartner.web.controller;
 
-import com.goodspartner.service.DocumentService;
+import com.goodspartner.service.document.DocumentService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;

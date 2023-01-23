@@ -1,4 +1,4 @@
-package com.goodspartner.service;
+package com.goodspartner.service.document;
 
 import java.util.zip.ZipOutputStream;
 
