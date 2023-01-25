@@ -50,7 +50,7 @@ public class ODataInvoiceDto {
     private ODataOrganisationCodesDto organisationCodes;
     private String phone;
     private String address;
-
+    private Boolean buhBaseProperty;
 
     @JsonProperty("Организация")
     private void mapCompanyName(Map<String, String> value) {

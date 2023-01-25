@@ -3,6 +3,7 @@ package com.goodspartner.mapper;
 import com.goodspartner.dto.InvoiceProduct;
 import com.goodspartner.service.dto.external.grandedolce.ODataInvoiceDto;
 import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
 
@@ -24,7 +25,8 @@ public abstract class AbstractODataInvoiceMapper {
 
     @Named("mapCompanyInformation")
     public String mapCompanyInformation(ODataInvoiceDto oDataInvoiceDto) {
-        return "п/р " + oDataInvoiceDto.getCompanyAccount() +
+        return oDataInvoiceDto.getBuhBaseProperty()
+                ? "п/р " + oDataInvoiceDto.getCompanyAccount() +
                 " у банку " + oDataInvoiceDto.getBankName() +
                 ", МФО " + oDataInvoiceDto.getMfoCode() +
                 " " + oDataInvoiceDto.getAddress() +
@@ -32,7 +34,8 @@ public abstract class AbstractODataInvoiceMapper {
                 ", код ЄДРПОУ " + oDataInvoiceDto.getOrganisationCodes().getEdrpouCode() +
                 ", ІПН " + oDataInvoiceDto.getOrganisationCodes().getInnCode() +
                 ", № свід. " + oDataInvoiceDto.getOrganisationCodes().getOrganisationNumberCode() +
-                ", Є платником податку на прибуток на загальних підставах";
+                ", Є платником податку на прибуток на загальних підставах"
+                : StringUtils.EMPTY;
     }
 
     @Named("mapOrderInfo")

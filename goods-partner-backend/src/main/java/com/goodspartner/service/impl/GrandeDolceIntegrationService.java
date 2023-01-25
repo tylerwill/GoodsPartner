@@ -10,15 +10,7 @@ import com.goodspartner.mapper.ODataInvoiceMapper;
 import com.goodspartner.mapper.ODataOrderMapper;
 import com.goodspartner.mapper.ProductMapper;
 import com.goodspartner.service.IntegrationService;
-import com.goodspartner.service.dto.external.grandedolce.ODataContactsTypeDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataInvoiceDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataInvoiceProductDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataOrganisationCodesDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataOrganisationContactsDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataProductGtdDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataWrapperDto;
+import com.goodspartner.service.dto.external.grandedolce.*;
 import com.goodspartner.util.ExternalOrderDataEnricher;
 import com.goodspartner.util.ODataUrlBuilder;
 import com.google.common.collect.Lists;
@@ -74,6 +66,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private static final String ORGANISATION_CATALOG = "Catalog_Организации";
     private static final String ADDRESS_CONTACT_TYPE = "Адрес";
     private static final String PHONE_CONTACT_TYPE = "Телефон";
+    private static final String SHOULD_LOAD_TO_BUH_BASE = "Вивантажувати в бух. базу";
     // Order fetching
     private static final String DATE_FILTER = "ДатаОтгрузки eq datetime'%s'";
     private static final String ORDER_ENTRY_SET_NAME = "Document_ЗаказПокупателя";
@@ -100,10 +93,15 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     // Information register - organisation contacts
     private static final String ORGANISATION_CONTACTS_ENTRY_SET_NAME = "InformationRegister_КонтактнаяИнформация";
     private static final String ORGANISATION_CONTACTS_SELECT_FIELDS = "Объект,Тип,Вид,Представление";
+    // Information register - object properties
+    private static final  String INVOICE_PROPERTIES_ENTRY_SET_NAME = "InformationRegister_ЗначенияСвойствОбъектов";
+    private static final String INVOICE_PROPERTIES_SELECT_FIELDS = "Объект,Свойство_Key,Значение,Свойство/Description";
+    private static final String INVOICE_PROPERTIES_EXPAND_FIELDS = "Свойство";
     //Catalog - contacts type
     private static final String CONTACTS_TYPE_ENTRY_SET_NAME = "Catalog_ВидыКонтактнойИнформации";
     private static final String CONTACTS_TYPE_SELECT_FIELDS = "Ref_Key,Description";
     private static final List<String> ORGANISATION_CONTACTS = List.of("Юридична адреса організації", "Телефон організації");
+
     // Services
     private final WebClient webClient;
     private final ODataOrderMapper odataOrderMapper;
@@ -162,6 +160,13 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         Map<String, String> contactMap = getContactMap(oDataOrganisationContactsDtos);
         addOrganisationContactsToInvoices(oDataInvoiceDtos, contactMap);
 
+        URI invoicePropertiesUri = buildInvoicePropertiesUri(createCastFilterByRefKeys(getInvoicesRefKeys(oDataInvoiceDtos), OBJECT_CAST_REQUEST, INVOICE_ENTRY_SET_NAME));
+        ODataWrapperDto<ODataInvoicePropertiesDto> invoicePropertiesWrapper = getInvoiceProperties(invoicePropertiesUri);
+        List<ODataInvoicePropertiesDto> rawInvoiceProperties = invoicePropertiesWrapper.getValue();
+        List<ODataInvoicePropertiesDto> invoiceProperties = filterBuhBaseProperties(rawInvoiceProperties);
+        Map<String, Boolean> buhBasePropertiesMap = getBuhBasePropertiesMap(invoiceProperties);
+        addBuhBasePropertyToInvoices(oDataInvoiceDtos, buhBasePropertiesMap);
+
         return odataInvoiceMapper.mapList(oDataInvoiceDtos);
     }
 
@@ -193,6 +198,18 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .stream()
                 .mapToDouble(OrderDto::getOrderWeight)
                 .sum();
+    }
+
+    private List<String> getInvoicesRefKeys(List<ODataInvoiceDto> oDataInvoiceDtos){
+        return oDataInvoiceDtos.stream()
+                .map(ODataInvoiceDto::getRefKey)
+                .collect(Collectors.toList());
+    }
+
+    private List<ODataInvoicePropertiesDto> filterBuhBaseProperties(List<ODataInvoicePropertiesDto> source){
+        return source.stream()
+                .filter(property -> SHOULD_LOAD_TO_BUH_BASE.equals(property.getPropertyName()))
+                .collect(Collectors.toList());
     }
 
     private void excludeInvalidOrders(List<ODataOrderDto> allOrders) {
@@ -371,6 +388,16 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .block();
     }
 
+    private ODataWrapperDto<ODataInvoicePropertiesDto> getInvoiceProperties(URI uri) {
+        return webClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoicePropertiesDto>>() {
+                })
+                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                .block();
+    }
+
     private ODataWrapperDto<ODataProductGtdDto> getODataProductGtdDtos(URI productUri) {
         return webClient.get()
                 .uri(productUri)
@@ -447,6 +474,18 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .appendEntitySetSegment(ORGANISATION_CONTACTS_ENTRY_SET_NAME)
                 .filter(filter)
                 .select(ORGANISATION_CONTACTS_SELECT_FIELDS)
+                .format(FORMAT)
+                .build();
+    }
+
+    private URI buildInvoicePropertiesUri(String filter) {
+        return new ODataUrlBuilder()
+                .baseUrl(properties.getClientServerURL())
+                .hostPrefix(properties.getServer1CUriPrefix() + PREFIX_ODATA)
+                .appendEntitySetSegment(INVOICE_PROPERTIES_ENTRY_SET_NAME)
+                .filter(filter)
+                .expand(INVOICE_PROPERTIES_EXPAND_FIELDS)
+                .select(INVOICE_PROPERTIES_SELECT_FIELDS)
                 .format(FORMAT)
                 .build();
     }
@@ -613,6 +652,14 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         return contactMap;
     }
 
+    private Map<String, Boolean> getBuhBasePropertiesMap(List<ODataInvoicePropertiesDto> invoiceProperties) {
+        return invoiceProperties.stream()
+                .collect(Collectors.toMap(
+                        ODataInvoicePropertiesDto::getInvoiceRefKey,
+                        ODataInvoicePropertiesDto::getPropertyValue
+                ));
+    }
+
     /**
      * Insert into OrderDto its List of products and total weight of order
      */
@@ -654,6 +701,13 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         for (ODataInvoiceDto oDataInvoiceDto : oDataInvoiceDtos) {
             oDataInvoiceDto.setAddress(contactMap.get(ADDRESS_CONTACT_TYPE));
             oDataInvoiceDto.setPhone(contactMap.get(PHONE_CONTACT_TYPE));
+        }
+    }
+
+    private void addBuhBasePropertyToInvoices(List<ODataInvoiceDto> oDataInvoiceDtos, Map<String, Boolean> propertyMap) {
+        for (ODataInvoiceDto oDataInvoiceDto : oDataInvoiceDtos) {
+            Boolean buhBaseProperty = propertyMap.get(oDataInvoiceDto.getRefKey());
+            oDataInvoiceDto.setBuhBaseProperty(buhBaseProperty !=null ? buhBaseProperty : false);
         }
     }
 
