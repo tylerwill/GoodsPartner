@@ -48,11 +48,10 @@ google:
     region: ua
     language: uk-UK
     boundaries:
-      north: 51.53115
-      south: 49.179171
-      east: 32.160730
-      west: 29.266897
-
+      north: 51.0
+      south: 49.5
+      east: 31.5
+      west: 29.5
 
 
 

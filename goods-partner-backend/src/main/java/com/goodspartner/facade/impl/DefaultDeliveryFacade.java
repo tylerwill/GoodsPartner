@@ -8,6 +8,7 @@ import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RouteStatus;
+import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exception.UnknownAddressException;
 import com.goodspartner.facade.DeliveryFacade;
 import com.goodspartner.facade.OrderFacade;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.goodspartner.entity.AddressStatus.UNKNOWN;
+import static com.goodspartner.entity.DeliveryStatus.DRAFT;
 
 @Service
 @RequiredArgsConstructor
@@ -65,6 +67,10 @@ public class DefaultDeliveryFacade implements DeliveryFacade {
         orderFacade.validateOrdersForDeliveryCalculation(deliveryId); // Do not create Delivery with UNKNOWN orders address
 
         Delivery delivery = deliveryService.findById(deliveryId);
+        if (!DRAFT.equals(delivery.getStatus())) { //  Delivery recalculation only for Draft
+            throw new IllegalDeliveryStatusForOperation(delivery, "recalculate");
+        }
+
         delivery.setFormationStatus(DeliveryFormationStatus.ROUTE_CALCULATION);
 
         deliveryCalculationHelper.calculate(deliveryId);  // Calculated in async method
