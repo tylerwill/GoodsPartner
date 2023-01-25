@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
 public class GrandeDolceIntegrationService implements IntegrationService {
     // Order exclude resons
     private static final String DELETED_ORDER_EXCLUDE_REASON = "Замовлення: %s має флаг видалення в 1С";
-    private static final String INVOICE_MISSED_EXCLUDE_REASON = "Відсутні або видалені транспортні документи в 1С для замовлення: %s";
+    private static final String INVOICE_MISSED_EXCLUDE_REASON = "Відсутня або видалена видаткова в 1С для замовлення: %s";
     // 1C data fetch configuration // TODO move to properties.yml and later to configuration
     private static final int PARTITION_SIZE = 100;
     private static final int INVOICE_PARTITION_SIZE = 25;

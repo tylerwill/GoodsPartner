@@ -49,7 +49,7 @@ public class Route {
     private Long spentTime; // TODO Minutes? Only for completed so far
     private Boolean optimization;
 
-    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("completedAt ASC, expectedCompletion ASC")
     private List<RoutePoint> routePoints = new ArrayList<>();
 

@@ -13,11 +13,13 @@ import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.service.GeocodeService;
 import com.goodspartner.service.client.GoogleClient;
 import com.google.maps.model.GeocodingResult;
+import com.google.maps.model.LocationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.goodspartner.entity.AddressStatus.AUTOVALIDATED;
@@ -27,6 +29,10 @@ import static com.goodspartner.entity.AddressStatus.UNKNOWN;
 @Service
 @RequiredArgsConstructor
 public class GoogleGeocodeService implements GeocodeService {
+
+    // TODO check if GEOMETRIC_CENTER is ok to pass
+    private static final List<LocationType> INVALID_LOCATION_TYPES =
+            List.of(LocationType.APPROXIMATE, LocationType.UNKNOWN);
 
     private final RoutePointMapper routePointMapper;
     private final GoogleClient googleClient;
@@ -80,30 +86,47 @@ public class GoogleGeocodeService implements GeocodeService {
         try {
             GeocodingResult[] geocodingResults = googleClient.getGeocodingResults(orderDto.getAddress());
             if (geocodingResults == null || geocodingResults.length == 0) { // Nothing found
+                log.warn("No geocodingResults returned for address: {}", orderDto.getAddress());
                 return routePointMapper.getUnknownMapPoint();
             }
 
-            GeocodingResult geocodingResult = geocodingResults[0]; // Always get the first available result
-            String geocodedAddress = geocodingResult.formattedAddress;
-            double latitude = geocodingResult.geometry.location.lat;
-            double longitude = geocodingResult.geometry.location.lng;
-
-            //address outside defined area
-            if (isInvalidRegionBoundaries(latitude, longitude)) {
-                log.warn("Address: {} is out of delivery area", orderDto.getAddress());
-                return routePointMapper.getUnknownMapPoint();
-            }
-            return MapPoint.builder()
-                    .address(geocodedAddress)
-                    .longitude(longitude)
-                    .latitude(latitude)
-                    .status(AUTOVALIDATED)
-                    .build();
+            return Arrays.stream(geocodingResults)
+                    .filter(geocodingResult -> !INVALID_LOCATION_TYPES.contains(geocodingResult.geometry.locationType))
+                    .findFirst()
+                    .map(this::mapValidGeocodingResult)
+                    .orElseGet(() -> mapInvalidGeocodingResults(geocodingResults, orderDto));
 
         } catch (GoogleApiException e) {
             log.error("Exception thrown while trying to geocode order with address: {}", orderDto.getAddress(), e);
             return routePointMapper.getUnknownMapPoint();
         }
+    }
+
+    private MapPoint mapValidGeocodingResult(GeocodingResult geocodingResult) {
+        String geocodedAddress = geocodingResult.formattedAddress;
+        double latitude = geocodingResult.geometry.location.lat;
+        double longitude = geocodingResult.geometry.location.lng;
+
+        //address outside defined area
+        if (isInvalidRegionBoundaries(latitude, longitude)) {
+            log.warn("Address: {} is out of delivery area", geocodingResult.formattedAddress);
+            return routePointMapper.getUnknownMapPoint();
+        }
+
+        log.debug("Valid geocode - {}", geocodingResult);
+
+        return MapPoint.builder()
+                .address(geocodedAddress)
+                .longitude(longitude)
+                .latitude(latitude)
+                .status(AUTOVALIDATED)
+                .build();
+    }
+
+    private MapPoint mapInvalidGeocodingResults(GeocodingResult[] geocodingResults, OrderDto orderDto) {
+        log.debug("No valid geocodingResults for address: {}", orderDto.getAddress());
+        Arrays.stream(geocodingResults).forEach(gr -> log.debug("- {}", gr));
+        return routePointMapper.getUnknownMapPoint();
     }
 
     public boolean isInvalidRegionBoundaries(double latitude, double longitude) {

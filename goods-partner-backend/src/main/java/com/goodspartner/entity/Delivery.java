@@ -45,11 +45,11 @@ public class Delivery {
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
     private List<OrderExternal> orders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")
     private List<Route> routes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CarLoad> carLoads = new ArrayList<>();
 
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)

@@ -94,9 +94,9 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/delivery/get-delivery-response.json")));
-        assertSelectCount(1);
-        assertUpdateCount(1);
-        assertDeleteCount(0);
+        assertSelectCount(7); // we remove orphans
+        assertUpdateCount(0);
+        assertDeleteCount(4);
     }
 
     @Test
@@ -119,7 +119,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
     @Test
     @DataSet(value = "datasets/delivery/delete_delivery_dataset.yml", skipCleaningFor = "flyway_schema_history",
             cleanAfter = true, cleanBefore = true)
-    @ExpectedDataSet(value = "delivery/delete_delivery.yml")
+    @ExpectedDataSet(value = "datasets/delivery/delete_delivery.yml")
     @DisplayName("when Delete Delivery then Ok Status Returned")
     void whenDeleteDelivery_thenOkStatusReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders

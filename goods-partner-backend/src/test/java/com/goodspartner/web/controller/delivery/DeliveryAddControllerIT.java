@@ -26,6 +26,7 @@ import com.goodspartner.service.client.GoogleClient;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.Geometry;
 import com.google.maps.model.LatLng;
+import com.google.maps.model.LocationType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -300,6 +301,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         LatLng latLngMockForAutovalidatedAddress = new LatLng(latitude, longitude);
         Geometry geometryMockForAutovalidatedAddress = new Geometry();
         geometryMockForAutovalidatedAddress.location = latLngMockForAutovalidatedAddress;
+        geometryMockForAutovalidatedAddress.locationType = LocationType.ROOFTOP;
 
         GeocodingResult geocodingResultForAutovalidatedAddress = new GeocodingResult();
         geocodingResultForAutovalidatedAddress.formattedAddress = formattedAddress;

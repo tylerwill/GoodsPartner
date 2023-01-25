@@ -8,6 +8,7 @@ import com.goodspartner.service.LiveEventService;
 import com.goodspartner.service.UserService;
 import com.goodspartner.util.AuditorBuilder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 import static com.goodspartner.entity.DeliveryHistoryTemplate.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DefaultEventService implements EventService {
@@ -134,6 +136,25 @@ public class DefaultEventService implements EventService {
     }
 
     @Override
+    public void publishDroppedOrdersEvent(UUID deliveryId, List<OrderExternal> orders) {
+
+        List<OrderExternal> droppedOrders = orders.stream().filter(OrderExternal::isDropped).toList();
+        if (droppedOrders.isEmpty()) {
+            log.debug("No dropped orders during delivery calculation");
+            return;
+        }
+
+        String template = DROPPED_ORDERS.getTemplate();
+        Map<String, String> values = Map.of("droppedOrdersAmount", String.valueOf(droppedOrders.size()));
+        String message = StringSubstitutor.replace(template, values);
+
+        // TODO change to warning once frontend is ready
+        //  and required ORDER_UPDATED even when 0 dropped so that recalculation could update the state as well
+        liveEventService.publishToAdminAndLogistician(
+                new LiveEvent(message, EventType.INFO, new Action(ActionType.ORDER_UPDATED, deliveryId)));
+    }
+
+    @Override
     public void publishEvent(LiveEvent event) {
         liveEventService.publishToAdminAndLogistician(event);
     }
@@ -148,6 +169,7 @@ public class DefaultEventService implements EventService {
         publishPreparedEvent(values, ROUTE_STATUS_AUTO, route);
     }
 
+    // TODO separate method for Route events
     private void publishPreparedEvent(Map<String, String> values, DeliveryHistoryTemplate template, Route route) {
 
         StringSubstitutor sub = new StringSubstitutor(values);

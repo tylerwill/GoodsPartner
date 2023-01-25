@@ -49,7 +49,7 @@ public class GoogleVRPSolver implements VRPSolver {
     // TimeWindow
     private static final String VEHICLE_TIME_DIMENSION_NAME = "Time";
     private static final long SLACK_TIME_WINDOW_MIN = 120L;
-    private static final long MAX_ROUTE_TIME_MIN = 10 * 60L;
+    private static final long MAX_ROUTE_TIME_MIN = 12 * 60L;
     private static final boolean START_FROM_DEPOT_FALSE = false;
 
     private static final LocalTime DEFAULT_DEPOT_START_TIME = LocalTime.of(8, 0); // 0 start of a day

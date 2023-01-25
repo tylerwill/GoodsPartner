@@ -154,7 +154,7 @@ function calculateRoute(waypointsParts, callback) {
 		var waypoints = []
 		for (var j = 1; j < waypointsParts[i].length - 1; j++) {
 			const current = waypointsParts[i][j]
-			waypoints.push({ location: current, stopover: false })
+			waypoints.push({ location: current, stopover: true })
 		}
 
 		const origin = waypointsParts[i][0]

@@ -68,7 +68,8 @@ public class DefaultDeliveryService implements DeliveryService {
             throw new IllegalDeliveryStatusForOperation(deliveryToDelete, "delete");
         }
 
-        deliveryRepository.softDeleteById(deliveryToDelete.getId());
+        // Hard delete entries in Draft status
+        deliveryRepository.delete(deliveryToDelete);
 
         return deliveryToDelete;
     }

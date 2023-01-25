@@ -73,8 +73,8 @@ class GrandeDolceIntegrationServiceITest extends AbstractBaseITest {
 
         Assertions.assertEquals(3, excludedList.size());
         Assertions.assertEquals("Замовлення: 00000002414 має флаг видалення в 1С", excludedList.get(orderExcludedByDeletedMark));
-        Assertions.assertEquals("Відсутні або видалені транспортні документи в 1С для замовлення: 00000002515", excludedList.get(orderExcludedByDeletedInvoice));
-        Assertions.assertEquals("Відсутні або видалені транспортні документи в 1С для замовлення: 00000002413", excludedList.get(orderExcludedAsNoInvoiceFound));
+        Assertions.assertEquals("Відсутня або видалена видаткова в 1С для замовлення: 00000002515", excludedList.get(orderExcludedByDeletedInvoice));
+        Assertions.assertEquals("Відсутня або видалена видаткова в 1С для замовлення: 00000002413", excludedList.get(orderExcludedAsNoInvoiceFound));
     }
 
     @Test

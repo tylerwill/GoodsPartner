@@ -65,33 +65,11 @@ public class DefaultDeliveryFacade implements DeliveryFacade {
         orderFacade.validateOrdersForDeliveryCalculation(deliveryId); // Do not create Delivery with UNKNOWN orders address
 
         Delivery delivery = deliveryService.findById(deliveryId);
-        List<OrderExternal> orders = delivery.getOrders();
-        resetOrders(orders); // If delivery already have order silently reset and exit for recalculation
-
         delivery.setFormationStatus(DeliveryFormationStatus.ROUTE_CALCULATION);
 
         deliveryCalculationHelper.calculate(deliveryId);  // Calculated in async method
 
         return delivery;
-    }
-
-    private void validateOrdersAddressesForDeliveryCalculation(List<OrderExternal> orders) {
-        orders.stream()
-                .filter(order -> DeliveryType.REGULAR.equals(order.getDeliveryType()))
-                .map(OrderExternal::getAddressExternal)
-                .filter(addressExternal -> UNKNOWN.equals(addressExternal.getStatus()))
-                .findFirst()
-                .ifPresent(addressExternal -> {
-                    throw new UnknownAddressException(addressExternal);
-                });
-    }
-
-    private void resetOrders(List<OrderExternal> orders) {
-        orders.forEach(orderExternal -> {
-            orderExternal.setCarLoad(null);
-            orderExternal.setRoutePoint(null);
-            orderExternal.setDropped(false);
-        });
     }
 
 }
