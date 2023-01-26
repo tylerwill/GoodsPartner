@@ -37,6 +37,7 @@ const ChooseAddressDialog = () => {
 
 	const [orderToUpdate, setOrderToUpdate] = useState<Order>(order)
 	const address = orderToUpdate.mapPoint.status  === 'UNKNOWN' ? orderToUpdate.address : orderToUpdate.mapPoint.address;
+	const [addressToUpdate, setAddressToUpdate] = useState(address);
 
 	const handleUpdateAddress = () => {
 		updateOrder(orderToUpdate)
@@ -48,14 +49,14 @@ const ChooseAddressDialog = () => {
 
 	const center = isValidAddress
 		? {
-				lat: orderToUpdate.mapPoint.latitude,
-				lng: orderToUpdate.mapPoint.longitude
-		  }
+			lat: orderToUpdate.mapPoint.latitude,
+			lng: orderToUpdate.mapPoint.longitude
+		}
 		: {
-				// Kiev center
-				lat: 50.4520355,
-				lng: 30.53269055
-		  }
+			// Kiev center
+			lat: 50.4520355,
+			lng: 30.53269055
+		}
 
 	const mapRef = useRef<any>(undefined)
 	const autocompleteRef = useRef<any>(undefined)
@@ -66,7 +67,8 @@ const ChooseAddressDialog = () => {
 	}
 
 	const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setOrderToUpdate({ ...orderToUpdate, address: e.target.value })
+		setAddressToUpdate( e.target.value );
+		setOrderToUpdate({ ...orderToUpdate, address: addressToUpdate })
 	}
 
 	// Todo: debouce auto complete
@@ -117,6 +119,7 @@ const ChooseAddressDialog = () => {
 						}
 						const formattedAddress = place.formatted_address
 						const location = place.geometry.location
+						setAddressToUpdate(formattedAddress);
 						setCoordinates(formattedAddress, location.lat(), location.lng())
 					}}
 				>
@@ -128,7 +131,7 @@ const ChooseAddressDialog = () => {
 						type='text'
 						fullWidth
 						variant='outlined'
-						value={address}
+						value={addressToUpdate}
 						onChange={handleAddressChange}
 					/>
 				</Autocomplete>
@@ -138,6 +141,7 @@ const ChooseAddressDialog = () => {
 					zoom={12}
 					onLoad={onLoad}
 					mapContainerStyle={containerStyle}
+
 					options={{
 						streetViewControl: false,
 						mapTypeControl: false

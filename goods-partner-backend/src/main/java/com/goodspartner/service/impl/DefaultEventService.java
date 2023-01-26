@@ -34,9 +34,9 @@ public class DefaultEventService implements EventService {
 
     @Override
     public void publishDeliveryEvent(DeliveryHistoryTemplate template, UUID deliveryId) {
-        String action = fillActionWithAuditor(template.getTemplate());
+        String message = fillActionWithAuditor(template.getTemplate());
 
-        DeliveryAuditEvent deliveryAuditEvent = new DeliveryAuditEvent(action, deliveryId);
+        DeliveryAuditEvent deliveryAuditEvent = new DeliveryAuditEvent(message, deliveryId);
 
         applicationEventPublisher.publishEvent(deliveryAuditEvent);
 
@@ -152,6 +152,12 @@ public class DefaultEventService implements EventService {
         //  and required ORDER_UPDATED even when 0 dropped so that recalculation could update the state as well
         liveEventService.publishToAdminAndLogistician(
                 new LiveEvent(message, EventType.INFO, new Action(ActionType.ORDER_UPDATED, deliveryId)));
+    }
+
+    @Override
+    public void publishRoutesUpdated(UUID deliveryId) {
+        liveEventService.publishToAdminAndLogistician(
+                new LiveEvent(ROUTES_UPDATED.getTemplate(), EventType.INFO, new Action(ActionType.ROUTE_UPDATED, deliveryId)));
     }
 
     @Override

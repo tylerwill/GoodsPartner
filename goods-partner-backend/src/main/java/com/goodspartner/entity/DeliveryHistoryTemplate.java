@@ -14,6 +14,7 @@ public enum DeliveryHistoryTemplate {
     ROUTE_STATUS("${roleTranslated} ${userName} змінив(ла) статус маршрута до авто ${carName} ${carLicensePlate} на ${routeStatus}"),
     ROUTE_STATUS_AUTO("Змінився статус маршрута до авто ${carName} ${carLicensePlate} на ${routeStatus}"),
     ROUTE_START("${roleTranslated} ${userName} розпочав(ла) маршрут до авто ${carName} ${carLicensePlate}"),
+    ROUTES_UPDATED("Маршрути оновлені"),
     ORDERS_LOADING("${roleTranslated} ${userName} вивантажує замовлення замовлення з 1С"),
     ORDERS_LOADED("${roleTranslated} ${userName} вивантажив(ла) замовлення з 1С"),
     DROPPED_ORDERS("Увага! У розрахунок доставки не увійшли ${droppedOrdersAmount} замовлень"),

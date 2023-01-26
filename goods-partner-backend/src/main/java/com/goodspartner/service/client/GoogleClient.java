@@ -34,6 +34,7 @@ public class GoogleClient {
             return GeocodingApi.geocode(context, address)
                     .bounds(southWest, northEast)
                     .region(googleGeocodeProperties.getRegion())
+//                    .components(ComponentFilter.administrativeArea()) // TODO: місто Київ / Київська область / Київська обл.
                     .language(googleGeocodeProperties.getLanguage())
                     .await();
         } catch (IOException | ApiException | InterruptedException e) {

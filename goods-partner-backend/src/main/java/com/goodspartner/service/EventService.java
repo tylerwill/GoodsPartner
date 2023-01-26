@@ -34,4 +34,7 @@ public interface EventService {
     void publishOrdersStatus(DeliveryHistoryTemplate template, UUID deliveryId);
 
     void publishDroppedOrdersEvent(UUID deliveryId, List<OrderExternal> orders);
+
+    void publishRoutesUpdated(UUID deliveryId);
+
 }

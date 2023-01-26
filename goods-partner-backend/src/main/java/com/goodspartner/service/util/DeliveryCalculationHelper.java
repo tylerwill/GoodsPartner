@@ -73,6 +73,7 @@ public class DeliveryCalculationHelper {
             log.info("Sending notification for calculation status");
             eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, deliveryId);
             eventService.publishDroppedOrdersEvent(deliveryId, includedOrders);
+            eventService.publishRoutesUpdated(deliveryId);
             // TODO routeUpdate required on FE as well
             log.info("Finished calculation for delivery with id: {}", deliveryId);
         } catch (Exception exception) {

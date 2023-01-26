@@ -41,7 +41,7 @@ public class GoogleVRPSolver implements VRPSolver {
     public static final int SERVICE_TIME_AT_LOCATION_MIN = 15; // minutes
 
     private static final int ROUTE_START_INDEX = 0;
-    private static final int SOLUTION_PROCESSING_TIME_SEC = 30;
+    private static final int SOLUTION_PROCESSING_TIME_SEC = 30; // 30s
     // Capacity
     private static final String VEHICLE_CAPACITY_DIMENSION_NAME = "Capacity";
     private static final int SLACK_CAPACITY = 0;
@@ -49,7 +49,7 @@ public class GoogleVRPSolver implements VRPSolver {
     // TimeWindow
     private static final String VEHICLE_TIME_DIMENSION_NAME = "Time";
     private static final long SLACK_TIME_WINDOW_MIN = 120L;
-    private static final long MAX_ROUTE_TIME_MIN = 12 * 60L;
+    private static final long MAX_ROUTE_TIME_MIN = 10 * 60L;
     private static final boolean START_FROM_DEPOT_FALSE = false;
 
     private static final LocalTime DEFAULT_DEPOT_START_TIME = LocalTime.of(8, 0); // 0 start of a day
@@ -170,7 +170,7 @@ public class GoogleVRPSolver implements VRPSolver {
         RoutingSearchParameters searchParameters =
                 main.defaultRoutingSearchParameters()
                         .toBuilder()
-                        .setFirstSolutionStrategy(FirstSolutionStrategy.Value.PATH_CHEAPEST_ARC)
+                        .setFirstSolutionStrategy(FirstSolutionStrategy.Value.CHRISTOFIDES)
                         .setLocalSearchMetaheuristic(LocalSearchMetaheuristic.Value.GUIDED_LOCAL_SEARCH)
                         .setTimeLimit(Duration.newBuilder().setSeconds(SOLUTION_PROCESSING_TIME_SEC).build())
                         .build();

@@ -21,7 +21,7 @@ export const ordersApi = createApi({
 			query: () => ({
 				url: `/orders/completed`
 			}),
-			keepUnusedDataFor: 30,
+			keepUnusedDataFor: 1,
 			providesTags: [{ type: 'orders', id: 'completed' }]
 		}),
 
@@ -29,7 +29,7 @@ export const ordersApi = createApi({
 			query: () => ({
 				url: `/orders/skipped`
 			}),
-			keepUnusedDataFor: 30,
+			keepUnusedDataFor: 1,
 			providesTags: [{ type: 'orders', id: 'skipped' }]
 		}),
 
@@ -37,7 +37,7 @@ export const ordersApi = createApi({
 			query: () => ({
 				url: `/orders/scheduled`,
 			}),
-			keepUnusedDataFor: 30,
+			keepUnusedDataFor: 1,
 			providesTags: [{ type: 'orders', id: 'scheduled' }]
 		}),
 
