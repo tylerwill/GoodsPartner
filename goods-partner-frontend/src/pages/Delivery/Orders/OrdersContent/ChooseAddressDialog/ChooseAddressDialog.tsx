@@ -36,6 +36,7 @@ const ChooseAddressDialog = () => {
 	)
 
 	const [orderToUpdate, setOrderToUpdate] = useState<Order>(order)
+	const address = orderToUpdate.mapPoint.status  === 'UNKNOWN' ? orderToUpdate.address : orderToUpdate.mapPoint.address;
 
 	const handleUpdateAddress = () => {
 		updateOrder(orderToUpdate)
@@ -127,7 +128,7 @@ const ChooseAddressDialog = () => {
 						type='text'
 						fullWidth
 						variant='outlined'
-						value={orderToUpdate.address}
+						value={address}
 						onChange={handleAddressChange}
 					/>
 				</Autocomplete>

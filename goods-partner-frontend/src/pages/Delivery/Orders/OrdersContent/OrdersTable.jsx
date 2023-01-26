@@ -45,6 +45,8 @@ const OrdersTable = ({ orders, keyPrefix, updateOrder, isExcluded}) => {
 		setPage(0)
 	}
 
+	const colSpan = isExcluded ? 9 : 8;
+
 	// Avoid a layout jump when reaching the last page with empty rows.
 	const emptyRows =
 		page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orders.length) : 0
@@ -101,6 +103,7 @@ const OrdersTable = ({ orders, keyPrefix, updateOrder, isExcluded}) => {
 											expandAll={expandAll}
 											collapseAll={collapseAll}
 											reset={reset}
+											colSpan={colSpan}
 										/>
 									)
 								})}
@@ -110,7 +113,7 @@ const OrdersTable = ({ orders, keyPrefix, updateOrder, isExcluded}) => {
 										height: 53 * emptyRows
 									}}
 								>
-									<TableCell colSpan={7} />
+									<TableCell colSpan={colSpan} />
 								</TableRow>
 							)}
 						</TableBody>

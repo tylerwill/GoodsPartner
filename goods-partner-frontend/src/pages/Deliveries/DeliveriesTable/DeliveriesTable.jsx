@@ -121,12 +121,6 @@ function EnhancedTable({deliveries, deleteDeliveryHandler}) {
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - deliveries.length) : 0
 
-    const handleTableEvent = (event, id) => {
-        console.log("event", event);
-        console.log("id", id);
-
-    }
-
     return (
         <Box sx={{width: '100%'}}>
             <Paper sx={{width: '100%'}}>
@@ -164,7 +158,7 @@ function EnhancedTable({deliveries, deleteDeliveryHandler}) {
                                                 {delivery.routeCount ?? '-'}
                                             </TableCell>
                                             <TableCell align='center'>
-                                                <Button sx={{zIndex: 10000}} variant={'contained'} color="error"
+                                                <Button variant={'contained'} color="error"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             deleteDeliveryHandler(delivery)

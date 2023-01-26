@@ -1,11 +1,12 @@
 import React from 'react'
 import Box from '@mui/material/Box'
-import {Button, Typography} from '@mui/material'
+import {Button, Tooltip, Typography} from '@mui/material'
 import {RoutePoint} from '../../../../../../model/RoutePoint'
 import RoutePointSelect from '../RoutePointSelect/RoutePointSelect'
 import RoutePointOrdersDialog from '../RoutePointOrdersDialog/RoutePointOrdersDialog'
 import DocumentsDialog from "../../DocumentsDialog/DocumentsDialog";
 import DownloadIcon from "@mui/icons-material/Download";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 
 interface RoutePointDetailsHeaderProps {
     routePoint: RoutePoint
@@ -17,7 +18,7 @@ const RoutePointDetailsHeader = ({
                                      routePointNumber
                                  }: RoutePointDetailsHeaderProps) => {
     const [orderDialogOpen, setOrderDialogOpen] = React.useState(false)
-	const [documentDialogOpen, setDocumentDialogOpen] = React.useState(false)
+    const [documentDialogOpen, setDocumentDialogOpen] = React.useState(false)
 
     return (
         <Box
@@ -28,15 +29,28 @@ const RoutePointDetailsHeader = ({
                 alignItems: 'center'
             }}
         >
-            <Typography
-                sx={{fontWeight: 'bold', maxWidth: '450px'}}
-                variant='body2'
-                component='h2'
-            >
-                №{routePointNumber}, {routePoint.address}
-            </Typography>
 
-            {/*<Button variant="outlined" disabled>Змінити машину</Button>*/}
+            <Box display={'flex'} alignItems={'center'}>
+                <Typography
+                    sx={{fontWeight: 'bold', maxWidth: '450px', mr: 2}}
+                    variant='body2'
+                    component='h2'
+                >
+                    №{routePointNumber}, {routePoint.mapPoint.address}
+                </Typography>
+
+                {!routePoint.matchingExpectedDeliveryTime
+                    && <Tooltip
+                        sx={{cursor:'pointer'}}
+                        title={"Доставка не за розкладом"}
+                        placement='top'
+                        arrow
+                    ><WarningAmberIcon color={'warning'}/>
+                    </Tooltip>
+                }
+                {/*<Button variant="outlined" disabled>Змінити машину</Button>*/}
+            </Box>
+
             <Box sx={{display: 'flex'}}>
                 <Button
                     variant='text'
@@ -48,11 +62,11 @@ const RoutePointDetailsHeader = ({
                 </Button>
                 <Button
                     size={"small"}
-                    sx={{ mr: 2 , pr:2}}
+                    sx={{mr: 2, pr: 2}}
                     onClick={() => setDocumentDialogOpen(true)}
                     variant='outlined'
                 >
-                    <DownloadIcon sx={{ mr: 1 }} /> Документи
+                    <DownloadIcon sx={{mr: 1}}/> Документи
                 </Button>
 
                 <RoutePointSelect routePoint={routePoint}/>

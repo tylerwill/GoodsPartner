@@ -13,4 +13,5 @@ export interface RoutePoint {
 	mapPoint: MapPoint
 	routePointDistantTime: number
 	status: string
+	matchingExpectedDeliveryTime: boolean
 }

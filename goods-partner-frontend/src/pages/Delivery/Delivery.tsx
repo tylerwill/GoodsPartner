@@ -72,7 +72,8 @@ const Delivery = () => {
         && !isDriver;
 
     const recalculationButtonVisible = delivery.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED
-        && !isDriver && delivery.status !== DeliveryStatus.APPROVED;
+        && !isDriver && delivery.status === DeliveryStatus.DRAFT;
+
     const firstCalculationButtonVisible = delivery.formationStatus === DeliveryFormationStatus.READY_FOR_CALCULATION && !isDriver;
 
     const isPreApprove =

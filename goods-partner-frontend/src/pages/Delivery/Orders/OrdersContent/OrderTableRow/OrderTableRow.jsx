@@ -17,6 +17,7 @@ import OrderAdditionalInfo from '../OrderAdditionalInfo/OrderAdditionalInfo'
 import OrderActionMenu from '../OrderActionMenu/OrderActionMenu'
 import {toDeliveryTypeString} from '../../../../../util/util'
 import {ProductsInfoTable} from "../../../../../components/ProductsInfoTable/ProductsInfoTable";
+import {Tooltip} from "@mui/material";
 
 const OrderTableRow = ({
                            order,
@@ -25,7 +26,8 @@ const OrderTableRow = ({
                            collapseAll,
                            expandAll,
                            reset,
-                           isExcluded
+                           isExcluded,
+                            colSpan
                        }) => {
     const dispatch = useAppDispatch()
     const from = order.deliveryStart ?? '09:00'
@@ -59,7 +61,7 @@ const OrderTableRow = ({
             background: 'rgba(0, 0, 0, 0.04)'
         }
     }
-
+    const address = order.mapPoint.status  === 'UNKNOWN' ? order.address : order.mapPoint.address;
     const isInvalid = order.mapPoint.status === 'UNKNOWN' && order.deliveryType === 'REGULAR';
     return (
         <>
@@ -83,12 +85,19 @@ const OrderTableRow = ({
                 <TableCell>{order.orderNumber}</TableCell>
                 <TableCell>{order.clientName}</TableCell>
                 <TableCell>
+
                     {isInvalid ? (
-                        <Box sx={{ml: 1, backgroundColor: '#FFECB3'}}>
-                            {order.address}
+                        <Box sx={{ml: 1, width:'100%', minHeight:'20px', backgroundColor: '#FFECB3'}}>
+                            {address}
                         </Box>
                     ) : (
-                        <Box sx={{ml: 1}}>{order.address}</Box>
+                        <Tooltip
+                            title={order.address}
+                            placement='top'
+                            arrow
+                        >
+                            <Box sx={{ml: 1}}>{address}</Box>
+                        </Tooltip>
                     )}
                 </TableCell>
                 <TableCell>{toDeliveryTypeString(order.deliveryType)}</TableCell>
@@ -106,7 +115,7 @@ const OrderTableRow = ({
                 </TableCell>
             </TableRow>
             <TableRow>
-                <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={7}>
+                <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={colSpan}>
                     <Collapse in={isTableOpened} timeout='auto' unmountOnExit>
                         <Box sx={{margin: 2}}>
                             <ProductsInfoTable order={order} keyPrefix={keyPrefix}/>
