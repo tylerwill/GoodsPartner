@@ -1,8 +1,8 @@
 FROM maven:3.8 AS MAVEN_BUILD
-
+ARG GOOGLE_MAPS_API_KEY
 COPY ./ ./
 
-RUN mvn --quiet clean package -DskipTests
+RUN mvn --quiet clean package -DskipTests -DGOOGLE_MAPS_API_KEY=$GOOGLE_MAPS_API_KEY
 
 FROM openjdk:17
 

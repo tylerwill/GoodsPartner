@@ -47,7 +47,7 @@
                         <configuration>
                             <arguments>run build</arguments>
                             <environmentVariables>
-                                <REACT_APP_GOOGLE_MAPS_API_KEY>${env.GOOGLE_MAPS_API_KEY}</REACT_APP_GOOGLE_MAPS_API_KEY>
+                                <REACT_APP_GOOGLE_MAPS_API_KEY>${GOOGLE_MAPS_API_KEY}</REACT_APP_GOOGLE_MAPS_API_KEY>
                             </environmentVariables>
                         </configuration>
                     </execution>
