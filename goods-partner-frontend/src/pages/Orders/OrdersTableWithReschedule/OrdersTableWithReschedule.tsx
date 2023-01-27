@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import React, {FC, useCallback} from 'react'
 import Box from '@mui/material/Box'
 import {Button, Checkbox} from '@mui/material'
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore'
@@ -20,14 +20,18 @@ import {
     setRescheduleDialogOpen
 } from '../../../features/orders/ordersSlice'
 import RescheduleDialog from './RescheduleDialog/RescheduleDialog'
-import {useDeleteOrdersMutation, useGetSkippedQuery, useRescheduleOrdersMutation} from '../../../api/orders/orders.api'
+import {useDeleteOrdersMutation, useRescheduleOrdersMutation} from '../../../api/orders/orders.api'
 import Loading from '../../../components/Loading/Loading'
 import {ConfirmationDialog} from "../../../components/ConfirmationDialog/ConfirmationDialog";
+import Order from "../../../model/Order";
 
-const SkippedOrders = () => {
+interface OrdersTableWithRescheduleProps {
+    orders: Order[] | undefined
+}
+
+
+const OrdersTableWithReschedule:FC<OrdersTableWithRescheduleProps> = ({orders}) => {
     const dispatch = useAppDispatch()
-
-    const {data: skippedOrders} = useGetSkippedQuery()
 
     const {
         allSelected,
@@ -92,13 +96,13 @@ const SkippedOrders = () => {
         dispatch(deselectAll())
     }
 
-    if (!skippedOrders) {
+    if (!orders) {
         return <Loading/>
     }
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - skippedOrders.length) : 0
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orders.length) : 0
 
     const hasSelected = selectedOrderIds.length !== 0
 
@@ -170,7 +174,7 @@ const SkippedOrders = () => {
                         </TableHead>
                         <TableBody>
                             {/*TODO: [Tolik] Think about keys */}
-                            {skippedOrders
+                            {orders
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((order, index) => {
                                     return (
@@ -199,7 +203,7 @@ const SkippedOrders = () => {
                 <TablePagination
                     rowsPerPageOptions={[25, 50, 100]}
                     component='div'
-                    count={skippedOrders.length}
+                    count={orders.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
@@ -222,4 +226,4 @@ const SkippedOrders = () => {
     )
 }
 
-export default SkippedOrders
+export default OrdersTableWithReschedule

@@ -1,7 +1,7 @@
 import {useGetScheduledQuery} from "../../../api/orders/orders.api";
-import {OrdersBasicTable} from "../OrdersBasicTable/OrdersBasicTable";
+import OrdersTableWithReschedule from "../OrdersTableWithReschedule/OrdersTableWithReschedule";
 
 export const ScheduledOrdersContainer = () => {
     const {data: orders} = useGetScheduledQuery();
-    return <OrdersBasicTable orders={orders}/>
+    return <OrdersTableWithReschedule orders={orders}/>
 }

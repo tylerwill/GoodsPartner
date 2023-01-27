@@ -10,7 +10,7 @@ import { useAppSelector } from '../../../hooks/redux-hooks'
 import { useGetDeliveryQuery } from '../../../api/deliveries/deliveries.api'
 import Loading from '../../../components/Loading/Loading'
 
-const Routes = () => {
+export const Routes = () => {
 	const dispatch = useDispatch()
 	const { currentRouteIndex } = useAppSelector(state => state.currentDelivery)
 
@@ -55,5 +55,3 @@ const Routes = () => {
 		</Grid>
 	)
 }
-
-export default Routes

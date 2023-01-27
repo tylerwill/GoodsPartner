@@ -14,7 +14,7 @@ import Loading from '../../../components/Loading/Loading'
 import ExcludeOrderDialog from './OrdersContent/ExcludeOrderDialog/ExcludeOrderDialog'
 import DeliveryTypeDialog from './OrdersContent/DeliveryTypeDialog/DeliveryTypeDialog'
 
-const Orders = () => {
+export const Orders = () => {
     const {deliveryId} = useParams()
 
     const {
@@ -138,5 +138,3 @@ const Orders = () => {
         </Box>
     )
 }
-
-export default Orders

@@ -1,24 +1,16 @@
-import React, {useCallback, useEffect} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {Box, Breadcrumbs, Button, LinearProgress, Tooltip, Typography} from '@mui/material'
 import DeliveryStatusChip from '../../components/DeliveryStatusChip/DeliveryStatusChip'
-import {Link, useParams} from 'react-router-dom'
-import {setCurrentRouteIndex, setTabIndex} from '../../features/currentDelivery/currentDeliverySlice'
-
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
-import RouteIcon from '@mui/icons-material/Route'
+import {Link, Outlet, useParams} from 'react-router-dom'
+import {setCurrentRouteIndex} from '../../features/currentDelivery/currentDeliverySlice'
 
 import DoneIcon from '@mui/icons-material/Done'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import {ArrowForward} from '@mui/icons-material'
 import Loading from '../../components/Loading/Loading'
 import ErrorAlert from '../../components/ErrorAlert/ErrorAlert'
-import BasicTabs from '../../hoc/BasicTabs/BasicTabs'
-import Orders from './Orders/Orders'
-import History from './History/History'
-import Routes from './Routes/Routes'
 import {reformatDate} from '../../util/util'
 import useAuth from '../../auth/AuthProvider'
-import {useAppDispatch, useAppSelector} from '../../hooks/redux-hooks'
+import {useAppDispatch} from '../../hooks/redux-hooks'
 import {
     useApproveDeliveryMutation,
     useCalculateDeliveryMutation,
@@ -26,16 +18,12 @@ import {
 } from '../../api/deliveries/deliveries.api'
 import {DeliveryFormationStatus, DeliveryStatus} from '../../model/Delivery'
 import {UserRole} from '../../model/User'
-import InventoryIcon from '@mui/icons-material/Inventory'
-
-import FactCheckIcon from '@mui/icons-material/FactCheck'
-import CarLoad from './CarLoad/CarLoad'
-import Shipping from './Shipping/Shipping'
+import {ConfirmationDialog} from "../../components/ConfirmationDialog/ConfirmationDialog";
+import {DeliveryNav} from "./DeliveryNav/DeliveryNav";
 
 const Delivery = () => {
     const {deliveryId} = useParams()
     const dispatch = useAppDispatch()
-    const {tabIndex} = useAppSelector(state => state.currentDelivery)
     const {
         data: delivery,
         isLoading,
@@ -51,12 +39,13 @@ const Delivery = () => {
         [deliveryId]
     )
 
+    const [recalculateConfirmationDialogOpen, setRecalculateConfirmationDialogOpen] = useState(false);
+
     const approveDeliveryHandler = useCallback(() => {
         approveDelivery(String(deliveryId))
     }, [deliveryId])
 
     useEffect(() => {
-        dispatch(setTabIndex(0))
         dispatch(setCurrentRouteIndex(0))
     }, [dispatch, deliveryId])
 
@@ -67,8 +56,8 @@ const Delivery = () => {
     const isDriver = user.role === UserRole.DRIVER
 
     const calculationEnabled =
-        ( delivery.formationStatus === DeliveryFormationStatus.READY_FOR_CALCULATION
-        || delivery.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED )
+        (delivery.formationStatus === DeliveryFormationStatus.READY_FOR_CALCULATION
+            || delivery.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED)
         && !isDriver;
 
     const recalculationButtonVisible = delivery.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED
@@ -84,31 +73,11 @@ const Delivery = () => {
     const calculated =
         delivery?.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED
 
-    const tabLabels = [
-        {
-            name: 'Замовлення',
-            enabled: true,
-            icon: <ShoppingCartIcon sx={{mr: 1}}/>
-        },
-        {
-            name: 'Маршрути',
-            enabled: calculated,
-            icon: <RouteIcon sx={{mr: 1}}/>
-        },
-        {
-            name: 'Завантаження',
-            enabled: calculated,
-            icon: <InventoryIcon sx={{mr: 1}}/>
-        },
-        {name: 'Історія', enabled: true, icon: <FactCheckIcon sx={{mr: 1}}/>}
-    ]
 
     const isLoadingBar =
         delivery &&
         (delivery.formationStatus === DeliveryFormationStatus.ORDERS_LOADING ||
             delivery.formationStatus === DeliveryFormationStatus.ROUTE_CALCULATION)
-
-    const setTabIndexHandler = (index: number) => dispatch(setTabIndex(index))
 
     if (delivery) {
         return (
@@ -129,6 +98,7 @@ const Delivery = () => {
                         </Typography>
                         <DeliveryStatusChip status={delivery.status}/>
                     </Box>
+                    {/*TODO: Move to ActionButtons component*/}
                     <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
                         {firstCalculationButtonVisible && (
                             <CalculateButton
@@ -142,7 +112,8 @@ const Delivery = () => {
                             <CalculateButton
                                 title={"Перерахувати маршрут"}
                                 enabled={calculationEnabled}
-                                onClick={calculateDeliveryHandler}
+                                onClick={() => setRecalculateConfirmationDialogOpen(true)}
+
                             />
                         )}
                         {isPreApprove && (
@@ -170,17 +141,22 @@ const Delivery = () => {
                 </Box>
 
                 <Box sx={{marginTop: '16px'}}>
-                    <BasicTabs
-                        labels={tabLabels}
-                        fullWidth={true}
-                        tabIndex={tabIndex}
-                        setTabIndex={setTabIndexHandler}
-                    >
-                        <Orders/>
-                        <Routes/>
-                        {user.role === 'DRIVER' ? <CarLoad/> : <Shipping/>}
-                        <History/>
-                    </BasicTabs>
+                    <DeliveryNav calculated={calculated}/>
+
+                    <Box sx={{padding: '24px 0 24px', backgroundColor: '#fff'}}>
+                        <Outlet/>
+                    </Box>
+
+                    <ConfirmationDialog
+                        title={"Видалити доставку"}
+                        text={"Ви впевнені, що бажаєте видалити доставку? Цю дію не можна буде відмінити."}
+                        open={recalculateConfirmationDialogOpen}
+                        setOpen={setRecalculateConfirmationDialogOpen}
+                        onAction={() => {
+                            calculateDeliveryHandler();
+                            setRecalculateConfirmationDialogOpen(false);
+                        }}
+                    />
                 </Box>
             </section>
         )
@@ -237,7 +213,7 @@ function CalculateButton({enabled, onClick, title}: ActionButtonProps) {
             arrow
         >
 			<span>
-				<Button sx={{mr:2}} variant='contained' disabled={!enabled} onClick={onClick}>
+				<Button sx={{mr: 2}} variant='contained' disabled={!enabled} onClick={onClick}>
 					{title}
 				</Button>
 			</span>

@@ -2,11 +2,11 @@ import React from 'react'
 import {Box, Typography} from '@mui/material'
 import BasicTabs from '../../hoc/BasicTabs/BasicTabs'
 import {useActions, useAppSelector} from '../../hooks/redux-hooks'
-import SkippedOrders from './SkippedOrders/SkippedOrders'
 import {DeliveredOrdersContainer} from "./DeliveredOrdersContainer/DeliveredOrdersContainer";
 import { ScheduledOrdersContainer } from './ScheduledOrdersContainer/ScheduledOrdersContainer'
+import {SkippedOrdersContainer} from "./SkippedOrdersContainer/SkippedOrdersContainer";
 
-const Orders = () => {
+export const Orders = () => {
     const {tabIndex} = useAppSelector(state => state.orders)
 
     const {setTabIndex} = useActions();
@@ -45,12 +45,10 @@ const Orders = () => {
                     styles={styles}
                 >
                     <DeliveredOrdersContainer/>
-                    <SkippedOrders/>
+                    <SkippedOrdersContainer/>
                     <ScheduledOrdersContainer/>
                 </BasicTabs>
             </Box>
         </section>
     )
 }
-
-export default Orders

@@ -2,7 +2,6 @@ import {createSlice} from '@reduxjs/toolkit'
 import Delivery from '../../model/Delivery'
 
 const initialState = {
-    tabIndex: 0,
     orderTabIndex: 0,
     currentRouteIndex: 0,
     deleteDeliveryDialogOpen: false,
@@ -13,9 +12,6 @@ export const currentDeliverySlice = createSlice({
     name: 'currentDelivery',
     initialState,
     reducers: {
-        setTabIndex: (state, action) => {
-            state.tabIndex = action.payload
-        },
         setOrderTabIndex: (state, action) => {
             state.orderTabIndex = action.payload
         },
@@ -32,5 +28,5 @@ export const currentDeliverySlice = createSlice({
 })
 
 export default currentDeliverySlice.reducer
-export const {setTabIndex, setOrderTabIndex, setCurrentRouteIndex, setDeleteDeliveryDialogOpen, setDeliveryToDelete} =
+export const {setOrderTabIndex, setCurrentRouteIndex, setDeleteDeliveryDialogOpen, setDeliveryToDelete} =
     currentDeliverySlice.actions
