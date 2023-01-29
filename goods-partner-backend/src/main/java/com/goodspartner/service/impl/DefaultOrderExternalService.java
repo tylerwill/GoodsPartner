@@ -30,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,8 +64,8 @@ public class DefaultOrderExternalService implements OrderExternalService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<OrderExternal> getByDeliveryId(UUID deliveryId, OAuth2AuthenticationToken authentication) {
-        return Optional.of(userService.findByAuthentication(authentication))
+    public List<OrderExternal> getByDeliveryId(UUID deliveryId) {
+        return Optional.of(userService.findByAuthentication())
                 .filter(user -> DRIVER.equals(user.getRole()))
                 .map(driver -> findByDeliveryAndDriver(deliveryId, driver))
                 .orElseGet(() -> orderExternalRepository.findByDeliveryId(deliveryId, DEFAULT_ORDER_EXTERNAL_SORT));

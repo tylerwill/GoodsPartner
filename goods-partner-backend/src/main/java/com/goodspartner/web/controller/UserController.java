@@ -8,7 +8,6 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,8 +29,8 @@ public class UserController {
     private final UserMapper userMapper;
 
     @GetMapping("/auth")
-    public UserDto getAuthenticationDetails(OAuth2AuthenticationToken authentication) {
-        return userMapper.toUserDto(userService.findByAuthentication(authentication));
+    public UserDto getAuthenticationDetails() {
+        return userMapper.toUserDto(userService.findByAuthentication());
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")

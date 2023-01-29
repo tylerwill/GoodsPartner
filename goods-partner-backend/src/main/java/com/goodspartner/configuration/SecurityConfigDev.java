@@ -23,7 +23,7 @@ public class SecurityConfigDev {
 
     @Bean
     public SecurityFilterChain filter(HttpSecurity http) throws Exception {
-        // FIXME: Disable CORS only in dev mode
+        // FIXME / TODO: Disable CORS only in dev mode
         http
                 .csrf().disable()
                 .cors()

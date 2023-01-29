@@ -17,7 +17,6 @@ import com.goodspartner.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,8 +44,8 @@ public class DefaultDeliveryService implements DeliveryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Delivery> findAll(OAuth2AuthenticationToken authentication) {
-        return Optional.of(userService.findByAuthentication(authentication))
+    public List<Delivery> findAll() {
+        return Optional.of(userService.findByAuthentication())
                 .filter(user -> DRIVER.equals(user.getRole()))
                 .map(this::findDeliveriesByDriver)
                 .orElseGet(() -> deliveryRepository.findAll(DEFAULT_DELIVERY_SORT));

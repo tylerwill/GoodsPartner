@@ -11,7 +11,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,9 +41,8 @@ public class RouteController {
     @ApiOperation(value = "Find Routes by delivery ID",
             notes = "Provide an delivery ID to look up related routes",
             response = List.class)
-    public List<RouteDto> findByDeliveryId(@RequestParam UUID deliveryId,
-                                           OAuth2AuthenticationToken authentication) {
-        return routeService.findRelatedRoutesByDeliveryId(deliveryId, authentication)
+    public List<RouteDto> findByDeliveryId(@RequestParam UUID deliveryId) {
+        return routeService.findRelatedRoutesByDeliveryId(deliveryId)
                 .stream()
                 .map(routeMapper::toRouteDto)
                 .collect(Collectors.toList());

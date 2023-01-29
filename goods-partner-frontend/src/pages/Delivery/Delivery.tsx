@@ -148,8 +148,8 @@ const Delivery = () => {
                     </Box>
 
                     <ConfirmationDialog
-                        title={"Видалити доставку"}
-                        text={"Ви впевнені, що бажаєте видалити доставку? Цю дію не можна буде відмінити."}
+                        title={"Перерахувати доставку"}
+                        text={"Ви впевнені, що бажаєте перерахувати доставку? Цю дію не можна буде відмінити."}
                         open={recalculateConfirmationDialogOpen}
                         setOpen={setRecalculateConfirmationDialogOpen}
                         onAction={() => {

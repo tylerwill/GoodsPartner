@@ -115,7 +115,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
 
         List<MapPoint> mapPoints = new ArrayList<>();
         mapPoints.add(storeMapper.getMapPoint(store));
-        mapPoints.addAll(routePointMapper.getMapPoints(routingSolution.getRoutePoints()));
+        mapPoints.addAll(routePointMapper.toMapPoints(routingSolution.getRoutePoints()));
         mapPoints.add(storeMapper.getMapPoint(store)); // Return back to Store
 
         ResponsePath routePath = graphhopperService.getRoute(mapPoints);
@@ -136,6 +136,9 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                 .doubleValue());
         int totalWaitTimeMin = SERVICE_TIME_AT_LOCATION_MIN * routePoints.size();
         route.setEstimatedTime(Duration.ofMillis(routePath.getTime()).toMinutes() + totalWaitTimeMin);
+
+//        TODO date should be a date of Delivery or route.startTime should be only LocalTime without date
+//        route.setStartTime(LocalDateTime.of(LocalDate.now(), routingSolution.getRouteStartTimeFromDepot()));
 
         return route;
     }

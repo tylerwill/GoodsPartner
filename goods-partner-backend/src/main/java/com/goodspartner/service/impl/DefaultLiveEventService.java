@@ -2,17 +2,17 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.UserDto;
 import com.goodspartner.entity.User;
+import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.SubscriberNotFoundException;
-import com.goodspartner.mapper.UserMapper;
 import com.goodspartner.service.LiveEventService;
+import com.goodspartner.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -26,30 +26,29 @@ import java.util.function.Predicate;
 @AllArgsConstructor
 public class DefaultLiveEventService implements LiveEventService {
 
+    private static final LiveEvent HEAR_BEAT_EVENT = new LiveEvent("Keep alive", EventType.HEARTBEAT);
+
     private static final int TIME_TO_LIVE = 60000;
     private static final String DRIVER_ROLE = "DRIVER";
 
     private final Map<UserDto, Subscriber> listeners = new ConcurrentHashMap<>();
-    private final UserMapper userMapper;
+    private final UserService userService;
 
     @Override
-    public void subscribe(OAuth2AuthenticationToken authenticationToken, Consumer<LiveEvent> consumer) {
-        if (authenticationToken != null) {
-            UserDto user = userMapper.mapAuthentication(authenticationToken);
-            listeners.put(user, new Subscriber(consumer));
-            log.info("New subscriber added: {}, total count: {}", user.getEmail(), listeners.size());
-        } else {
-            log.warn("Unable to subscribe consumer without authentication");
-        }
+    public void subscribe(Consumer<LiveEvent> consumer) {
+        UserDto user = userService.getAuthenticatedUserDto();
+        listeners.put(user, new Subscriber(consumer));
+        log.info("New subscriber added: {}, total count: {}", user.getEmail(), listeners.size());
     }
 
     @Override
-    public void publishHeartBeat(OAuth2AuthenticationToken authentication, LiveEvent event) {
-        Subscriber subscriber = Optional.ofNullable(listeners.get(userMapper.mapAuthentication(authentication)))
-                .orElseThrow(SubscriberNotFoundException::new);
+    public void publishHeartBeat() {
+        UserDto authenticatedUser = userService.getAuthenticatedUserDto();
+        Subscriber subscriber = Optional.ofNullable(listeners.get(authenticatedUser))
+                .orElseThrow(() -> new SubscriberNotFoundException(authenticatedUser.getUserName()));
         subscriber.setLastAccessed(System.currentTimeMillis());
-        subscriber.getConsumer().accept(event);
-        log.debug("Received heartbeat for subscriber: {}", authentication.getPrincipal().getName());
+        subscriber.getConsumer().accept(HEAR_BEAT_EVENT);
+        log.debug("Received heartbeat for subscriber: {}", authenticatedUser.getUserName());
     }
 
     @Override
@@ -96,9 +95,9 @@ public class DefaultLiveEventService implements LiveEventService {
 
     @Getter
     public static class Subscriber {
+        private final Consumer<LiveEvent> consumer;
         @Setter
         private long lastAccessed;
-        private final Consumer<LiveEvent> consumer;
 
         public Subscriber(Consumer<LiveEvent> consumer) {
             this.lastAccessed = System.currentTimeMillis();

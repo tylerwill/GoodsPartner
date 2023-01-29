@@ -76,7 +76,7 @@ public class GoogleVRPSolver implements VRPSolver {
 
         List<MapPoint> mapPoints = new ArrayList<>();
         mapPoints.add(storeMapper.getMapPoint(store));
-        mapPoints.addAll(routePointMapper.getMapPoints(routePoints));
+        mapPoints.addAll(routePointMapper.toMapPoints(routePoints));
 
         DistanceMatrix matrix = graphhopperService.getMatrix(mapPoints);
         log.info("DistanceMatrix has been calculated for {} route points", routePoints.size());
@@ -87,7 +87,6 @@ public class GoogleVRPSolver implements VRPSolver {
     private VRPSolution solve(List<Car> cars,
                               List<RoutePoint> routePoints,
                               DistanceMatrix routePointsMatrix) {
-        Long[][] distanceMatrix = routePointsMatrix.getDistance();
         Long[][] timeMatrix = routePointsMatrix.getDuration(); // discuss
         Long[][] timeWindows = calculateTimeWindows(routePoints);
         long[] demands = calculateDemands(routePoints);
@@ -98,9 +97,9 @@ public class GoogleVRPSolver implements VRPSolver {
         int carsAmount = cars.size();
 
         RoutingIndexManager manager =
-                new RoutingIndexManager(distanceMatrix.length, carsAmount, ROUTE_START_INDEX);
+                new RoutingIndexManager(timeMatrix.length, carsAmount, ROUTE_START_INDEX);
         RoutingModel routing =
-                configureRoutingModel(manager, distanceMatrix, timeMatrix, timeWindows, demands, vehicleCapacities, vehicleCosts, carsAmount);
+                configureRoutingModel(manager, timeMatrix, timeWindows, demands, vehicleCapacities, vehicleCosts, carsAmount);
 
         return getVRPSolution(cars, routePoints, manager, routing);
     }
@@ -119,19 +118,29 @@ public class GoogleVRPSolver implements VRPSolver {
         List<RoutingSolution> routingSolutions = new ArrayList<>(1);
         for (int i = 0; i < cars.size(); ++i) {
             List<RoutePoint> carRoutePoints = new ArrayList<>(1);
-            long index = routing.start(i);
+
             if (routing.isVehicleUsed(solution, i)) {
+                LocalTime routeStartTimeFromDepot = DEFAULT_DEPOT_START_TIME;
+
+                long index = routing.start(i);
                 while (!routing.isEnd(index)) {
                     long nodeIndex = manager.indexToNode(index);
-                    if (nodeIndex != 0) {
-                        RoutePoint routePoint = routePoints.get((int) (nodeIndex - 1));
 
-                        IntVar timeVar = timeDimension.cumulVar(index);
-                        long pointCompletionMinutes = (solution.max(timeVar) + NORMALIZATION_TIME_SHIFT_MINUTES);
-                        routePoint.setExpectedCompletion(LocalTime.ofSecondOfDay(pointCompletionMinutes * 60L));
+                    IntVar timeVar = timeDimension.cumulVar(index);
+                    long solutionInMinutes = solution.max(timeVar) + NORMALIZATION_TIME_SHIFT_MINUTES; // MIN-MAX solution window is equal. Tested
 
-                        long pointArrivalMinutes = pointCompletionMinutes - SERVICE_TIME_AT_LOCATION_MIN;
-                        routePoint.setExpectedArrival(LocalTime.ofSecondOfDay(pointArrivalMinutes * 60L));
+                    if (nodeIndex == 0) { // Depot
+                        routeStartTimeFromDepot = LocalTime.ofSecondOfDay(solutionInMinutes * 60L);
+                        log.trace("Depot start time: {}", routeStartTimeFromDepot);
+                    } else { // RoutePoints
+                        RoutePoint routePoint = routePoints.get((int) (nodeIndex - 1)); // exclude depot
+
+                        log.trace("RoutePoint range: {} - {}, solution range: {} - {}",
+                                routePoint.getDeliveryStart(), routePoint.getDeliveryEnd(), solutionInMinutes, solutionInMinutes);
+
+                        routePoint.setExpectedCompletion(LocalTime.ofSecondOfDay(solutionInMinutes * 60L));
+                        long arrivalTime = solutionInMinutes - SERVICE_TIME_AT_LOCATION_MIN; // Solution contains time with service
+                        routePoint.setExpectedArrival(LocalTime.ofSecondOfDay(arrivalTime * 60L));
 
                         graphhopperService.checkDeliveryTimeRange(routePoint);
                         carRoutePoints.add(routePoint);
@@ -142,7 +151,9 @@ public class GoogleVRPSolver implements VRPSolver {
                 routingSolutions.add(RoutingSolution.builder()
                         .car(cars.get(i))
                         .routePoints(carRoutePoints)
+                        .routeStartTimeFromDepot(routeStartTimeFromDepot)
                         .build());
+
             }
         }
         return VRPSolution.builder()
@@ -178,7 +189,7 @@ public class GoogleVRPSolver implements VRPSolver {
     }
 
     private RoutingModel configureRoutingModel(RoutingIndexManager manager,
-                                               Long[][] distanceMatrix, Long[][] timeMatrix, Long[][] timeWindows, long[] demands,
+                                               Long[][] timeMatrix, Long[][] timeWindows, long[] demands,
                                                long[] vehicleCapacities, long[] vehicleCosts, int carsAmount) {
         RoutingModel routing = new RoutingModel(manager);
 
@@ -199,8 +210,7 @@ public class GoogleVRPSolver implements VRPSolver {
                     // Convert from routing variable Index to user NodeIndex.
                     int fromNode = manager.indexToNode(fromIndex);
                     int toNode = manager.indexToNode(toIndex);
-                    // TODO Required formula to relate demand size with calulated serviceTimeAtLocation
-                    return timeMatrix[fromNode][toNode] + SERVICE_TIME_AT_LOCATION_MIN;
+                    return timeMatrix[fromNode][toNode] + SERVICE_TIME_AT_LOCATION_MIN; // TODO Required formula to relate demand size with calculated serviceTimeAtLocation
                 });
         routing.setArcCostEvaluatorOfAllVehicles(timeCallbackIndex);
 
@@ -211,7 +221,6 @@ public class GoogleVRPSolver implements VRPSolver {
                 VEHICLE_TIME_DIMENSION_NAME
         );
         RoutingDimension timeDimension = routing.getMutableDimension(VEHICLE_TIME_DIMENSION_NAME);
-//        timeDimension.setGlobalSpanCostCoefficient(9*60L); // Global boundaries for all routes. Hack!
         // Add time window constraints for each location except depot.
         for (int i = 1; i < timeWindows.length; ++i) {
             long index = manager.nodeToIndex(i);
@@ -234,18 +243,22 @@ public class GoogleVRPSolver implements VRPSolver {
         }
 
         // Penalties. No Penalties
-        for (int i = 1; i < distanceMatrix.length; ++i) {
+        for (int i = 1; i < timeMatrix.length; ++i) {
             routing.addDisjunction(new long[]{manager.nodeToIndex(i)}, Long.MAX_VALUE);
         }
 
         return routing;
     }
 
+    /**
+     * Store index 0 - should be 0 demand
+     */
     @VisibleForTesting
     long[] calculateDemands(List<RoutePoint> routePoints) {
         long[] demands = new long[routePoints.size() + 1];
         List<Long> collect = routePoints.stream()
-                .map(point -> Math.round(point.getAddressTotalWeight())).toList();
+                .map(point -> Math.round(point.getAddressTotalWeight()))
+                .toList();
         for (int i = 0; i < collect.size(); i++) {
             demands[i + 1] = collect.get(i);
         }
@@ -257,23 +270,24 @@ public class GoogleVRPSolver implements VRPSolver {
             return new Long[][]{};
         }
 
-        Long[][] timeWindows = new Long[routePoints.size()][2];
+        int allPoints = routePoints.size() + 1;
+        Long[][] timeWindows = new Long[allPoints][2];
 
         // Set depot time
         timeWindows[0][0] = normalizeTravelTime(DEFAULT_DEPOT_START_TIME);
         timeWindows[0][1] = normalizeTravelTime(DEFAULT_DEPOT_FINISH_TIME);
 
-        for (int i = 1; i < routePoints.size(); i++) {
+        for (int i = 0; i < routePoints.size(); i++) {
 
             LocalTime deliveryStartTime = routePoints.get(i).getDeliveryStart();
-            timeWindows[i][0] = normalizeTravelTime(deliveryStartTime != null
+            timeWindows[i+1][0] = normalizeTravelTime(deliveryStartTime != null
                     ? deliveryStartTime
                     : DEFAULT_DELIVERY_START_TIME);
 
             LocalTime deliveryEndTime = routePoints.get(i).getDeliveryEnd();
-            timeWindows[i][1] = normalizeTravelTime(deliveryEndTime != null
+            timeWindows[i+1][1] = normalizeTravelTime(deliveryEndTime != null
                     ? deliveryEndTime
-                    : DEFAULT_DELIVERY_FINISH_TIME); // 19:00
+                    : DEFAULT_DELIVERY_FINISH_TIME); // 18:00
         }
 
         return timeWindows;

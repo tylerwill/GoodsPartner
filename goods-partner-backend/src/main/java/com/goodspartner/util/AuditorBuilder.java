@@ -3,7 +3,6 @@ package com.goodspartner.util;
 import com.goodspartner.service.dto.GoodsPartnerOAuth2User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,13 +16,13 @@ public class AuditorBuilder {
     private static final String USER_NAME_KEY = "userName";
     private static final String USER_EMAIL_KEY = "userEmail";
 
-    // Anon
+    // Anonymous
     private static final String ROLE_ANONYMOUS = "ROLE_ANONYMOUS";
     private static final String USER_EMAIL_ANONYMOUS = "anonymous@mail";
     private static final String USER_NAME_ANONYMOUS = "Anonymous";
 
     // TODO move to localisation
-    private static final Map<String,String> ROLES_TRANSLATION = Map.ofEntries(
+    private static final Map<String, String> ROLES_TRANSLATION = Map.ofEntries(
             Map.entry("ROLE_ADMIN", "Адміністратор"),
             Map.entry("ROLE_DRIVER", "Водій"),
             Map.entry("ROLE_LOGISTICIAN", "Логіст"),
@@ -64,7 +63,7 @@ public class AuditorBuilder {
         return values;
     }
 
-    public static OAuth2AuthenticationToken getAuthentication() {
-        return (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+    public static Authentication getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
     }
 }

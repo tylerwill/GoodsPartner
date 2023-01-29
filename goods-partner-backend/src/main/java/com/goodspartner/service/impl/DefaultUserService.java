@@ -2,18 +2,21 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.UserDto;
 import com.goodspartner.entity.User;
+import com.goodspartner.exception.InvalidAuthenticationType;
 import com.goodspartner.exception.UserNotFoundException;
 import com.goodspartner.mapper.UserMapper;
 import com.goodspartner.repository.UserRepository;
 import com.goodspartner.service.UserService;
+import com.goodspartner.service.dto.GoodsPartnerOAuth2User;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -21,6 +24,7 @@ public class DefaultUserService implements UserService {
 
     private static final String DEFAULT_SORT_FILED = "id";
     private static final String EMAIL_ATTRIBUTE = "email";
+    private static final String USERNAME_ATTRIBUTE = "username";
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -66,14 +70,32 @@ public class DefaultUserService implements UserService {
     /* --- Auth --- */
 
     @Override
-    public User findByAuthentication(OAuth2AuthenticationToken authentication) {
-        String userEmail = getUserEmail(authentication);
+    public User findByAuthentication() {
+        String userEmail = getUserEmailFromAuthenticationContext();
         return userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException(userEmail));
     }
 
-    private String getUserEmail(OAuth2AuthenticationToken authentication) {
-        OAuth2User principal = authentication.getPrincipal();
-        return principal.getAttribute(EMAIL_ATTRIBUTE);
+    private String getUserEmailFromAuthenticationContext() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof GoodsPartnerOAuth2User principal) {
+            return principal.getAttribute(EMAIL_ATTRIBUTE);
+        }
+        throw new InvalidAuthenticationType();
+    }
+
+    @Override
+    public UserDto getAuthenticatedUserDto() {
+        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .map(Authentication::getPrincipal)
+                .filter(principal -> principal instanceof GoodsPartnerOAuth2User)
+                .map(principal -> (GoodsPartnerOAuth2User) principal)
+                .map(principal -> UserDto.builder()
+                        .userName(principal.getAttribute(USERNAME_ATTRIBUTE))
+                        .email(principal.getAttribute(EMAIL_ATTRIBUTE))
+                        .role(principal.getAuthorities().toArray()[0].toString())
+                        .enabled(true)
+                        .build())
+                .orElseThrow(InvalidAuthenticationType::new);
     }
 }

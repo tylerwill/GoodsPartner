@@ -21,7 +21,6 @@ import com.goodspartner.web.action.RouteAction;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,8 +49,8 @@ public class DefaultRouteService implements RouteService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Route> findRelatedRoutesByDeliveryId(UUID deliveryId, OAuth2AuthenticationToken authentication) {
-        return Optional.of(userService.findByAuthentication(authentication))
+    public List<Route> findRelatedRoutesByDeliveryId(UUID deliveryId) {
+        return Optional.of(userService.findByAuthentication())
                 .filter(user -> DRIVER.equals(user.getRole()))
                 .map(driver -> findByDeliveryAndDriver(deliveryId, driver))
                 .orElseGet(() -> findByDeliveryIdExtended(deliveryId));

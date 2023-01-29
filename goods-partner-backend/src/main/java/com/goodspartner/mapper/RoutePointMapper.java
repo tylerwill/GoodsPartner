@@ -37,7 +37,7 @@ public interface RoutePointMapper {
                 .build();
     }
 
-    default List<MapPoint> getMapPoints(List<RoutePoint> routePoints) {
+    default List<MapPoint> toMapPoints(List<RoutePoint> routePoints) {
         return routePoints.stream()
                 .map(RoutePoint::getAddressExternal)
                 .map(addressExternal -> MapPoint.builder()

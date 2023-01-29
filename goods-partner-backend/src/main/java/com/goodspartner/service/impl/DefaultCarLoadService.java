@@ -10,7 +10,6 @@ import com.goodspartner.repository.CarRepository;
 import com.goodspartner.service.CarLoadService;
 import com.goodspartner.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,16 +61,11 @@ public class DefaultCarLoadService implements CarLoadService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<CarLoad> findByDeliveryId(UUID deliveryId, OAuth2AuthenticationToken authentication) {
-        return Optional.of(userService.findByAuthentication(authentication))
+    public List<CarLoad> findByDeliveryId(UUID deliveryId) {
+        return Optional.of(userService.findByAuthentication())
                 .filter(user -> DRIVER.equals(user.getRole()))
                 .map(driver -> findByDeliveryAndDriver(deliveryId, driver))
                 .orElseGet(() -> carLoadRepository.findByDeliveryId(deliveryId));
-    }
-
-    @Override
-    public List<CarLoad> findByDeliveryId(UUID deliveryId) {
-        return carLoadRepository.findByDeliveryId(deliveryId);
     }
 
     private List<CarLoad> findByDeliveryAndDriver(UUID deliveryId, User driver) {

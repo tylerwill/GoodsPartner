@@ -122,7 +122,7 @@ public class DefaultGraphhopperService implements GraphhopperService {
         boolean matchingArrival = routePoint.getExpectedArrival().compareTo(routePoint.getDeliveryStart()) >= 0;
         boolean matchingCompletion = routePoint.getExpectedCompletion().compareTo(routePoint.getDeliveryEnd()) <= 0;
 
-        routePoint.setMatchingExpectedDeliveryTime(matchingArrival && matchingCompletion);
+        routePoint.setMatchingExpectedDeliveryTime(matchingArrival || matchingCompletion);
     }
 
 }

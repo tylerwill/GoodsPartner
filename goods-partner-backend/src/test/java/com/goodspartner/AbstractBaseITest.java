@@ -2,9 +2,14 @@ package com.goodspartner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.goodspartner.service.dto.GoodsPartnerOAuth2User;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -16,6 +21,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 
 @SpringBootTest
@@ -64,5 +70,24 @@ public class AbstractBaseITest {
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException("Unable to find file: " + mockPath);
         }
+    }
+
+    protected SecurityContext getSecurityContext(String username, String email, String role) {
+        return new SecurityContextImpl(buildPrincipal(username, email, role));
+    }
+
+    private OAuth2AuthenticationToken buildPrincipal(String username, String email, String role) {
+        return new OAuth2AuthenticationToken(
+                GoodsPartnerOAuth2User.builder()
+                        .username(username)
+                        .email(email)
+                        .authorities(List.of(new SimpleGrantedAuthority("ROLE_" + role)))
+                        .accountNonExpired(true)
+                        .accountNonLocked(true)
+                        .credentialsNonExpired(true)
+                        .enabled(true)
+                        .build(),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)),
+                "google");
     }
 }

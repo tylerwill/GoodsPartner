@@ -8,7 +8,6 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,9 +31,8 @@ public class CarLoadController {
     @ApiOperation(value = "Find CarLoad by delivery id",
             response = CarLoadDto.class)
     public List<CarLoadDto> findByDeliveryId(@ApiParam(value = "ID value for the Delivery you need to retrieve", required = true)
-                                             @RequestParam(name = "deliveryId") UUID deliveryId,
-                                             OAuth2AuthenticationToken authentication) {
-        return carLoadService.findByDeliveryId(deliveryId, authentication)
+                                             @RequestParam(name = "deliveryId") UUID deliveryId) {
+        return carLoadService.findByDeliveryId(deliveryId)
                 .stream()
                 .map(carLoadMapper::toCarLoadDto)
                 .collect(Collectors.toList());
