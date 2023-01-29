@@ -8,6 +8,7 @@ import com.goodspartner.entity.DeliveryType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -16,10 +17,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ExternalOrderPostProcessor {
 
-    private static final String FROZEN = "заморозка";
     private static final List<String> POSTAL_KEYWORDS = Arrays.asList("нова пошта", "новапошта", " нп ", "делівері", "delivery", "делівери");
+    private static final String FROZEN = "заморозка";
     private static final String PRE_PACKING = "фасовк"; // Include "фасовка"
     private static final String SELF_SERVICE = "самовивіз";
+    private static final String MIDDAY_DELIVERY = "до обіду";
 
     private final ClientBusinessProperties clientBusinessProperties;
 
@@ -28,6 +30,7 @@ public class ExternalOrderPostProcessor {
         checkIfPostal(orderDtos);
         checkIfSelfService(orderDtos);
         checkIfPrePacking(orderDtos);
+        checkMiddayDelivery(orderDtos);
     }
 
     private void checkIfFrozen(List<OrderDto> orderDtos) {
@@ -73,6 +76,12 @@ public class ExternalOrderPostProcessor {
                 });
     }
 
+    private void checkMiddayDelivery(List<OrderDto> orderDtos) {
+        orderDtos.stream()
+                .filter(this::checkCommentIfMiddayDelivery)
+                .forEach(orderDto -> orderDto.setDeliveryFinish(LocalTime.of(13, 0)));
+    }
+
     // --- Comment Parsers ---
 
     private boolean checkCommentIfFrozen(OrderDto orderDto) {
@@ -103,6 +112,13 @@ public class ExternalOrderPostProcessor {
         return Optional.ofNullable(orderDto.getComment())
                 .map(String::toLowerCase)
                 .map(orderCommentLowerCase -> orderCommentLowerCase.contains(SELF_SERVICE))
+                .orElse(false);
+    }
+    
+    private boolean checkCommentIfMiddayDelivery(OrderDto orderDto) {
+        return Optional.ofNullable(orderDto.getComment())
+                .map(String::toLowerCase)
+                .map(orderCommentLowerCase -> orderCommentLowerCase.contains(MIDDAY_DELIVERY))
                 .orElse(false);
     }
 }
