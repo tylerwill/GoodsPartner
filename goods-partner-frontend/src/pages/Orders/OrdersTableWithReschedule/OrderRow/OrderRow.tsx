@@ -20,6 +20,7 @@ interface Props {
     collapseAll: boolean
     expandAll: boolean
     reset: () => void
+    hasExcluded:boolean
 }
 
 const OrderRow = ({
@@ -27,7 +28,8 @@ const OrderRow = ({
                       keyPrefix,
                       collapseAll,
                       expandAll,
-                      reset
+                      reset,
+    hasExcluded
                   }: Props) => {
     const [orderTableOpen, setOrderTableOpen] = React.useState(false)
     const isTableOpened = expandAll || (orderTableOpen && !collapseAll)
@@ -76,10 +78,10 @@ const OrderRow = ({
                 <TableCell>{reformatDate(order.shippingDate)}</TableCell>
                 <TableCell>{order.clientName}</TableCell>
                 <TableCell>{order.address}</TableCell>
-                <TableCell>{order.excludeReason}</TableCell>
+                {hasExcluded && <TableCell>{order.excludeReason}</TableCell>}
             </TableRow>
             <TableRow>
-                <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={7}>
+                <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={hasExcluded ? 7 : 6}>
                     <Collapse in={isTableOpened} timeout='auto' unmountOnExit>
                         <Box sx={{margin: 2}}>
                             <ProductsInfoTable order={order} keyPrefix={keyPrefix}/>

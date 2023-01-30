@@ -15,6 +15,7 @@ import Cars from './pages/Cars/Cars'
 import History from "./pages/Delivery/History/History";
 import React from "react";
 import Shipping from "./pages/Delivery/Shipping/Shipping";
+import {Clients} from "./pages/Clients/Clients";
 
 const libraries = ['places']
 
@@ -47,6 +48,7 @@ function App() {
                 <Routes>
                     <Route path='/cars' element={<Cars/>}/>
                     <Route path='/users' element={<Users/>}/>
+                    <Route path='/clients/addresses' element={<Clients/>}/>
                     <Route path='/deliveries' element={<Deliveries/>}/>
                     <Route path='/' element={<Deliveries/>}/>
 

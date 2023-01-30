@@ -3,5 +3,5 @@ import OrdersTableWithReschedule from "../OrdersTableWithReschedule/OrdersTableW
 
 export const ScheduledOrdersContainer = () => {
     const {data: orders} = useGetScheduledQuery();
-    return <OrdersTableWithReschedule orders={orders}/>
+    return <OrdersTableWithReschedule orders={orders} hasExcluded={false}/>
 }

@@ -26,11 +26,12 @@ import {ConfirmationDialog} from "../../../components/ConfirmationDialog/Confirm
 import Order from "../../../model/Order";
 
 interface OrdersTableWithRescheduleProps {
-    orders: Order[] | undefined
+    orders: Order[] | undefined,
+    hasExcluded: boolean
 }
 
 
-const OrdersTableWithReschedule:FC<OrdersTableWithRescheduleProps> = ({orders}) => {
+const OrdersTableWithReschedule: FC<OrdersTableWithRescheduleProps> = ({orders, hasExcluded}) => {
     const dispatch = useAppDispatch()
 
     const {
@@ -169,7 +170,7 @@ const OrdersTableWithReschedule:FC<OrdersTableWithRescheduleProps> = ({orders}) 
                                 <TableCell>Дата</TableCell>
                                 <TableCell>Клієнт</TableCell>
                                 <TableCell>Адреса</TableCell>
-                                <TableCell>Причина вилучення</TableCell>
+                                {hasExcluded && <TableCell>Причина вилучення</TableCell>}
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -185,6 +186,7 @@ const OrdersTableWithReschedule:FC<OrdersTableWithRescheduleProps> = ({orders}) 
                                             expandAll={expandAll}
                                             collapseAll={collapseAll}
                                             reset={reset}
+                                            hasExcluded={hasExcluded}
                                         />
                                     )
                                 })}

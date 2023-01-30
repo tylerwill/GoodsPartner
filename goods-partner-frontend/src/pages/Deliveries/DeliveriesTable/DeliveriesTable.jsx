@@ -14,6 +14,7 @@ import TablePagination from '@mui/material/TablePagination'
 import {useNavigate} from 'react-router-dom'
 import DeliveryStatusChip from '../../../components/DeliveryStatusChip/DeliveryStatusChip'
 import {reformatDate} from '../../../util/util'
+import {DeliveryStatus} from "../../../model/Delivery";
 
 const DeliveriesTable = ({deliveries, deleteDeliveryHandler}) => {
     // TODO: [UI] Remove shadow
@@ -158,6 +159,8 @@ function EnhancedTable({deliveries, deleteDeliveryHandler}) {
                                                 {delivery.routeCount ?? '-'}
                                             </TableCell>
                                             <TableCell align='center'>
+                                                {
+                                                    delivery.status === DeliveryStatus.DRAFT &&
                                                 <Button variant={'contained'} color="error"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
@@ -166,6 +169,7 @@ function EnhancedTable({deliveries, deleteDeliveryHandler}) {
                                                 >
                                                     Видалити
                                                 </Button>
+                                                }
                                             </TableCell>
                                         </TableRow>
                                     )

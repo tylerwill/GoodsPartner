@@ -15,6 +15,7 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import GrandeDolceLogo from '../Logo/GrandeDolceLogo'
 import useAuth from '../../auth/AuthProvider'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
+import BusinessIcon from '@mui/icons-material/Business';
 
 const ListButton = (icon, name, paddingLeft) => {
 	return (
@@ -74,9 +75,15 @@ const Sidebar = ({ open }) => {
 								{ListButton(<SupervisedUserCircle />, 'Користувачі')}
 							</ListItem>
 
+							<ListItem disablePadding component={Link} to={'/clients/addresses'}>
+								{ListButton(<BusinessIcon />, 'Адреси клієнтів')}
+							</ListItem>
+
 							<ListItem disablePadding component={Link} to={'/reports'}>
 								{ListButton(<ContentPasteSharp />, 'Звітність')}
 							</ListItem>
+
+
 						</>
 					)}
 					<Divider />
