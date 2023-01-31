@@ -26,6 +26,7 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, Lo
     List<OrderExternal> findAllByDeliveryAndCar(@Param("deliveryId") UUID deliveryId,
                                                 @Param("car") Car car, Sort sort);
 
+    // For skipped order we do not set rescheduleDate yet
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o LEFT JOIN o.routePoint rp " +
             "WHERE o.rescheduleDate IS NULL " +
@@ -39,10 +40,11 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, Lo
             "  AND o.routePoint.status = 'DONE'")
     List<OrderExternal> findCompletedOrders(Sort sort);
 
-    // Order has not been linked with delivery
+    // Scheduled orders doesn't link yet with delivery have shippingDate, but dont have rescheduleDate
     @EntityGraph(attributePaths = {"addressExternal"})
     @Query("SELECT o FROM OrderExternal o " +
             "WHERE o.shippingDate IS NOT NULL " +
+            "  AND o.rescheduleDate IS NULL " +
             "  AND o.delivery IS NULL")
     List<OrderExternal> findScheduledOrders(Sort sort);
 

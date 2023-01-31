@@ -50,7 +50,7 @@ import static com.goodspartner.entity.User.UserRole.DRIVER;
 @Service
 public class DefaultOrderExternalService implements OrderExternalService {
 
-    private static final Sort DEFAULT_ORDER_EXTERNAL_SORT = Sort.by(Sort.Direction.DESC, "orderNumber");
+    private static final Sort DEFAULT_ORDER_EXTERNAL_SORT = Sort.by(Sort.Direction.DESC, "shippingDate", "orderNumber");
 
     private final OrderExternalMapper orderExternalMapper;
     // Repos
@@ -228,6 +228,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
     @Transactional
     @Override
     public List<OrderExternal> removeExcludedOrders(RemoveOrdersRequest removeOrdersRequest) {
+        log.info("Dropping orders: {}", removeOrdersRequest);
         List<Long> ordersIds = removeOrdersRequest.getOrderIds();
         List<OrderExternal> ordersExternals = orderExternalRepository.findByOrderIds(ordersIds);
         ordersExternals.forEach(order -> order.setRescheduleDate(LocalDate.EPOCH)); // Set 1970 1 1

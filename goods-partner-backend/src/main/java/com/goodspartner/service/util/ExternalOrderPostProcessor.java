@@ -5,7 +5,9 @@ import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.DeliveryType;
+import com.goodspartner.util.DeliveryTimeRangeParser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
@@ -13,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ExternalOrderPostProcessor {
@@ -31,6 +34,7 @@ public class ExternalOrderPostProcessor {
         checkIfSelfService(orderDtos);
         checkIfPrePacking(orderDtos);
         checkMiddayDelivery(orderDtos);
+        updateDeliveryTime(orderDtos);
     }
 
     private void checkIfFrozen(List<OrderDto> orderDtos) {
@@ -82,6 +86,10 @@ public class ExternalOrderPostProcessor {
                 .forEach(orderDto -> orderDto.setDeliveryFinish(LocalTime.of(13, 0)));
     }
 
+    void updateDeliveryTime(List<OrderDto> orderDtos) {
+        orderDtos.forEach(DeliveryTimeRangeParser::parseDeliveryTimeFromComment);
+    }
+
     // --- Comment Parsers ---
 
     private boolean checkCommentIfFrozen(OrderDto orderDto) {
@@ -121,4 +129,6 @@ public class ExternalOrderPostProcessor {
                 .map(orderCommentLowerCase -> orderCommentLowerCase.contains(MIDDAY_DELIVERY))
                 .orElse(false);
     }
+
 }
+

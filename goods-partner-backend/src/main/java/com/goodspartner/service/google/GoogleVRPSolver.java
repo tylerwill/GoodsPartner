@@ -131,7 +131,7 @@ public class GoogleVRPSolver implements VRPSolver {
 
                     if (nodeIndex == 0) { // Depot
                         routeStartTimeFromDepot = LocalTime.ofSecondOfDay(solutionInMinutes * 60L);
-                        log.trace("Depot start time: {}", routeStartTimeFromDepot);
+                        log.debug("Depot start time: {} for car: {}", routeStartTimeFromDepot, cars.get(i));
                     } else { // RoutePoints
                         RoutePoint routePoint = routePoints.get((int) (nodeIndex - 1)); // exclude depot
 

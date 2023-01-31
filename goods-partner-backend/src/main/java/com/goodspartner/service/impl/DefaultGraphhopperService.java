@@ -116,12 +116,17 @@ public class DefaultGraphhopperService implements GraphhopperService {
         return response.getBest();
     }
 
+    /**
+     * // deliveryStart < expectedArrival < deliveryFinish;
+     * // ||
+     * // deliveryStart < expectedCompletion < deliveryFinish;
+     */
     @Override
     public void checkDeliveryTimeRange(RoutePoint routePoint) {
-
-        boolean matchingArrival = routePoint.getExpectedArrival().compareTo(routePoint.getDeliveryStart()) >= 0;
-        boolean matchingCompletion = routePoint.getExpectedCompletion().compareTo(routePoint.getDeliveryEnd()) <= 0;
-
+        boolean matchingArrival = routePoint.getExpectedArrival().isAfter(routePoint.getDeliveryStart())
+                && routePoint.getExpectedArrival().isBefore(routePoint.getDeliveryEnd());
+        boolean matchingCompletion = routePoint.getExpectedCompletion().isAfter(routePoint.getDeliveryStart())
+                && routePoint.getExpectedCompletion().isBefore(routePoint.getDeliveryEnd());
         routePoint.setMatchingExpectedDeliveryTime(matchingArrival || matchingCompletion);
     }
 

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -27,6 +28,7 @@ import javax.persistence.Table;
 @Table(name = "cars")
 @SQLDelete(sql = "UPDATE cars SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
+@ToString
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cars_id_sequence")
