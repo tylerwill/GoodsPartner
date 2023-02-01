@@ -1,9 +1,9 @@
 package com.goodspartner.web.controller;
 
-
 import com.goodspartner.dto.UserDto;
 import com.goodspartner.mapper.UserMapper;
 import com.goodspartner.service.UserService;
+import com.goodspartner.web.controller.response.AuthResponse;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping(path = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -29,8 +28,8 @@ public class UserController {
     private final UserMapper userMapper;
 
     @GetMapping("/auth")
-    public UserDto getAuthenticationDetails() {
-        return userMapper.toUserDto(userService.findByAuthentication());
+    public AuthResponse getAuthenticationDetails() {
+        return userMapper.toAuthResponse(userService.findByAuthentication());
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")

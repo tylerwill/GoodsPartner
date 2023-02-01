@@ -49,6 +49,7 @@ public class DeliveryCalculationHelper {
 
             // Routes
             List<Route> coolerRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.COOLER);
+
             List<Route> regularRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.REGULAR);
 
             // CarLoad

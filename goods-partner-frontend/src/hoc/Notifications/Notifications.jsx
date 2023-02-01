@@ -8,10 +8,12 @@ import {useAppDispatch} from '../../hooks/redux-hooks'
 import {deliveriesApi} from '../../api/deliveries/deliveries.api'
 import {deliveryOrdersApi} from '../../api/delivery-orders/delivery-orders.api'
 import {routesApi} from '../../api/routes/routes.api'
+import useAuth from "../../auth/AuthProvider";
 
-function useListenEvents(dispatch) {
+function useListenEvents(dispatch, heartbeatId) {
     useEffect(() => {
-        const sse = new EventSource(`${currentHost()}api/v1/live-event`, {
+
+        const sse = new EventSource(`${currentHost()}api/v1/live-event/${heartbeatId}`, {
             withCredentials: true
         })
 
@@ -97,10 +99,10 @@ function useProcessNotifications(
     }, [currentNotification])
 }
 
-function useNotificationsHeartbeat() {
+function useNotificationsHeartbeat(heartbeatId) {
     useEffect(() => {
         const interval = setInterval(() => {
-            fetch(`${currentHost()}api/v1/keep-alive`, {
+            fetch(`${currentHost()}api/v1/keep-alive/${heartbeatId}`, {
                 credentials: 'include',
                 method: 'get'
             }).then(response => {
@@ -112,13 +114,15 @@ function useNotificationsHeartbeat() {
 }
 
 function Notifications({children}) {
+    const {user} = useAuth();
+    const heartbeatId = user.heartbeatId;
     const {enqueueSnackbar} = useSnackbar()
     const dispatch = useAppDispatch()
     const {currentNotification} = useSelector(state => state.notifications)
 
-    useListenEvents(dispatch)
+    useListenEvents(dispatch, heartbeatId)
     useProcessNotifications(currentNotification, enqueueSnackbar, dispatch)
-    useNotificationsHeartbeat()
+    useNotificationsHeartbeat(heartbeatId)
 
     return <>{children}</>
 }

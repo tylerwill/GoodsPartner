@@ -38,24 +38,26 @@ public class DefaultLiveEventService implements LiveEventService {
     private final UserService userService;
 
     @Override
-    public void subscribe(Consumer<LiveEvent> consumer) {
+    public void subscribe(Consumer<LiveEvent> consumer, UUID heartbeatId) {
         UserDto user = userService.getAuthenticatedUserDto();
-        Subscriber newSubscriber = new Subscriber(consumer);
+        Subscriber newSubscriber = new Subscriber(consumer, heartbeatId);
         listeners.computeIfAbsent(user, k -> new ArrayList<>()).add(newSubscriber);
         log.info("{} added for account: {}, total account subscribers: {}. Total accounts: {}",
                 newSubscriber, user.getEmail(), listeners.get(user).size(), listeners.size());
     }
 
     @Override
-    public void publishHeartBeat() {
+    public void publishHeartBeat(UUID heartbeatId) {
         UserDto authenticatedUser = userService.getAuthenticatedUserDto();
         List<Subscriber> subscribers = Optional.ofNullable(listeners.get(authenticatedUser))
                 .orElseThrow(() -> new SubscriberNotFoundException(authenticatedUser.getUserName()));
-        subscribers.forEach(subscriber -> {
-            subscriber.setLastAccessed(System.currentTimeMillis());
-            subscriber.getConsumer().accept(HEAR_BEAT_EVENT);
-            log.debug("Received heartbeat for {} subscriber: {}", authenticatedUser.getUserName(), subscriber);
-        });
+        subscribers.stream()
+                .filter(subscriber -> subscriber.getHeartbeatId().equals(heartbeatId))
+                .forEach(subscriber -> {
+                    subscriber.setLastAccessed(System.currentTimeMillis());
+                    subscriber.getConsumer().accept(HEAR_BEAT_EVENT);
+                    log.debug("Received heartbeat for {} subscriber: {}", authenticatedUser.getUserName(), subscriber);
+                });
     }
 
     @Override
@@ -115,21 +117,21 @@ public class DefaultLiveEventService implements LiveEventService {
     @Getter
     public static class Subscriber {
         private final Consumer<LiveEvent> consumer;
-        private final UUID id;
+        private final UUID heartbeatId;
 
         @Setter
         private long lastAccessed;
 
-        public Subscriber(Consumer<LiveEvent> consumer) {
+        public Subscriber(Consumer<LiveEvent> consumer, UUID heartbeatId) {
             this.lastAccessed = System.currentTimeMillis();
             this.consumer = consumer;
-            this.id = UUID.randomUUID();
+            this.heartbeatId = heartbeatId;
         }
 
         @Override
         public String toString() {
             return "Subscriber{" +
-                    "id=" + id +
+                    "id=" + heartbeatId +
                     ", lastAccessed=" + lastAccessed +
                     '}';
         }

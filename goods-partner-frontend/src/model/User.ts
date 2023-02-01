@@ -4,6 +4,7 @@ export interface User {
     enabled: boolean
     role: UserRole
     userName: string
+    heartbeatId: string
 }
 
 export enum UserRole {
