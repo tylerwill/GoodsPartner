@@ -15,8 +15,11 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -31,24 +34,28 @@ public class DefaultLiveEventService implements LiveEventService {
     private static final int TIME_TO_LIVE = 60000;
     private static final String DRIVER_ROLE = "DRIVER";
 
-    private final Map<UserDto, Subscriber> listeners = new ConcurrentHashMap<>();
+    private final Map<UserDto, List<Subscriber>> listeners = new ConcurrentHashMap<>();
     private final UserService userService;
 
     @Override
     public void subscribe(Consumer<LiveEvent> consumer) {
         UserDto user = userService.getAuthenticatedUserDto();
-        listeners.put(user, new Subscriber(consumer));
-        log.info("New subscriber added: {}, total count: {}", user.getEmail(), listeners.size());
+        Subscriber newSubscriber = new Subscriber(consumer);
+        listeners.computeIfAbsent(user, k -> new ArrayList<>()).add(newSubscriber);
+        log.info("{} added for account: {}, total account subscribers: {}. Total accounts: {}",
+                newSubscriber, user.getEmail(), listeners.get(user).size(), listeners.size());
     }
 
     @Override
     public void publishHeartBeat() {
         UserDto authenticatedUser = userService.getAuthenticatedUserDto();
-        Subscriber subscriber = Optional.ofNullable(listeners.get(authenticatedUser))
+        List<Subscriber> subscribers = Optional.ofNullable(listeners.get(authenticatedUser))
                 .orElseThrow(() -> new SubscriberNotFoundException(authenticatedUser.getUserName()));
-        subscriber.setLastAccessed(System.currentTimeMillis());
-        subscriber.getConsumer().accept(HEAR_BEAT_EVENT);
-        log.debug("Received heartbeat for subscriber: {}", authenticatedUser.getUserName());
+        subscribers.forEach(subscriber -> {
+            subscriber.setLastAccessed(System.currentTimeMillis());
+            subscriber.getConsumer().accept(HEAR_BEAT_EVENT);
+            log.debug("Received heartbeat for {} subscriber: {}", authenticatedUser.getUserName(), subscriber);
+        });
     }
 
     @Override
@@ -67,12 +74,24 @@ public class DefaultLiveEventService implements LiveEventService {
 
         listeners.entrySet()
                 .removeIf(entry -> {
-                    boolean expired = System.currentTimeMillis() - entry.getValue().getLastAccessed() > TIME_TO_LIVE;
-                    if (expired) {
-                        log.info("The subscriber: {} has been inactive for more than 60 seconds and will be removed" +
-                                " from the list of subscriptions", entry.getKey().getEmail());
+                    // Remove specific subscribers
+                    List<Subscriber> subscribers = entry.getValue();
+                    subscribers.removeIf(subscriber -> {
+                        long staleTime = System.currentTimeMillis() - subscriber.getLastAccessed();
+                        boolean expired = staleTime > TIME_TO_LIVE;
+                        log.debug("{} staleTime: {}, expired: {}", subscriber, staleTime, expired);
+                        if (expired) {
+                            log.info("Subscriber has been inactive for more than {} milliseconds. Removing from group for: {}",
+                                    TIME_TO_LIVE, entry.getKey().getEmail());
+                        }
+                        return expired;
+                    });
+                    // Remove full group
+                    boolean groupEmpty = subscribers.isEmpty();
+                    if (groupEmpty) {
+                        log.info("Removing empty subscribers group for: {}",  entry.getKey().getEmail());
                     }
-                    return expired;
+                    return groupEmpty;
                 });
     }
 
@@ -80,7 +99,7 @@ public class DefaultLiveEventService implements LiveEventService {
         listeners.entrySet()
                 .stream()
                 .filter(entry -> predicate.test(entry.getKey()))
-                .forEach(entry -> entry.getValue().getConsumer().accept(event));
+                .forEach(entry -> entry.getValue().forEach(subscriber -> subscriber.getConsumer().accept(event)));
     }
 
     @NotNull
@@ -96,12 +115,23 @@ public class DefaultLiveEventService implements LiveEventService {
     @Getter
     public static class Subscriber {
         private final Consumer<LiveEvent> consumer;
+        private final UUID id;
+
         @Setter
         private long lastAccessed;
 
         public Subscriber(Consumer<LiveEvent> consumer) {
             this.lastAccessed = System.currentTimeMillis();
             this.consumer = consumer;
+            this.id = UUID.randomUUID();
+        }
+
+        @Override
+        public String toString() {
+            return "Subscriber{" +
+                    "id=" + id +
+                    ", lastAccessed=" + lastAccessed +
+                    '}';
         }
     }
 }
