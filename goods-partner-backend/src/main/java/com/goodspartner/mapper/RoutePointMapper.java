@@ -49,6 +49,16 @@ public interface RoutePointMapper {
                 .collect(Collectors.toList());
     }
 
+    default MapPoint toMapPoint(RoutePoint routePoint) {
+        AddressExternal addressExternal = routePoint.getAddressExternal();
+        return MapPoint.builder()
+                .status(addressExternal.getStatus())
+                .address(addressExternal.getValidAddress())
+                .longitude(addressExternal.getLongitude())
+                .latitude(addressExternal.getLatitude())
+                .build();
+    }
+
     default MapPoint getUnknownMapPoint() {
         return MapPoint.builder()
                 .status(UNKNOWN)

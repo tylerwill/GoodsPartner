@@ -15,8 +15,8 @@ import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.service.GraphhopperService;
+import com.goodspartner.service.RoutingSolver;
 import com.goodspartner.service.StoreService;
-import com.goodspartner.service.VRPSolver;
 import com.goodspartner.service.dto.RoutingSolution;
 import com.goodspartner.service.dto.VRPSolution;
 import com.graphhopper.ResponsePath;
@@ -70,7 +70,7 @@ class DeliveryControllerITest extends AbstractWebITest {
     @MockBean
     private CarRepository carRepository;
     @MockBean
-    private VRPSolver vrpSolver;
+    private RoutingSolver vrpSolver;
     @MockBean
     private GraphhopperService graphhopperService;
     @MockBean
@@ -302,8 +302,8 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .build();
         VRPSolution emptySolution = VRPSolution.builder().build();
 
-        when(vrpSolver.optimize(Collections.emptyList(), storeService.getMainStore(), Collections.emptyList())).thenReturn(emptySolution);
-        when(vrpSolver.optimize(
+        when(vrpSolver.optimizeVRP(Collections.emptyList(), storeService.getMainStore(), Collections.emptyList())).thenReturn(emptySolution);
+        when(vrpSolver.optimizeVRP(
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList())),
                 any(),
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList()))))
@@ -346,8 +346,8 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .build();
         VRPSolution emptySolution = VRPSolution.builder().build();
 
-        when(vrpSolver.optimize(Collections.emptyList(), storeService.getMainStore(), Collections.emptyList())).thenReturn(emptySolution);
-        when(vrpSolver.optimize(
+        when(vrpSolver.optimizeVRP(Collections.emptyList(), storeService.getMainStore(), Collections.emptyList())).thenReturn(emptySolution);
+        when(vrpSolver.optimizeVRP(
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList())),
                 any(),
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList()))))
@@ -382,8 +382,8 @@ class DeliveryControllerITest extends AbstractWebITest {
                 .routings(List.of(regularRoutingSolution))
                 .build();
 
-        when(vrpSolver.optimize(Collections.emptyList(), storeService.getMainStore(), Collections.emptyList())).thenReturn(VRPSolution.builder().build());
-        when(vrpSolver.optimize(
+        when(vrpSolver.optimizeVRP(Collections.emptyList(), storeService.getMainStore(), Collections.emptyList())).thenReturn(VRPSolution.builder().build());
+        when(vrpSolver.optimizeVRP(
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList())),
                 any(),
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList()))))

@@ -4,31 +4,31 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.dto.UserDto;
-import com.goodspartner.entity.AddressStatus;
-import com.goodspartner.entity.User;
-import com.goodspartner.facade.DeliveryFacade;
-import com.goodspartner.web.action.RouteAction;
 import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.RouteDto;
 import com.goodspartner.dto.StoreDto;
+import com.goodspartner.dto.UserDto;
+import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.entity.Store;
+import com.goodspartner.entity.User;
 import com.goodspartner.event.DeliveryAuditEvent;
+import com.goodspartner.facade.DeliveryFacade;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.service.DeliveryService;
 import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.RouteService;
+import com.goodspartner.service.RoutingSolver;
 import com.goodspartner.service.StoreService;
-import com.goodspartner.service.VRPSolver;
 import com.goodspartner.service.dto.RoutingSolution;
 import com.goodspartner.service.dto.VRPSolution;
+import com.goodspartner.web.action.RouteAction;
 import com.graphhopper.ResponsePath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -90,7 +90,7 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
     @MockBean
     private ResponsePath graphhopperResponse;
     @MockBean
-    private VRPSolver vrpSolver;
+    private RoutingSolver vrpSolver;
     @MockBean
     private CarRepository carRepository;
     @MockBean
@@ -194,8 +194,8 @@ class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {
                 .build();
         VRPSolution emptySolution = VRPSolution.builder().build();
 
-        when(vrpSolver.optimize(Collections.emptyList(), storeService.getMainStore(), Collections.emptyList())).thenReturn(emptySolution);
-        when(vrpSolver.optimize(
+        when(vrpSolver.optimizeVRP(Collections.emptyList(), storeService.getMainStore(), Collections.emptyList())).thenReturn(emptySolution);
+        when(vrpSolver.optimizeVRP(
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList())),
                 any(),
                 AdditionalMatchers.not(ArgumentMatchers.eq(Collections.emptyList()))))

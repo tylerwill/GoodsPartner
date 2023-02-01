@@ -7,19 +7,20 @@ import com.goodspartner.entity.Car;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
-import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.entity.Store;
+import com.goodspartner.exception.ImppossbleRouteRecalculationException;
 import com.goodspartner.mapper.RoutePointMapper;
 import com.goodspartner.mapper.StoreMapper;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.OrderExternalRepository;
 import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.RouteCalculationService;
+import com.goodspartner.service.RoutingSolver;
 import com.goodspartner.service.StoreService;
-import com.goodspartner.service.VRPSolver;
 import com.goodspartner.service.dto.RouteMode;
 import com.goodspartner.service.dto.RoutingSolution;
+import com.goodspartner.service.dto.TSPSolution;
 import com.goodspartner.service.dto.VRPSolution;
 import com.google.common.annotations.VisibleForTesting;
 import com.graphhopper.ResponsePath;
@@ -27,6 +28,7 @@ import com.graphhopper.util.Instruction;
 import com.graphhopper.util.InstructionList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -42,7 +44,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.goodspartner.service.google.GoogleVRPSolver.SERVICE_TIME_AT_LOCATION_MIN;
+import static com.goodspartner.entity.RoutePointStatus.PENDING;
+import static com.goodspartner.service.google.GoogleRoutingSolver.SERVICE_TIME_AT_LOCATION_MIN;
 
 @Slf4j
 @Service
@@ -54,7 +57,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
 
     private final StoreService storeService;
     private final StoreMapper storeMapper;
-    private final VRPSolver vrpSolver;
+    private final RoutingSolver vrpSolver;
     private final GraphhopperService graphhopperService;
     private final RoutePointMapper routePointMapper;
 
@@ -79,7 +82,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
         List<RoutePoint> routePoints = mapToRoutePoints(filteredOrders);
 
         log.info("Start route optimisation for {} orders and cooler: {}", filteredOrders.size(), routeMode.isCoolerNecessary());
-        VRPSolution solution = vrpSolver.optimize(cars, store, routePoints);
+        VRPSolution solution = vrpSolver.optimizeVRP(cars, store, routePoints);
         log.info("Finished route optimisation for {} orders and cooler: {}", filteredOrders.size(), routeMode.isCoolerNecessary());
 
         updateDroppedOrders(filteredOrders, solution);
@@ -110,8 +113,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
         orderExternalRepository.saveAll(orders);
     }
 
-    @VisibleForTesting
-    Route mapToRoute(RoutingSolution routingSolution, Store store) {
+    private Route mapToRoute(RoutingSolution routingSolution, Store store) {
 
         List<MapPoint> mapPoints = new ArrayList<>();
         mapPoints.add(storeMapper.getMapPoint(store));
@@ -143,8 +145,38 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
         return route;
     }
 
-    @VisibleForTesting
-    Route recalculateRoute(Route route, LinkedList<RoutePointDto> routePointDtos) {
+    public void recalculateRoute(Route route) {
+
+        List<RoutePoint> routePoints = route.getRoutePoints();
+
+        RoutePoint currentRoutePoint = null;
+        List<RoutePoint> completedRoutePoints = new ArrayList<>();
+        List<RoutePoint> pendingRoutePoints = new ArrayList<>();
+        for (RoutePoint routePoint : routePoints) {
+            if (PENDING.equals(routePoint.getStatus())) {
+                pendingRoutePoints.add(routePoint);
+            } else {
+                completedRoutePoints.add(routePoint);
+                currentRoutePoint = routePoint; // last completed required to start with
+            }
+        }
+
+        Store store = storeService.getMainStore();
+        log.info("Start route optimisation for car: {} and routePoints: {}", route.getCar() , pendingRoutePoints.size());
+        TSPSolution solution = vrpSolver.optimizeTSP(route.getCar(), store, currentRoutePoint, routePoints);
+        log.info("Finished route optimisation for car: {} and routePoints: {}", route.getCar() , pendingRoutePoints.size());
+
+        if (solution.getDroppedPoints().size() > 0) {
+            throw new ImppossbleRouteRecalculationException(route);
+        }
+
+        List<RoutePoint> recalculatedRoutePoints = solution.getRouting().getRoutePoints();
+        List<RoutePoint> joinedRoutePoints = ListUtils.union(completedRoutePoints, recalculatedRoutePoints);
+        route.setRoutePoints(joinedRoutePoints);
+    }
+
+    // TODD rewrite
+    public Route recalculateRouteReordering(Route route, LinkedList<RoutePointDto> routePointDtos) {
         List<MapPoint> mapPoints = routePointDtos.stream().map(RoutePointDto::getMapPoint).toList();
 
         ResponsePath routePath = graphhopperService.getRoute(mapPoints);
@@ -208,7 +240,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                     .collect(Collectors.summarizingDouble(amount -> amount)).getSum();
 
             RoutePoint routePoint = new RoutePoint();
-            routePoint.setStatus(RoutePointStatus.PENDING);
+            routePoint.setStatus(PENDING);
             routePoint.setOrders(orderList);
             routePoint.setAddressTotalWeight(addressTotalWeight);
 

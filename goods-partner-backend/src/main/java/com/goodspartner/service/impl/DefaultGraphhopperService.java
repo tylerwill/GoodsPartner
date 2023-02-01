@@ -7,7 +7,7 @@ import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.Store;
 import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.dto.DistanceMatrix;
-import com.goodspartner.service.google.GoogleVRPSolver;
+import com.goodspartner.service.google.GoogleRoutingSolver;
 import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
 import com.graphhopper.GraphHopper;
@@ -87,7 +87,7 @@ public class DefaultGraphhopperService implements GraphhopperService {
             ResponsePath path = getResponsePath(request);
             long driveDurationMinutes = Duration.ofMillis(path.getTime()).toMinutes();
             LocalTime expectedArrivalTime = driveStartTime.plusMinutes(driveDurationMinutes);
-            LocalTime expectedCompletionTime = expectedArrivalTime.plusMinutes(GoogleVRPSolver.SERVICE_TIME_AT_LOCATION_MIN);
+            LocalTime expectedCompletionTime = expectedArrivalTime.plusMinutes(GoogleRoutingSolver.SERVICE_TIME_AT_LOCATION_MIN);
 
             nextStop.setExpectedArrival(expectedArrivalTime);
             nextStop.setExpectedCompletion(expectedCompletionTime);

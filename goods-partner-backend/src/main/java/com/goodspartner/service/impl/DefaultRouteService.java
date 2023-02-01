@@ -90,6 +90,7 @@ public class DefaultRouteService implements RouteService {
         return route;
     }
 
+    // TODO rewrite it
     @Override
     public void reorderRoutePoints(long routeId, LinkedList<RoutePointDto> routePointDtos) {
 
@@ -103,7 +104,7 @@ public class DefaultRouteService implements RouteService {
         validateRoute(route, deliveryId);
 
         if (isAllRoutePointsPending(routePointDtos)) {
-            Route reorderedRoute = routeCalculationService.recalculateRoute(route, routePointDtos);
+            Route reorderedRoute = routeCalculationService.recalculateRouteReordering(route, routePointDtos);
             routeRepository.save(reorderedRoute);
         } else {
             throw new IllegalRoutePointStatusForOperation(routePointDtos, "reorder");
@@ -114,6 +115,14 @@ public class DefaultRouteService implements RouteService {
     public Route findExtendedById(Long routeId) {
         return routeRepository.findExtendedById(routeId)
                 .orElseThrow(() -> new RouteNotFoundException(routeId));
+    }
+
+    @Override
+    public void recalculateRoute(long routeId) {
+        Route route = routeRepository.findExtendedById(routeId)
+                .orElseThrow(() -> new RouteNotFoundException(routeId));
+        routeCalculationService.recalculateRoute(route);
+        routeRepository.save(route); // Saving updated route
     }
 
     private boolean isAllRoutePointsPending(List<RoutePointDto> routePointDtos) {
