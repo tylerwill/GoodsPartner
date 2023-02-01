@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @AutoConfigureMockMvc(addFilters = false)
 @Import({TestSecurityDisableConfig.class})
-public class AddressExternalControllerITest extends AbstractWebITest {
+public class AddressControllerITest extends AbstractWebITest {
     private static final String ADDRESSES_ENDPOINT = "/api/v1/addresses";
     private static final String ADDRESSES_DATASET = "datasets/addresses/addresses-dataset.json";
 
@@ -44,7 +44,7 @@ public class AddressExternalControllerITest extends AbstractWebITest {
                         .put(ADDRESSES_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(addressExternalDtoToUpdate)))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/addresses/address-dto-for-update.json")));
     }
 

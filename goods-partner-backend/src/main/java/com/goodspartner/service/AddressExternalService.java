@@ -1,13 +1,13 @@
 package com.goodspartner.service;
 
-import com.goodspartner.dto.AddressExternalDto;
+import com.goodspartner.entity.AddressExternal;
 
 import java.util.List;
 
 public interface AddressExternalService {
-    List<AddressExternalDto> findAll();
+    List<AddressExternal> findAll();
 
-    AddressExternalDto update(AddressExternalDto addressExternalDto);
+    AddressExternal update(AddressExternal addressExternal);
 
-    void delete(AddressExternalDto addressExternalDto);
+    void delete(AddressExternal addressExternal);
 }
