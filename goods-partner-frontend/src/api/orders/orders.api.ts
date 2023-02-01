@@ -47,7 +47,7 @@ export const ordersApi = createApi({
 				method: 'POST',
 				body: rescheduleRequest
 			}),
-			invalidatesTags: [{ type: 'orders', id: 'skipped' }]
+			invalidatesTags: [{ type: 'orders', id: 'skipped' },{ type: 'orders', id: 'scheduled' }]
 		}),
 
 		deleteOrders: builder.mutation<void, Array<number>>({
@@ -56,7 +56,7 @@ export const ordersApi = createApi({
 				method: 'DELETE',
 				body: { orderIds }
 			}),
-			invalidatesTags: [{ type: 'orders', id: 'skipped' }]
+			invalidatesTags: [{ type: 'orders', id: 'skipped' },{ type: 'orders', id: 'scheduled' }]
 		})
 	})
 })

@@ -51,10 +51,13 @@ const OrdersTableWithReschedule: FC<OrdersTableWithRescheduleProps> = ({orders, 
 
     const reschedule = (rescheduleDate: string) => {
         rescheduleOrders({rescheduleDate, orderIds: selectedOrderIds})
+        // remove all selected
+        dispatch(deselectAll());
     }
 
     const deleteOrdersHandler = () => {
         deleteOrders(selectedOrderIds)
+        dispatch(deselectAll())
     }
 
     const [page, setPage] = React.useState(0)
@@ -89,17 +92,19 @@ const OrdersTableWithReschedule: FC<OrdersTableWithRescheduleProps> = ({orders, 
         setPage(0)
     }
 
+    if (!orders) {
+        return <Loading/>
+    }
+
+
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            dispatch(selectAll())
+            dispatch(selectAll(orders))
             return
         }
         dispatch(deselectAll())
     }
 
-    if (!orders) {
-        return <Loading/>
-    }
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
