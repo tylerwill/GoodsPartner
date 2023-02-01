@@ -360,7 +360,6 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         assertFalse(rescheduled.isFrozen());
         assertEquals(REGULAR, rescheduled.getDeliveryType());
         assertEquals(AUTOVALIDATED, rescheduled.getAddressExternal().getStatus());
-        assertEquals(SHIPPING_DATE, rescheduled.getRescheduleDate());
     }
 
     private void verifyRescheduledOrder(DeliveryDto delivery) {
@@ -373,6 +372,5 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         assertFalse(rescheduled.isFrozen());
         assertEquals(REGULAR, rescheduled.getDeliveryType());
         assertEquals(AUTOVALIDATED, rescheduled.getAddressExternal().getStatus());
-        assertEquals(SHIPPING_DATE, rescheduled.getRescheduleDate());
     }
 }

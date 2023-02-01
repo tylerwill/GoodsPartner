@@ -104,7 +104,8 @@ public class DefaultOrderExternalService implements OrderExternalService {
     @Override
     public void bindExternalOrdersWithDelivery(List<OrderExternal> externalOrders, Delivery delivery) {
         // Fetching rescheduled orders
-        List<OrderExternal> rescheduledOrders = orderExternalRepository.findByShippingDate(delivery.getDeliveryDate());
+        List<OrderExternal> rescheduledOrders = orderExternalRepository.findScheduledOrdersByShippingDate(delivery.getDeliveryDate());
+
         // Address reconciliation
         Set<AddressExternal> addresses = externalOrders
                 .stream()

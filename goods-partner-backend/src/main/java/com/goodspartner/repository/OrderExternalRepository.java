@@ -63,7 +63,13 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, Lo
             "  AND o.excluded = false ")
     List<OrderExternal> findOrdersForCalculation(@Param("deliveryId") UUID deliveryId);
 
-    List<OrderExternal> findByShippingDate(LocalDate date);
+    // Reschedule date is present only for outdated orders so should be excluded
+    @EntityGraph(attributePaths = {"addressExternal"})
+    @Query("SELECT o FROM OrderExternal o " +
+            "WHERE o.shippingDate = :shippingDate" +
+            "  AND o.rescheduleDate IS NULL " +
+            "  AND o.delivery IS NULL")
+    List<OrderExternal> findScheduledOrdersByShippingDate(@Param("shippingDate") LocalDate shippingDate);
 
     @EntityGraph(attributePaths = {"addressExternal", "delivery"})
     @Query("SELECT o FROM OrderExternal o WHERE o.id IN :orderIds")
