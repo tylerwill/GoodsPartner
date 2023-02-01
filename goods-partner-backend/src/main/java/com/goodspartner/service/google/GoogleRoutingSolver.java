@@ -57,6 +57,9 @@ public class GoogleRoutingSolver implements RoutingSolver {
     private static final LocalTime DEFAULT_DELIVERY_START_TIME = LocalTime.of(9, 0);
     private static final LocalTime DEFAULT_DELIVERY_FINISH_TIME = LocalTime.of(19, 0);
 
+    // Normalization requires to provide recalculation between absolute drive time, and relative arrival time
+    private static final long NORMALIZATION_TIME_SHIFT_MINUTES = DEFAULT_DEPOT_START_TIME.getHour() * 60L; // 0 start of a day
+
     private final GraphhopperService graphhopperService;
 
     private final StoreMapper storeMapper;
@@ -146,7 +149,7 @@ public class GoogleRoutingSolver implements RoutingSolver {
                     long nodeIndex = manager.indexToNode(index);
 
                     IntVar timeVar = timeDimension.cumulVar(index);
-                    long solutionInMinutes = solution.max(timeVar); // MIN-MAX solution window is equal. Tested
+                    long solutionInMinutes = solution.max(timeVar) + NORMALIZATION_TIME_SHIFT_MINUTES; // MIN-MAX solution window is equal. Tested
 
                     if (nodeIndex == 0) { // Depot
                         routeStartTimeFromDepot = LocalTime.ofSecondOfDay(solutionInMinutes * 60L);
@@ -256,7 +259,6 @@ public class GoogleRoutingSolver implements RoutingSolver {
                         .setFirstSolutionStrategy(FirstSolutionStrategy.Value.CHRISTOFIDES)
                         .setLocalSearchMetaheuristic(LocalSearchMetaheuristic.Value.GUIDED_LOCAL_SEARCH)
                         .setTimeLimit(Duration.newBuilder().setSeconds(SOLUTION_PROCESSING_TIME_SEC).build())
-                        .setLogSearch(true)
                         .build();
         return routing.solveWithParameters(searchParameters);
     }
@@ -390,18 +392,18 @@ public class GoogleRoutingSolver implements RoutingSolver {
         Long[][] timeWindows = new Long[allPoints][2];
 
         // Set depot time
-        timeWindows[0][0] = toMinutes(startTime);
-        timeWindows[0][1] = toMinutes(DEFAULT_DEPOT_FINISH_TIME);
+        timeWindows[0][0] = normalizeTravelTime(startTime);
+        timeWindows[0][1] = normalizeTravelTime(DEFAULT_DEPOT_FINISH_TIME);
 
         for (int i = 0; i < routePoints.size(); i++) {
 
             LocalTime deliveryStartTime = routePoints.get(i).getDeliveryStart();
-            timeWindows[i+1][0] = toMinutes(deliveryStartTime != null
+            timeWindows[i+1][0] = normalizeTravelTime(deliveryStartTime != null
                     ? deliveryStartTime
                     : DEFAULT_DELIVERY_START_TIME);
 
             LocalTime deliveryEndTime = routePoints.get(i).getDeliveryEnd();
-            timeWindows[i+1][1] = toMinutes(deliveryEndTime != null
+            timeWindows[i+1][1] = normalizeTravelTime(deliveryEndTime != null
                     ? deliveryEndTime
                     : DEFAULT_DELIVERY_FINISH_TIME); // 18:00
         }
@@ -409,8 +411,9 @@ public class GoogleRoutingSolver implements RoutingSolver {
         return timeWindows;
     }
 
-    private long toMinutes(LocalTime time) {
-        return time.getHour() * 60; // minutes
+    private long normalizeTravelTime(LocalTime time) {
+        LocalTime normalizedTime = time.minusMinutes(NORMALIZATION_TIME_SHIFT_MINUTES);
+        return normalizedTime.getHour() * 60; // minutes
     }
 
 }

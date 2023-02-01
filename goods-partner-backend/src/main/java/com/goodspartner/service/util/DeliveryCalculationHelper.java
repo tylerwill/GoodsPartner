@@ -77,6 +77,7 @@ public class DeliveryCalculationHelper {
             // TODO routeUpdate required on FE as well
             log.info("Finished calculation for delivery with id: {}", deliveryId);
         } catch (Exception exception) {
+            // TODO there is no history entry for the same
             eventService.publishEvent(new LiveEvent("Помилка розрахування доставки", EventType.ERROR,
                     new Action(ActionType.INFO, deliveryId)));
             throw new RuntimeException(exception);
