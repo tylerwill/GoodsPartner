@@ -4,12 +4,12 @@ import Toolbar from '@mui/material/Toolbar'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Divider from '@mui/material/Divider'
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import { ContentPasteSharp, Inventory2Sharp } from '@mui/icons-material'
+import {ContentPasteSharp, Inventory2Sharp} from '@mui/icons-material'
 import SupervisedUserCircle from '@mui/icons-material/SupervisedUserCircle'
 import LogoutIcon from '@mui/icons-material/Logout'
 import GrandeDolceLogo from '../Logo/GrandeDolceLogo'
@@ -67,6 +67,10 @@ const Sidebar = ({ open }) => {
 								{ListButton(<ShoppingCartIcon />, 'Замовлення')}
 							</ListItem>
 
+							<ListItem disablePadding component={Link} to={'/clients/addresses'}>
+								{ListButton(<BusinessIcon />, 'Адреси клієнтів')}
+							</ListItem>
+
 							<ListItem disablePadding component={Link} to={'/cars'}>
 								{ListButton(<LocalShippingIcon />, 'Автомобілі')}
 							</ListItem>
@@ -75,14 +79,9 @@ const Sidebar = ({ open }) => {
 								{ListButton(<SupervisedUserCircle />, 'Користувачі')}
 							</ListItem>
 
-							<ListItem disablePadding component={Link} to={'/clients/addresses'}>
-								{ListButton(<BusinessIcon />, 'Адреси клієнтів')}
-							</ListItem>
-
 							<ListItem disablePadding component={Link} to={'/reports'}>
 								{ListButton(<ContentPasteSharp />, 'Звітність')}
 							</ListItem>
-
 
 						</>
 					)}

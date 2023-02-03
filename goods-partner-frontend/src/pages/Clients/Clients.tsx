@@ -31,8 +31,8 @@ export const Clients = () => {
 						<TableHead sx={{ fontWeight: 'bold' }}>
 							<TableRow>
 								<TableCell>Клієнт</TableCell>
-								<TableCell align='center'>Оригінальна адреса</TableCell>
-								<TableCell align='center'>Адреса в системі</TableCell>
+								<TableCell>Оригінальна адреса</TableCell>
+								<TableCell>Адреса в системі</TableCell>
 								<TableCell align='center'>Статус</TableCell>
 							</TableRow>
 						</TableHead>
@@ -42,8 +42,8 @@ export const Clients = () => {
 							{clientsAddresses.map(clientAddress => (
 								<TableRow key={'clientAddress ' + clientAddress.clientName +  clientAddress.orderAddress}>
 									<TableCell>{clientAddress.clientName}</TableCell>
-									<TableCell align='center'>{clientAddress.orderAddress}</TableCell>
-									<TableCell align='center'>{clientAddress.validAddress}</TableCell>
+									<TableCell>{clientAddress.orderAddress}</TableCell>
+									<TableCell>{clientAddress.validAddress}</TableCell>
 									<TableCell align='center'>{clientAddress.status}</TableCell>
 								</TableRow>
 							))}
