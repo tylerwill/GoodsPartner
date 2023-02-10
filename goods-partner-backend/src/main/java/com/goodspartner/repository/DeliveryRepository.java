@@ -6,7 +6,6 @@ import com.goodspartner.entity.DeliveryStatus;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -27,7 +26,7 @@ public interface DeliveryRepository extends JpaRepository<Delivery, UUID> {
     @EntityGraph(attributePaths = {"routes", "routes.car", "routes.store"})
     List<Delivery> findByStatusAndDeliveryDateBetween(DeliveryStatus status, LocalDate dateFrom, LocalDate dateTo);
 
-    @EntityGraph(attributePaths = {"orders", "orders.addressExternal"})
+    @EntityGraph(attributePaths = {"orders"})
     @Query("SELECT d FROM Delivery d WHERE d.id = :id")
     Optional<Delivery> findByIdWithOrders(UUID id);
 
@@ -35,7 +34,4 @@ public interface DeliveryRepository extends JpaRepository<Delivery, UUID> {
             "AND d.status = 'APPROVED' OR d.status = 'COMPLETED'")
     List<Delivery> findDeliveriesByCarAndStatus(@Param("car") Car car, Sort sortByDeliveryDate);
 
-    @Modifying
-    @Query("UPDATE Delivery SET deleted = true WHERE id=:id")
-    void softDeleteById(@Param("id") UUID id);
 }

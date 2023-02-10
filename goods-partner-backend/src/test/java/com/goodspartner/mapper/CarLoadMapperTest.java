@@ -106,8 +106,8 @@ public class CarLoadMapperTest {
         assertEquals(2, mappedOrderExternals.get(0).getId());
         assertEquals("1232", mappedOrderExternals.get(0).getOrderNumber());
         assertEquals(LocalDate.of(2022, 2, 17), mappedOrderExternals.get(0).getShippingDate());
-        assertEquals("ABS", mappedOrderExternals.get(0).getAddressExternal().getOrderAddressId().getClientName());
-        assertEquals("Бровари, Марії Лагунової, 11", mappedOrderExternals.get(0).getAddressExternal().getOrderAddressId().getOrderAddress());
+        assertEquals("ABS", mappedOrderExternals.get(0).getClientName());
+        assertEquals("Бровари, Марії Лагунової, 11", mappedOrderExternals.get(0).getAddress());
         assertEquals("Georg", mappedOrderExternals.get(0).getManagerFullName());
         assertEquals(1340.0, mappedOrderExternals.get(0).getOrderWeight());
         assertEquals(List.of(product), mappedOrderExternals.get(0).getProducts());

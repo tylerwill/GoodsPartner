@@ -5,7 +5,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractBaseITest;
 import com.goodspartner.dto.Product;
-import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.OrderExternal;
@@ -66,11 +65,8 @@ class DefaultCarLoadServiceITest extends AbstractBaseITest {
         assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000111"), actualOrder.getDelivery().getId());
         assertEquals(12, actualOrder.getOrderWeight());
 
-        AddressExternal addressExternal = actualOrder.getAddressExternal();
-        AddressExternal.OrderAddressId orderAddressId = addressExternal.getOrderAddressId();
-
-        assertEquals("вул.Єлізавети Чавдар, буд.36", orderAddressId.getOrderAddress());
-        assertEquals("Кух Плюс ТОВ (Кухмайстер) бн", orderAddressId.getClientName());
+        assertEquals("вул.Єлізавети Чавдар, буд.36", actualOrder.getAddress());
+        assertEquals("Кух Плюс ТОВ (Кухмайстер) бн", actualOrder.getClientName());
         assertEquals("f6f73d76-8005-11ec-b3ce-00155dd72305", actualOrder.getRefKey());
         assertEquals("Наталія Рябченко", actualOrder.getManagerFullName());
         assertEquals("00000002055", actualOrder.getOrderNumber());

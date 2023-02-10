@@ -11,6 +11,7 @@ GRANDEDOLCE_ORDERS:
     DELIVERY_FINISH: "13:00:00"
     CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
     ADDRESS: "вул.Єлізавети Чавдар, буд.36"
+    MAP_POINT: "{\"address\":\"вулиця Єлизавети Чавдар, 36, Київ, Україна, 02000\",\"latitude\":50.3910679,\"longitude\":30.6265536,\"status\": \"KNOWN\"}"
     PRODUCTS: "[{\"amount\": 1, \"measure\": \"кг\", \"storeName\": \"Склад №1\", \"unitWeight\": 12.0, \"coefficient\": 1.0, \"productName\": \"Наповнювач фруктово-ягідний (декоргель) (12 кг)\", \"totalProductWeight\": 12.0}]"
     ORDER_WEIGHT: 12.00
     DELIVERY_ID: "00000000-0000-0000-0000-000000000111"
@@ -28,6 +29,7 @@ GRANDEDOLCE_ORDERS:
     DELIVERY_FINISH: "13:00:00"
     CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
     ADDRESS: "вул.Єлізавети Чавдар, буд.36"
+    MAP_POINT: "{\"address\":\"вулиця Єлизавети Чавдар, 36, Київ, Україна, 02000\",\"latitude\":50.3910679,\"longitude\":30.6265536,\"status\": \"KNOWN\"}"
     PRODUCTS: "[{\"amount\": 1, \"measure\": \"кг\", \"storeName\": \"Склад №1\", \"unitWeight\": 12.0, \"coefficient\": 1.0, \"productName\": \"Наповнювач фруктово-ягідний (декоргель) (12 кг)\", \"totalProductWeight\": 12.0}]"
     ORDER_WEIGHT: 12.00
     DELIVERY_ID: "00000000-0000-0000-0000-000000000222"
@@ -45,6 +47,7 @@ GRANDEDOLCE_ORDERS:
     DELIVERY_FINISH: "13:00:00"
     CLIENT_NAME: "Кух Плюс ТОВ (Кухмайстер) бн"
     ADDRESS: "вул.Єлізавети Чавдар, буд.36"
+    MAP_POINT: "{\"address\":\"вулиця Єлизавети Чавдар, 36, Київ, Україна, 02000\",\"latitude\":50.3910679,\"longitude\":30.6265536,\"status\": \"KNOWN\"}"
     PRODUCTS: "[{\"amount\": 1, \"measure\": \"кг\", \"storeName\": \"Склад №1\", \"unitWeight\": 12.0, \"coefficient\": 1.0, \"productName\": \"Наповнювач фруктово-ягідний (декоргель) (12 кг)\", \"totalProductWeight\": 12.0}]"
     ORDER_WEIGHT: 12.00
     DELIVERY_ID: "00000000-0000-0000-0000-000000000333"

@@ -2,7 +2,6 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.configuration.properties.GraphhopperProperties;
 import com.goodspartner.dto.MapPoint;
-import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.Store;
 import com.goodspartner.service.GraphhopperService;
@@ -58,9 +57,9 @@ public class DefaultGraphhopperService implements GraphhopperService {
     }
 
     @Override
-    public void routePointTimeActualize(AddressExternal currentPoint,
+    public void routePointTimeActualize(MapPoint mapPoint,
                                         List<RoutePoint> routePoints) {
-        routePointTimeActualize(currentPoint.getLatitude(), currentPoint.getLongitude(), routePoints);
+        routePointTimeActualize(mapPoint.getLatitude(), mapPoint.getLongitude(), routePoints);
     }
 
     @Override
@@ -74,9 +73,9 @@ public class DefaultGraphhopperService implements GraphhopperService {
         double newStartLongitude = currentLongitude;
 
         for (RoutePoint nextStop : routePoints) {
-            AddressExternal addressExternal = nextStop.getAddressExternal();
-            double nextStopLatitude = addressExternal.getLatitude();
-            double nextStopLongitude = addressExternal.getLongitude();
+            MapPoint mapPoint = nextStop.getMapPoint();
+            double nextStopLatitude = mapPoint.getLatitude();
+            double nextStopLongitude = mapPoint.getLongitude();
 
             GHRequest request = new GHRequest(
                     newStartLatitude, newStartLongitude,

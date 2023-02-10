@@ -6,6 +6,7 @@ import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
+import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.User;
@@ -13,7 +14,9 @@ import com.goodspartner.event.Action;
 import com.goodspartner.event.ActionType;
 import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
+import com.goodspartner.exception.AddressExternalNotFoundException;
 import com.goodspartner.exception.CarNotFoundException;
+import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exception.OrderNotFoundException;
 import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.repository.AddressExternalRepository;
@@ -35,7 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -80,24 +82,59 @@ public class DefaultOrderExternalService implements OrderExternalService {
     @Transactional
     @Override
     public OrderExternal update(long id, OrderDto orderDto) {
-        OrderExternal order = orderExternalRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+        OrderExternal order = orderExternalRepository.findByIdWithDelivery(id)
+                .orElseThrow(() -> new OrderNotFoundException(id));
+
+        Delivery delivery = order.getDelivery();
+        if (!DeliveryStatus.DRAFT.equals(delivery.getStatus())) {
+            throw new IllegalDeliveryStatusForOperation(delivery, "update order for");
+        }
+
+        updateAddressExternal(orderDto, order);
+
         orderExternalMapper.update(order, orderDto);
+
         return orderExternalRepository.save(order);
     }
 
+    private void updateAddressExternal(OrderDto orderDto, OrderExternal order) {
+        if (orderDto.getMapPoint() != null
+                && orderDto.getMapPoint().getStatus() == AddressStatus.KNOWN
+                && order.getMapPoint().getStatus() == AddressStatus.UNKNOWN) {
+
+            AddressExternal.OrderAddressId orderAddressId = AddressExternal.OrderAddressId.builder()
+                    .orderAddress(order.getAddress())
+                    .clientName(order.getClientName())
+                    .build();
+
+            AddressExternal updatedAddressExternal = addressExternalRepository.findById(orderAddressId)
+                    .orElseThrow(() -> new AddressExternalNotFoundException(orderAddressId));
+
+            orderExternalMapper.updateAddressExternal(updatedAddressExternal, orderDto.getMapPoint());
+            addressExternalRepository.save(updatedAddressExternal);
+        } else {
+            log.info("Skipped respective AddressExternal update. OrderDto.MapPoint: {} and Order.MapPoint: {}",
+                    orderDto.getMapPoint(), order.getMapPoint());
+        }
+    }
+
+    @Transactional
     @Override
     public OrderExternal excludeOrder(long id, ExcludeOrderRequest excludeOrderRequest) {
         log.info("Excluding order with id: {}", id);
-        OrderExternal order = orderExternalRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+        OrderExternal order = orderExternalRepository.findByIdWithDelivery(id)
+                .orElseThrow(() -> new OrderNotFoundException(id));
         order.setExcluded(true);
         order.setExcludeReason(excludeOrderRequest.getExcludeReason());
-
         return orderExternalRepository.save(order);
     }
 
     @Override
     public List<OrderExternal> getInvalidOrdersForCalculation(UUID deliveryId) {
-        return orderExternalRepository.findIncludedRegularOrdersWithUnknownAddressByDeliveryId(deliveryId);
+        return orderExternalRepository.findOrdersForCalculation(deliveryId)
+                .stream()
+                .filter(orderExternal -> AddressStatus.UNKNOWN.equals(orderExternal.getMapPoint().getStatus()))
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -109,11 +146,10 @@ public class DefaultOrderExternalService implements OrderExternalService {
         // Address reconciliation
         Set<AddressExternal> addresses = externalOrders
                 .stream()
-                .map(OrderExternal::getAddressExternal)
+                .map(orderExternalMapper::mapToAddressExternal)
                 .collect(Collectors.toSet());
-        List<AddressExternal> addressExternals = addressExternalRepository.saveAll(addresses);
 
-        enrichManagedAddresses(externalOrders, addressExternals);
+        addressExternalRepository.saveAll(addresses);
 
         List<OrderExternal> savedNewExternalOrders = orderExternalRepository.saveAll(externalOrders);
         List<OrderExternal> allAvailableOrdersByDate = ListUtils.union(savedNewExternalOrders, rescheduledOrders);
@@ -134,8 +170,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
             return;
         }
 
-        List<OrderExternal> incompleteOrders =
-                orderExternalRepository.findIncludedRegularOrdersWithUnknownAddressByDeliveryId(delivery.getId());
+        List<OrderExternal> incompleteOrders = getInvalidOrdersForCalculation(delivery.getId());
         if (incompleteOrders.isEmpty()) {
             log.info("All orders has valid Addresses. Updating Delivery as READY_FOR_CALCULATION");
             delivery.setFormationStatus(DeliveryFormationStatus.READY_FOR_CALCULATION);
@@ -148,24 +183,6 @@ public class DefaultOrderExternalService implements OrderExternalService {
         }
     }
 
-    private void enrichManagedAddresses(List<OrderExternal> externalOrders, List<AddressExternal> addressExternals) {
-        Map<AddressExternal.OrderAddressId, AddressExternal> addressesMap = addressExternals
-                .stream()
-                .collect(Collectors.toMap(
-                        AddressExternal::getOrderAddressId,
-                        addressExternal -> addressExternal,
-                        (existentAddress, newAddress) -> {
-                            log.info("Duplicate address found: {}", newAddress);
-                            return existentAddress;
-                        }));
-
-        externalOrders.forEach(externalOrder -> {
-            AddressExternal.OrderAddressId orderAddressId = externalOrder.getAddressExternal().getOrderAddressId();
-            AddressExternal persistedAddressExternal = addressesMap.get(orderAddressId);
-            externalOrder.setAddressExternal(persistedAddressExternal);
-        });
-    }
-
     private DeliveryFormationStatus getFormationStatus(List<OrderExternal> orderExternals) {
         if (orderExternals.isEmpty()) {
             return ORDERS_LOADED;
@@ -173,7 +190,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
         boolean noneMatch = orderExternals.stream()
                 .noneMatch(orderExternal ->
                         DeliveryType.REGULAR.equals(orderExternal.getDeliveryType())
-                                && AddressStatus.UNKNOWN.equals(orderExternal.getAddressExternal().getStatus()));
+                                && AddressStatus.UNKNOWN.equals(orderExternal.getMapPoint().getStatus()));
         return noneMatch ? READY_FOR_CALCULATION : ORDERS_LOADED;
     }
 

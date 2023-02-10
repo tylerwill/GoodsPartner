@@ -8,7 +8,6 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
@@ -18,31 +17,21 @@ import java.util.List;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface OrderExternalMapper {
 
-    @Mapping(target = "mapPoint", source = "addressExternal", qualifiedByName = "mapMapPoint")
-    @Mapping(target = "address", source = "addressExternal.orderAddressId.orderAddress")
-    @Mapping(target = "clientName", source = "addressExternal.orderAddressId.clientName")
+    @Mapping(target = "mapPoint", source = "mapPoint")
+    @Mapping(target = "address", source = "address")
+    @Mapping(target = "clientName", source = "clientName")
     @Mapping(target = "deliveryId", source = "delivery.id")
     @Mapping(target = "frozen", source = "frozen")
     OrderDto toOrderDto(OrderExternal orderExternal);
 
     List<OrderDto> toOrderDtosList(List<OrderExternal> orderDtos);
 
-    @Mapping(target = "addressExternal.orderAddressId.orderAddress", source = "address")
-    @Mapping(target = "addressExternal.orderAddressId.clientName", source = "clientName")
-    @Mapping(target = "addressExternal.validAddress", source = "mapPoint.address")
-    @Mapping(target = "addressExternal.latitude", source = "mapPoint.latitude")
-    @Mapping(target = "addressExternal.longitude", source = "mapPoint.longitude")
-    @Mapping(target = "frozen", source = "frozen")
     OrderExternal toOrderExternal(OrderDto orderDto);
 
     List<OrderExternal> toOrderExternalList(List<OrderDto> orderDtos);
 
     @BeanMapping(ignoreByDefault = true)
-    // Address related
-    @Mapping(target = "addressExternal.validAddress", source = "mapPoint.address")
-    @Mapping(target = "addressExternal.latitude", source = "mapPoint.latitude")
-    @Mapping(target = "addressExternal.longitude", source = "mapPoint.longitude")
-    // Other
+    @Mapping(target = "mapPoint", source = "mapPoint")
     @Mapping(target = "deliveryType", source = "deliveryType")
     @Mapping(target = "deliveryStart", source = "deliveryStart")
     @Mapping(target = "deliveryFinish", source = "deliveryFinish")
@@ -63,13 +52,16 @@ public interface OrderExternalMapper {
     @Mapping(target = "shippingDate", source = "rescheduleDate")
     OrderExternal copyRescheduled(OrderExternal orderExternal);
 
-    @Named("mapMapPoint")
-    default MapPoint mapMapPoint(AddressExternal addressExternal) {
-        return MapPoint.builder()
-                .address(addressExternal.getValidAddress())
-                .latitude(addressExternal.getLatitude())
-                .longitude(addressExternal.getLongitude())
-                .status(addressExternal.getStatus())
-                .build();
-    }
+    /* Address External */
+    @Mapping(target = "validAddress", source = "address")
+    void updateAddressExternal(@MappingTarget AddressExternal addressExternal, MapPoint mapPoint);
+
+    @Mapping(target = "orderAddressId.orderAddress", source = "address")
+    @Mapping(target = "orderAddressId.clientName", source = "clientName")
+    @Mapping(target = "validAddress", source = "mapPoint.address")
+    @Mapping(target = "latitude", source = "mapPoint.latitude")
+    @Mapping(target = "longitude", source = "mapPoint.longitude")
+    @Mapping(target = "status", source = "mapPoint.status")
+    AddressExternal mapToAddressExternal(OrderExternal orderExternal);
+
 }

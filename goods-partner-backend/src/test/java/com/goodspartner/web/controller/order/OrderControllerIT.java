@@ -3,9 +3,9 @@ package com.goodspartner.web.controller.order;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.web.controller.request.ExcludeOrderRequest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
 import com.goodspartner.config.TestSecurityEnableConfig;
+import com.goodspartner.web.controller.request.ExcludeOrderRequest;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -116,6 +116,6 @@ class OrderControllerIT extends AbstractWebITest {
                 .andExpect(content().json(getResponseAsString("response/orders/delete-order-response.json")));
 
         assertSelectCount(3); // OrderById + isAllOrdersValid verification + Exclude check
-        assertUpdateCount(1); // Update Orders  + Delivery
+        assertUpdateCount(2); // Update Orders + Delivery
     }
 }

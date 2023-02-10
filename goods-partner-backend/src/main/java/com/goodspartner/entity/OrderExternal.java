@@ -1,5 +1,6 @@
 package com.goodspartner.entity;
 
+import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.Product;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Getter;
@@ -7,16 +8,15 @@ import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -76,12 +76,15 @@ public class OrderExternal {
     @Column(name = "dropped")
     private boolean dropped;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumns({
-            @JoinColumn(name = "client_name", referencedColumnName = "client_name"),
-            @JoinColumn(name = "address", referencedColumnName = "order_address")
-    })
-    private AddressExternal addressExternal;
+    @Column(name = "client_name")
+    private String clientName;
+
+    @Column(name = "address")
+    private String address;
+
+    @Type(type = "JSONB")
+    @Column(columnDefinition = "jsonb")
+    private MapPoint mapPoint;
 
     @Type(type = "JSONB")
     @Column(columnDefinition = "jsonb", updatable = false) // We dont update Products on our side !!
@@ -90,15 +93,15 @@ public class OrderExternal {
     @Column(name = "order_weight")
     private double orderWeight;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id", referencedColumnName = "id")
     private Delivery delivery;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_load_id", referencedColumnName = "id")
     private CarLoad carLoad;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_point_id", referencedColumnName = "id")
     private RoutePoint routePoint;
 }

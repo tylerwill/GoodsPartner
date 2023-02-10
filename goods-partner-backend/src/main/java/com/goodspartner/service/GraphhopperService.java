@@ -1,7 +1,6 @@
 package com.goodspartner.service;
 
 import com.goodspartner.dto.MapPoint;
-import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.Store;
 import com.goodspartner.service.dto.DistanceMatrix;
@@ -15,7 +14,7 @@ public interface GraphhopperService {
 
     ResponsePath getRoute(List<MapPoint> mapPoints);
 
-    void routePointTimeActualize(AddressExternal initialPoint, List<RoutePoint> routePoints);
+    void routePointTimeActualize(MapPoint mapPoint, List<RoutePoint> routePoints);
 
     void routePointTimeActualize(Store store, List<RoutePoint> routePoints);
 

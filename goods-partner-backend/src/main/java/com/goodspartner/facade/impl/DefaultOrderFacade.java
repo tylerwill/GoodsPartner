@@ -2,21 +2,17 @@ package com.goodspartner.facade.impl;
 
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.Delivery;
-import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.event.Action;
 import com.goodspartner.event.ActionType;
 import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
-import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exception.UnknownAddressException;
 import com.goodspartner.facade.OrderFacade;
 import com.goodspartner.mapper.OrderExternalMapper;
-import com.goodspartner.service.DeliveryService;
 import com.goodspartner.service.EventService;
 import com.goodspartner.service.GeocodeService;
 import com.goodspartner.service.IntegrationService;
-import com.goodspartner.service.LiveEventService;
 import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.service.util.ExternalOrderPostProcessor;
 import com.goodspartner.web.controller.request.ExcludeOrderRequest;
@@ -37,10 +33,8 @@ import static com.goodspartner.entity.DeliveryHistoryTemplate.ORDERS_LOADING;
 @RequiredArgsConstructor
 public class DefaultOrderFacade implements OrderFacade {
     // Services
-    private final DeliveryService deliveryService;
     private final OrderExternalService orderExternalService;
     private final EventService eventService;
-    private final LiveEventService liveEventService;
     private final GeocodeService geocodeService;
     private final IntegrationService integrationService; // GrangeDolceIntegration
     // Utils
@@ -82,15 +76,10 @@ public class DefaultOrderFacade implements OrderFacade {
         log.info("Updating order with id: {}", id);
         geocodeService.validateOutOfRegion(orderDto);
 
-        Delivery delivery = deliveryService.findById(orderDto.getDeliveryId());
-        if (!DeliveryStatus.DRAFT.equals(delivery.getStatus())) {
-            throw new IllegalDeliveryStatusForOperation(delivery, "update order for");
-        }
-
         OrderExternal updatedOrder = orderExternalService.update(id, orderDto);
 
         // Should be executed under separate transaction to fetch state after update
-        orderExternalService.checkDeliveryReadiness(delivery);
+        orderExternalService.checkDeliveryReadiness(updatedOrder.getDelivery());
 
         return updatedOrder;
     }
@@ -100,11 +89,11 @@ public class DefaultOrderFacade implements OrderFacade {
     public OrderExternal excludeOrder(long id, ExcludeOrderRequest excludeOrderRequest) {
         log.info("Excluding order with id: {}", id);
 
-        OrderExternal orderExternal = orderExternalService.excludeOrder(id, excludeOrderRequest);
+        OrderExternal excludedOrder = orderExternalService.excludeOrder(id, excludeOrderRequest);
 
-        orderExternalService.checkDeliveryReadiness(orderExternal.getDelivery()); // Should be executed under separate transaction to fetch state after update
+        orderExternalService.checkDeliveryReadiness(excludedOrder.getDelivery()); // Should be executed under separate transaction to fetch state after update
 
-        return orderExternal;
+        return excludedOrder;
     }
 
     @Override
@@ -112,10 +101,8 @@ public class DefaultOrderFacade implements OrderFacade {
         orderExternalService.getInvalidOrdersForCalculation(deliveryId)
                 .stream()
                 .findFirst()
-                .map(OrderExternal::getAddressExternal)
-                .ifPresent(addressExternal -> {
-                    throw new UnknownAddressException(addressExternal);
+                .ifPresent(orderExternal -> {
+                    throw new UnknownAddressException(orderExternal);
                 });
-
     }
 }

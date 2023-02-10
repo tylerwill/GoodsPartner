@@ -14,10 +14,10 @@ import java.util.UUID;
 
 public interface RouteRepository extends JpaRepository<Route, Long> {
 
-    @EntityGraph(attributePaths = {"routePoints", "routePoints.addressExternal", "store", "car.driver"})
+    @EntityGraph(attributePaths = {"routePoints", "store", "car.driver"})
     List<Route> findByDeliveryIdAndCar(UUID deliveryId, Car car, Sort defaultRouteSort);
 
-    @EntityGraph(attributePaths = {"routePoints", "routePoints.addressExternal", "store", "car.driver"})
+    @EntityGraph(attributePaths = {"routePoints", "store", "car.driver"})
     @Query(value = "SELECT r FROM Route r WHERE r.delivery.id = :id")
     List<Route> findByDeliveryIdExtended(@Param("id") UUID deliveryId, Sort defaultRouteSort);
 
@@ -25,7 +25,7 @@ public interface RouteRepository extends JpaRepository<Route, Long> {
     @Query(value = "SELECT r FROM Route r WHERE r.delivery.id = :id")
     List<Route> findByDeliveryId(@Param("id") UUID deliveryId);
 
-    @EntityGraph(attributePaths = {"routePoints", "routePoints.addressExternal", "car", "store"})
+    @EntityGraph(attributePaths = {"routePoints", "car", "store"})
     @Query(value = "SELECT r FROM Route r WHERE r.id = :routeId")
     Optional<Route> findExtendedById(@Param("routeId") Long routeId);
 

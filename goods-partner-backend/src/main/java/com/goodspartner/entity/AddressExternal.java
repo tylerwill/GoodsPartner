@@ -2,7 +2,6 @@ package com.goodspartner.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,9 +16,12 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Builder
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "grandedolce_addresses")
 public class AddressExternal {
 

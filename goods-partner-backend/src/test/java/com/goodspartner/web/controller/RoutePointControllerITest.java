@@ -48,8 +48,8 @@ class RoutePointControllerITest extends AbstractWebITest {
                         .content(objectMapper.writeValueAsString(coordinates)))
                 .andExpect(status().isOk());
         // Then
-        assertSelectCount(4);  // One for RoutePoint & AddressExternal + One for Route & Car & User & Store + One for User + One for Driver.
-        assertUpdateCount(1); // One for AddressExternal.
+        assertSelectCount(5);  // One for RoutePoint + One AddressExternal + One for Route & Car & User & Store + One for User + One for Driver.
+        assertUpdateCount(2); // One for AddressExternal.
         assertInsertCount(1);  // One for DeliveryHistory.
     }
 

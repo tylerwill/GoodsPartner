@@ -5,7 +5,6 @@ import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.RoutePoint;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.util.List;
@@ -22,9 +21,6 @@ public interface RoutePointMapper {
 
     List<RoutePointDto> toRoutePointDtosList(List<RoutePoint> routePoints);
 
-    @Mapping(target = "address", source = "routePoint.addressExternal.orderAddressId.orderAddress")
-    @Mapping(target = "clientName", source = "routePoint.addressExternal.orderAddressId.clientName")
-    @Mapping(target = "mapPoint", source = "routePoint.addressExternal", qualifiedByName = "getMapPoint")
     RoutePointDto toRoutePointDto(RoutePoint routePoint);
 
     @Named("getMapPoint")
@@ -39,13 +35,7 @@ public interface RoutePointMapper {
 
     default List<MapPoint> toMapPoints(List<RoutePoint> routePoints) {
         return routePoints.stream()
-                .map(RoutePoint::getAddressExternal)
-                .map(addressExternal -> MapPoint.builder()
-                        .status(addressExternal.getStatus())
-                        .address(addressExternal.getValidAddress())
-                        .longitude(addressExternal.getLongitude())
-                        .latitude(addressExternal.getLatitude())
-                        .build())
+                .map(RoutePoint::getMapPoint)
                 .collect(Collectors.toList());
     }
 

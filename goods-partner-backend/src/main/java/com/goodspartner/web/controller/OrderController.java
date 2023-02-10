@@ -137,8 +137,8 @@ public class OrderController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @PostMapping("/{id}/exclude")
-    @ApiOperation(value = "Update order",
-            notes = "Return updated order",
+    @ApiOperation(value = "Exclude order",
+            notes = "Return excluded order",
             response = OrderDto.class,
             responseContainer = "List"
     )

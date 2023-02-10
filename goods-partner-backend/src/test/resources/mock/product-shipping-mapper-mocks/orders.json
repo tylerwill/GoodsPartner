@@ -19,12 +19,7 @@
         "totalProductWeight": 250.00
       }
     ],
-    "addressExternal": {
-      "orderAddressId": {
-        "orderAddress": "м. Київ, вул. Хрещатик, 1",
-        "clientName": "ТОВ \"Пекарня\""
-      }
-    },
+
     "comment": "нал",
     "managerFullName": "Андрій Бублик",
     "orderWeight": 300.00
@@ -42,12 +37,7 @@
         "totalProductWeight": 100.00
       }
     ],
-    "addressExternal": {
-      "orderAddressId": {
-        "orderAddress": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
-        "clientName": "ТОВ \"Пекарня\""
-      }
-    },
+
     "comment": "бн",
     "managerFullName": "Іван Шугай",
     "orderWeight": 100.00
@@ -72,12 +62,7 @@
         "totalProductWeight": 450.00
       }
     ],
-    "addressExternal": {
-      "orderAddressId": {
-        "orderAddress": "м. Київ, вул. Молодогвардійська, 22, оф. 35",
-        "clientName": "ТОВ \"Пекарня\""
-      }
-    },
+
     "comment": "нал",
     "managerFullName": "Петро Коваленко",
     "orderWeight": 475.00

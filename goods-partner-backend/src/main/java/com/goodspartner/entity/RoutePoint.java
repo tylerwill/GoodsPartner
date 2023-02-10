@@ -1,11 +1,13 @@
 package com.goodspartner.entity;
 
+import com.goodspartner.dto.MapPoint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,7 +19,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -69,12 +70,15 @@ public class RoutePoint {
     @OneToMany(mappedBy = "routePoint", cascade = CascadeType.ALL)
     private List<OrderExternal> orders = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "client_name", referencedColumnName = "client_name"),
-            @JoinColumn(name = "address", referencedColumnName = "order_address")
-    })
-    private AddressExternal addressExternal;
+    @Column(name = "client_name")
+    private String clientName;
+
+    @Column(name = "address")
+    private String address;
+
+    @Type(type = "JSONB")
+    @Column(columnDefinition = "jsonb")
+    private MapPoint mapPoint;
 
     public void setOrders(List<OrderExternal> orders) {
         List<OrderExternal> requiredOrders = Optional.ofNullable(orders)

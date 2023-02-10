@@ -3,7 +3,6 @@ package com.goodspartner.mapper;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         CarMapperImpl.class,
         OrderExternalMapperImpl.class,
         RouteMapperImpl.class,
+        RoutePointMapperImpl.class,
         ProductShippingMapper.class,
         StoreMapperImpl.class
 })
-@Disabled
-// TODO rework after moving RoutePoints to separate table
 public class DeliveryMapperTest {
 
     @Autowired

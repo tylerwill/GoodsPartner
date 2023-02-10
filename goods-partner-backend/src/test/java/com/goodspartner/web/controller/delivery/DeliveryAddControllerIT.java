@@ -323,43 +323,43 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         OrderExternal order01 = ordersMap.get("01grande-0000-0000-0000-000000000000");
         assertFalse(order01.isFrozen());
         assertEquals(REGULAR, order01.getDeliveryType());
-        assertSame(AUTOVALIDATED, order01.getAddressExternal().getStatus());
-        assertEquals(FORMATTED_AUTOVALIDATED_ADDRESS, order01.getAddressExternal().getValidAddress());
-        assertEquals(AUTOVALIDATED_ADDRESS, order01.getAddressExternal().getOrderAddressId().getOrderAddress());
+        assertSame(AUTOVALIDATED, order01.getMapPoint().getStatus());
+        assertEquals(FORMATTED_AUTOVALIDATED_ADDRESS, order01.getMapPoint().getAddress());
+        assertEquals(AUTOVALIDATED_ADDRESS, order01.getAddress());
 
         OrderExternal order02 = ordersMap.get("02grande-0000-0000-0000-000000000000");
         assertFalse(order02.isFrozen());
         assertEquals(REGULAR, order02.getDeliveryType());
-        assertEquals(AddressStatus.UNKNOWN, order02.getAddressExternal().getStatus()); // Overide
+        assertEquals(AddressStatus.UNKNOWN, order02.getMapPoint().getStatus()); // Overide
 
         OrderExternal order03 = ordersMap.get("03grande-0000-0000-0000-000000000000");
         assertFalse(order03.isFrozen());
         assertEquals(DeliveryType.SELF_SERVICE, order03.getDeliveryType());
-        assertEquals(AddressStatus.KNOWN, order03.getAddressExternal().getStatus());
+        assertEquals(AddressStatus.KNOWN, order03.getMapPoint().getStatus());
 
         OrderExternal order04 = ordersMap.get("04grande-0000-0000-0000-000000000000");
         assertFalse(order04.isFrozen());
         assertEquals(REGULAR, order04.getDeliveryType());
-        assertEquals(AddressStatus.UNKNOWN, order04.getAddressExternal().getStatus());
+        assertEquals(AddressStatus.UNKNOWN, order04.getMapPoint().getStatus());
 
         OrderExternal order05 = ordersMap.get("05grande-0000-0000-0000-000000000000");
         assertTrue(order05.isFrozen());
         assertEquals(DeliveryType.POSTAL, order05.getDeliveryType());
-        assertEquals(KNOWN, order05.getAddressExternal().getStatus());
-        assertEquals(POSTAL_ADDRESS, order05.getAddressExternal().getOrderAddressId().getOrderAddress());
-        assertEquals(POSTAL_ADDRESS, order05.getAddressExternal().getValidAddress());
+        assertEquals(KNOWN, order05.getMapPoint().getStatus());
+        assertEquals(POSTAL_ADDRESS, order05.getAddress());
+        assertEquals(POSTAL_ADDRESS, order05.getMapPoint().getAddress());
 
         OrderExternal order06 = ordersMap.get("06grande-0000-0000-0000-000000000000");
         assertFalse(order06.isFrozen());
         assertEquals(DeliveryType.PRE_PACKING, order06.getDeliveryType());
-        assertEquals(AddressStatus.KNOWN, order06.getAddressExternal().getStatus());
-        assertEquals(PRE_PACKING_ADDRESS, order06.getAddressExternal().getValidAddress());
-        assertEquals(PRE_PACKING_ADDRESS, order06.getAddressExternal().getOrderAddressId().getOrderAddress());
+        assertEquals(AddressStatus.KNOWN, order06.getMapPoint().getStatus());
+        assertEquals(PRE_PACKING_ADDRESS, order06.getMapPoint().getAddress());
+        assertEquals(PRE_PACKING_ADDRESS, order06.getAddress());
 
         OrderExternal rescheduled = ordersMap.get("f6f73d76-8005-11ec-b3ce-00155dd72305");
         assertFalse(rescheduled.isFrozen());
         assertEquals(REGULAR, rescheduled.getDeliveryType());
-        assertEquals(AUTOVALIDATED, rescheduled.getAddressExternal().getStatus());
+        assertEquals(AUTOVALIDATED, rescheduled.getMapPoint().getStatus());
     }
 
     private void verifyRescheduledOrder(DeliveryDto delivery) {
@@ -371,6 +371,6 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         assertEquals(rescheduled.getDelivery().getId(), delivery.getId());
         assertFalse(rescheduled.isFrozen());
         assertEquals(REGULAR, rescheduled.getDeliveryType());
-        assertEquals(AUTOVALIDATED, rescheduled.getAddressExternal().getStatus());
+        assertEquals(AUTOVALIDATED, rescheduled.getMapPoint().getStatus());
     }
 }

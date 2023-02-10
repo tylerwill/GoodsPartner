@@ -1,14 +1,18 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.Coordinates;
+import com.goodspartner.dto.MapPoint;
 import com.goodspartner.entity.AddressExternal;
+import com.goodspartner.entity.AddressExternal.OrderAddressId;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RouteStatus;
+import com.goodspartner.exception.AddressExternalNotFoundException;
 import com.goodspartner.exception.DistanceOutOfLimitException;
 import com.goodspartner.exception.IllegalRouteStateException;
 import com.goodspartner.exception.RoutePointNotFoundException;
+import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.repository.RoutePointRepository;
 import com.goodspartner.service.EventService;
 import com.goodspartner.service.GraphhopperService;
@@ -31,6 +35,7 @@ import static com.goodspartner.entity.RoutePointStatus.PENDING;
 public class DefaultRoutePointService implements RoutePointService {
     private static final double DISTANCE_LIMIT = 500.00;
     private final RoutePointRepository routePointRepository;
+    private final AddressExternalRepository addressExternalRepository;
 
     private final GraphhopperService graphhopperService;
     private final EventService eventService;
@@ -58,24 +63,39 @@ public class DefaultRoutePointService implements RoutePointService {
                 .orElseThrow(() -> new RoutePointNotFoundException(routePointId));
     }
 
+    /**
+     * Original order.mappoint is not modified and it is expected
+     */
     @Transactional
     @Override
     public void updateCoordinates(long routePointId, Coordinates coordinates) {
+        // Updating specified routePoint
         RoutePoint routePoint = routePointRepository.findByRoutePointId(routePointId)
                 .orElseThrow(() -> new RoutePointNotFoundException(routePointId));
+        MapPoint mapPoint = routePoint.getMapPoint();
+        validateCoordinatesDistance(mapPoint, coordinates);
+        mapPoint.setLongitude(coordinates.getLongitude());
+        mapPoint.setLatitude(coordinates.getLatitude());
 
-        AddressExternal addressExternal = routePoint.getAddressExternal();
-        validateCoordinatesDistance(addressExternal.getLatitude(), addressExternal.getLongitude(), coordinates);
-        addressExternal.setLongitude(coordinates.getLongitude());
+        // Updating respective address
+        OrderAddressId orderAddressId = OrderAddressId.builder()
+                .orderAddress(routePoint.getAddress())
+                .clientName(routePoint.getClientName())
+                .build();
+
+        AddressExternal addressExternal = addressExternalRepository.findById(orderAddressId)
+                .orElseThrow(() -> new AddressExternalNotFoundException(orderAddressId));
         addressExternal.setLatitude(coordinates.getLatitude());
+        addressExternal.setLongitude(coordinates.getLongitude());
 
-        routePointRepository.save(routePoint);
-        eventService.publishCoordinatesUpdated(routePoint, addressExternal);
+        eventService.publishCoordinatesUpdated(routePoint);
     }
 
-    private void validateCoordinatesDistance(double fromLatitude, double fromLongitude, Coordinates coordinates) {
+    private void validateCoordinatesDistance(MapPoint mapPoint, Coordinates coordinates) {
         DistanceCalcEarth distanceCalc = new DistanceCalcEarth();
-        double distance = distanceCalc.calcDist(fromLatitude, fromLongitude, coordinates.getLatitude(), coordinates.getLongitude());
+        double distance = distanceCalc.calcDist(
+                mapPoint.getLatitude(), mapPoint.getLongitude(),
+                coordinates.getLatitude(), coordinates.getLongitude());
 
         if (distance > DISTANCE_LIMIT) {
             throw new DistanceOutOfLimitException(distance);
@@ -91,7 +111,7 @@ public class DefaultRoutePointService implements RoutePointService {
                 .filter(routePoint -> PENDING.equals(routePoint.getStatus()))
                 .collect(Collectors.toList());
 
-        graphhopperService.routePointTimeActualize(current.getAddressExternal(), pendingRoutePoints);
+        graphhopperService.routePointTimeActualize(current.getMapPoint(), pendingRoutePoints);
 
         return routePointRepository.saveAll(pendingRoutePoints);
     }

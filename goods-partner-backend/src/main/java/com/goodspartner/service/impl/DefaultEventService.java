@@ -1,8 +1,17 @@
 package com.goodspartner.service.impl;
 
-import com.goodspartner.entity.*;
-import com.goodspartner.entity.AddressExternal.OrderAddressId;
-import com.goodspartner.event.*;
+import com.goodspartner.entity.Delivery;
+import com.goodspartner.entity.DeliveryHistoryTemplate;
+import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.entity.Route;
+import com.goodspartner.entity.RoutePoint;
+import com.goodspartner.entity.RouteStatus;
+import com.goodspartner.entity.User;
+import com.goodspartner.event.Action;
+import com.goodspartner.event.ActionType;
+import com.goodspartner.event.DeliveryAuditEvent;
+import com.goodspartner.event.EventType;
+import com.goodspartner.event.LiveEvent;
 import com.goodspartner.service.EventService;
 import com.goodspartner.service.LiveEventService;
 import com.goodspartner.service.UserService;
@@ -18,7 +27,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.goodspartner.entity.DeliveryHistoryTemplate.*;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.DELIVERY_CALCULATED;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.DELIVERY_COMPLETED;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.DELIVERY_CREATED;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.DRIVER_CLIENT_ADDRESS_UPDATE;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.DROPPED_ORDERS;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.ORDERS_LOADED;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.ROUTES_UPDATED;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.ROUTE_POINT_STATUS;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.ROUTE_POINT_TIME_RANGE_WARNING;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.ROUTE_START;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.ROUTE_STATUS;
+import static com.goodspartner.entity.DeliveryHistoryTemplate.ROUTE_STATUS_AUTO;
 
 @Slf4j
 @Service
@@ -88,13 +108,10 @@ public class DefaultEventService implements EventService {
         Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
         values.put("carName", route.getCar().getName());
         values.put("carLicensePlate", route.getCar().getLicencePlate());
+
         values.put("routePointStatus", routePoint.getStatus().toString());
-
-        AddressExternal addressExternal = routePoint.getAddressExternal();
-        OrderAddressId orderAddressId = addressExternal.getOrderAddressId();
-        values.put("clientName", orderAddressId.getClientName());
-        values.put("clientAddress", orderAddressId.getOrderAddress());
-
+        values.put("clientName", routePoint.getClientName());
+        values.put("clientAddress", routePoint.getAddress());
         publishPreparedEvent(values, ROUTE_POINT_STATUS, route);
     }
 
@@ -107,7 +124,7 @@ public class DefaultEventService implements EventService {
     }
 
     @Override
-    public void publishCoordinatesUpdated(RoutePoint routePoint, AddressExternal addressExternal) {
+    public void publishCoordinatesUpdated(RoutePoint routePoint) {
         Map<String, String> values = AuditorBuilder.getCurrentAuditorData();
 
         Route route = routePoint.getRoute();
@@ -115,9 +132,8 @@ public class DefaultEventService implements EventService {
         values.put("carLicensePlate", route.getCar().getLicencePlate());
         values.put("routePointStatus", routePoint.getStatus().toString());
 
-        OrderAddressId orderAddressId = addressExternal.getOrderAddressId();
-        values.put("clientName", orderAddressId.getClientName());
-        values.put("clientAddress", orderAddressId.getOrderAddress());
+        values.put("clientName", routePoint.getClientName());
+        values.put("clientAddress", routePoint.getAddress());
 
         publishPreparedEvent(values, DRIVER_CLIENT_ADDRESS_UPDATE, route);
     }

@@ -2,7 +2,6 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.RoutePointDto;
-import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
@@ -194,14 +193,14 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     List<RoutePoint> mapToRoutePoints(List<OrderExternal> orders) {
         List<RoutePoint> routePointList = new ArrayList<>();
 
-        Map<AddressExternal, List<OrderExternal>> addressOrderMap = orders
+        Map<MapPoint, List<OrderExternal>> addressOrderMap = orders
                 .stream()
                 .collect(Collectors.groupingBy(
-                        OrderExternal::getAddressExternal,
+                        OrderExternal::getMapPoint,
                         LinkedHashMap::new,
                         Collectors.toList()));
 
-        addressOrderMap.forEach((addressExternal, orderList) -> {
+        addressOrderMap.forEach((mapPoint, orderList) -> {
 
             double addressTotalWeight = orderList.stream()
                     .map(OrderExternal::getOrderWeight)
@@ -212,7 +211,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
             routePoint.setOrders(orderList);
             routePoint.setAddressTotalWeight(addressTotalWeight);
 
-            routePoint.setAddressExternal(addressExternal);
+            routePoint.setMapPoint(mapPoint);
 
             // TODO : issue #205 how to represent several orders per one client. Now we take first
             // TODO : stream over all order and choose the one where the values are not default one

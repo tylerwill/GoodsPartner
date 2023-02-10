@@ -10,10 +10,10 @@ import java.util.UUID;
 
 public interface CarLoadRepository extends JpaRepository<CarLoad, UUID> {
 
-    @EntityGraph(attributePaths = {"orders", "orders.addressExternal", "car", "car.driver"})
+    @EntityGraph(attributePaths = {"orders", "car", "car.driver"})
     List<CarLoad> findByDeliveryIdAndCar(UUID deliveryId, Car car);
 
-    @EntityGraph(attributePaths = {"orders", "orders.addressExternal", "car", "car.driver"})
+    @EntityGraph(attributePaths = {"orders", "car", "car.driver"})
     List<CarLoad> findByDeliveryId(UUID id);
 
 }
