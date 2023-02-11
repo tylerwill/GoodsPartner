@@ -1,0 +1,19 @@
+{
+  "settings": [
+    {
+      "group_id": "CLIENT",
+      "category_id": "ACCOUNTING",
+      "properties": "{\"clientServerURL\": \"localhost:5432\",\"server1CUriPrefix\": \"test\",\"login\": \"bookkeeper\",\"password\": \"password\",\"documentsUriPrefix\": \"document/test\"}"
+    },
+    {
+      "group_id": "CLIENT",
+      "category_id": "BUSINESS",
+      "properties": "{\"prePacking\": {  \"address\": \"Dnipro\"},\"selfService\": {  \"address\": \"Kiev\"},\"postal\": {  \"address\": \"Lviv\"}}"
+    },
+    {
+      "group_id": "GOOGLE",
+      "category_id": "GEOCODE",
+      "properties": "{\"apiKey\": \"ApiKey-87987-23654asdf\"}"
+    }
+  ]
+}

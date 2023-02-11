@@ -1,0 +1,23 @@
+{
+  "clientProperties": {
+    "clientServerURL": "localhost:5432",
+    "server1CUriPrefix": "test",
+    "login": "bookkeeper",
+    "password": "password",
+    "documentsUriPrefix": "document/test"
+  },
+  "clientBusinessProperties": {
+    "prePacking": {
+      "address": "Dnipro"
+    },
+    "selfService": {
+      "address": "Kiev"
+    },
+    "postal": {
+      "address": "Lviv"
+    }
+  },
+  "googleGeocodeProperties": {
+    "apiKey": "ApiKey-87987-23654asdf"
+  }
+}
