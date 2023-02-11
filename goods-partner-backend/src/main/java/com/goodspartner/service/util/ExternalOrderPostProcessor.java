@@ -1,6 +1,9 @@
 package com.goodspartner.service.util;
 
 import com.goodspartner.configuration.properties.ClientBusinessProperties;
+import com.goodspartner.configuration.properties.ClientBusinessProperties.Postal;
+import com.goodspartner.configuration.properties.ClientBusinessProperties.PrePacking;
+import com.goodspartner.configuration.properties.ClientBusinessProperties.SelfService;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressStatus;
@@ -11,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,69 +22,69 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ExternalOrderPostProcessor {
 
-    private static final List<String> POSTAL_KEYWORDS = Arrays.asList("нова пошта", "новапошта", " нп ", "делівері", "delivery", "делівери");
-    private static final String FROZEN = "заморозка";
-    private static final String PRE_PACKING = "фасовк"; // Include "фасовка"
-    private static final String SELF_SERVICE = "самовивіз";
-    private static final String MIDDAY_DELIVERY = "до обіду";
-
     private final ClientBusinessProperties clientBusinessProperties;
 
     public void processOrderComments(List<OrderDto> orderDtos) {
-        checkIfFrozen(orderDtos);
+        // DeliveryType:
         checkIfPostal(orderDtos);
         checkIfSelfService(orderDtos);
         checkIfPrePacking(orderDtos);
+        // Other
+        checkIfCoolerCarRequired(orderDtos);
         checkMiddayDelivery(orderDtos);
         updateDeliveryTime(orderDtos);
     }
 
-    private void checkIfFrozen(List<OrderDto> orderDtos) {
+    /* Deliver Type Parser*/
+
+    void checkIfPostal(List<OrderDto> orderDtos) {
+        Postal postalProps = clientBusinessProperties.getPostal();
         orderDtos.stream()
-                .filter(this::checkCommentIfFrozen)
+                .filter(orderDto -> checkCommentMatchKeywords(orderDto, postalProps.getKeywords()))
+                .forEach(orderDto -> {
+                    log.info("Order: {} has been marked as POSTAL", orderDto.getOrderNumber());
+                    orderDto.setDeliveryType(DeliveryType.POSTAL);
+                    orderDto.setMapPoint(getPostProcessMapPoint(orderDto.getAddress(), postalProps.getAddress()));
+                });
+    }
+
+    void checkIfSelfService(List<OrderDto> orderDtos) {
+        SelfService selfServiceProps = clientBusinessProperties.getSelfService();
+        orderDtos.stream()
+                .filter(orderDto -> checkCommentMatchKeywords(orderDto, selfServiceProps.getKeywords()))
+                .forEach(orderDto -> {
+                    log.info("Order: {} has been marked as SELF_SERVICE", orderDto.getOrderNumber());
+                    orderDto.setDeliveryType(DeliveryType.SELF_SERVICE);
+                    orderDto.setMapPoint(getPostProcessMapPoint(orderDto.getAddress(), selfServiceProps.getAddress()));
+                });
+    }
+
+    void checkIfPrePacking(List<OrderDto> orderDtos) {
+        PrePacking prePackingProps = clientBusinessProperties.getPrePacking();
+        orderDtos.stream()
+                .filter(orderDto -> checkCommentMatchKeywords(orderDto, prePackingProps.getKeywords()))
+                .forEach(orderDto -> {
+                    log.info("Order: {} has been marked as PRE_PACKING", orderDto.getOrderNumber());
+                    orderDto.setDeliveryType(DeliveryType.PRE_PACKING);
+                    orderDto.setMapPoint(getPostProcessMapPoint(orderDto.getAddress(), prePackingProps.getAddress()));
+                });
+    }
+
+    /* Car Type {arsers */
+
+    private void checkIfCoolerCarRequired(List<OrderDto> orderDtos) {
+        ClientBusinessProperties.Cooler coolerProps = clientBusinessProperties.getCooler();
+        orderDtos.stream()
+                .filter(orderDto -> checkCommentMatchKeywords(orderDto, coolerProps.getKeywords()))
                 .forEach(orderDto -> orderDto.setFrozen(true));
     }
 
-    private void checkIfPostal(List<OrderDto> orderDtos) {
-        orderDtos.stream()
-                .filter(this::checkCommentIfShippedByPostal)
-                .forEach(orderDto -> {
-                    orderDto.setDeliveryType(DeliveryType.POSTAL);
-                    orderDto.setAddress(clientBusinessProperties.getPostal().getAddress());
-                    orderDto.setMapPoint(getPostProcessMapPoint(clientBusinessProperties.getPostal().getAddress()));
-                });
-    }
-
-    private MapPoint getPostProcessMapPoint(String postProcessorAddress) {
-        return MapPoint.builder()  // TODO fetch from static data constants / etc. Enrich properties with respective longtitude latitude
-                .address(postProcessorAddress)
-                .status(AddressStatus.KNOWN)
-                .build();
-    }
-
-    private void checkIfSelfService(List<OrderDto> orderDtos) {
-        orderDtos.stream()
-                .filter(this::checkCommentIdSelfService)
-                .forEach(orderDto -> {
-                    orderDto.setDeliveryType(DeliveryType.SELF_SERVICE);
-                    orderDto.setAddress(clientBusinessProperties.getSelfService().getAddress());
-                    orderDto.setMapPoint(getPostProcessMapPoint(clientBusinessProperties.getSelfService().getAddress()));
-                });
-    }
-
-    private void checkIfPrePacking(List<OrderDto> orderDtos) {
-        orderDtos.stream()
-                .filter(this::checkCommentIfPrePacking)
-                .forEach(orderDto -> {
-                    orderDto.setDeliveryType(DeliveryType.PRE_PACKING);
-                    orderDto.setAddress(clientBusinessProperties.getPrePacking().getAddress());
-                    orderDto.setMapPoint(getPostProcessMapPoint(clientBusinessProperties.getPrePacking().getAddress()));
-                });
-    }
+    /* Delivery Time Parsers */
 
     private void checkMiddayDelivery(List<OrderDto> orderDtos) {
+        ClientBusinessProperties.MiddayDelivery middayDeliveryProps = clientBusinessProperties.getMiddayDelivery();
         orderDtos.stream()
-                .filter(this::checkCommentIfMiddayDelivery)
+                .filter(orderDto -> checkCommentMatchKeywords(orderDto, middayDeliveryProps.getKeywords()))
                 .forEach(orderDto -> orderDto.setDeliveryFinish(LocalTime.of(13, 0)));
     }
 
@@ -92,43 +94,21 @@ public class ExternalOrderPostProcessor {
 
     // --- Comment Parsers ---
 
-    private boolean checkCommentIfFrozen(OrderDto orderDto) {
+    boolean checkCommentMatchKeywords(OrderDto orderDto, List<String> keywords) {
         return Optional.ofNullable(orderDto.getComment())
                 .map(String::toLowerCase)
-                .map(orderCommentLowerCase -> orderCommentLowerCase.contains(FROZEN))
+                .map(orderCommentLowerCase -> keywords.stream()
+                        .map(String::toLowerCase)
+                        .anyMatch(orderCommentLowerCase::contains))
                 .orElse(false);
     }
 
-    private boolean checkCommentIfShippedByPostal(OrderDto orderDto) {
-        return Optional.ofNullable(orderDto.getComment())
-                .map(String::toLowerCase)
-                .map(orderCommentLowerCase ->
-                                POSTAL_KEYWORDS.stream()
-                                        .map(String::toLowerCase)
-                                        .anyMatch(orderCommentLowerCase::contains))
-                .orElse(false);
-    }
+    /* Util */
+    private MapPoint getPostProcessMapPoint(String initialAddress, String overrideAddress) {
 
-    private boolean checkCommentIfPrePacking(OrderDto orderDto) {
-        return Optional.ofNullable(orderDto.getComment())
-                .map(String::toLowerCase)
-                .map(orderCommentLowerCase -> orderCommentLowerCase.contains(PRE_PACKING))
-                .orElse(false);
+        return overrideAddress == null
+                ? MapPoint.builder().address(initialAddress).status(AddressStatus.UNKNOWN).build()
+                : MapPoint.builder().address(overrideAddress).status(AddressStatus.KNOWN).build();
     }
-
-    private boolean checkCommentIdSelfService(OrderDto orderDto) {
-        return Optional.ofNullable(orderDto.getComment())
-                .map(String::toLowerCase)
-                .map(orderCommentLowerCase -> orderCommentLowerCase.contains(SELF_SERVICE))
-                .orElse(false);
-    }
-    
-    private boolean checkCommentIfMiddayDelivery(OrderDto orderDto) {
-        return Optional.ofNullable(orderDto.getComment())
-                .map(String::toLowerCase)
-                .map(orderCommentLowerCase -> orderCommentLowerCase.contains(MIDDAY_DELIVERY))
-                .orElse(false);
-    }
-
 }
 

@@ -146,9 +146,9 @@ public class DefaultOrderExternalService implements OrderExternalService {
         // Address reconciliation
         Set<AddressExternal> addresses = externalOrders
                 .stream()
+                .filter(orderExternal -> DeliveryType.REGULAR.equals(orderExternal.getDeliveryType())) // DO not save overrided address for orders which are shipped by other delivery types
                 .map(orderExternalMapper::mapToAddressExternal)
                 .collect(Collectors.toSet());
-
         addressExternalRepository.saveAll(addresses);
 
         List<OrderExternal> savedNewExternalOrders = orderExternalRepository.saveAll(externalOrders);

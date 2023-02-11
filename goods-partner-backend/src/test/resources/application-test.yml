@@ -29,12 +29,6 @@ google:
       east: 32.160730
       west: 29.266897
 
-grandedolce:
-  accounting-app:
-    url: http://192.168.0.1:3002/
-    login: some-test-login
-    password: some-test-password
-
 client:
   accounting:
     client-server-url: http://192.168.0.1:3002/ #Client-Apache-server

@@ -50,7 +50,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.goodspartner.entity.AddressStatus.AUTOVALIDATED;
-import static com.goodspartner.entity.AddressStatus.KNOWN;
 import static com.goodspartner.entity.DeliveryFormationStatus.ORDERS_LOADED;
 import static com.goodspartner.entity.DeliveryFormationStatus.ORDERS_LOADING;
 import static com.goodspartner.entity.DeliveryFormationStatus.READY_FOR_CALCULATION;
@@ -88,8 +87,9 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
     private static final double OUT_OF_REGION_ADDRESS_LONGITUDE = 28.69;
     private static final String OUT_OF_REGION_ADDRESS = "м. Житомир, вул Корольова, 1";
 
-    private static final String PRE_PACKING_ADDRESS = "вулиця Київська, 34, Фастів, Київська обл., Україна, 08500";
-    private static final String POSTAL_ADDRESS = "вулиця Київська, 30, Фастів, Київська обл., Україна, 08500";
+    private static final String SELF_SERVICE_ORDER_ADDRESS = "Київ, вулиця Незалежності 105";
+    private static final String POSTAL_ORDER_ADDRESS = "НП Чернівці, Марії Лагунової, 11";
+    private static final String PRE_PACKING_ORDER_ADDRESS = "Фасовка, на Марії Лагунової, 11";
 
     private static final String UNKNOWN_ADDRESS = "вул. Невідома 8667";
 
@@ -239,7 +239,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
 
     private void verifyAddedAddresses() {
         List<AddressExternal> addressesAfter = addressExternalRepository.findAll();
-        assertEquals(8, addressesAfter.size());
+        assertEquals(5, addressesAfter.size());
         // Assert new address state
         assertTrue(verifyContains(addressesAfter, AUTOVALIDATED_ADDRESS, FORMATTED_AUTOVALIDATED_ADDRESS, AUTOVALIDATED));
         assertTrue(verifyContains(addressesAfter, OUT_OF_REGION_ADDRESS, null, AddressStatus.UNKNOWN));
@@ -335,7 +335,9 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         OrderExternal order03 = ordersMap.get("03grande-0000-0000-0000-000000000000");
         assertFalse(order03.isFrozen());
         assertEquals(DeliveryType.SELF_SERVICE, order03.getDeliveryType());
-        assertEquals(AddressStatus.KNOWN, order03.getMapPoint().getStatus());
+        assertEquals(AddressStatus.UNKNOWN, order03.getMapPoint().getStatus());
+        assertEquals(SELF_SERVICE_ORDER_ADDRESS, order03.getAddress());
+        assertEquals(SELF_SERVICE_ORDER_ADDRESS, order03.getMapPoint().getAddress()); // SELF_SERVICE DeliveryType should not change the initial order destination
 
         OrderExternal order04 = ordersMap.get("04grande-0000-0000-0000-000000000000");
         assertFalse(order04.isFrozen());
@@ -345,16 +347,16 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         OrderExternal order05 = ordersMap.get("05grande-0000-0000-0000-000000000000");
         assertTrue(order05.isFrozen());
         assertEquals(DeliveryType.POSTAL, order05.getDeliveryType());
-        assertEquals(KNOWN, order05.getMapPoint().getStatus());
-        assertEquals(POSTAL_ADDRESS, order05.getAddress());
-        assertEquals(POSTAL_ADDRESS, order05.getMapPoint().getAddress());
+        assertEquals(AddressStatus.UNKNOWN, order05.getMapPoint().getStatus());
+        assertEquals(POSTAL_ORDER_ADDRESS, order05.getAddress());
+        assertEquals(POSTAL_ORDER_ADDRESS, order05.getMapPoint().getAddress()); // POSTAL DeliveryType should not change the initial order destination
 
         OrderExternal order06 = ordersMap.get("06grande-0000-0000-0000-000000000000");
         assertFalse(order06.isFrozen());
         assertEquals(DeliveryType.PRE_PACKING, order06.getDeliveryType());
-        assertEquals(AddressStatus.KNOWN, order06.getMapPoint().getStatus());
-        assertEquals(PRE_PACKING_ADDRESS, order06.getMapPoint().getAddress());
-        assertEquals(PRE_PACKING_ADDRESS, order06.getAddress());
+        assertEquals(AddressStatus.UNKNOWN, order06.getMapPoint().getStatus());
+        assertEquals(PRE_PACKING_ORDER_ADDRESS, order06.getAddress());
+        assertEquals(PRE_PACKING_ORDER_ADDRESS, order06.getMapPoint().getAddress()); // PRE_PACKING DeliveryType should not change the initial order destination
 
         OrderExternal rescheduled = ordersMap.get("f6f73d76-8005-11ec-b3ce-00155dd72305");
         assertFalse(rescheduled.isFrozen());

@@ -24,12 +24,29 @@ client:
     documents-uri-prefix: ${CLIENT_DOCUMENTS_URI} #Local docs on Apache server
 
   business:
-    pre-packing: #TODO coordinates
-      address: "вулиця Київська, 34, Фастів, Київська обл., Україна, 08500"
-    self-service: #TODO coordinates
-      address: "вулиця Київська, 32, Фастів, Київська обл., Україна, 08500"
-    postal: #TODO coordinates
-      address: "вулиця Київська, 30, Фастів, Київська обл., Україна, 08500"
+    pre-packing:
+      keywords:
+        - фасовк
+        - фабрика
+    self-service:
+      keywords:
+        - самовивіз
+    postal:
+      keywords:
+        - нова пошта
+        - новапошта
+        -  нп
+        - делівері
+        - delivery
+        - делівери
+        - деливери
+    cooler:
+      keywords:
+        - заморозка
+    midday-delivery:
+      keywords:
+        - до обіду
+
 
 graphhopper:
   enabled: true
