@@ -26,6 +26,7 @@ import com.graphhopper.util.Instruction;
 import com.graphhopper.util.InstructionList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -34,7 +35,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -189,18 +189,23 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                 .setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
+    /**
+     * We should group by clientName + valid address -> meaning that:
+     *  1. Several clients on the same mapPoint should be treated as the different RoutePoints
+     *  2. Same clients on the same mapPoint should be treated as one RoutePoint assuming driver will be able to complete and finish client delivery at once
+     */
     @VisibleForTesting
     List<RoutePoint> mapToRoutePoints(List<OrderExternal> orders) {
         List<RoutePoint> routePointList = new ArrayList<>();
 
-        Map<MapPoint, List<OrderExternal>> addressOrderMap = orders
+
+        Map<Pair<String, MapPoint>, List<OrderExternal>> addressOrderMap = orders
                 .stream()
-                .collect(Collectors.groupingBy(
-                        OrderExternal::getMapPoint,
-                        LinkedHashMap::new,
+                .collect(Collectors.groupingBy(orderExternal ->
+                        Pair.of(orderExternal.getClientName(), orderExternal.getMapPoint()),
                         Collectors.toList()));
 
-        addressOrderMap.forEach((mapPoint, orderList) -> {
+        addressOrderMap.forEach((pair, orderList) -> {
 
             double addressTotalWeight = orderList.stream()
                     .map(OrderExternal::getOrderWeight)
@@ -211,13 +216,22 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
             routePoint.setOrders(orderList);
             routePoint.setAddressTotalWeight(addressTotalWeight);
 
-            routePoint.setMapPoint(mapPoint);
+            routePoint.setMapPoint(pair.getRight());
 
             // TODO : issue #205 how to represent several orders per one client. Now we take first
             // TODO : stream over all order and choose the one where the values are not default one
+            if (orderList.size() > 1) {
+                log.info("Collapsed {} orders into the one routePoint: {}", orderList.size(),
+                        orderList.stream().map(OrderExternal::getOrderNumber).collect(Collectors.toList()));
+                if (log.isDebugEnabled()) {
+                    orderList.forEach(orderExternal -> log.debug("{}", orderExternal));
+                }
+            }
             OrderExternal orderExternal = orderList.get(0);
             routePoint.setDeliveryStart(orderExternal.getDeliveryStart());
             routePoint.setDeliveryEnd(orderExternal.getDeliveryFinish());
+            routePoint.setClientName(orderExternal.getClientName());
+            routePoint.setAddress(orderExternal.getAddress());
 
             routePointList.add(routePoint);
         });

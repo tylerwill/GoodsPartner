@@ -64,11 +64,9 @@ google:
     apiKey: ${GOOGLE_API_KEY}
     region: ua
     language: uk-UK
+    # 29.2184566,32.260405,49.1431281,51.6170091 GH Boundaries for Kyiv Region
     boundaries:
       north: 51.0
       south: 49.5
       east: 31.5
       west: 29.5
-
-
-

@@ -9,7 +9,6 @@ import com.goodspartner.entity.User;
 import com.goodspartner.repository.DeliveryRepository;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,17 +16,16 @@ import org.mockito.Mockito;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Disabled
+
+// TODO test requires refactoring and revisiting
 class CarsLoadReportGeneratorITest {
     private final static String REPORTS_DESTINATION = "reports";
-    private final CarLoadSheetGenerator carLoadSheetGenerator = new CarLoadSheetGenerator();
 
     @SneakyThrows
     private static void writeReportToFile(ReportResult reportResult, File destinationFile) {
@@ -46,7 +44,7 @@ class CarsLoadReportGeneratorITest {
 
         // given
         DeliveryRepository deliveryRepository = Mockito.mock(DeliveryRepository.class);
-        CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(deliveryRepository, carLoadSheetGenerator);
+        CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(deliveryRepository);
 
         Mockito.when(deliveryRepository.findById(delivery.getId())).thenReturn(Optional.of(delivery));
 
@@ -85,7 +83,7 @@ class CarsLoadReportGeneratorITest {
 
         CarLoad carLoad = new CarLoad();
         carLoad.setCar(car);
-        carLoad.setOrders(Arrays.asList(orderFirst));
+        carLoad.setOrders(List.of(orderFirst));
         carLoad.setDelivery(delivery);
 
         delivery.setCarLoads(List.of(carLoad));
@@ -120,7 +118,7 @@ class CarsLoadReportGeneratorITest {
 
         // given
         DeliveryRepository deliveryRepository = Mockito.mock(DeliveryRepository.class);
-        CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(deliveryRepository, carLoadSheetGenerator);
+        CarsLoadReportGenerator carsLoadReportGenerator = new CarsLoadReportGenerator(deliveryRepository);
 
         Mockito.when(deliveryRepository.findById(delivery.getId())).thenReturn(Optional.of(delivery));
 
@@ -187,7 +185,7 @@ class CarsLoadReportGeneratorITest {
 
         CarLoad carLoad = new CarLoad();
         carLoad.setCar(car);
-        carLoad.setOrders(Arrays.asList(orderFirst));
+        carLoad.setOrders(List.of(orderFirst));
         carLoad.setDelivery(delivery);
 
         delivery.setCarLoads(List.of(carLoad));

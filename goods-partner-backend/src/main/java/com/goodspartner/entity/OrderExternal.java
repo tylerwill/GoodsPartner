@@ -104,5 +104,20 @@ public class OrderExternal {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_point_id", referencedColumnName = "id")
     private RoutePoint routePoint;
+
+    @Override
+    public String toString() {
+        return "OrderExternal{" +
+                "id=" + id +
+                ", refKey='" + refKey + '\'' +
+                ", orderNumber='" + orderNumber + '\'' +
+                ", shippingDate=" + shippingDate +
+                ", deliveryStart=" + deliveryStart +
+                ", deliveryFinish=" + deliveryFinish +
+                ", deliveryType=" + deliveryType +
+                ", clientName='" + clientName + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }
 
