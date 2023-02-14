@@ -2,6 +2,7 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.configuration.properties.ClientBusinessProperties;
 import com.goodspartner.configuration.properties.ClientProperties;
+import com.goodspartner.configuration.properties.ClientRoutingProperties;
 import com.goodspartner.configuration.properties.GoogleGeocodeProperties;
 import com.goodspartner.configuration.properties.PropertyAggregate;
 import com.goodspartner.dto.SettingsDto;
@@ -29,6 +30,7 @@ public class DefaultSettingsService implements SettingsCache {
     private final SettingParser parser;
     // Properties
     private final ClientProperties clientProperties;
+    private final ClientRoutingProperties clientRoutingProperties;
     private final ClientBusinessProperties clientBusinessProperties;
     private final GoogleGeocodeProperties googleGeocodeProperties;
 
@@ -46,13 +48,14 @@ public class DefaultSettingsService implements SettingsCache {
         List<Setting> settings = parser.getSettingsList(settingsDto);
         settingsRepository.saveAll(settings);
         log.info("Settings has been updated");
-        return settingsDto;
+        return getSettings();
     }
 
     @Override
     public SettingsDto getSettings() {
         PropertyAggregate propertyAggregate = PropertyAggregate.builder()
                 .clientProperties(clientProperties)
+                .clientRoutingProperties(clientRoutingProperties)
                 .clientBusinessProperties(clientBusinessProperties)
                 .googleGeocodeProperties(googleGeocodeProperties)
                 .build();
@@ -62,6 +65,7 @@ public class DefaultSettingsService implements SettingsCache {
     private void updatePropertyEntities(SettingsDto settingsDto) {
         PropertyAggregate aggregator = PropertyAggregate.builder()
                 .clientProperties(clientProperties)
+                .clientRoutingProperties(clientRoutingProperties)
                 .clientBusinessProperties(clientBusinessProperties)
                 .googleGeocodeProperties(googleGeocodeProperties)
                 .build();

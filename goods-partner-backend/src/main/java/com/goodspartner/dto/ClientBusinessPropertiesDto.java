@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,6 +26,7 @@ public class ClientBusinessPropertiesDto {
     @Setter
     public static class PrePackingDto {
         private String address;
+        private List<String> keywords;
     }
 
     @AllArgsConstructor
@@ -32,6 +35,7 @@ public class ClientBusinessPropertiesDto {
     @Setter
     public static class SelfServiceDto {
         private String address;
+        private List<String> keywords;
     }
 
     @AllArgsConstructor
@@ -40,5 +44,6 @@ public class ClientBusinessPropertiesDto {
     @Setter
     public static class PostalDto {
         private String address;
+        private List<String> keywords;
     }
 }

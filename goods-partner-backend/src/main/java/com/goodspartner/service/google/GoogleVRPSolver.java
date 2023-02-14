@@ -1,5 +1,6 @@
 package com.goodspartner.service.google;
 
+import com.goodspartner.configuration.properties.ClientRoutingProperties;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.RoutePoint;
@@ -38,10 +39,8 @@ import java.util.List;
 @AllArgsConstructor
 public class GoogleVRPSolver implements VRPSolver {
 
-    public static final int SERVICE_TIME_AT_LOCATION_MIN = 15; // minutes
-
     private static final int ROUTE_START_INDEX = 0;
-    private static final int SOLUTION_PROCESSING_TIME_SEC = 30; // 30s
+
     // Capacity
     private static final String VEHICLE_CAPACITY_DIMENSION_NAME = "Capacity";
     private static final int SLACK_CAPACITY = 0;
@@ -49,19 +48,13 @@ public class GoogleVRPSolver implements VRPSolver {
     // TimeWindow
     private static final String VEHICLE_TIME_DIMENSION_NAME = "Time";
     private static final long SLACK_TIME_WINDOW_MIN = 120L;
-    private static final long MAX_ROUTE_TIME_MIN = 10 * 60L;
     private static final boolean START_FROM_DEPOT_FALSE = false;
 
-    private static final LocalTime DEFAULT_DEPOT_START_TIME = LocalTime.of(8, 0); // 0 start of a day
-    private static final LocalTime DEFAULT_DEPOT_FINISH_TIME = LocalTime.of(20, 0);
-    private static final LocalTime DEFAULT_DELIVERY_START_TIME = LocalTime.of(9, 0);
-    private static final LocalTime DEFAULT_DELIVERY_FINISH_TIME = LocalTime.of(19, 0);
-
-    // Normalization requires to provide recalculation between absolute drive time, and relative arrival time
-    private static final long NORMALIZATION_TIME_SHIFT_MINUTES = DEFAULT_DEPOT_START_TIME.getHour() * 60L; // 0 start of a day
-
+    // Props
+    private final ClientRoutingProperties clientRoutingProperties;
+    // Services
     private final GraphhopperService graphhopperService;
-
+    // Mappers
     private final StoreMapper storeMapper;
     private final RoutePointMapper routePointMapper;
 
@@ -120,14 +113,14 @@ public class GoogleVRPSolver implements VRPSolver {
             List<RoutePoint> carRoutePoints = new ArrayList<>(1);
 
             if (routing.isVehicleUsed(solution, i)) {
-                LocalTime routeStartTimeFromDepot = DEFAULT_DEPOT_START_TIME;
+                LocalTime routeStartTimeFromDepot = clientRoutingProperties.getDepotStartTime();
 
                 long index = routing.start(i);
                 while (!routing.isEnd(index)) {
                     long nodeIndex = manager.indexToNode(index);
 
                     IntVar timeVar = timeDimension.cumulVar(index);
-                    long solutionInMinutes = solution.max(timeVar) + NORMALIZATION_TIME_SHIFT_MINUTES; // MIN-MAX solution window is equal. Tested
+                    long solutionInMinutes = solution.max(timeVar) + clientRoutingProperties.getNormalizationTimeMinutes(); // MIN-MAX solution window is equal. Tested
 
                     if (nodeIndex == 0) { // Depot
                         routeStartTimeFromDepot = LocalTime.ofSecondOfDay(solutionInMinutes * 60L);
@@ -139,7 +132,7 @@ public class GoogleVRPSolver implements VRPSolver {
                                 routePoint.getDeliveryStart(), routePoint.getDeliveryEnd(), solutionInMinutes, solutionInMinutes);
 
                         routePoint.setExpectedCompletion(LocalTime.ofSecondOfDay(solutionInMinutes * 60L));
-                        long arrivalTime = solutionInMinutes - SERVICE_TIME_AT_LOCATION_MIN; // Solution contains time with service
+                        long arrivalTime = solutionInMinutes - clientRoutingProperties.getUnloadingTimeMinutes(); // Solution contains time with unloading
                         routePoint.setExpectedArrival(LocalTime.ofSecondOfDay(arrivalTime * 60L));
 
                         graphhopperService.checkDeliveryTimeRange(routePoint);
@@ -183,7 +176,9 @@ public class GoogleVRPSolver implements VRPSolver {
                         .toBuilder()
                         .setFirstSolutionStrategy(FirstSolutionStrategy.Value.CHRISTOFIDES)
                         .setLocalSearchMetaheuristic(LocalSearchMetaheuristic.Value.GUIDED_LOCAL_SEARCH)
-                        .setTimeLimit(Duration.newBuilder().setSeconds(SOLUTION_PROCESSING_TIME_SEC).build())
+                        .setTimeLimit(Duration.newBuilder()
+                                .setSeconds(clientRoutingProperties.getMaxTimeProcessingSolutionSeconds())
+                                .build())
                         .build();
         return routing.solveWithParameters(searchParameters);
     }
@@ -210,13 +205,14 @@ public class GoogleVRPSolver implements VRPSolver {
                     // Convert from routing variable Index to user NodeIndex.
                     int fromNode = manager.indexToNode(fromIndex);
                     int toNode = manager.indexToNode(toIndex);
-                    return timeMatrix[fromNode][toNode] + SERVICE_TIME_AT_LOCATION_MIN; // TODO Required formula to relate demand size with calculated serviceTimeAtLocation
+                    // TODO Required formula to relate demand size with calculated serviceTimeAtLocation
+                    return timeMatrix[fromNode][toNode] + clientRoutingProperties.getUnloadingTimeMinutes();
                 });
         routing.setArcCostEvaluatorOfAllVehicles(timeCallbackIndex);
 
         routing.addDimension(timeCallbackIndex,
                 SLACK_TIME_WINDOW_MIN,
-                MAX_ROUTE_TIME_MIN,
+                clientRoutingProperties.getMaxRouteTimeMinutes(),
                 START_FROM_DEPOT_FALSE,
                 VEHICLE_TIME_DIMENSION_NAME
         );
@@ -274,27 +270,27 @@ public class GoogleVRPSolver implements VRPSolver {
         Long[][] timeWindows = new Long[allPoints][2];
 
         // Set depot time
-        timeWindows[0][0] = normalizeTravelTime(DEFAULT_DEPOT_START_TIME);
-        timeWindows[0][1] = normalizeTravelTime(DEFAULT_DEPOT_FINISH_TIME);
+        timeWindows[0][0] = normalizeTravelTime(clientRoutingProperties.getDepotStartTime());
+        timeWindows[0][1] = normalizeTravelTime(clientRoutingProperties.getDepotFinishTime());
 
         for (int i = 0; i < routePoints.size(); i++) {
 
             LocalTime deliveryStartTime = routePoints.get(i).getDeliveryStart();
             timeWindows[i+1][0] = normalizeTravelTime(deliveryStartTime != null
                     ? deliveryStartTime
-                    : DEFAULT_DELIVERY_START_TIME);
+                    : clientRoutingProperties.getDefaultDeliveryStartTime());
 
             LocalTime deliveryEndTime = routePoints.get(i).getDeliveryEnd();
             timeWindows[i+1][1] = normalizeTravelTime(deliveryEndTime != null
                     ? deliveryEndTime
-                    : DEFAULT_DELIVERY_FINISH_TIME); // 18:00
+                    : clientRoutingProperties.getDefaultDeliveryFinishTime());
         }
 
         return timeWindows;
     }
 
     private long normalizeTravelTime(LocalTime time) {
-        LocalTime normalizedTime = time.minusMinutes(NORMALIZATION_TIME_SHIFT_MINUTES);
+        LocalTime normalizedTime = time.minusMinutes(clientRoutingProperties.getNormalizationTimeMinutes());
         return normalizedTime.getHour() * 60; // minutes
     }
 

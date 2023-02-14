@@ -1,23 +1,48 @@
 {
-  "clientProperties": {
-    "clientServerURL": "localhost:5432",
-    "server1CUriPrefix": "test",
-    "login": "bookkeeper",
-    "password": "password",
-    "documentsUriPrefix": "document/test"
+  "clientProperties":{
+    "clientServerURL":"localhost:5432",
+    "server1CUriPrefix":"test",
+    "login":"bookkeeper",
+    "password":"password",
+    "documentsUriPrefix":"document/test"
   },
-  "clientBusinessProperties": {
-    "prePacking": {
-      "address": "Dnipro"
+  "clientRoutingProperties":{
+    "unloadingTimeMinutes":15,
+    "maxRouteTimeMinutes":600,
+    "depotStartTime":"08:00:00",
+    "depotFinishTime":"20:00:00",
+    "defaultDeliveryStartTime":"09:00:00",
+    "defaultDeliveryFinishTime":"19:00:00",
+    "maxTimeProcessingSolutionSeconds":30
+  },
+  "clientBusinessProperties":{
+    "prePacking":{
+      "address":"Dnipro",
+      "keywords":[
+        "фасовк",
+        "фабрика"
+      ]
     },
-    "selfService": {
-      "address": "Kiev"
+    "selfService":{
+      "address":"Kiev",
+      "keywords":[
+        "самовивіз"
+      ]
     },
-    "postal": {
-      "address": "Lviv"
+    "postal":{
+      "address":"Lviv",
+      "keywords":[
+        "нова пошта",
+        "новапошта",
+        "нп",
+        "делівері",
+        "delivery",
+        "делівери",
+        "деливери"
+      ]
     }
   },
-  "googleGeocodeProperties": {
-    "apiKey": "ApiKey-87987-23654asdf"
+  "googleGeocodeProperties":{
+    "apiKey":"ApiKey-87987-23654asdf"
   }
 }

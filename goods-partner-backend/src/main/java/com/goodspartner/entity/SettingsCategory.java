@@ -7,6 +7,7 @@ import lombok.Getter;
 public enum SettingsCategory {
 
     ACCOUNTING("ACCOUNTING"),
+    ROUTING("ROUTING"),
     BUSINESS("BUSINESS"),
     GEOCODE("GEOCODE");
 

@@ -11,6 +11,8 @@ import com.goodspartner.dto.SettingsDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -242,7 +244,6 @@ class SettingsMapperTest {
         settings.setClientProperties(createClientPropertiesDto());
         settings.setClientBusinessProperties(createClientBusinessPropertiesDto());
         settings.setGoogleGeocodeProperties(createGoogleGeocodePropertiesDto());
-
         return settings;
     }
 
@@ -253,32 +254,28 @@ class SettingsMapperTest {
         clientProperty.setLogin(expectedClientAccountLoginFe);
         clientProperty.setPassword(expectedClientAccountPasswordFe);
         clientProperty.setDocumentsUriPrefix(expectedClientAccountDocumentsUriPrefixFe);
-
         return clientProperty;
     }
 
     private ClientBusinessPropertiesDto createClientBusinessPropertiesDtoNoChanges() {
         var clientBusiness = new ClientBusinessPropertiesDto();
-        clientBusiness.setPrePacking(new ClientBusinessPropertiesDto.PrePackingDto(expectedClientBusinessPrePackingAddress));
-        clientBusiness.setSelfService(new ClientBusinessPropertiesDto.SelfServiceDto(expectedClientBusinessSelfServiceAddress));
-        clientBusiness.setPostal(new ClientBusinessPropertiesDto.PostalDto(expectedClientBusinessPostalAddress));
-
+        clientBusiness.setPrePacking(new ClientBusinessPropertiesDto.PrePackingDto(expectedClientBusinessPrePackingAddress, new ArrayList<>()));
+        clientBusiness.setSelfService(new ClientBusinessPropertiesDto.SelfServiceDto(expectedClientBusinessSelfServiceAddress, new ArrayList<>()));
+        clientBusiness.setPostal(new ClientBusinessPropertiesDto.PostalDto(expectedClientBusinessPostalAddress, new ArrayList<>()));
         return clientBusiness;
     }
 
     private ClientBusinessPropertiesDto createClientBusinessPropertiesDto() {
         var clientBusiness = new ClientBusinessPropertiesDto();
-        clientBusiness.setPrePacking(new ClientBusinessPropertiesDto.PrePackingDto(expectedClientBusinessPrePackingAddressFe));
-        clientBusiness.setSelfService(new ClientBusinessPropertiesDto.SelfServiceDto(expectedClientBusinessSelfServiceAddressFe));
-        clientBusiness.setPostal(new ClientBusinessPropertiesDto.PostalDto(expectedClientBusinessPostalAddressFe));
-
+        clientBusiness.setPrePacking(new ClientBusinessPropertiesDto.PrePackingDto(expectedClientBusinessPrePackingAddressFe, new ArrayList<>()));
+        clientBusiness.setSelfService(new ClientBusinessPropertiesDto.SelfServiceDto(expectedClientBusinessSelfServiceAddressFe, new ArrayList<>()));
+        clientBusiness.setPostal(new ClientBusinessPropertiesDto.PostalDto(expectedClientBusinessPostalAddressFe, new ArrayList<>()));
         return clientBusiness;
     }
 
     private GoogleGeocodePropertiesDto createGoogleGeocodePropertiesDto() {
         var googleProperties = new GoogleGeocodePropertiesDto();
         googleProperties.setApiKey(expectedGoogleGeocodeApiKeyFe);
-
         return googleProperties;
     }
 }

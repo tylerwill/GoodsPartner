@@ -23,6 +23,15 @@ client:
     password: ${CLIENT_1C_PASSWORD}
     documents-uri-prefix: ${CLIENT_DOCUMENTS_URI} #Local docs on Apache server
 
+  routing:
+    unloading-time-minutes: 15
+    max-route-time-minutes: 600 # 10 hours
+    depot-start-time: "08:00"
+    depot-finish-time: "20:00"
+    default-delivery-start-time: "09:00"
+    default-delivery-finish-time: "19:00"
+    max-time-processing-solution-seconds: 30
+
   business:
     pre-packing:
       keywords:

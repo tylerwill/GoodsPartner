@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodspartner.annotations.SettingsAllocation;
 import com.goodspartner.dto.ClientBusinessPropertiesDto;
 import com.goodspartner.dto.ClientPropertiesDto;
+import com.goodspartner.dto.ClientRoutingPropertiesDto;
 import com.goodspartner.dto.GoogleGeocodePropertiesDto;
 import com.goodspartner.dto.SettingsDto;
 import com.goodspartner.entity.Setting;
@@ -12,15 +13,17 @@ import com.goodspartner.entity.SettingsGroup;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.goodspartner.entity.SettingsCategory.ACCOUNTING;
 import static com.goodspartner.entity.SettingsCategory.BUSINESS;
 import static com.goodspartner.entity.SettingsCategory.GEOCODE;
+import static com.goodspartner.entity.SettingsCategory.ROUTING;
 import static com.goodspartner.entity.SettingsGroup.CLIENT;
 import static com.goodspartner.entity.SettingsGroup.GOOGLE;
 
@@ -36,6 +39,8 @@ public class SettingParser {
         this.keyToSettingFunctionMap = Map.of(
                 toKey(CLIENT, ACCOUNTING),
                 (settingsDto, properties) -> settingsDto.setClientProperties(mapProps(objectMapper, properties, ClientPropertiesDto.class)),
+                toKey(CLIENT, ROUTING),
+                (settingsDto, properties) -> settingsDto.setClientRoutingProperties(mapProps(objectMapper, properties, ClientRoutingPropertiesDto.class)),
                 toKey(CLIENT, BUSINESS),
                 (settingsDto, properties) -> settingsDto.setClientBusinessProperties(mapProps(objectMapper, properties, ClientBusinessPropertiesDto.class)),
                 toKey(GOOGLE, GEOCODE),
@@ -44,18 +49,20 @@ public class SettingParser {
     }
 
     public List<Setting> getSettingsList(SettingsDto settingExternalDto) {
-        return Arrays.asList(
-                toSetting(settingExternalDto.getClientProperties()),
-                toSetting(settingExternalDto.getClientBusinessProperties()),
-                toSetting(settingExternalDto.getGoogleGeocodeProperties()));
+        return Stream.of(settingExternalDto.getClientProperties(),
+                        settingExternalDto.getClientRoutingProperties(),
+                        settingExternalDto.getClientBusinessProperties(),
+                        settingExternalDto.getGoogleGeocodeProperties())
+                .filter(Objects::nonNull)
+                .map(this::toSetting)
+                .collect(Collectors.toList());
     }
 
     @SneakyThrows
     public SettingsDto getSettingsDto(List<Setting> settingsExternals) {
         SettingsDto settingsDto = new SettingsDto();
         for (Setting settingsExternal : settingsExternals) {
-            keyToSettingFunctionMap.get(settingsExternal.getSettingKey())
-                    .accept(settingsDto, settingsExternal.getProperties());
+            keyToSettingFunctionMap.get(settingsExternal.getSettingKey()).accept(settingsDto, settingsExternal.getProperties());
         }
         return settingsDto;
     }
@@ -68,7 +75,6 @@ public class SettingParser {
 
         SettingsGroup group = allocation.group();
         SettingsCategory category = allocation.category();
-
         String properties = objectMapper.writeValueAsString(property);
 
         Setting settingsExternal = new Setting();

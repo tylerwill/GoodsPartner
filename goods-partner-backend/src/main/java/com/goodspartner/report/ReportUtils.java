@@ -17,7 +17,7 @@ public class ReportUtils {
     }
 
     public static InputStream getTemplate(String templatePath) {
-        return OrdersReportGenerator.class.getClassLoader().getResourceAsStream(templatePath);
+        return ReportUtils.class.getClassLoader().getResourceAsStream(templatePath);
     }
 
     public static String generateReportName(String name, LocalDate date) {

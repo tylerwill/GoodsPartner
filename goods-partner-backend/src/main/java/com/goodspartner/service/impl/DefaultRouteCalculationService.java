@@ -1,5 +1,6 @@
 package com.goodspartner.service.impl;
 
+import com.goodspartner.configuration.properties.ClientRoutingProperties;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.entity.Car;
@@ -41,8 +42,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.goodspartner.service.google.GoogleVRPSolver.SERVICE_TIME_AT_LOCATION_MIN;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -50,13 +49,16 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
 
     private static final int ARRIVAL_SIGN = 5;
     private static final int FINISH_SIGN = 4;
-
+    // Props
+    private final ClientRoutingProperties clientRoutingProperties;
+    // Services
     private final StoreService storeService;
-    private final StoreMapper storeMapper;
     private final VRPSolver vrpSolver;
     private final GraphhopperService graphhopperService;
+    // Mappers
+    private final StoreMapper storeMapper;
     private final RoutePointMapper routePointMapper;
-
+    // Repo
     private final CarRepository carRepository;
     private final OrderExternalRepository orderExternalRepository;
 
@@ -133,7 +135,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
         route.setDistance(BigDecimal.valueOf(routePath.getDistance() / 1000)
                 .setScale(2, RoundingMode.HALF_UP)
                 .doubleValue());
-        int totalWaitTimeMin = SERVICE_TIME_AT_LOCATION_MIN * routePoints.size();
+        int totalWaitTimeMin = clientRoutingProperties.getUnloadingTimeMinutes() * routePoints.size();
         route.setEstimatedTime(Duration.ofMillis(routePath.getTime()).toMinutes() + totalWaitTimeMin);
 
 //        TODO date should be a date of Delivery or route.startTime should be only LocalTime without date

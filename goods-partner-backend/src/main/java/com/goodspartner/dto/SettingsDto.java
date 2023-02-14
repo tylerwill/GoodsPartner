@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class SettingsDto {
     private ClientPropertiesDto clientProperties;
+    private ClientRoutingPropertiesDto clientRoutingProperties;
     private ClientBusinessPropertiesDto clientBusinessProperties;
     private GoogleGeocodePropertiesDto googleGeocodeProperties;
 }

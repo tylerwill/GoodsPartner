@@ -1,11 +1,15 @@
 package com.goodspartner.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.goodspartner.configuration.properties.ClientBusinessProperties;
 import com.goodspartner.configuration.properties.ClientProperties;
+import com.goodspartner.configuration.properties.ClientRoutingProperties;
 import com.goodspartner.configuration.properties.GoogleGeocodeProperties;
 import com.goodspartner.dto.ClientBusinessPropertiesDto;
 import com.goodspartner.dto.ClientPropertiesDto;
+import com.goodspartner.dto.ClientRoutingPropertiesDto;
 import com.goodspartner.dto.GoogleGeocodePropertiesDto;
 import com.goodspartner.dto.SettingsDto;
 import com.goodspartner.entity.Setting;
@@ -20,6 +24,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,7 +50,10 @@ public class AbstractBaseCacheITest {
 
         SettingsMapper mapper = new SettingsMapperImpl();
 
-        SettingParser parser = new SettingParser(new ObjectMapper());
+        SettingParser parser = new SettingParser(
+                new ObjectMapper()
+                        .registerModule(new JavaTimeModule())
+                        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS));
 
         var clientAccount =  new ClientProperties();
         clientAccount.setClientServerURL("localhost:5432 YAML");
@@ -52,6 +61,9 @@ public class AbstractBaseCacheITest {
         clientAccount.setLogin("bookkeeper YAML");
         clientAccount.setPassword("password YAML");
         clientAccount.setDocumentsUriPrefix("document/test YAML");
+
+        var clientRouting = new ClientRoutingProperties();
+        // TODO add props
 
         var clientBusiness = new ClientBusinessProperties();
         var prePacing = new ClientBusinessProperties.PrePacking();
@@ -69,6 +81,7 @@ public class AbstractBaseCacheITest {
 
         settingsCache = new DefaultSettingsService(repository, mapper, parser,
                 clientAccount,
+                clientRouting,
                 clientBusiness,
                 googleGeocode);
     }
@@ -92,9 +105,9 @@ public class AbstractBaseCacheITest {
         clientBusinessDto.setPrePacking(new ClientBusinessPropertiesDto.PrePackingDto());
         clientBusinessDto.setSelfService(new ClientBusinessPropertiesDto.SelfServiceDto());
         clientBusinessDto.setPostal(new ClientBusinessPropertiesDto.PostalDto());
-
         settingDto.setClientBusinessProperties(clientBusinessDto);
 
+        settingDto.setClientRoutingProperties(new ClientRoutingPropertiesDto());
         settingDto.setGoogleGeocodeProperties(new GoogleGeocodePropertiesDto());
 
         return settingDto;
@@ -110,6 +123,7 @@ public class AbstractBaseCacheITest {
     protected SettingsDto createSettingsDtoWithPartialProperties() {
         var settingDto = new SettingsDto();
         settingDto.setClientProperties(new ClientPropertiesDto());
+        settingDto.setClientRoutingProperties(createClientRoutingProperties());
         settingDto.setClientBusinessProperties(createClientBusinessPropertiesDto());
         settingDto.setGoogleGeocodeProperties(createGoogleGeocodePropertiesDto());
 
@@ -119,6 +133,7 @@ public class AbstractBaseCacheITest {
     protected SettingsDto createSettingsDtoWithAllProperties() {
         var settingDto = new SettingsDto();
         settingDto.setClientProperties(createClientPropertiesDto());
+        settingDto.setClientRoutingProperties(createClientRoutingProperties());
         settingDto.setClientBusinessProperties(createClientBusinessPropertiesDto());
         settingDto.setGoogleGeocodeProperties(createGoogleGeocodePropertiesDto());
 
@@ -136,11 +151,23 @@ public class AbstractBaseCacheITest {
         return clientProperty;
     }
 
+    private ClientRoutingPropertiesDto createClientRoutingProperties() {
+        var clientRoutingProperties = new ClientRoutingPropertiesDto();
+        clientRoutingProperties.setUnloadingTimeMinutes(15);
+        clientRoutingProperties.setMaxRouteTimeMinutes(500);
+        clientRoutingProperties.setDepotStartTime(LocalTime.of(8, 0));
+        clientRoutingProperties.setDepotFinishTime(LocalTime.of(9, 0));
+        clientRoutingProperties.setDefaultDeliveryStartTime(LocalTime.of(9, 0));
+        clientRoutingProperties.setDefaultDeliveryFinishTime(LocalTime.of(18, 0));
+        clientRoutingProperties.setMaxTimeProcessingSolutionSeconds(20);
+        return clientRoutingProperties;
+    }
+
     private ClientBusinessPropertiesDto createClientBusinessPropertiesDto() {
         var clientBusiness = new ClientBusinessPropertiesDto();
-        clientBusiness.setPrePacking(new ClientBusinessPropertiesDto.PrePackingDto("Dnipro REV-FE"));
-        clientBusiness.setSelfService(new ClientBusinessPropertiesDto.SelfServiceDto("Kiev REV-FE"));
-        clientBusiness.setPostal(new ClientBusinessPropertiesDto.PostalDto("Lviv REV-FE"));
+        clientBusiness.setPrePacking(new ClientBusinessPropertiesDto.PrePackingDto("Dnipro REV-FE", new ArrayList<>()));
+        clientBusiness.setSelfService(new ClientBusinessPropertiesDto.SelfServiceDto("Kiev REV-FE", new ArrayList<>()));
+        clientBusiness.setPostal(new ClientBusinessPropertiesDto.PostalDto("Lviv REV-FE", new ArrayList<>()));
 
         return clientBusiness;
     }

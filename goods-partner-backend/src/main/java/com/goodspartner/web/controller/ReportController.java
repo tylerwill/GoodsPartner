@@ -1,7 +1,6 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.report.CarsLoadReportGenerator;
-import com.goodspartner.report.OrdersReportGenerator;
 import com.goodspartner.report.ReportResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,22 +23,7 @@ import java.util.UUID;
 @Slf4j
 public class ReportController {
 
-    private final OrdersReportGenerator ordersReportGenerator;
     private final CarsLoadReportGenerator carsLoadReportGenerator;
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
-    @GetMapping("/orders")
-    public HttpEntity<byte[]> generateOrdersReport(@RequestParam UUID deliveryId) {
-        ReportResult reportResult = ordersReportGenerator.generateReport(deliveryId);
-        return toHttpEntity(reportResult);
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
-    @GetMapping("/carsload")
-    public HttpEntity<byte[]> generateCarsLoadReport(@RequestParam UUID deliveryId) {
-        ReportResult reportResult = carsLoadReportGenerator.generateReport(deliveryId);
-        return toHttpEntity(reportResult);
-    }
 
     private static HttpEntity<byte[]> toHttpEntity(ReportResult reportResult) {
         ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
@@ -50,6 +34,13 @@ public class ReportController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDisposition(contentDisposition);
         return new HttpEntity<>(reportResult.report(), headers);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
+    @GetMapping("/carsload")
+    public HttpEntity<byte[]> generateCarsLoadReport(@RequestParam UUID deliveryId) {
+        ReportResult reportResult = carsLoadReportGenerator.generateReport(deliveryId);
+        return toHttpEntity(reportResult);
     }
 
 
