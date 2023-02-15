@@ -55,10 +55,16 @@ public class RouteController {
         return routingFacade.updateRoute(id, RouteAction.of(action));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @PutMapping("/{routeId}/reorder")
     public void reorderRoutePoints(@PathVariable long routeId,
                                    @RequestBody LinkedList<RoutePointDto> routePointDtos) {
         routeService.reorderRoutePoints(routeId, routePointDtos);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
+    @PostMapping("/{routeId}/recalculate}")
+    public void recalculate(@PathVariable long routeId) {
+        routeService.recalculateRoute(routeId);
     }
 }

@@ -22,5 +22,7 @@ public interface RouteService {
 
     Route findExtendedById(Long route);
 
+    void recalculateRoute(long routeId);
+
 }
 

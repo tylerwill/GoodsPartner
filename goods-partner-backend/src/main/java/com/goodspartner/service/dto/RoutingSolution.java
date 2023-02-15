@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalTime;
 import java.util.List;
 
 @Builder
@@ -17,7 +16,5 @@ public class RoutingSolution {
     private Car car;
 
     private List<RoutePoint> routePoints;
-
-    private LocalTime routeStartTimeFromDepot;
 
 }

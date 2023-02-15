@@ -1,8 +1,8 @@
-package com.goodspartner.service.dto;
+package com.goodspartner.service.google;
 
 import java.util.Arrays;
 
-public enum GoogleVRPSolverStatus {
+public enum GoogleSolverStatus {
 
     ROUTING_NOT_SOLVED(0), // Problem not solved yet.
     ROUTING_SUCCESS(1),
@@ -13,11 +13,11 @@ public enum GoogleVRPSolverStatus {
 
     private final int code;
 
-    GoogleVRPSolverStatus(int code) {
+    GoogleSolverStatus(int code) {
         this.code = code;
     }
 
-    public static GoogleVRPSolverStatus getByCode(int code) {
+    public static GoogleSolverStatus getByCode(int code) {
         return Arrays.stream(values())
                 .filter(value -> value.code == code)
                 .findFirst()

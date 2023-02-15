@@ -10,4 +10,5 @@ public interface RouteCalculationService {
 
     List<Route> calculateRoutes(List<OrderExternal> orders, RouteMode coolerRequired);
 
+    void recalculateRoute(Route route);
 }
