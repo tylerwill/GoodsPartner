@@ -1,0 +1,27 @@
+{
+  "id":2,
+  "description":"Meeting with Tolik at 17-00",
+  "executionDate":"2023-02-15",
+  "mapPoint":{
+    "address":"м.Київ, Марії Лагунової, 11",
+    "latitude":35.0099,
+    "longitude":53.0099,
+    "status":"KNOWN"
+  },
+  "car":{
+    "id":2,
+    "name":"Mercedes Sprinter",
+    "licencePlate":"AA 2222 CT",
+    "driver":{
+      "id":2,
+      "userName":"Another Test Driver",
+      "email":"another-test-driver@gmail.com",
+      "role":"DRIVER",
+      "enabled":true
+    },
+    "weightCapacity":2000,
+    "cooler":false,
+    "available":true,
+    "travelCost":10
+  }
+}

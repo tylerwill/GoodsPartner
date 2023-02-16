@@ -1,0 +1,36 @@
+CARS:
+  - ID: 1
+    NAME: "Mercedes Sprinter"
+    LICENCE_PLATE: "AA 1111 CT"
+    WEIGHT_CAPACITY: 3000
+    COOLER: FALSE
+    AVAILABLE: TRUE
+    TRAVEL_COST: 10
+    DELETED: FALSE
+    USER_ID: 1
+  - ID: 2
+    NAME: "Mercedes Sprinter"
+    LICENCE_PLATE: "AA 2222 CT"
+    WEIGHT_CAPACITY: 2000
+    COOLER: FALSE
+    AVAILABLE: TRUE
+    TRAVEL_COST: 10
+    DELETED: FALSE
+    USER_ID: 2
+
+USERS:
+  - ID: 1
+    USER_NAME: "Test Driver"
+    EMAIL: "test-driver@gmail.com"
+    ROLE: "DRIVER"
+    ENABLED: TRUE
+  - ID: 2
+    USER_NAME: "Another Test Driver"
+    EMAIL: "another-test-driver@gmail.com"
+    ROLE: "DRIVER"
+    ENABLED: TRUE
+  - ID: 3
+    USER_NAME: "Test Logist"
+    EMAIL: "test-logist@gmail.com"
+    ROLE: "LOGISTICIAN"
+    ENABLED: "true"

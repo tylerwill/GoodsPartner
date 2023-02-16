@@ -1,4 +1,4 @@
-import {Box, Typography} from '@mui/material'
+import {Box, Button, Typography} from '@mui/material'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -8,50 +8,116 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import ErrorAlert from '../../components/ErrorAlert/ErrorAlert'
 import Loading from '../../components/Loading/Loading'
-import {useGetClientsAddressesQuery} from "../../api/clients/clients.api";
+import {useGetClientsAddressesQuery, useUpdateClientAddressMutation} from "../../api/clients/clients.api";
+import CreateIcon from '@mui/icons-material/Create';
+import React, {useState} from "react";
+import TablePagination from "@mui/material/TablePagination";
+import {ChooseAddressDialog} from "../../components/ChooseAddressDialog/ChooseAddressDialog";
+import MapPoint from "../../model/MapPoint";
+import {MapPointStatus} from "../../model/MapPointStatus";
+import {ClientAddress} from "../../model/ClientAddress";
 
 export const Clients = () => {
-	const { data: clientsAddresses, error, isLoading } = useGetClientsAddressesQuery()
+    const {data: clientsAddresses, error, isLoading} = useGetClientsAddressesQuery()
+    const [updateClientAddress] = useUpdateClientAddressMutation();
+    const [page, setPage] = useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(25)
+    const [isChooseAddressDialogOpen, setIsChooseAddressDialogOpen] = useState(false);
+    const [currentMapPoint, setCurrentMapPoint] = useState<MapPoint>({
+        status: MapPointStatus.UNKNOWN,
+        address: '',
+        latitude: 0,
+        longitude: 0
+    });
 
-	if (isLoading || !clientsAddresses) {
-		return <Loading />
-	}
+    const [clientAddressToUpdate, setClientAddressToUpdate] = useState({} as ClientAddress);
 
-	return (
-		<section>
-			<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-				<Typography variant='h6' component='h2'>
-					Адреси кліентів
-				</Typography>
+    const handleChangePage = (event: any, newPage: number) => {
+        setPage(newPage)
+    }
 
-			</Box>
-			<Box mt={2}>
-				<TableContainer component={Paper}>
-					<Table sx={{ minWidth: 650 }} aria-label='simple table'>
-						<TableHead sx={{ fontWeight: 'bold' }}>
-							<TableRow>
-								<TableCell>Клієнт</TableCell>
-								<TableCell>Оригінальна адреса</TableCell>
-								<TableCell>Адреса в системі</TableCell>
-								<TableCell align='center'>Статус</TableCell>
-							</TableRow>
-						</TableHead>
+    const handleChangeRowsPerPage = (event: React.BaseSyntheticEvent) => {
+        setRowsPerPage(parseInt(event.target.value, 10))
+        setPage(0)
+    }
 
-						<TableBody>
-							{/*TODO: [Tolik] Fix key*/}
-							{clientsAddresses.map(clientAddress => (
-								<TableRow key={'clientAddress ' + clientAddress.clientName +  clientAddress.orderAddress}>
-									<TableCell>{clientAddress.clientName}</TableCell>
-									<TableCell>{clientAddress.orderAddress}</TableCell>
-									<TableCell>{clientAddress.validAddress}</TableCell>
-									<TableCell align='center'>{clientAddress.status}</TableCell>
-								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</TableContainer>
-			</Box>
-			{error && <ErrorAlert error={error} />}
-		</section>
-	)
+    if (isLoading || !clientsAddresses) {
+        return <Loading/>
+    }
+
+    const handleUpdateAddress = (point: MapPoint) => {
+        updateClientAddress({...clientAddressToUpdate, mapPoint: point});
+    };
+
+    const handleChangeAddress = (clientAddress: ClientAddress) => {
+        const clientIdentifier = clientsAddresses
+            .filter(c => clientAddress.clientName === c.clientName)
+            .find(c => clientAddress.orderAddress === c.orderAddress);
+
+        setClientAddressToUpdate(clientIdentifier!);
+        setIsChooseAddressDialogOpen(true);
+        setCurrentMapPoint(clientIdentifier!.mapPoint);
+        console.log("client identifier", clientIdentifier);
+    }
+
+    return (
+        <section>
+            <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+                <Typography variant='h6' component='h2'>
+                    Адреси кліентів
+                </Typography>
+
+            </Box>
+            <Box mt={2}>
+                <Paper variant={'outlined'}>
+                    <TableContainer>
+                        <Table sx={{minWidth: 650}} aria-label='simple table'>
+                            <TableHead sx={{fontWeight: 'bold'}}>
+                                <TableRow>
+                                    <TableCell>Клієнт</TableCell>
+                                    <TableCell>Оригінальна адреса</TableCell>
+                                    <TableCell>Адреса в системі</TableCell>
+                                    <TableCell align='center'>Статус</TableCell>
+                                </TableRow>
+                            </TableHead>
+
+                            <TableBody>
+                                {/*TODO: [Tolik] Fix key*/}
+                                {clientsAddresses
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map(clientAddress => (
+                                        <TableRow
+                                            key={'clientAddress ' + clientAddress.clientName + clientAddress.orderAddress}>
+                                            <TableCell>{clientAddress.clientName}</TableCell>
+                                            <TableCell>{clientAddress.orderAddress}</TableCell>
+                                            <TableCell><Box sx={{display: 'flex', alignItems: 'center'}}>
+                                                <Button onClick={() => handleChangeAddress(clientAddress)}
+                                                        startIcon={<CreateIcon/>}/> {clientAddress.mapPoint.address}
+                                            </Box>
+                                            </TableCell>
+                                            <TableCell align='center'>{clientAddress.mapPoint.status}</TableCell>
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[25, 50, 100]}
+                        component='div'
+                        count={clientsAddresses.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                </Paper>
+            </Box>
+            {error && <ErrorAlert error={error}/>}
+            {isChooseAddressDialogOpen && <ChooseAddressDialog isOpen={isChooseAddressDialogOpen}
+                                                               setIsOpen={setIsChooseAddressDialogOpen}
+                                                               onAction={(point) => handleUpdateAddress(point)}
+                                                               defaultAddress={clientAddressToUpdate.orderAddress}
+                                                               currentMapPoint={currentMapPoint}/>}
+        </section>
+    )
 }

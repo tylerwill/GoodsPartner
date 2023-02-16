@@ -11,11 +11,17 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface AddressExternalMapper {
     @Mapping(target = "orderAddress", source = "addressExternal.orderAddressId.orderAddress")
     @Mapping(target = "clientName", source = "addressExternal.orderAddressId.clientName")
-    @Mapping(target = "status", source = "status.status")
+    @Mapping(target = "mapPoint.address", source = "validAddress")
+    @Mapping(target = "mapPoint.latitude", source = "latitude")
+    @Mapping(target = "mapPoint.longitude", source = "longitude")
+    @Mapping(target = "mapPoint.status", source = "status")
     AddressExternalDto toAddressExternalDto(AddressExternal addressExternal);
 
     @Mapping(target = "orderAddressId.orderAddress", source = "orderAddress")
     @Mapping(target = "orderAddressId.clientName", source = "clientName")
-    @Mapping(target = "status", source = "status")
+    @Mapping(target = "validAddress", source = "mapPoint.address")
+    @Mapping(target = "latitude", source = "mapPoint.latitude")
+    @Mapping(target = "longitude", source = "mapPoint.longitude")
+    @Mapping(target = "status", source = "mapPoint.status")
     AddressExternal toAddressExternal(AddressExternalDto addressExternalDto);
 }

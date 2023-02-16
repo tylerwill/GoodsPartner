@@ -16,6 +16,7 @@ import History from "./pages/Delivery/History/History";
 import React from "react";
 import Shipping from "./pages/Delivery/Shipping/Shipping";
 import {Clients} from "./pages/Clients/Clients";
+import {Tasks} from "./pages/Tasks/Tasks";
 
 const libraries = ['places']
 
@@ -50,6 +51,7 @@ function App() {
                     <Route path='/users' element={<Users/>}/>
                     <Route path='/clients/addresses' element={<Clients/>}/>
                     <Route path='/deliveries' element={<Deliveries/>}/>
+                    <Route path='/tasks' element={<Tasks/>}/>
                     <Route path='/' element={<Deliveries/>}/>
 
                     <Route path='/delivery/:deliveryId' element={<Delivery/>}>

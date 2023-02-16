@@ -1,0 +1,27 @@
+{
+  "id":1,
+  "description":"Take some coffee at 14:00. Obolon",
+  "executionDate":"2023-02-14",
+  "mapPoint":{
+    "address":"м.Київ, Марії Лагунової, 11",
+    "latitude":35.0099,
+    "longitude":53.0099,
+    "status":"KNOWN"
+  },
+  "car":{
+    "id":1,
+    "name":"Mercedes Sprinter",
+    "licencePlate":"AA 1111 CT",
+    "driver":{
+      "id":1,
+      "userName":"Test Driver",
+      "email":"test-driver@gmail.com",
+      "role":"DRIVER",
+      "enabled":true
+    },
+    "weightCapacity":3000,
+    "cooler":false,
+    "available":true,
+    "travelCost":10
+  }
+}

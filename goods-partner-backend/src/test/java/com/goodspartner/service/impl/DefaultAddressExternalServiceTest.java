@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +17,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(value = MockitoExtension.class)
 public class DefaultAddressExternalServiceTest {
@@ -36,7 +40,7 @@ public class DefaultAddressExternalServiceTest {
     void testFindAllShouldReturnListAddressExternalDtoAndCallAllCollaboratorsMethods() {
         List<AddressExternal> addressExternalList = createAddressExternalList();
 
-        when(repository.findAll()).thenReturn(addressExternalList);
+        when(repository.findAll(any(Sort.class))).thenReturn(addressExternalList);
 
         List<AddressExternal> resultAddressExternalList = addressExternalService.findAll();
 
@@ -44,7 +48,7 @@ public class DefaultAddressExternalServiceTest {
         assertEquals(addressExternalList.get(0), resultAddressExternalList.get(0));
         assertEquals(addressExternalList.get(1), resultAddressExternalList.get(1));
 
-        verify(repository).findAll();
+        verify(repository).findAll(any(Sort.class));
     }
 
     @Test

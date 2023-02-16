@@ -13,8 +13,6 @@ import java.util.Optional;
 @Repository
 public interface CarRepository extends JpaRepository<Car, Integer> {
 
-    List<Car> findByAvailableTrue();
-
     List<Car> findByAvailableTrueAndCoolerIs(boolean coolerRequired);
 
     Optional<Car> findCarByDriver(User user);

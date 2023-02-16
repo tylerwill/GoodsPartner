@@ -40,12 +40,6 @@ public class DefaultCarService implements CarService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<CarDto> findByAvailableCars() {
-        return carMapper.toCarDtosList(carRepository.findByAvailableTrue());
-    }
-
-    @Override
     @Transactional
     public CarDto update(int id, CarDto carDto) {
         log.info("Updating car by request payload: {}", carDto);

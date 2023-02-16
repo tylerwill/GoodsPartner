@@ -1,6 +1,7 @@
 package com.goodspartner.mapper;
 
 import com.goodspartner.dto.AddressExternalDto;
+import com.goodspartner.dto.MapPoint;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.AddressStatus;
 import org.junit.jupiter.api.Test;
@@ -35,9 +36,14 @@ public class AddressExternalMapperTest {
     }
 
     private AddressExternalDto createAddressExternalDto() {
+        MapPoint mapPoint = MapPoint.builder()
+                .address("Zoloti vorota")
+                .latitude(48.5689)
+                .longitude(30.7898)
+                .status(AddressStatus.KNOWN)
+                .build();
         return new AddressExternalDto("Zoloti vorota",
-                "Pasha", "KNOWN", "Zoloti vorota",
-                48.5689, 30.7898);
+                "Pasha", mapPoint);
     }
 
     private AddressExternal createAddressExternal() {

@@ -36,7 +36,7 @@ public class AbstractWebITest extends AbstractBaseITest {
         return getMockSession(DEFAULT_LOGIST_NAME, DEFAULT_LOGIST_EMAIL, LOGIST_ROLE);
     }
 
-    private MockHttpSession getMockSession(String username, String email, String role) {
+    protected MockHttpSession getMockSession(String username, String email, String role) {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,

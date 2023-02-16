@@ -5,6 +5,7 @@ import com.goodspartner.exception.AddressExternalNotFoundException;
 import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.service.AddressExternalService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +17,12 @@ public class DefaultAddressExternalService implements AddressExternalService {
 
     private final AddressExternalRepository repository;
 
+    private static final Sort DEFAULT_ADDRESS_EXTERNAL_SORT = Sort.by(Sort.Direction.DESC, "orderAddressId");
+
     @Transactional(readOnly = true)
     @Override
     public List<AddressExternal> findAll() {
-        return repository.findAll();
+        return repository.findAll(DEFAULT_ADDRESS_EXTERNAL_SORT);
     }
 
     @Transactional

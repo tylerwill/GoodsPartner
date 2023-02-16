@@ -18,8 +18,6 @@ public interface CarService {
 
     List<CarDto> findAll();
 
-    List<CarDto> findByAvailableCars();
-
     void saveCarLocation(int id, Location location);
 
     Location getCarLocation(int id);

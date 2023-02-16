@@ -5,6 +5,8 @@ import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.AddressExternalDto;
+import com.goodspartner.dto.MapPoint;
+import com.goodspartner.entity.AddressStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
@@ -91,24 +93,28 @@ public class AddressControllerITest extends AbstractWebITest {
     }
 
     private AddressExternalDto createDtoWithIdIsPresent() {
+        MapPoint mapPoint = MapPoint.builder()
+                .address("вулиця Далекий Гай, 40, Київ, Україна, 02000")
+                .longitude(80.4469685)
+                .latitude(90.50906)
+                .status(AddressStatus.KNOWN)
+                .build();
         return new AddressExternalDto(
                 "Київ, вул. Б. Хмеьницького, 40   Тетяна, 050-775-99-40",
                 "Лила Кейк ",
-                "KNOWN",
-                "вулиця Далекий Гай, 40, Київ, Україна, 02000",
-                80.4469685,
-                90.50906
-        );
+                mapPoint);
     }
 
     private AddressExternalDto createDtoWithIdIsAbsent() {
+        MapPoint mapPoint = MapPoint.builder()
+                .address("вулиця Далекий Гай, 40, Київ, Україна, 02000")
+                .longitude(80.4469685)
+                .latitude(90.50906)
+                .status(AddressStatus.KNOWN)
+                .build();
         return new AddressExternalDto(
                 "Київ, вул. ",
                 "Лила",
-                "KNOWN",
-                "вулиця Далекий Гай, 40, Київ, Україна, 02000",
-                80.4469685,
-                90.50906
-        );
+                mapPoint);
     }
 }
