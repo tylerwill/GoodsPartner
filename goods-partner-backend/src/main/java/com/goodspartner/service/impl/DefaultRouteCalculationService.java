@@ -22,8 +22,7 @@ import com.goodspartner.service.dto.RouteMode;
 import com.goodspartner.service.dto.RoutingSolution;
 import com.goodspartner.service.dto.TSPSolution;
 import com.goodspartner.service.dto.VRPSolution;
-import com.goodspartner.service.google.GoogleTSPSolver;
-import com.goodspartner.service.google.GoogleVRPSolver;
+import com.goodspartner.service.google.GoogleSolverFactory;
 import com.google.common.annotations.VisibleForTesting;
 import com.graphhopper.ResponsePath;
 import com.graphhopper.util.Instruction;
@@ -59,11 +58,9 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     private static final int FINISH_SIGN = 4;
     // Props
     private final ClientRoutingProperties clientRoutingProperties;
-    // Solvers
-    private final GoogleVRPSolver vrpSolver;
-    private final GoogleTSPSolver tspSolver;
     // Services
     private final StoreService storeService;
+    private final GoogleSolverFactory googleSolverFactory;
     private final GraphhopperService graphhopperService;
     // Mappers
     private final StoreMapper storeMapper;
@@ -91,12 +88,14 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
 
         log.info("Start route optimisation for {} orders and cooler: {}", filteredOrders.size(), routeMode.isCoolerNecessary());
 
-        List<MapPoint> mapPoints = getRouteMapPoints(store, routePoints);
+        List<MapPoint> mapPoints = getRecalculationMapPoints(store, routePoints);
 
         DistanceMatrix distanceMatrix = graphhopperService.getMatrix(mapPoints);
         log.info("DistanceMatrix has been calculated for {} route points", routePoints.size());
 
-        VRPSolution solution = vrpSolver.solve(cars, routePoints, distanceMatrix);
+        VRPSolution solution = googleSolverFactory
+                .getVRPSolver()
+                .solve(cars, routePoints, distanceMatrix);
         log.info("Finished route optimisation for {} orders and cooler: {}", filteredOrders.size(), routeMode.isCoolerNecessary());
 
         updateDroppedOrders(filteredOrders, solution);
@@ -115,15 +114,17 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
         List<RoutePoint> pendingRoutePoints = new ArrayList<>();
         RoutePoint currentRoutePoint = filterRoutePoints(routePoints, completedRoutePoints, pendingRoutePoints);
 
-        List<MapPoint> mapPoints = getRouteMapPoints(currentRoutePoint, routePoints);
+        List<MapPoint> mapPoints = getRecalculationMapPoints(currentRoutePoint, pendingRoutePoints);
         DistanceMatrix distanceMatrix = graphhopperService.getMatrix(mapPoints);
         log.info("DistanceMatrix has been calculated for {} route points", mapPoints.size());
 
+        log.info("Start route optimisation for car: {} and routePoints: {}", route.getCar(), pendingRoutePoints.size());
         LocalTime routeStartTime = getRouteStartTime(currentRoutePoint);
-
-        log.info("Start route optimisation for car: {} and routePoints: {}", route.getCar() , pendingRoutePoints.size());
-        TSPSolution solution = tspSolver.   solve(route.getCar(), routePoints, distanceMatrix, routeStartTime);
-        log.info("Finished route optimisation for car: {} and routePoints: {}", route.getCar() , pendingRoutePoints.size());
+        LocalTime extendedDeliveryFinishTime = clientRoutingProperties.getDefaultDeliveryFinishTime();// Getting more extended time assuming that Route is not matching
+        TSPSolution solution = googleSolverFactory
+                .getTSPSolver(routeStartTime, extendedDeliveryFinishTime)
+                .solve(route.getCar(), pendingRoutePoints, distanceMatrix);
+        log.info("Finished route optimisation for car: {} and routePoints: {}", route.getCar(), pendingRoutePoints.size());
 
         if (solution.getDroppedPoints().size() > 0) {
             throw new ImppossbleRouteRecalculationException(route);
@@ -141,9 +142,9 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                 : LocalTime.now();
     }
 
-    private static RoutePoint filterRoutePoints(List<RoutePoint> routePoints,
-                                                List<RoutePoint> completedRoutePoints,
-                                                List<RoutePoint> pendingRoutePoints) {
+    private RoutePoint filterRoutePoints(List<RoutePoint> routePoints,
+                                         List<RoutePoint> completedRoutePoints,
+                                         List<RoutePoint> pendingRoutePoints) {
         RoutePoint currentRoutePoint = null;
         for (RoutePoint routePoint : routePoints) {
             if (PENDING.equals(routePoint.getStatus())) {
@@ -157,7 +158,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     }
 
     @NotNull
-    private List<MapPoint> getRouteMapPoints(Store store, List<RoutePoint> routePoints) {
+    private List<MapPoint> getRecalculationMapPoints(Store store, List<RoutePoint> routePoints) {
         List<MapPoint> mapPoints = new ArrayList<>();
         mapPoints.add(storeMapper.getMapPoint(store));
         mapPoints.addAll(routePointMapper.toMapPoints(routePoints));
@@ -165,14 +166,14 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     }
 
     @NotNull
-    private List<MapPoint> getRouteMapPoints(RoutePoint currentRoutePoint, List<RoutePoint> routePoints) {
+    private List<MapPoint> getRecalculationMapPoints(RoutePoint currentRoutePoint, List<RoutePoint> pendingRoutePoints) {
         MapPoint startMapPoint = currentRoutePoint == null
                 ? storeMapper.getMapPoint(storeService.getMainStore())
                 : routePointMapper.toMapPoint(currentRoutePoint);
 
         List<MapPoint> mapPoints = new ArrayList<>();
         mapPoints.add(startMapPoint);
-        mapPoints.addAll(routePointMapper.toMapPoints(routePoints));
+        mapPoints.addAll(routePointMapper.toMapPoints(pendingRoutePoints));
         return mapPoints;
     }
 
@@ -199,7 +200,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     Route mapToRoute(RoutingSolution routingSolution, Store store) {
 
         List<RoutePoint> routePoints = routingSolution.getRoutePoints();
-        List<MapPoint> mapPoints = getRouteMapPoints(store, routePoints);
+        List<MapPoint> mapPoints = getRecalculationMapPoints(store, routePoints);
         // TODO check if VRPSolver has calculation with return
         mapPoints.add(storeMapper.getMapPoint(store)); // Return back to Store
 
@@ -275,8 +276,8 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
 
     /**
      * We should group by clientName + valid address -> meaning that:
-     *  1. Several clients on the same mapPoint should be treated as the different RoutePoints
-     *  2. Same clients on the same mapPoint should be treated as one RoutePoint assuming driver will be able to complete and finish client delivery at once
+     * 1. Several clients on the same mapPoint should be treated as the different RoutePoints
+     * 2. Same clients on the same mapPoint should be treated as one RoutePoint assuming driver will be able to complete and finish client delivery at once
      */
     @VisibleForTesting
     List<RoutePoint> mapToRoutePoints(List<OrderExternal> orders) {
@@ -286,7 +287,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
         Map<Pair<String, MapPoint>, List<OrderExternal>> addressOrderMap = orders
                 .stream()
                 .collect(Collectors.groupingBy(orderExternal ->
-                        Pair.of(orderExternal.getClientName(), orderExternal.getMapPoint()),
+                                Pair.of(orderExternal.getClientName(), orderExternal.getMapPoint()),
                         Collectors.toList()));
 
         addressOrderMap.forEach((pair, orderList) -> {

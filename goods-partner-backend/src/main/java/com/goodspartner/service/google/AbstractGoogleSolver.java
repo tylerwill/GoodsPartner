@@ -20,12 +20,18 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Case:
+ * CurrentTime: 14-00 / DeliveryEnd time 13-00 -> Normalization will make DeliveryEnd = 0 -> resulting in excluded RoutePoint
+ *
+ */
 @Slf4j
 @AllArgsConstructor
-public class AbstractGoogleSolver {
+public abstract class AbstractGoogleSolver {
 
     protected static final int ROUTE_START_INDEX = 0;
 
@@ -44,8 +50,12 @@ public class AbstractGoogleSolver {
     // Services
     protected final GraphhopperService graphhopperService;
 
+    // Normalization requires to provide recalculation between absolute drive time, and relative arrival time
+    protected abstract long getNormalizationTimeMinutes();
+
     protected Long[][] calculateTimeWindows(List<RoutePoint> routePoints,
-                                            LocalTime depotStartTime, LocalTime depotFinishTime) {
+                                            LocalTime overrideDeliveryStartTime,
+                                            LocalTime overrideDeliveryFinishTime) {
         if (routePoints.isEmpty()) {
             return new Long[][]{};
         }
@@ -54,28 +64,35 @@ public class AbstractGoogleSolver {
         Long[][] timeWindows = new Long[allPoints][2];
 
         // Set depot time
-        timeWindows[0][0] = normalizeTravelTime(depotStartTime);
-        timeWindows[0][1] = normalizeTravelTime(depotFinishTime);
+        timeWindows[0][0] = normalizeTravelTime(overrideDeliveryStartTime);
+        timeWindows[0][1] = normalizeTravelTime(clientRoutingProperties.getDepotFinishTime());
 
         for (int i = 0; i < routePoints.size(); i++) {
 
+            // In case if startTime is more specific - use the specified one from RoutePoint
             LocalTime deliveryStartTime = routePoints.get(i).getDeliveryStart();
-            timeWindows[i+1][0] = normalizeTravelTime(deliveryStartTime != null
-                    ? deliveryStartTime
-                    : clientRoutingProperties.getDefaultDeliveryStartTime());
+            timeWindows[i+1][0] = normalizeTravelTime(
+                    deliveryStartTime != null
+                            && deliveryStartTime.isAfter(clientRoutingProperties.getDefaultDeliveryStartTime())
+                            ? deliveryStartTime
+                            : overrideDeliveryStartTime);
 
+            // In case if finishtime is more specific use the specified one from RoutePoint
             LocalTime deliveryEndTime = routePoints.get(i).getDeliveryEnd();
-            timeWindows[i+1][1] = normalizeTravelTime(deliveryEndTime != null
-                    ? deliveryEndTime
-                    : clientRoutingProperties.getDefaultDeliveryFinishTime());
+            timeWindows[i+1][1] = normalizeTravelTime(
+                    deliveryEndTime != null
+                            && deliveryEndTime.isBefore(clientRoutingProperties.getDefaultDeliveryFinishTime())
+                            ? deliveryEndTime
+                            : overrideDeliveryFinishTime);
         }
 
         return timeWindows;
     }
 
     private long normalizeTravelTime(LocalTime time) {
-        LocalTime normalizedTime = time.minusMinutes(clientRoutingProperties.getNormalizationTimeMinutes());
-        return normalizedTime.getHour() * 60; // minutes
+        long requestedTimeMinutesOfDay = time.getLong(ChronoField.MINUTE_OF_DAY);
+        long normalizedTime = requestedTimeMinutesOfDay - getNormalizationTimeMinutes();
+        return normalizedTime < 0 ? 0 : normalizedTime;
     }
 
     protected Assignment getSolution(RoutingModel routing) {
@@ -116,7 +133,7 @@ public class AbstractGoogleSolver {
             long nodeIndex = manager.indexToNode(index);
 
             IntVar timeVar = timeDimension.cumulVar(index);
-            long solutionInMinutes = solution.max(timeVar) + clientRoutingProperties.getNormalizationTimeMinutes(); // MIN-MAX solution window is equal. Tested
+            long solutionInMinutes = solution.max(timeVar) + getNormalizationTimeMinutes(); // MIN-MAX solution window is equal. Tested
 
             if (nodeIndex == 0) { // Depot
                 LocalTime routeStartTimeFromDepot = LocalTime.ofSecondOfDay(solutionInMinutes * 60L);

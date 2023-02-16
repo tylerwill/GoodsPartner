@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,4 +76,8 @@ public class GoogleVRPSolver extends AbstractGoogleSolver {
                 .build();
     }
 
+    @Override
+    protected long getNormalizationTimeMinutes() {
+        return clientRoutingProperties.getDepotStartTime().getLong(ChronoField.MINUTE_OF_DAY);
+    }
 }

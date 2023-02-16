@@ -15,12 +15,12 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -41,7 +41,7 @@ public class DefaultLiveEventService implements LiveEventService {
     public void subscribe(Consumer<LiveEvent> consumer, UUID heartbeatId) {
         UserDto user = userService.getAuthenticatedUserDto();
         Subscriber newSubscriber = new Subscriber(consumer, heartbeatId);
-        listeners.computeIfAbsent(user, k -> new ArrayList<>()).add(newSubscriber);
+        listeners.computeIfAbsent(user, k -> new CopyOnWriteArrayList<>()).add(newSubscriber);
         log.info("{} added for account: {}, total account subscribers: {}. Total accounts: {}",
                 newSubscriber, user.getEmail(), listeners.get(user).size(), listeners.size());
     }

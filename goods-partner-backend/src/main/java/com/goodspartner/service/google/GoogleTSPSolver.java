@@ -12,25 +12,30 @@ import com.google.ortools.constraintsolver.RoutingDimension;
 import com.google.ortools.constraintsolver.RoutingIndexManager;
 import com.google.ortools.constraintsolver.RoutingModel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
+import java.time.temporal.ChronoField;
 import java.util.List;
 
 @Slf4j
-@Component
 public class GoogleTSPSolver extends AbstractGoogleSolver {
 
+    private final LocalTime routeStartTime;
+    private final LocalTime routeFinishTime;
+
     public GoogleTSPSolver(ClientRoutingProperties clientRoutingProperties,
-                           GraphhopperService graphhopperService) {
+                           GraphhopperService graphhopperService,
+                           LocalTime routeStartTime,
+                           LocalTime routeFinishTime) {
         super(clientRoutingProperties, graphhopperService);
+        this.routeStartTime = routeStartTime;
+        this.routeFinishTime = routeFinishTime;
     }
 
-    public TSPSolution solve(Car car, List<RoutePoint> routePoints,
-                             DistanceMatrix distanceMatrix, LocalTime routeStartTime) {
-
-        LocalTime defaultDeliveryFinishTime = clientRoutingProperties.getDefaultDeliveryFinishTime();
-        Long[][] timeWindows = calculateTimeWindows(routePoints, routeStartTime, defaultDeliveryFinishTime);
+    public TSPSolution solve(Car car,
+                             List<RoutePoint> routePoints,
+                             DistanceMatrix distanceMatrix) {
+        Long[][] timeWindows = calculateTimeWindows(routePoints, routeStartTime, routeFinishTime);
         Long[][] timeMatrix = distanceMatrix.getDuration();
         int carsAmount = 1;
 
@@ -60,5 +65,10 @@ public class GoogleTSPSolver extends AbstractGoogleSolver {
                 .routing(routingSolution)
                 .droppedPoints(droppedRoutePoints)
                 .build();
+    }
+
+    // Normalization requires to provide recalculation between absolute drive time, and relative arrival time
+    protected long getNormalizationTimeMinutes() {
+        return routeStartTime.getLong(ChronoField.MINUTE_OF_DAY);
     }
 }

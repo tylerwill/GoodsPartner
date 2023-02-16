@@ -26,8 +26,4 @@ public class ClientRoutingProperties {
 
     private int maxTimeProcessingSolutionSeconds;
 
-    // Normalization requires to provide recalculation between absolute drive time, and relative arrival time
-    public long getNormalizationTimeMinutes() {
-        return depotStartTime.getHour() * 60L;
-    }
 }

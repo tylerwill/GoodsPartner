@@ -29,7 +29,7 @@ client:
     depot-start-time: "08:00"
     depot-finish-time: "20:00"
     default-delivery-start-time: "09:00"
-    default-delivery-finish-time: "19:00"
+    default-delivery-finish-time: "18:00"
     max-time-processing-solution-seconds: 30
 
   business:
