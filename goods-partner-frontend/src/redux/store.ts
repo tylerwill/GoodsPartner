@@ -16,6 +16,7 @@ import {shippingApi} from '../api/shipping/shipping.api'
 import {ordersApi} from '../api/orders/orders.api'
 import {tasksApi} from '../api/tasks/tasks.api'
 import {clientsApi} from '../api/clients/clients.api'
+import {settingsApi} from '../api/settings/settings.api'
 import {enqueueSnackbar} from "notistack";
 
 
@@ -50,7 +51,8 @@ const store = configureStore({
         [ordersApi.reducerPath]: ordersApi.reducer,
         [carsApi.reducerPath]: carsApi.reducer,
         [clientsApi.reducerPath]: clientsApi.reducer,
-        [tasksApi.reducerPath]: tasksApi.reducer
+        [tasksApi.reducerPath]: tasksApi.reducer,
+        [settingsApi.reducerPath]: settingsApi.reducer
     },
 
     middleware: getDefaultMiddleware =>
@@ -65,6 +67,7 @@ const store = configureStore({
             .concat(ordersApi.middleware)
             .concat(clientsApi.middleware)
             .concat(tasksApi.middleware)
+            .concat(settingsApi.middleware)
             .concat(rtkQueryErrorLogger)
 })
 

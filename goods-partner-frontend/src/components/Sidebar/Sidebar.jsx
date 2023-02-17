@@ -17,6 +17,7 @@ import useAuth from '../../auth/AuthProvider'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import BusinessIcon from '@mui/icons-material/Business';
 import TaskIcon from '@mui/icons-material/Task';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const ListButton = (icon, name, paddingLeft) => {
 	return (
@@ -86,6 +87,10 @@ const Sidebar = ({ open }) => {
 
 							<ListItem disablePadding component={Link} to={'/reports'}>
 								{ListButton(<ContentPasteSharp />, 'Звітність')}
+							</ListItem>
+
+							<ListItem disablePadding component={Link} to={'/settings'}>
+								{ListButton(<SettingsIcon />, 'Налаштування')}
 							</ListItem>
 
 						</>

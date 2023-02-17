@@ -17,6 +17,7 @@ import React from "react";
 import Shipping from "./pages/Delivery/Shipping/Shipping";
 import {Clients} from "./pages/Clients/Clients";
 import {Tasks} from "./pages/Tasks/Tasks";
+import {Settings} from "./pages/Settings/Settings";
 
 const libraries = ['places']
 
@@ -52,6 +53,7 @@ function App() {
                     <Route path='/clients/addresses' element={<Clients/>}/>
                     <Route path='/deliveries' element={<Deliveries/>}/>
                     <Route path='/tasks' element={<Tasks/>}/>
+                    <Route path='/settings' element={<Settings/>}/>
                     <Route path='/' element={<Deliveries/>}/>
 
                     <Route path='/delivery/:deliveryId' element={<Delivery/>}>
