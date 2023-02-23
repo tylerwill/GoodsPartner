@@ -69,7 +69,8 @@ database.env
 
 logs
 
-
+# frontend
+goods-partner-frontend/package-lock.json
 
 osm_file
 osm_routing_graph

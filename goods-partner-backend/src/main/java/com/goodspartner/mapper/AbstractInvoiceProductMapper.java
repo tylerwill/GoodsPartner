@@ -1,5 +1,6 @@
 package com.goodspartner.mapper;
 
+import com.goodspartner.dto.ProductMeasureDetails;
 import com.goodspartner.service.dto.external.grandedolce.ODataInvoiceProductDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
@@ -22,6 +23,20 @@ public abstract class AbstractInvoiceProductMapper {
         Double pricePdv = getPDV(price);
         Double priceWithoutPDV = price - pricePdv;
         return String.valueOf(getRoundedDouble(priceWithoutPDV));
+    }
+
+    @Named("mapProductUnit")
+    public ProductMeasureDetails mapProductUnit(ODataInvoiceProductDto oDataInvoiceProductDto) {
+        ProductMeasureDetails productUnit = oDataInvoiceProductDto.getProductUnit();
+        return ProductMeasureDetails.builder()
+                .measureStandard(productUnit.getMeasureStandard())
+                .coefficientStandard(productUnit.getCoefficientStandard())
+                .amount(getProductUnitAmount(oDataInvoiceProductDto.getTotalProductWeight(), oDataInvoiceProductDto.getCoefficient()))
+                .build();
+    }
+
+    private Double getProductUnitAmount(Double totalProductWeight, Double coefficient) {
+        return totalProductWeight * coefficient;
     }
 
     private Double getPDV(Double value) {

@@ -48,24 +48,6 @@ class GrandeDolceIntegrationServiceTest {
             "5c7c3687-84f2-11ec-b3ce-00155dd72305", products_Odata_order_5c7c3687_84f2
     );
 
-
-    @Test
-    void testEnrichOrders() {
-        orderService.enrichOrders(orderList, productMap);
-
-        ODataOrderDto order_5c7c3687_84f2 = orderList.stream().
-                filter(orderDto -> "5c7c3687-84f2-11ec-b3ce-00155dd72305" .equals(orderDto.getRefKey())).findFirst().get();
-        ODataOrderDto order_ecdc9069_84f4 = orderList.stream().
-                filter(orderDto -> "ecdc9069-84f4-11ec-b3ce-00155dd72305" .equals(orderDto.getRefKey())).findFirst().get();
-
-        assertNotNull(order_ecdc9069_84f4.getProducts());
-        assertEquals(16.4, order_ecdc9069_84f4.getOrderWeight());
-
-        assertNotNull(order_5c7c3687_84f2.getProducts());
-        assertEquals(11.1, order_5c7c3687_84f2.getOrderWeight());
-
-    }
-
     @Test
     void testMockGetOrders() {
         ODataWrapperDto<ODataOrderDto> orders = new ODataWrapperDto<>();

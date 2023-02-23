@@ -1,11 +1,13 @@
 package com.goodspartner.report;
 
 import com.goodspartner.dto.Product;
+import com.goodspartner.dto.ProductMeasureDetails;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.User;
+import com.goodspartner.report.dto.ProductLoadDetails;
 import com.goodspartner.repository.DeliveryRepository;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
@@ -73,6 +75,8 @@ class CarsLoadReportGeneratorITest {
                 .amount(1)
                 .unitWeight(1.52)
                 .totalProductWeight(1.52)
+                .productUnit(getProductUnit())
+                .productPackaging(getProductPackaging())
                 .build();
 
         OrderExternal orderFirst = new OrderExternal();
@@ -149,6 +153,8 @@ class CarsLoadReportGeneratorITest {
                 .amount(1)
                 .unitWeight(1.52)
                 .totalProductWeight(1.52)
+                .productUnit(getProductUnit())
+                .productPackaging(getProductPackaging())
                 .build();
 
         Product productSecond = Product.builder()
@@ -156,6 +162,8 @@ class CarsLoadReportGeneratorITest {
                 .amount(10)
                 .unitWeight(57.8)
                 .totalProductWeight(578)
+                .productUnit(getProductUnit())
+                .productPackaging(getProductPackaging())
                 .build();
 
         Product productThird = Product.builder()
@@ -163,6 +171,8 @@ class CarsLoadReportGeneratorITest {
                 .amount(10)
                 .unitWeight(47.8)
                 .totalProductWeight(478)
+                .productUnit(getProductUnit())
+                .productPackaging(getProductPackaging())
                 .build();
 
         OrderExternal orderFirst = new OrderExternal();
@@ -190,5 +200,21 @@ class CarsLoadReportGeneratorITest {
 
         delivery.setCarLoads(List.of(carLoad));
         return delivery;
+    }
+
+    private ProductMeasureDetails getProductUnit(){
+        return ProductMeasureDetails.builder()
+                .amount(6.0)
+                .measureStandard("кг")
+                .coefficientStandard(1.0)
+                .build();
+    }
+
+    private ProductMeasureDetails getProductPackaging(){
+        return ProductMeasureDetails.builder()
+                .amount(1.0)
+                .measureStandard("ящ")
+                .coefficientStandard(6.0)
+                .build();
     }
 }

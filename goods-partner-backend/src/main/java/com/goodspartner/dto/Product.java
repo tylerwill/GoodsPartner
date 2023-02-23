@@ -1,10 +1,6 @@
 package com.goodspartner.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
@@ -21,6 +17,8 @@ public class Product {
     private double totalProductWeight;
     private double coefficient;
     private String measure;
+    private ProductMeasureDetails productUnit;
+    private ProductMeasureDetails productPackaging;
 
     @Override
     public boolean equals(Object o) {
@@ -32,11 +30,13 @@ public class Product {
                 && Double.compare(product.coefficient, coefficient) == 0
                 && productName.equals(product.productName)
                 && Objects.equals(storeName, product.storeName)
-                && Objects.equals(measure, product.measure);
+                && Objects.equals(measure, product.measure)
+                && Objects.equals(productUnit, product.productUnit)
+                && Objects.equals(productPackaging, product.productPackaging);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productName, amount, storeName, unitWeight, totalProductWeight, coefficient, measure);
+        return Objects.hash(productName, amount, storeName, unitWeight, totalProductWeight, coefficient, measure, productUnit, productPackaging);
     }
 }

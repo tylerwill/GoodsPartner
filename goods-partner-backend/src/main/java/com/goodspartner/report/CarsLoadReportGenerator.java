@@ -6,6 +6,7 @@ import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.exception.DeliveryNotFoundException;
+import com.goodspartner.mapper.util.MapperUtil;
 import com.goodspartner.report.dto.CarLoadDetails;
 import com.goodspartner.report.dto.ProductLoadDetails;
 import com.goodspartner.repository.DeliveryRepository;
@@ -149,25 +150,33 @@ public class CarsLoadReportGenerator implements ReportGenerator {
     private String getProductCellValue(int cellNumber, List<ProductLoadDetails> productLoadDetails) {
         return switch (cellNumber) {
             case 0 -> productLoadDetails.get(0).getProduct().getProductName();
-            case 1 -> String.valueOf(getTotalAmount(productLoadDetails));
-            default -> getMeasureTotalWeight(productLoadDetails);
+            case 1 -> getTotalPackagingAmountSignature(productLoadDetails);
+            default -> getTotalUnitAmountSignature(productLoadDetails);
 
         };
     }
 
-    private Integer getTotalAmount(List<ProductLoadDetails> productLoadDetails) {
-        return productLoadDetails.stream()
-                .map(productLoadDetail -> productLoadDetail.getProduct().getAmount())
-                .reduce(0, Integer::sum);
+    private String getTotalPackagingAmountSignature(List<ProductLoadDetails> productLoadDetails) {
+        return MapperUtil.getRoundedDouble(getTotalPackagingAmount(productLoadDetails)) +
+                StringUtils.SPACE +
+                productLoadDetails.get(0).getProduct().getProductPackaging().getMeasureStandard();
     }
 
-    private String getMeasureTotalWeight(List<ProductLoadDetails> productLoadDetails) {
-        return getTotalWeight(productLoadDetails) + StringUtils.SPACE + productLoadDetails.get(0).getProduct().getMeasure();
+    private String getTotalUnitAmountSignature(List<ProductLoadDetails> productLoadDetails) {
+        return getTotalUnitAmount(productLoadDetails) +
+                StringUtils.SPACE +
+                productLoadDetails.get(0).getProduct().getProductUnit().getMeasureStandard();
     }
 
-    private Double getTotalWeight(List<ProductLoadDetails> productLoadDetails) {
+    private Double getTotalPackagingAmount(List<ProductLoadDetails> productLoadDetails) {
         return productLoadDetails.stream()
-                .map(productLoadDetail -> productLoadDetail.getProduct().getTotalProductWeight())
+                .map(productLoadDetail -> productLoadDetail.getProduct().getProductPackaging().getAmount())
+                .reduce(0d, Double::sum);
+    }
+
+    private Double getTotalUnitAmount(List<ProductLoadDetails> productLoadDetails) {
+        return productLoadDetails.stream()
+                .map(productLoadDetail -> productLoadDetail.getProduct().getProductUnit().getAmount())
                 .reduce(0d, Double::sum);
     }
 
@@ -180,8 +189,8 @@ public class CarsLoadReportGenerator implements ReportGenerator {
     private String getProductItemCellValue(int cellNumber, ProductLoadDetails productLoadDetails) {
         return switch (cellNumber) {
             case 0 -> getClientDestinationPoint(productLoadDetails);
-            case 1 -> String.valueOf(productLoadDetails.getProduct().getAmount());
-            default -> getTotalProductWeight(productLoadDetails);
+            case 1 -> getPackagingAmountSignatureByAddress(productLoadDetails);
+            default -> getUnitAmountSignatureByAddress(productLoadDetails);
         };
     }
 
@@ -189,8 +198,16 @@ public class CarsLoadReportGenerator implements ReportGenerator {
         return productLoadDetails.getClientName() + StringUtils.SPACE + productLoadDetails.getClientAddress();
     }
 
-    private String getTotalProductWeight(ProductLoadDetails productLoadDetails) {
-        return productLoadDetails.getProduct().getTotalProductWeight() + StringUtils.SPACE + productLoadDetails.getProduct().getMeasure();
+    public String getPackagingAmountSignatureByAddress(ProductLoadDetails productLoadDetails) {
+        return MapperUtil.getRoundedDouble(productLoadDetails.getProduct().getProductPackaging().getAmount()) +
+                StringUtils.SPACE +
+                productLoadDetails.getProduct().getProductPackaging().getMeasureStandard();
+    }
+
+    private String getUnitAmountSignatureByAddress(ProductLoadDetails productLoadDetails) {
+        return productLoadDetails.getProduct().getProductUnit().getAmount() +
+                StringUtils.SPACE +
+                productLoadDetails.getProduct().getProductUnit().getMeasureStandard();
     }
 
     private void removeTemplateRow(XSSFSheet sheet) {

@@ -3,6 +3,7 @@ package com.goodspartner.service.dto.external.grandedolce;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.goodspartner.dto.ProductMeasureDetails;
 import lombok.*;
 
 import java.util.Map;
@@ -29,6 +30,8 @@ public class ODataInvoiceProductDto {
     private Double priceAmountPDV;
     @JsonAlias("Цена")
     private Double price;
+    @JsonAlias("КоличествоМест")
+    private int amount;
 
     private String productName;
     private String productRefKey;
@@ -36,12 +39,24 @@ public class ODataInvoiceProductDto {
     private String measure;
 
     private String qualityUrl;
+    private ProductMeasureDetails productUnit;
+    private ProductMeasureDetails productPackaging;
 
     @JsonProperty("Номенклатура")
-    private void mapProductName(Map<String, String> value) {
-        this.productName = value.get("Description");
-        this.productRefKey = value.get("Ref_Key");
-        this.productGTDRefKey = value.get("НоменклатураГТД");
+    private void mapProductName(Map<String, Object> value) {
+        this.productName = (String) value.get("Description");
+        this.productRefKey = (String) value.get("Ref_Key");
+        this.productGTDRefKey = (String) value.get("НоменклатураГТД");
+        Map<String, Object> productUnit = (Map<String, Object>) value.get("ЕдиницаХраненияОстатков");
+        this.productUnit = ProductMeasureDetails.builder()
+                .measureStandard((String) productUnit.get("Description"))
+                .coefficientStandard(Double.valueOf(String.valueOf(productUnit.get("Коэффициент"))))
+                .build();
+        Map<String, Object> productPackaging = (Map<String, Object>) value.get("ЕдиницаИзмеренияМест");
+        this.productPackaging = ProductMeasureDetails.builder()
+                .measureStandard((String) productPackaging.get("Description"))
+                .coefficientStandard(Double.valueOf(String.valueOf(productPackaging.get("Коэффициент"))))
+                .build();
     }
 
     @JsonProperty("ЕдиницаИзмерения")
@@ -56,5 +71,6 @@ public class ODataInvoiceProductDto {
                 .map(series -> series.get("СертификатФайл"))
                 .orElse("");
     }
+
     private String uktzedCode;
 }

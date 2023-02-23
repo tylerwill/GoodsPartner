@@ -20,4 +20,7 @@ public class InvoiceProduct {
     private String uktzedCode;
     private Double priceAmountPDV;
     private String qualityUrl;
+    private int amount;
+    private ProductMeasureDetails productUnit;
+    private ProductMeasureDetails productPackaging;
 }

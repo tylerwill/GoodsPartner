@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodspartner.configuration.properties.ClientProperties;
 import com.goodspartner.dto.InvoiceDto;
+import com.goodspartner.dto.InvoiceProduct;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.mapper.InvoiceProductMapper;
 import com.goodspartner.mapper.ODataInvoiceMapper;
@@ -31,15 +32,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -82,8 +75,8 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private static final String INVOICE_EXPAND_FIELDS = "Организация,БанковскийСчетОрганизации/Банк,Контрагент,Склад,ДоговорКонтрагента,Ответственный/ФизЛицо";
     // Invoice product fetching
     private static final String INVOICE_PRODUCT_ENTRY_SET_NAME = "Document_РеализацияТоваровУслуг_Товары";
-    private static final String INVOICE_PRODUCT_SELECT_FIELDS = "Ref_Key,LineNumber,Количество,Коэффициент,ЕдиницаИзмерения/Description,Номенклатура/Description,Номенклатура/Ref_Key,Номенклатура/НоменклатураГТД,Сумма,СуммаНДС,Цена,СерияНоменклатуры/СертификатФайл";
-    private static final String INVOICE_PRODUCT_EXPAND_FIELDS = "СерияНоменклатуры,Номенклатура,ЕдиницаИзмерения";
+    private static final String INVOICE_PRODUCT_SELECT_FIELDS = "Ref_Key,LineNumber,Количество,КоличествоМест,Коэффициент,ЕдиницаИзмерения/Description,Номенклатура/Description,Номенклатура/Ref_Key,Номенклатура/НоменклатураГТД,Номенклатура/ЕдиницаХраненияОстатков/Description,Номенклатура/ЕдиницаХраненияОстатков/Коэффициент,Номенклатура/ЕдиницаИзмеренияМест/Description,Номенклатура/ЕдиницаИзмеренияМест/Коэффициент,Сумма,СуммаНДС,Цена,СерияНоменклатуры/СертификатФайл";
+    private static final String INVOICE_PRODUCT_EXPAND_FIELDS = "СерияНоменклатуры,Номенклатура/*,ЕдиницаИзмерения";
     // Product GTD
     private static final String PRODUCT_GTD_ENTRY_SET_NAME = "Catalog_НоменклатураГТД";
     private static final String PRODUCT_GTD_SELECT_FIELDS = "Ref_Key,Owner_Key,КодУКТВЭД_Индекс";
@@ -94,7 +87,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private static final String ORGANISATION_CONTACTS_ENTRY_SET_NAME = "InformationRegister_КонтактнаяИнформация";
     private static final String ORGANISATION_CONTACTS_SELECT_FIELDS = "Объект,Тип,Вид,Представление";
     // Information register - object properties
-    private static final  String INVOICE_PROPERTIES_ENTRY_SET_NAME = "InformationRegister_ЗначенияСвойствОбъектов";
+    private static final String INVOICE_PROPERTIES_ENTRY_SET_NAME = "InformationRegister_ЗначенияСвойствОбъектов";
     private static final String INVOICE_PROPERTIES_SELECT_FIELDS = "Объект,Свойство_Key,Значение,Свойство/Description";
     private static final String INVOICE_PROPERTIES_EXPAND_FIELDS = "Свойство";
     //Catalog - contacts type
@@ -179,12 +172,18 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         ODataWrapperDto<ODataOrderDto> oDataWrappedOrderDtos = getOrdersByShippingDate(orderUri);
         List<ODataOrderDto> oDataOrderDtosList = oDataWrappedOrderDtos.getValue();
 
-        List<List<String>> partitionedOrders = getPartitionOfProductKeys(oDataOrderDtosList);
-        Map<String, List<ODataProductDto>> allProducts = getProductsByOrders(partitionedOrders);
+        List<String> orderRefKeys = getOrderRefKeys(oDataOrderDtosList);
+        List<ODataInvoiceDto> validOrdersInvoices = getValidInvoicesForOrders(orderRefKeys);
 
-        enrichOrders(oDataOrderDtosList, allProducts);
+        List<String> validOrdersRefKeys = getRelevantOrderRefKeys(validOrdersInvoices);
+        excludingInvalidOrders(validOrdersRefKeys, oDataOrderDtosList);
 
-        excludeInvalidOrders(oDataOrderDtosList);
+        List<ODataInvoiceProductDto> oDataInvoiceProductDtos = getODataInvoiceProducts(validOrdersInvoices);
+        Map<String, List<ODataInvoiceProductDto>> groupedInvoiceProducts = groupInvoiceProductsByInvoiceRefKey(oDataInvoiceProductDtos);
+        addInvoiceProductsToInvoices(validOrdersInvoices, groupedInvoiceProducts);
+        Map<String, List<InvoiceProduct>> invoiceProductGroupedByOrderRefKey = groupInvoiceProductByOrderRefKey(validOrdersInvoices);
+
+        enrichOrdersByInvoiceProduct(oDataOrderDtosList, invoiceProductGroupedByOrderRefKey);
 
         log.info("{} Orders has been fetched from 1C for date: {} in {}",
                 oDataOrderDtosList.size(), deliveryDate, System.currentTimeMillis() - startTime);
@@ -200,23 +199,16 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .sum();
     }
 
-    private List<String> getInvoicesRefKeys(List<ODataInvoiceDto> oDataInvoiceDtos){
+    private List<String> getInvoicesRefKeys(List<ODataInvoiceDto> oDataInvoiceDtos) {
         return oDataInvoiceDtos.stream()
                 .map(ODataInvoiceDto::getRefKey)
                 .collect(Collectors.toList());
     }
 
-    private List<ODataInvoicePropertiesDto> filterBuhBaseProperties(List<ODataInvoicePropertiesDto> source){
+    private List<ODataInvoicePropertiesDto> filterBuhBaseProperties(List<ODataInvoicePropertiesDto> source) {
         return source.stream()
                 .filter(property -> SHOULD_LOAD_TO_BUH_BASE.equals(property.getPropertyName()))
                 .collect(Collectors.toList());
-    }
-
-    private void excludeInvalidOrders(List<ODataOrderDto> allOrders) {
-        List<String> orderRefKeys = getOrderRefKeys(allOrders);
-        List<ODataInvoiceDto> validOrdersInvoices = getValidInvoicesForOrders(orderRefKeys);
-        List<String> validOrdersRefKeys = getRelevantOrderRefKeys(validOrdersInvoices);
-        excludingInvalidOrders(validOrdersRefKeys, allOrders);
     }
 
     private void excludingInvalidOrders(List<String> relevantOrderRefKeys, List<ODataOrderDto> source) {
@@ -537,18 +529,11 @@ public class GrandeDolceIntegrationService implements IntegrationService {
      * If amount of orders would be huge, for possibility to send request for retrieving products -
      * split on partition of refKeys list for further creation filter for OData request
      */
-    private List<List<String>> getPartitionOfProductKeys(List<ODataOrderDto> orders) {
-        List<String> listRefKeys = orders.stream()
-                .map(ODataOrderDto::getRefKey)
-                .collect(Collectors.toList());
-        return Lists.partition(listRefKeys, PARTITION_SIZE);
-    }
-
     private List<List<String>> getPartitionOfInvoiceKeys(List<ODataInvoiceDto> invoices) {
         List<String> listRefKeys = invoices.stream()
                 .map(ODataInvoiceDto::getRefKey)
                 .collect(Collectors.toList());
-        return Lists.partition(listRefKeys, PARTITION_SIZE);
+        return Lists.partition(listRefKeys, INVOICE_PARTITION_SIZE);
     }
 
     private List<List<String>> getPartitionOfProductsGTDKeys(List<ODataInvoiceProductDto> invoiceProducts) {
@@ -570,17 +555,6 @@ public class GrandeDolceIntegrationService implements IntegrationService {
      * - get response and parse it to ODataWrapperDto<ODataProductDto>
      * - collect to Map<RefKey, List<ProductDto>>
      */
-    private Map<String, List<ODataProductDto>> getProductsByOrders(List<List<String>> partition) {
-        return partition.stream()
-                .map(part -> createFilter(REF_KEY_FILTER, part))
-                .map(this::buildProductUri)
-                .map(this::getProducts)
-                .map(ODataWrapperDto::getValue)
-                .flatMap(Collection::stream)
-                .peek(enricher::enrichODataProduct)
-                .collect(Collectors.groupingBy(ODataProductDto::getRefKey, Collectors.toList()));
-    }
-
     private List<ODataInvoiceProductDto> getODataInvoiceProductDtos(List<List<String>> partition) {
         return partition.stream()
                 .map(part -> createFilter(REF_KEY_FILTER, part))
@@ -624,6 +598,11 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .collect(Collectors.groupingBy(ODataInvoiceProductDto::getRefKey, Collectors.toList()));
     }
 
+    private Map<String, List<InvoiceProduct>> groupInvoiceProductByOrderRefKey(List<ODataInvoiceDto> invoices) {
+        return invoices.stream()
+                .collect(Collectors.toMap(ODataInvoiceDto::getOrderRefKey, ODataInvoiceDto::getProducts));
+    }
+
     private Map<String, ODataOrderDto> groupOrderByRefKey(List<ODataOrderDto> oDataOrderDtosList) {
         return oDataOrderDtosList.stream()
                 .collect(Collectors.toMap(ODataOrderDto::getRefKey, Function.identity()));
@@ -661,15 +640,20 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     }
 
     /**
-     * Insert into OrderDto its List of products and total weight of order
+     * Insert products into orders
      */
-    void enrichOrders(List<ODataOrderDto> orders,
-                      Map<String, List<ODataProductDto>> allProducts) {
+
+    void enrichOrdersByInvoiceProduct(List<ODataOrderDto> orders,
+                                      Map<String, List<InvoiceProduct>> invoiceProductGroupedByOrderRefKey) {
         for (ODataOrderDto order : orders) {
-            String refKey = order.getRefKey();
-            List<ODataProductDto> products = allProducts.get(refKey);
-            order.setProducts(productMapper.toProductList(products));
-            order.setOrderWeight(getTotalOrderWeight(products));
+            if (!order.isExcluded()) {
+                String refKey = order.getRefKey();
+                List<InvoiceProduct> products = invoiceProductGroupedByOrderRefKey.get(refKey);
+                order.setProducts(productMapper.invoiceProductToProductList(products));
+                order.setOrderWeight(getTotalOrderWeightFromInvoiceProduct(products));
+            } else {
+                order.setProducts(new ArrayList<>());
+            }
         }
     }
 
@@ -707,7 +691,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private void addBuhBasePropertyToInvoices(List<ODataInvoiceDto> oDataInvoiceDtos, Map<String, Boolean> propertyMap) {
         for (ODataInvoiceDto oDataInvoiceDto : oDataInvoiceDtos) {
             Boolean buhBaseProperty = propertyMap.get(oDataInvoiceDto.getRefKey());
-            oDataInvoiceDto.setBuhBaseProperty(buhBaseProperty !=null ? buhBaseProperty : false);
+            oDataInvoiceDto.setBuhBaseProperty(buhBaseProperty != null ? buhBaseProperty : false);
         }
     }
 
@@ -722,6 +706,12 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     double getTotalOrderWeight(List<ODataProductDto> products) {
         return products.stream()
                 .mapToDouble(ODataProductDto::getTotalProductWeight)
+                .sum();
+    }
+
+    double getTotalOrderWeightFromInvoiceProduct(List<InvoiceProduct> products) {
+        return products.stream()
+                .mapToDouble(product -> Double.parseDouble(product.getTotalProductWeight()))
                 .sum();
     }
 

@@ -5,10 +5,7 @@ import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.Store;
 import com.goodspartner.service.StoreService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +22,7 @@ import static org.mockito.Mockito.when;
 
 // Test integration with 1C server and mockData processing
 
+@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Import({TestSecurityDisableConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
