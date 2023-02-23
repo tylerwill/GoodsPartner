@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +29,9 @@ public class DeliveryTimeRangeParser {
     // --- Delivery Time Parsers ---
 
     public static void parseDeliveryTimeFromComment(OrderDto orderDto) {
+        if (Objects.isNull(orderDto.getComment())) {
+            return;
+        }
 
         String input = orderDto.getComment()
                 .toLowerCase() // ignore case

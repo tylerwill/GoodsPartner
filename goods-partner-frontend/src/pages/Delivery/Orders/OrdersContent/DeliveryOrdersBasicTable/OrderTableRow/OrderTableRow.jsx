@@ -1,11 +1,11 @@
-import {useAppDispatch} from '../../../../../hooks/redux-hooks'
+import {useAppDispatch} from '../../../../../../hooks/redux-hooks'
 import React, {useCallback} from 'react'
 import {
     setAddressDialogOpen,
     setDeliveryTypeDialogOpen,
     setExcludeDialogOpen,
     setOrderForModification
-} from '../../../../../features/delivery-orders/deliveryOrdersSlice'
+} from '../../../../../../features/delivery-orders/deliveryOrdersSlice'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import IconButton from '@mui/material/IconButton'
@@ -13,10 +13,10 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
-import OrderAdditionalInfo from '../OrderAdditionalInfo/OrderAdditionalInfo'
-import OrderActionMenu from '../OrderActionMenu/OrderActionMenu'
-import {toDeliveryTypeString} from '../../../../../util/util'
-import {ProductsInfoTable} from "../../../../../components/ProductsInfoTable/ProductsInfoTable";
+import OrderAdditionalInfo from '../../OrderAdditionalInfo/OrderAdditionalInfo'
+import OrderActionMenu from '../../OrderActionMenu/OrderActionMenu'
+import {toDeliveryTypeString} from '../../../../../../util/util'
+import {ProductsInfoTable} from "../../../../../../components/ProductsInfoTable/ProductsInfoTable";
 import {Tooltip} from "@mui/material";
 
 const OrderTableRow = ({
@@ -100,7 +100,6 @@ const OrderTableRow = ({
                         </Tooltip>
                     )}
                 </TableCell>
-                <TableCell>{toDeliveryTypeString(order.deliveryType)}</TableCell>
                 <TableCell>
                     {from} - {to}
                 </TableCell>

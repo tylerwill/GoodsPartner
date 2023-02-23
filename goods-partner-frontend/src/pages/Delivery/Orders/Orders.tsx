@@ -56,7 +56,7 @@ export const Orders = () => {
     const ordersWithInvalidAddress = orders
         .filter(order => order.deliveryType === DeliveryType.REGULAR)
         .filter(order => order.mapPoint.status === MapPointStatus.UNKNOWN)
-		.filter(order => !order.excluded)
+        .filter(order => !order.excluded)
 
     const excludedOrders = orders.filter(order => order.excluded)
 
@@ -65,8 +65,18 @@ export const Orders = () => {
         .filter(order => !order.excluded)
         .filter(order => !order.dropped);
 
-    const otherOrders = orders
-        .filter(order => order.deliveryType !== DeliveryType.REGULAR)
+    const postalOrders = orders
+        .filter(order => order.deliveryType === DeliveryType.POSTAL)
+        .filter(order => !order.excluded)
+        .filter(order => !order.dropped);
+
+    const selfOrders = orders
+        .filter(order => order.deliveryType === DeliveryType.SELF_SERVICE)
+        .filter(order => !order.excluded)
+        .filter(order => !order.dropped);
+
+    const prePackOrders = orders
+        .filter(order => order.deliveryType === DeliveryType.PRE_PACKING)
         .filter(order => !order.excluded)
         .filter(order => !order.dropped);
 
@@ -74,29 +84,39 @@ export const Orders = () => {
 
     const tabLabels = [
         {name: `Grande Dolce (${grandeDolceOrders.length})`, enabled: true},
-        {name: `Інше (${otherOrders.length})`, enabled: true},
-        {name: `Потребують уточнення (${ordersWithInvalidAddress.length})`, enabled: true},
+        {name: `Пошта (${postalOrders.length})`, enabled: true},
+        {name: `Самовивіз (${selfOrders.length})`, enabled: true},
+        {name: `Фасовка (${prePackOrders.length})`, enabled: true},
         {name: `Вилучені (${excludedOrders.length})`, enabled: true}
     ]
 
 
-    const tabs = [{
-        orders: grandeDolceOrders,
-        keyPrefix: 'grandeDolce'
-    },
+    const tabs = [
         {
-            orders: otherOrders,
-            keyPrefix: 'other'
+            orders: grandeDolceOrders,
+            keyPrefix: 'grandeDolce',
+            basic:true
         },
         {
-            orders: ordersWithInvalidAddress,
-            keyPrefix: 'invalid'
+            orders: postalOrders,
+            keyPrefix: 'postalOrders'
         },
+        {
+            orders: selfOrders,
+            keyPrefix: 'selfOrders'
+        },
+        {
+            orders: prePackOrders,
+            keyPrefix: 'prePackOrders'
+        },
+
         {
             orders: excludedOrders,
             keyPrefix: 'excluded',
-            isExcluded: true
-        }
+            isExcluded: true,
+            basic:true
+        },
+
 
     ];
 
@@ -105,7 +125,17 @@ export const Orders = () => {
         tabLabels.push({name: `Нерозраховані (${droppedOrders.length})`, enabled: true});
         tabs.push({
             orders: droppedOrders,
-            keyPrefix: 'dropped'
+            keyPrefix: 'dropped',
+            basic:true
+        });
+    }
+
+    if (ordersWithInvalidAddress.length !== 0) {
+        tabLabels.push({name: `Потребують уточнення (${ordersWithInvalidAddress.length})`, enabled: true});
+        tabs.push({
+            orders: ordersWithInvalidAddress,
+            keyPrefix: 'invalid',
+            basic:true
         });
     }
 
@@ -120,6 +150,7 @@ export const Orders = () => {
 
                 {
                     tabs.map(e => <OrdersTable
+                        basic={e.basic}
                         isExcluded={e.isExcluded}
                         orders={e.orders}
                         keyPrefix={e.keyPrefix}
