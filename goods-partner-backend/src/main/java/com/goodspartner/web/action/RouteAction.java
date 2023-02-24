@@ -3,7 +3,8 @@ package com.goodspartner.web.action;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.exception.InvalidActionType;
-import com.goodspartner.exception.RouteInWrongState;
+import com.goodspartner.exception.route.IllegalRouteStatusForCompletion;
+import com.goodspartner.exception.route.IllegalRouteStatusForStart;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ public enum RouteAction {
         public void perform(Route route) {
 
             if (route.getStatus() != RouteStatus.APPROVED) {
-                throw new RouteInWrongState(route);
+                throw new IllegalRouteStatusForStart();
             }
 
             route.setStatus(RouteStatus.INPROGRESS);
@@ -32,7 +33,7 @@ public enum RouteAction {
         public void perform(Route route) {
 
             if (route.getStatus() != RouteStatus.INPROGRESS) {
-                throw new RouteInWrongState(route);
+                throw new IllegalRouteStatusForCompletion();
             }
 
             route.setStatus(RouteStatus.COMPLETED);

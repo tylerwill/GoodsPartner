@@ -68,7 +68,7 @@ public class DeliveryApproveControllerIT extends AbstractWebITest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().json("{" +
                         "\"status\":\"NOT_FOUND\"," +
-                        "\"message\":\"There is no delivery with id: 00000000-0000-0000-0000-000000000999\"}"));
+                        "\"message\":\"Відсутня доставка з id: 00000000-0000-0000-0000-000000000999\"}"));
         Mockito.verify(eventService, times(0)).publishDeliveryEvent(any(), any());
         Mockito.verify(eventService, times(0)).publishRouteStatusChangeAuto(any());
         assertSelectCount(1);
@@ -86,7 +86,7 @@ public class DeliveryApproveControllerIT extends AbstractWebITest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{" +
                         "\"status\":\"BAD_REQUEST\"," +
-                        "\"message\":\"Unable to approve delivery: 00000000-0000-0000-0000-000000000222 with status: APPROVED\"}\n"));
+                        "\"message\":\"Підтвердження можливе лише для доставки в статусі - Створена\"}\n"));
         Mockito.verify(eventService, times(0)).publishDeliveryEvent(any(), any());
         Mockito.verify(eventService, times(0)).publishRouteStatusChangeAuto(any());
         assertSelectCount(1);
@@ -104,7 +104,7 @@ public class DeliveryApproveControllerIT extends AbstractWebITest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{" +
                         "\"status\":\"BAD_REQUEST\"," +
-                        "\"message\":\"No routes found for delivery: 00000000-0000-0000-0000-000000000000\"}"));
+                        "\"message\":\"Неможливо затвердити доставку без маршрутів\"}"));
         assertSelectCount(2); // Select Delivery + Routes
     }
 

@@ -36,7 +36,7 @@ public class DeliveryCalculateControllerIT extends AbstractWebITest {
                         .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(content().json("{\"status\":\"NOT_FOUND\",\"message\":\"There is no delivery with id: 123e4567-e89b-12d3-a456-556642440005\"}\n"));
+                .andExpect(content().json("{\"status\":\"NOT_FOUND\",\"message\":\"Відсутня доставка з id: 123e4567-e89b-12d3-a456-556642440005\"}\n"));
     }
 
     @Test

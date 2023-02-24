@@ -1,8 +1,6 @@
 package com.goodspartner.web.handler;
 
-import com.goodspartner.exception.AddressOutOfRegionException;
 import com.goodspartner.exception.CarNotFoundException;
-import com.goodspartner.exception.GoogleApiException;
 import com.goodspartner.exception.InvalidActionType;
 import com.goodspartner.exception.StoreNotFoundException;
 import com.goodspartner.exception.SubscriberNotFoundException;
@@ -17,12 +15,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GenericControllerAdvice {
 
-    @ExceptionHandler(GoogleApiException.class)
-    public ResponseEntity<ErrorResponse> googleApiException(GoogleApiException exception) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-    }
-
     @ExceptionHandler({
             CarNotFoundException.class,
     })
@@ -33,7 +25,6 @@ public class GenericControllerAdvice {
 
     @ExceptionHandler({
             SubscriberNotFoundException.class,
-            AddressOutOfRegionException.class,
             UnknownAddressException.class,
             StoreNotFoundException.class,
             InvalidActionType.class

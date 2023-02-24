@@ -5,7 +5,7 @@ import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.DeliveryType;
-import com.goodspartner.exception.GoogleApiException;
+import com.goodspartner.exception.AddressGeocodeException;
 import com.goodspartner.service.client.GoogleClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ class GoogleGeocodeServiceIT extends AbstractBaseITest {
     @Test
     void whenGoogleClientThrowsException_UnknownMapPointReturned() {
         // given
-        Mockito.when(googleClient.getGeocodingResults(invalidAddress)).thenThrow(new GoogleApiException());
+        Mockito.when(googleClient.getGeocodingResults(invalidAddress)).thenThrow(new AddressGeocodeException());
         OrderDto orderWithInvalidAddress = getOrderWithInvalidAddress();
         List<OrderDto> orderDtos = Collections.singletonList(orderWithInvalidAddress);
         // when

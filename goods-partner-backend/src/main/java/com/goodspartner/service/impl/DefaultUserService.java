@@ -2,6 +2,7 @@ package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.UserDto;
 import com.goodspartner.entity.User;
+import com.goodspartner.exception.DriverNotFoundException;
 import com.goodspartner.exception.InvalidAuthenticationType;
 import com.goodspartner.exception.UserNotFoundException;
 import com.goodspartner.mapper.UserMapper;
@@ -41,7 +42,7 @@ public class DefaultUserService implements UserService {
 
     @Override
     public User findByRouteId(long routeId) {
-        return userRepository.findByRouteId(routeId).orElseThrow(() -> new UserNotFoundException(routeId));
+        return userRepository.findByRouteId(routeId).orElseThrow(() -> new DriverNotFoundException(routeId));
     }
 
     @Transactional

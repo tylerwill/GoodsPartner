@@ -16,8 +16,8 @@ import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.AddressExternalNotFoundException;
 import com.goodspartner.exception.CarNotFoundException;
-import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exception.OrderNotFoundException;
+import com.goodspartner.exception.delivery.IllegalDeliveryStateForOrderUpdate;
 import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.repository.CarRepository;
@@ -87,7 +87,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
 
         Delivery delivery = order.getDelivery();
         if (!DeliveryStatus.DRAFT.equals(delivery.getStatus())) {
-            throw new IllegalDeliveryStatusForOperation(delivery, "update order for");
+            throw new IllegalDeliveryStateForOrderUpdate();
         }
 
         updateAddressExternal(orderDto, order);

@@ -6,8 +6,8 @@ import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal.OrderAddressId;
 import com.goodspartner.entity.DeliveryType;
+import com.goodspartner.exception.AddressGeocodeException;
 import com.goodspartner.exception.AddressOutOfRegionException;
-import com.goodspartner.exception.GoogleApiException;
 import com.goodspartner.mapper.RoutePointMapper;
 import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.service.GeocodeService;
@@ -96,7 +96,7 @@ public class GoogleGeocodeService implements GeocodeService {
                     .map(this::mapValidGeocodingResult)
                     .orElseGet(() -> mapInvalidGeocodingResults(geocodingResults, orderDto));
 
-        } catch (GoogleApiException e) {
+        } catch (AddressGeocodeException e) {
             log.error("Exception thrown while trying to geocode order with address: {}", orderDto.getAddress(), e);
             return routePointMapper.getUnknownMapPoint();
         }

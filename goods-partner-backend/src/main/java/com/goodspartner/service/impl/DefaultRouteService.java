@@ -7,10 +7,10 @@ import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.entity.User;
 import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.exception.DeliveryNotFoundException;
-import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
-import com.goodspartner.exception.IllegalRoutePointStatusForOperation;
-import com.goodspartner.exception.IllegalRouteStatusForOperation;
 import com.goodspartner.exception.RouteNotFoundException;
+import com.goodspartner.exception.delivery.IllegalDeliveryStateForRouteReordering;
+import com.goodspartner.exception.route.IllegalRoutePointStatusForReordering;
+import com.goodspartner.exception.route.IllegalRouteStatusForReordering;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.RouteRepository;
@@ -106,7 +106,7 @@ public class DefaultRouteService implements RouteService {
             Route reorderedRoute = routeCalculationService.recalculateRoute(route, routePointDtos);
             routeRepository.save(reorderedRoute);
         } else {
-            throw new IllegalRoutePointStatusForOperation(routePointDtos, "reorder");
+            throw new IllegalRoutePointStatusForReordering();
         }
     }
 
@@ -126,7 +126,7 @@ public class DefaultRouteService implements RouteService {
                 orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
 
         if (savedDelivery.getStatus().equals(COMPLETED)) {
-            throw new IllegalDeliveryStatusForOperation(savedDelivery, "reorder route for");
+            throw new IllegalDeliveryStateForRouteReordering();
         }
     }
 
@@ -135,9 +135,8 @@ public class DefaultRouteService implements RouteService {
             throw new RouteNotFoundException(deliveryId);
         }
         RouteStatus routeStatus = route.getStatus();
-        if (routeStatus.equals(RouteStatus.COMPLETED) ||
-                routeStatus.equals(RouteStatus.INPROGRESS)) {
-            throw new IllegalRouteStatusForOperation(route, "reorder");
+        if (routeStatus.equals(RouteStatus.COMPLETED)) {
+            throw new IllegalRouteStatusForReordering();
         }
     }
 }

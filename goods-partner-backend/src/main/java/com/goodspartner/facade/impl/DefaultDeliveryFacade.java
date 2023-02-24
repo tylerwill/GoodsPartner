@@ -4,12 +4,9 @@ import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.DeliveryHistoryTemplate;
-import com.goodspartner.entity.DeliveryType;
-import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RouteStatus;
-import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
-import com.goodspartner.exception.UnknownAddressException;
+import com.goodspartner.exception.delivery.IllegalDeliveryStateForRecalculation;
 import com.goodspartner.facade.DeliveryFacade;
 import com.goodspartner.facade.OrderFacade;
 import com.goodspartner.service.DeliveryService;
@@ -23,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-import static com.goodspartner.entity.AddressStatus.UNKNOWN;
 import static com.goodspartner.entity.DeliveryStatus.DRAFT;
 
 @Service
@@ -68,7 +64,7 @@ public class DefaultDeliveryFacade implements DeliveryFacade {
 
         Delivery delivery = deliveryService.findById(deliveryId);
         if (!DRAFT.equals(delivery.getStatus())) { //  Delivery recalculation only for Draft
-            throw new IllegalDeliveryStatusForOperation(delivery, "recalculate");
+            throw new IllegalDeliveryStateForRecalculation();
         }
 
         delivery.setFormationStatus(DeliveryFormationStatus.ROUTE_CALCULATION);

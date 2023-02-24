@@ -1,7 +1,7 @@
 package com.goodspartner.service.client;
 
 import com.goodspartner.configuration.properties.GoogleGeocodeProperties;
-import com.goodspartner.exception.GoogleApiException;
+import com.goodspartner.exception.AddressGeocodeException;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
@@ -38,7 +38,7 @@ public class GoogleClient {
                     .language(googleGeocodeProperties.getLanguage())
                     .await();
         } catch (IOException | ApiException | InterruptedException e) {
-            throw new GoogleApiException(address, e);
+            throw new AddressGeocodeException(address, e);
         }
     }
 

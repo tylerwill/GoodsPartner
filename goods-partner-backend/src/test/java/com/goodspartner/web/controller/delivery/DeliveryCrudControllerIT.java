@@ -112,7 +112,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{" +
                         "\"status\":\"BAD_REQUEST\"," +
-                        "\"message\":\"Unable to delete delivery: 00000000-0000-0000-0000-000000000222 with status: APPROVED\"}\n"));
+                        "\"message\":\"Видалення доставки можливе лише в статусі - Створена\"}\n"));
         assertSelectCount(1);
     }
 

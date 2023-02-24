@@ -1,13 +1,12 @@
 package com.goodspartner.exception;
 
-import com.goodspartner.entity.Delivery;
-
 public class NoRoutesFoundForDelivery extends RuntimeException {
 
     private static final String NO_ORDERS_MESSAGE = "No routes found for delivery: %s";
+    private static final String NO_ORDERS_MESSAGE_UKR = "Неможливо затвердити доставку без маршрутів";
 
-    public NoRoutesFoundForDelivery(Delivery delivery) {
-        super(String.format(NO_ORDERS_MESSAGE, delivery.getId()));
+    public NoRoutesFoundForDelivery() {
+        super(NO_ORDERS_MESSAGE_UKR);
     }
 }
 

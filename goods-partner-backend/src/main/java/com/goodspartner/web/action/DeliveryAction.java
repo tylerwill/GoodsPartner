@@ -3,9 +3,9 @@ package com.goodspartner.web.action;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
-import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exception.InvalidActionType;
 import com.goodspartner.exception.NoRoutesFoundForDelivery;
+import com.goodspartner.exception.delivery.IllegalDeliveryStateForApproval;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,12 +19,12 @@ public enum DeliveryAction {
         public void perform(Delivery delivery) {
 
             if (delivery.getStatus() != DRAFT) {
-                throw new IllegalDeliveryStatusForOperation(delivery, "approve");
+                throw new IllegalDeliveryStateForApproval();
             }
 
             List<Route> routes = delivery.getRoutes();
             if (routes.isEmpty()) {
-                throw new NoRoutesFoundForDelivery(delivery);
+                throw new NoRoutesFoundForDelivery();
             }
 
             delivery.setStatus(DeliveryStatus.APPROVED);

@@ -10,8 +10,8 @@ import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.exception.AddressExternalNotFoundException;
 import com.goodspartner.exception.DistanceOutOfLimitException;
-import com.goodspartner.exception.IllegalRouteStateException;
 import com.goodspartner.exception.RoutePointNotFoundException;
+import com.goodspartner.exception.route.IllegalRouteStateForRoutePointUpdateException;
 import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.repository.RoutePointRepository;
 import com.goodspartner.service.EventService;
@@ -48,7 +48,7 @@ public class DefaultRoutePointService implements RoutePointService {
 
         Route route = routePoint.getRoute();
         if (!RouteStatus.INPROGRESS.equals(route.getStatus())) {
-            throw new IllegalRouteStateException(RouteStatus.INPROGRESS.getStatus(), "update route point");
+            throw new IllegalRouteStateForRoutePointUpdateException();
         }
 
         action.perform(routePoint);

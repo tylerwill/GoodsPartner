@@ -66,7 +66,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
                         .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isNotFound())
-                .andExpect(content().json("{\"status\":\"NOT_FOUND\",\"message\":\"Order with id: 9999999 not found\"}"));
+                .andExpect(content().json("{\"status\":\"NOT_FOUND\",\"message\":\"Не знайдено жодного замовлення з id: 9999999\"}"));
         assertSelectCount(1); // OrderById + Delivery
         assertUpdateCount(0); // Nothing updated
     }
@@ -81,7 +81,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
                         .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().json("{\"status\":\"BAD_REQUEST\",\"message\":\"Unable to update order for delivery: 70574dfd-48a3-40c7-8b0c-3e5defe7d080 with status: APPROVED\"}\n"));
+                .andExpect(content().json("{\"status\":\"BAD_REQUEST\",\"message\":\"Зміна замовлень можлива лише для доставки в статусі - Створена\"}\n"));
         assertSelectCount(1); // OrderById
         assertUpdateCount(0); // Nothing updated
     }
@@ -156,7 +156,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
                         .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().json("{\"status\":\"BAD_REQUEST\",\"message\":\"Requested address coordinates out of valid region:\\n проспект Академіка Палладіна, 7А, Київ, Україна, 03179.\\n Change delivery type if needed\"}"));
+                .andExpect(content().json("{\"status\":\"BAD_REQUEST\",\"message\":\"Дана адреса знаходиться поза межами доступного регіону:\\n проспект Академіка Палладіна, 7А, Київ, Україна, 03179.\\n При необхідності змініть тип доставки\"}"));
         assertSelectCount(0); // OrderById + isAllOrdersValid verification
         assertUpdateCount(0); // Update Orders + Addresses + Delivery
     }

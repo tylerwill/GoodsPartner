@@ -1,9 +1,10 @@
 package com.goodspartner.web.handler;
 
-import com.goodspartner.exception.IllegalRoutePointStatusForOperation;
-import com.goodspartner.exception.IllegalRouteStatusForOperation;
-import com.goodspartner.exception.RouteInWrongState;
 import com.goodspartner.exception.RouteNotFoundException;
+import com.goodspartner.exception.route.IllegalRoutePointStatusForReordering;
+import com.goodspartner.exception.route.IllegalRouteStatusForCompletion;
+import com.goodspartner.exception.route.IllegalRouteStatusForReordering;
+import com.goodspartner.exception.route.IllegalRouteStatusForStart;
 import com.goodspartner.web.controller.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,10 @@ public class RouteControllerAdvice {
     }
 
     @ExceptionHandler({
-            RouteInWrongState.class,
-            IllegalRouteStatusForOperation.class,
-            IllegalRoutePointStatusForOperation.class
+            IllegalRouteStatusForStart.class,
+            IllegalRouteStatusForCompletion.class,
+            IllegalRouteStatusForReordering.class,
+            IllegalRoutePointStatusForReordering.class
     })
     public ResponseEntity<ErrorResponse> genericBadRequestResponseHandler(Exception exception) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, exception.getMessage());

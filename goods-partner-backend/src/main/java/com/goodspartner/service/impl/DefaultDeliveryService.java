@@ -8,7 +8,7 @@ import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.entity.User;
 import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.exception.DeliveryNotFoundException;
-import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
+import com.goodspartner.exception.delivery.IllegalDeliveryStateForDeletion;
 import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
@@ -64,7 +64,7 @@ public class DefaultDeliveryService implements DeliveryService {
                 .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
 
         if (DRAFT != deliveryToDelete.getStatus()) {
-            throw new IllegalDeliveryStatusForOperation(deliveryToDelete, "delete");
+            throw new IllegalDeliveryStateForDeletion();
         }
 
         // Hard delete entries in Draft status

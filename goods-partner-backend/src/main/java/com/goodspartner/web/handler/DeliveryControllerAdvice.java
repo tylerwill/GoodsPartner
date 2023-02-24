@@ -1,10 +1,13 @@
 package com.goodspartner.web.handler;
 
 import com.goodspartner.exception.DeliveryNotFoundException;
-import com.goodspartner.exception.IllegalDeliveryStatusForOperation;
 import com.goodspartner.exception.NoOrdersFoundForDelivery;
 import com.goodspartner.exception.NoRoutesFoundForDelivery;
-import com.goodspartner.exception.UnknownAddressException;
+import com.goodspartner.exception.delivery.IllegalDeliveryStateForApproval;
+import com.goodspartner.exception.delivery.IllegalDeliveryStateForDeletion;
+import com.goodspartner.exception.delivery.IllegalDeliveryStateForOrderUpdate;
+import com.goodspartner.exception.delivery.IllegalDeliveryStateForRecalculation;
+import com.goodspartner.exception.delivery.IllegalDeliveryStateForRouteReordering;
 import com.goodspartner.web.controller.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +24,14 @@ public class DeliveryControllerAdvice {
     }
 
     @ExceptionHandler({
-            IllegalDeliveryStatusForOperation.class,
+            IllegalDeliveryStateForApproval.class,
+            IllegalDeliveryStateForDeletion.class,
+            IllegalDeliveryStateForRecalculation.class,
+            IllegalDeliveryStateForOrderUpdate.class,
+            IllegalDeliveryStateForRouteReordering.class,
+
             NoRoutesFoundForDelivery.class,
             NoOrdersFoundForDelivery.class,
-            UnknownAddressException.class
     })
     public ResponseEntity<ErrorResponse> genericBadRequestResponseHandler(Exception exception) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
