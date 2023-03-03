@@ -80,6 +80,9 @@ const RoutePointOrdersDialog = ({
 						<TableBody>
 							{orders.map(order =>
 								order.products.map(product => {
+									const count = product.productPackaging.amount + ' ' + product.productPackaging.measureStandard;
+									const totalWeight = product.productUnit.amount + ' ' + product.productUnit.measureStandard;
+									const packaging = product.productPackaging.coefficientStandard + ' ' + product.productUnit.measureStandard;
 									return (
 										<TableRow
 											key={'routePointDetails' + product.refKey}
@@ -87,16 +90,9 @@ const RoutePointOrdersDialog = ({
 										>
 											<TableCell>{order.orderNumber}</TableCell>
 											<TableCell>{product.productName}</TableCell>
-											<TableCell> {product.amount}</TableCell>
-											<TableCell>
-												{' '}
-												{formatDecimalNumber(product.unitWeight)}{' '}
-												{product.measure}
-											</TableCell>
-											<TableCell>
-												{' '}
-												{formatDecimalNumber(product.totalProductWeight)} кг
-											</TableCell>
+											<TableCell> {count}</TableCell>
+											<TableCell> {packaging}</TableCell>
+											<TableCell> {totalWeight}</TableCell>
 										</TableRow>
 									)
 								})
