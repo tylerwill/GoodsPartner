@@ -47,16 +47,14 @@ public class ODataInvoiceProductDto {
         this.productName = (String) value.get("Description");
         this.productRefKey = (String) value.get("Ref_Key");
         this.productGTDRefKey = (String) value.get("НоменклатураГТД");
+
         Map<String, Object> productUnit = (Map<String, Object>) value.get("ЕдиницаХраненияОстатков");
-        this.productUnit = ProductMeasureDetails.builder()
-                .measureStandard((String) productUnit.get("Description"))
-                .coefficientStandard(Double.valueOf(String.valueOf(productUnit.get("Коэффициент"))))
-                .build();
         Map<String, Object> productPackaging = (Map<String, Object>) value.get("ЕдиницаИзмеренияМест");
-        this.productPackaging = ProductMeasureDetails.builder()
-                .measureStandard((String) productPackaging.get("Description"))
-                .coefficientStandard(Double.valueOf(String.valueOf(productPackaging.get("Коэффициент"))))
-                .build();
+
+        this.productUnit = getProductMeasureDetails(productUnit);
+        this.productPackaging = productPackaging != null
+                ? getProductMeasureDetails(productPackaging)
+                : getProductMeasureDetails(productUnit);
     }
 
     @JsonProperty("ЕдиницаИзмерения")
@@ -73,4 +71,11 @@ public class ODataInvoiceProductDto {
     }
 
     private String uktzedCode;
+
+    private ProductMeasureDetails getProductMeasureDetails(Map<String, Object> measureMap) {
+        return ProductMeasureDetails.builder()
+                .measureStandard((String) measureMap.get("Description"))
+                .coefficientStandard(Double.valueOf(String.valueOf(measureMap.get("Коэффициент"))))
+                .build();
+    }
 }

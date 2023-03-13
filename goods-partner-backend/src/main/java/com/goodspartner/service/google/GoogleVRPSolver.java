@@ -47,7 +47,7 @@ public class GoogleVRPSolver implements VRPSolver {
     private static final boolean START_FROM_DEPOT_TRUE = true;
     // TimeWindow
     private static final String VEHICLE_TIME_DIMENSION_NAME = "Time";
-    private static final long SLACK_TIME_WINDOW_MIN = 120L;
+    private static final long SLACK_TIME_WINDOW_MIN = 30L;
     private static final boolean START_FROM_DEPOT_FALSE = false;
 
     // Props

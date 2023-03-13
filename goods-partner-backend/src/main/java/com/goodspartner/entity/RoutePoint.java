@@ -85,6 +85,6 @@ public class RoutePoint {
                 .orElse(Collections.emptyList());
         this.orders.clear();
         this.orders.addAll(requiredOrders);
-        this.orders.forEach(order -> order.setRoutePoint(this));
+//        this.orders.forEach(order -> order.setRoutePoint(this)); - this cause transient object exception while saving dropped orders
     }
 }
