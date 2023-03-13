@@ -54,7 +54,7 @@ public class DocumentController {
                                 HEADER_DELIMITER +
                                 HEADER_FILENAME_KEY +
                                 routePointId + FILENAME_DELIMITER + INVOICE_ZIP_FILENAME + ARCHIVE_EXTENSION)
-                .body(out -> writeZipToResponseByRoutPointId(out, Long.parseLong(routePointId), invoiceService));
+                .body(out -> writeZipToResponseByRoutePointId(out, Long.parseLong(routePointId), invoiceService));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
@@ -71,7 +71,7 @@ public class DocumentController {
                                 HEADER_DELIMITER +
                                 HEADER_FILENAME_KEY +
                                 routeId + FILENAME_DELIMITER + INVOICE_ZIP_FILENAME + ARCHIVE_EXTENSION)
-                .body(out -> writeZipToResponseByRoutId(out, Long.parseLong(routeId), invoiceService));
+                .body(out -> writeZipToResponseByRouteId(out, Long.parseLong(routeId), invoiceService));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
@@ -88,7 +88,7 @@ public class DocumentController {
                                 HEADER_DELIMITER +
                                 HEADER_FILENAME_KEY +
                                 routePointId + FILENAME_DELIMITER + BILL_ZIP_FILENAME + ARCHIVE_EXTENSION)
-                .body(out -> writeZipToResponseByRoutPointId(out, Long.parseLong(routePointId), billService));
+                .body(out -> writeZipToResponseByRoutePointId(out, Long.parseLong(routePointId), billService));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
@@ -101,7 +101,7 @@ public class DocumentController {
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, ATTACHMENT + HEADER_DELIMITER + HEADER_FILENAME_KEY + BILL_ZIP_FILENAME + ARCHIVE_EXTENSION)
-                .body(out -> writeZipToResponseByRoutId(out, Long.parseLong(routeId), billService));
+                .body(out -> writeZipToResponseByRouteId(out, Long.parseLong(routeId), billService));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
@@ -114,7 +114,7 @@ public class DocumentController {
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, ATTACHMENT + HEADER_DELIMITER + HEADER_FILENAME_KEY + QUALITY_ZIP_FILENAME + ARCHIVE_EXTENSION)
-                .body(out -> writeZipToResponseByRoutId(out, Long.parseLong(routeId), qualityService));
+                .body(out -> writeZipToResponseByRouteId(out, Long.parseLong(routeId), qualityService));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
@@ -127,16 +127,16 @@ public class DocumentController {
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, ATTACHMENT + HEADER_DELIMITER + HEADER_FILENAME_KEY + QUALITY_ZIP_FILENAME + ARCHIVE_EXTENSION)
-                .body(out -> writeZipToResponseByRoutPointId(out, Long.parseLong(routePointId), qualityService));
+                .body(out -> writeZipToResponseByRoutePointId(out, Long.parseLong(routePointId), qualityService));
     }
 
-    private void writeZipToResponseByRoutId(OutputStream out, Long routeId, DocumentService documentService) throws IOException {
+    private void writeZipToResponseByRouteId(OutputStream out, Long routeId, DocumentService documentService) throws IOException {
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(out)) {
             documentService.saveDocumentsByRouteId(zipOutputStream, routeId);
         }
     }
 
-    private void writeZipToResponseByRoutPointId(OutputStream out, Long routePointId, DocumentService documentService) throws IOException {
+    private void writeZipToResponseByRoutePointId(OutputStream out, Long routePointId, DocumentService documentService) throws IOException {
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(out)) {
             documentService.saveDocumentByRoutePointId(zipOutputStream, routePointId);
         }

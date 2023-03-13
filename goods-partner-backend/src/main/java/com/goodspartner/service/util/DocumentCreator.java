@@ -46,8 +46,9 @@ public class DocumentCreator {
 
     public ReportResult createDocument(PreparedDocumentData preparedInvoiceData, String documentPrefix, Integer firstTableRow) {
         String fileName = preparedInvoiceData.getDocumentName() + XLSX_FILE_FORMAT;
-        try (InputStream template = ReportUtils.getTemplate(String.format(DOCUMENT_PATH, documentPrefix));
-             ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
+        String templatePath = String.format(DOCUMENT_PATH, documentPrefix);
+        try (InputStream template = ReportUtils.getTemplate(templatePath);
+             ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream()
         ) {
             Workbook workBook = new XSSFWorkbook(template);
             Sheet excelSheet = getExcelSheet(workBook);

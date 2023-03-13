@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class GrandeDolceIntegrationService implements IntegrationService {
-    // Order exclude resons
+    // Order exclude reasons
     private static final String DELETED_ORDER_EXCLUDE_REASON = "Замовлення: %s має флаг видалення в 1С";
     private static final String INVOICE_MISSED_EXCLUDE_REASON = "Відсутня або видалена видаткова в 1С для замовлення: %s";
     // 1C data fetch configuration // TODO move to properties.yml and later to configuration

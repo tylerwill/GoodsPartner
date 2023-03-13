@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8"></meta>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            table-layout: fixed;
+            width: 479.4pt;
+            text-align: center;
+            border-collapse: collapse;
+        }
+
+        .head-messag {
+            text-align: center;
+            font-size: 8.0pt;
+            vertical-align: middle;
+        }
+
+        .cell-width {
+            width: 14.1pt;
+        }
+
+    </style>
+</head>
+<body>
+<div>
+    <table>
+        <tr>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+        </tr>
+        <tr>
+            <td class="cell-width"></td>
+            <td colspan="32" class="head-messag">
+                Увага!
+                Оплата цього рахунку означає погодження з умовами поставки товарів.
+                Повідомлення про оплату є обов'язковим, в іншому випадку не гарантується
+                наявність товарів на складі. Товар відпускається за фактом надходження коштів
+                на р/р Постачальника, самовивозом, за наявності довіренності та паспорта.
+            </td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr>
+            <td class="cell-width"></td>
+            <td colspan="32" style='border-bottom: .5pt solid black; height:11.25pt'></td>
+            <td class="cell-width"></td>
+        </tr>
+        <tr>
+            <td class="cell-width" style="border-right: .5pt solid black"></td>
+            <td colspan="32" style='font-size: 9pt; height:17pt; font-weight: 700'>Зразок заповнення платіжного
+                доручення
+            </td>
+            <td class="cell-width" style="border-left: .5pt solid black"></td>
+        </tr>
+        <tr>
+            <td height="8" class="cell-width" style="border-right: .5pt solid black"></td>
+            <td colspan="32"></td>
+            <td class="cell-width" style="border-left: .5pt solid black"></td>
+        </tr>
+
+        <tr>
+            <td height="35" class="cell-width" style="border-right: .5pt solid black"></td>
+            <td colspan="4" style='text-align: left; vertical-align: bottom; font-size: 9pt'>Одержувач</td>
+            <td colspan="11" style='text-align: left; vertical-align: bottom; font-size: 9pt; font-weight: bold'>
+                Товариство з обмеженою відповідальністю &quot;Гранде дольче&quot;
+            </td>
+            <td colspan="17"></td>
+            <td class="cell-width" style="border-left: .5pt solid black"></td>
+        </tr>
+
+        <tr>
+            <td class="cell-width" height="23" style="border-right: .5pt solid black"></td>
+            <td colspan="3" style='text-align: left; vertical-align: center; font-size: 9pt'>Код</td>
+            <td class="cell-width"></td>
+            <td colspan="11"
+                style='text-align: center; vertical-align: center; font-size: 9pt; font-weight: bold; border: 1.0pt solid black'>
+                ${InvoiceDto.getEdrpouCode()}
+            </td>
+            <td colspan="5"></td>
+            <td colspan="11" style='text-align: center; vertical-align: bottom; font-size: 9pt'>КРЕДИТ рах. N</td>
+            <td class="cell-width"></td>
+            <td class="cell-width" style="border-left: .5pt solid black"></td>
+        </tr>
+
+        <tr>
+            <td height="23" class="cell-width" style="border-right: .5pt solid black"></td>
+            <td colspan="7" style='text-align: left; vertical-align: center; font-size: 9pt'>Банк одержувача</td>
+            <td colspan="8"></td>
+            <td class="cell-width"></td>
+            <td colspan="4" style='text-align: center; vertical-align: bottom; font-size: 9pt'>Код банку</td>
+            <td class="cell-width"></td>
+            <td colspan="10" style='text-align: center; vertical-align: center; font-size: 9pt; font-weight: bold; border-left: 1.0pt solid black;
+                    border-right: 1.0pt solid black; border-top: 1.0pt solid black'>${InvoiceDto.getCompanyAccount()}
+            </td>
+            <td class="cell-width"></td>
+            <td class="cell-width" style="border-left: .5pt solid black"></td>
+        </tr>
+
+        <tr>
+            <td height="20" class="cell-width" style="border-right: .5pt solid black"></td>
+            <td colspan="16" style='text-align: center; vertical-align: center; font-size: 9pt; font-weight: bold'>
+                ${InvoiceDto.getBankName()}
+            </td>
+            <td colspan="4"
+                style='text-align: center; vertical-align: center; font-size: 9pt; font-weight: bold; border: 1.0pt solid black'>
+                ${InvoiceDto.getMfoCode()}
+            </td>
+            <td class="cell-width"></td>
+            <td colspan="10"
+                style='text-align: center; vertical-align: center; font-size: 9pt; border: 1.0pt solid black'></td>
+            <td class="cell-width"></td>
+            <td class="cell-width" style="border-left: .5pt solid black"></td>
+        </tr>
+
+        <tr>
+            <td height="10" class="cell-width" style="border-right: .5pt solid black"></td>
+            <td colspan="32" style="border-bottom: .5pt solid black"></td>
+            <td class="cell-width" style="border-left: .5pt solid black"></td>
+        </tr>
+
+        <tr>
+            <td height="25" colspan="34"></td>
+        </tr>
+
+        <tr>
+            <td height="25" class="cell-width"></td>
+            <td colspan="11" style="font-size: 14.0pt; font-weight: bold; vertical-align: center; text-align: right">
+                Рахунок на оплату №
+            </td>
+            <td colspan="4" style="font-size: 14.0pt; font-weight: bold; vertical-align: center; text-align: left; padding-left: 10pt">
+                ${InvoiceDto.getOrderNumber()}
+            </td>
+            <td colspan="2" style="font-size: 14.0pt; font-weight: bold; vertical-align: center; text-align: center">
+                від
+            </td>
+            <td colspan="11" style="font-size: 14.0pt; font-weight: bold; vertical-align: center; text-align: left">
+                ${InvoiceDto.getOrderDate()}
+            </td>
+            <td colspan="4"></td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr>
+            <td height="12" class="cell-width"></td>
+            <td colspan="31" style="border-top: 1.0pt solid black"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr>
+            <td height="12" class="cell-width"></td>
+            <td colspan="5" style="font-size: 9pt; text-align: left; vertical-align: center">Постачальник:</td>
+            <td colspan="27"
+                style="font-size: 9pt; font-weight: bold; text-align: left; vertical-align: center; padding-left: 10pt">
+                ${InvoiceDto.getCompanyName()}
+            </td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr>
+            <td height="45" class="cell-width"></td>
+            <td colspan="32" style="font-size: 9pt; text-align: center; vertical-align: center">
+                ${InvoiceDto.getCompanyInformation()}
+            </td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr>
+            <td height="8" class="cell-width"></td>
+            <td colspan="32"></td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr>
+            <td height="12" class="cell-width"></td>
+            <td colspan="5" style="font-size: 9pt; text-align: left; vertical-align: center">Покупець:</td>
+            <td colspan="27"
+                style="font-size: 9pt; font-weight: bold; text-align: left; vertical-align: center; padding-left: 10pt">
+                ${InvoiceDto.getClientName()}
+            </td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr>
+            <td height="16" class="cell-width"></td>
+            <td colspan="32"></td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr>
+            <td height="12" class="cell-width"></td>
+            <td colspan="5" style="font-size: 9pt; text-align: left; vertical-align: center">Договір:</td>
+            <td colspan="27"
+                style="font-size: 9pt; font-weight: bold; text-align: left; vertical-align: center; padding-left: 10pt">
+                ${InvoiceDto.getClientContract()}
+            </td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr>
+            <td height="16" class="cell-width"></td>
+            <td colspan="32"></td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr style="font-size: 9pt; font-weight: bold">
+            <td class="cell-width" style="border-right: .5pt solid black"></td>
+            <td style="border: .5pt solid black" colspan="2">№</td>
+            <td style="border: .5pt solid black" colspan="17">Товар</td>
+            <td style="border: .5pt solid black" colspan="3">Кіл-сть</td>
+            <td style="border: .5pt solid black" colspan="2">Од.</td>
+            <td style="border: .5pt solid black" colspan="4">Ціна з ПДВ</td>
+            <td style="border: .5pt solid black" colspan="4">Сума з ПДВ</td>
+            <td class="cell-width" style="border-left: .5pt solid black"></td>
+        </tr>
+        <#list InvoiceDto.getProducts() as product>
+        <tr style="font-size: 9pt">
+            <td class="cell-width" style="border-right: .5pt solid black"></td>
+            <td style="border: .5pt solid black" colspan="2">${product.getLineNumber()}</td>
+            <td style="border: .5pt solid black" colspan="17">${product.getProductName()}</td>
+            <td style="border: .5pt solid black" colspan="3">${product.getTotalProductWeight()}</td>
+            <td style="border: .5pt solid black" colspan="2">${product.getMeasure()}</td>
+            <td style="border: .5pt solid black" colspan="4">${product.getPrice()}</td>
+            <td style="border: .5pt solid black" colspan="4">${product.getPriceAmount()}</td>
+            <td class="cell-width" style="border-left: .5pt solid black"></td>
+        </tr>
+        </#list>
+
+
+    </table>
+    <table style="page-break-inside: avoid">
+        <tr>
+            <td class="cell-width" height="15"></td>
+            <td class="cell-width" colspan="32"></td>
+            <td class="cell-width"></td>
+        </tr>
+        <tr>
+            <td class="cell-width" height="15"></td>
+            <td class="cell-width" colspan="25"></td>
+            <td class="cell-width" colspan="3" style="font-size: 9pt; font-weight: bold; text-align: right; vertical-align: center">
+                Всього:
+            </td>
+            <td class="cell-width" colspan="4" style="border: 1.0pt solid black; font-size: 9pt; text-align: center; vertical-align: center">
+                <#setting locale="en_US">
+                ${InvoiceDto.getInvoiceAmount()?string["0.0#"]}
+            </td>
+            <td class="cell-width"></td>
+        </tr>
+        <tr>
+            <td class="cell-width" height="15" ></td>
+            <td class="cell-width" colspan="22"></td>
+            <td class="cell-width" colspan="6" style="font-size: 9pt; font-weight: bold; text-align: right; vertical-align: center">
+                У тому числі ПДВ:
+            </td>
+            <td class="cell-width" colspan="4" style="border: 1.0pt solid black; font-size: 9pt; text-align: center; vertical-align: center">
+                ${InvoiceDto.getInvoiceAmountPDV()?string["0.0#"]}
+            </td>
+            <td class="cell-width"></td>
+        </tr>
+    </table>
+    <table style="page-break-inside: avoid">
+        <tr>
+            <td height="15" class="cell-width"></td>
+            <td class="cell-width" colspan="32"></td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr>
+            <td height="15" class="cell-width"></td>
+            <td colspan="6" style="font-size: 9pt; text-align: right; vertical-align: center">Всього найменувань</td>
+            <td colspan="2"
+                style="font-size: 9pt; text-align: center; vertical-align: center; border-bottom: 1.0pt solid black">
+                ${InvoiceDto.getProducts()?size}
+            </td>
+            <td colspan="3" style="font-size: 9pt; text-align: center; vertical-align: center">на суму</td>
+            <td colspan="4"
+                style="font-size: 9pt; text-align: center; vertical-align: center; border-bottom: 1.0pt solid black">
+                ${InvoiceDto.getInvoiceAmount()?string["0.0#"]}
+            </td>
+            <td colspan="17"></td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr>
+            <td height="25" class="cell-width"></td>
+            <td colspan="31" style="font-size: 9pt; font-weight: bold; text-align: left; vertical-align: bottom">
+                ${InvoiceDto.getTextNumeric()}
+            </td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr>
+            <td height="6" class="cell-width"></td>
+            <td colspan="32" style="border-bottom: 1.0pt solid black"></td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr>
+            <td height="10" class="cell-width"></td>
+            <td colspan="32"></td>
+            <td class="cell-width"></td>
+        </tr>
+
+        <tr>
+            <td height="15" class="cell-width"></td>
+            <td colspan="16"></td>
+            <td colspan="5" style="font-size: 9pt; font-weight: bold; text-align: center; vertical-align: center">
+                Виписав(ла):
+            </td>
+            <td class="cell-width"></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

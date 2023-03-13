@@ -22,8 +22,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
 
-import static com.goodspartner.util.ObjectConverterUtil.getOrdersRefKeysFromRoutePointList;
-
 @Service("billDocumentService")
 @Slf4j
 @RequiredArgsConstructor
@@ -40,7 +38,7 @@ public class BillDocumentService implements DocumentService {
     @Override
     @Transactional(readOnly = true)
     public void saveDocumentsByRouteId(ZipOutputStream zipOutputStream, Long routeId) {
-        List<String> orderRefKeys = getOrdersRefKeysFromRoutePointList(routePointRepository.findByRouteId(routeId));
+        List<String> orderRefKeys = ObjectConverterUtil.getOrdersRefKeysFromRoutePointList(routePointRepository.findByRouteId(routeId));
         saveBills(zipOutputStream, orderRefKeys);
     }
 
