@@ -24,6 +24,7 @@
         <odata.version>4.9.0</odata.version>
         <awaitility.version>4.0.2</awaitility.version>
         <awaitility-proxy.version>3.1.6</awaitility-proxy.version>
+        <ortools.verion>9.6.2534</ortools.verion>
     </properties>
 
     <dependencies>
@@ -87,13 +88,7 @@
         <dependency>
             <groupId>com.google.ortools</groupId>
             <artifactId>ortools-java</artifactId>
-            <version>9.5.2237</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.ortools</groupId>
-            <artifactId>ortools-linux-x86-64</artifactId>
-            <version>9.5.2237</version>
+            <version>${ortools.verion}</version>
         </dependency>
 
         <dependency>
