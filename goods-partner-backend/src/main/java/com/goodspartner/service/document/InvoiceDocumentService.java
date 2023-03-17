@@ -174,7 +174,7 @@ public class InvoiceDocumentService implements DocumentService {
                                 .build()),
                 Pair.of(15,
                         DocumentCellInfoDto.builder()
-                                .value(product.getTotalProductWeight())
+                                .value(String.valueOf(product.getTotalProductWeight()))
                                 .style(CellStyles.TABLE_CELL_4)
                                 .build()),
                 Pair.of(18,

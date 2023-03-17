@@ -45,11 +45,10 @@ public class DeliveryCalculationHelper {
 
         try {
             List<OrderExternal> includedOrders = orderExternalRepository.findOrdersForCalculation(deliveryId);
-            resetOrders(includedOrders); // If delivery already have order silently reset and exit for recalculation
+            resetOrders(includedOrders); // If delivery already have order silently resets
 
             // Routes
             List<Route> coolerRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.COOLER);
-
             List<Route> regularRoutes = routeCalculationService.calculateRoutes(includedOrders, RouteMode.REGULAR);
 
             // CarLoad
@@ -78,6 +77,7 @@ public class DeliveryCalculationHelper {
             // TODO routeUpdate required on FE as well
             log.info("Finished calculation for delivery with id: {}", deliveryId);
         } catch (Exception exception) {
+            // TODO set delivery failed and allow recalculation from FE side
             eventService.publishEvent(new LiveEvent("Помилка розрахування доставки", EventType.ERROR,
                     new Action(ActionType.INFO, deliveryId)));
             throw new RuntimeException(exception);

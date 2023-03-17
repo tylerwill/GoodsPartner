@@ -106,7 +106,10 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                 .map(RoutePoint::getOrders)
                 .flatMap(Collection::stream)
                 .map(orderDto -> orderMap.get(orderDto.getId()))
-                .forEach(orderExternal -> orderExternal.setDropped(true));
+                .forEach(orderExternal -> {
+                    orderExternal.setDropped(true);
+                    orderExternal.setRoutePoint(null); // Do not save droppedRoutePoints
+                });
 
         orderExternalRepository.saveAll(orders);
     }

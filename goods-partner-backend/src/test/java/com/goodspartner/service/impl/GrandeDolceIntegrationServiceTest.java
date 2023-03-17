@@ -26,7 +26,7 @@ class GrandeDolceIntegrationServiceTest {
     private final ClientProperties properties = new ClientProperties();
     private final ProductMapper productMapper = new ProductMapperImpl();
     private final GrandeDolceIntegrationService orderService = new GrandeDolceIntegrationService(
-             null, null, productMapper, null, null, null, null, properties);
+             null, null, productMapper, null, null, properties);
 
     private final List<ODataOrderDto> orderList = List.of(
             ODataOrderDto.builder().refKey("ecdc9069-84f4-11ec-b3ce-00155dd72305").build(),

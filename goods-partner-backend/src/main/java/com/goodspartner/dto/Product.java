@@ -1,6 +1,10 @@
 package com.goodspartner.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Objects;
 
@@ -11,11 +15,11 @@ import java.util.Objects;
 @AllArgsConstructor
 public class Product {
     private String productName;
-    private int amount;
+    private int amount; // TODO do we need it
     private String storeName;
     private double unitWeight;
     private double totalProductWeight;
-    private double coefficient;
+    private double coefficient; // TODO do we need it?
     private String measure;
     private ProductMeasureDetails productUnit;
     private ProductMeasureDetails productPackaging;

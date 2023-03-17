@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -67,7 +66,7 @@ public class RoutePoint {
     @JoinColumn(name = "route_id", referencedColumnName = "id")
     private Route route;
 
-    @OneToMany(mappedBy = "routePoint", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "routePoint")
     private List<OrderExternal> orders = new ArrayList<>();
 
     @Column(name = "client_name")
@@ -85,6 +84,6 @@ public class RoutePoint {
                 .orElse(Collections.emptyList());
         this.orders.clear();
         this.orders.addAll(requiredOrders);
-//        this.orders.forEach(order -> order.setRoutePoint(this)); - this cause transient object exception while saving dropped orders
+        this.orders.forEach(order -> order.setRoutePoint(this));
     }
 }

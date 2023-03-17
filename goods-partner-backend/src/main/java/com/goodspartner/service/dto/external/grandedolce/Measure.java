@@ -1,5 +1,6 @@
 package com.goodspartner.service.dto.external.grandedolce;
 
+import com.goodspartner.dto.ProductMeasureDetails;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,32 +15,21 @@ public enum Measure {
 
     KG_LITER_BUCKET_BANK(List.of("кг", "л", "відро", "банк")) {
         @Override
-        public double calculateTotalProductWeight(ODataProductDto product) {
-            return product.getTotalProductWeight() * product.getCoefficient();
+        public double calculateTotalProductWeight(ProductMeasureDetails product) {
+            return product.getAmount() * product.getCoefficientStandard();
         }
     },
-    PACK_BOX(List.of("паков", "ящ")) {
-        @Override
-        public double calculateTotalProductWeight(ODataProductDto product) {
-            double totalProductWeight = product.getTotalProductWeight();
-            if (isPCS(product)) {
-                return totalProductWeight;
-            }
 
-            return totalProductWeight * product.getCoefficient();
-        }
-    },
     PCS(List.of("шт")) {
         @Override
-        public double calculateTotalProductWeight(ODataProductDto product) {
-            int amount = product.getAmount();
-
-            return amount == 0 || amount > 10 ? 10 : amount * 1.0;
+        public double calculateTotalProductWeight(ProductMeasureDetails product) {
+            double amount = product.getAmount();
+            return amount == 0 || amount > 10 ? 10 : amount;
         }
     },
     DEFAULT_MEASURE(Collections.emptyList()) {
         @Override
-        public double calculateTotalProductWeight(ODataProductDto product) {
+        public double calculateTotalProductWeight(ProductMeasureDetails product) {
             return 1.0;
         }
     };
@@ -59,8 +49,9 @@ public enum Measure {
         return DEFAULT_MEASURE;
     }
 
-    public abstract double calculateTotalProductWeight(ODataProductDto product);
+    public abstract double calculateTotalProductWeight(ProductMeasureDetails product);
 
+    // TODO I dont understand how this is working and why we need it now
     private static boolean isPCS(ODataProductDto productDto) {
         String[] spellingOfPCS = new String[]{"шт", "штук"};
         double coefficient = productDto.getCoefficient();
@@ -68,4 +59,16 @@ public enum Measure {
         return StringUtils.indexOfAny(productDto.getProductName(), spellingOfPCS) != -1
                 && (coefficient > 5 && (coefficient % 1 == 0));
     }
+
+    //    PACK_BOX(List.of("паков", "ящ")) {
+//        @Override
+//        public double calculateTotalProductWeight(ProductMeasureDetails product) {
+//            double totalProductWeight = product.getTotalProductWeight();
+//            if (isPCS(product)) {
+//                return totalProductWeight;
+//            }
+//
+//            return totalProductWeight * product.getCoefficient();
+//        }
+//    },
 }

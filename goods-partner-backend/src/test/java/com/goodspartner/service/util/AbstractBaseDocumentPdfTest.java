@@ -8,11 +8,11 @@ import com.goodspartner.service.dto.PdfDocumentDto;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Set;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public abstract class AbstractBaseDocumentPdfTest {
     protected static final String HTML_TEMPLATE_BILL = "bill_template_new.html";
@@ -53,17 +53,17 @@ public abstract class AbstractBaseDocumentPdfTest {
 
     protected List<InvoiceProduct> createProductsWithQualityDocuments() {
         return List.of(
-                InvoiceProduct.builder().lineNumber("1").productName("Свинина").totalProductWeight("100").measure("кг.").price("55.20").priceAmount("15 000.55").uktzedCode("987654").priceWithoutPDV("15 000.55").amountWithoutPDV("15 000.55").qualityUrl("documents/agreement.pdf").build(),
-                InvoiceProduct.builder().lineNumber("2").productName("Говядина").totalProductWeight("200").measure("кг.").price("155.20").priceAmount("255 000.20").uktzedCode("987654").priceWithoutPDV("15 000.55").amountWithoutPDV("15 000.55").qualityUrl("documents/merry.jpg").build(),
-                InvoiceProduct.builder().lineNumber("3").productName("Курятина").totalProductWeight("300").measure("кг.").price("255.20").priceAmount("55 000.20").uktzedCode("987654").priceWithoutPDV("15 000.55").amountWithoutPDV("15 000.55").qualityUrl("documents/merry34.png").build()
+                InvoiceProduct.builder().lineNumber("1").productName("Свинина").totalProductWeight(100.0).measure("кг.").price("55.20").priceAmount("15 000.55").uktzedCode("987654").priceWithoutPDV("15 000.55").amountWithoutPDV("15 000.55").qualityUrl("documents/agreement.pdf").build(),
+                InvoiceProduct.builder().lineNumber("2").productName("Говядина").totalProductWeight(200.0).measure("кг.").price("155.20").priceAmount("255 000.20").uktzedCode("987654").priceWithoutPDV("15 000.55").amountWithoutPDV("15 000.55").qualityUrl("documents/merry.jpg").build(),
+                InvoiceProduct.builder().lineNumber("3").productName("Курятина").totalProductWeight(300.0).measure("кг.").price("255.20").priceAmount("55 000.20").uktzedCode("987654").priceWithoutPDV("15 000.55").amountWithoutPDV("15 000.55").qualityUrl("documents/merry34.png").build()
         );
     }
 
     protected List<InvoiceProduct> createProductsQualityDocumentsAreAbsent() {
         return List.of(
-                InvoiceProduct.builder().lineNumber("1").productName("Свинина").totalProductWeight("100").measure("кг.").price("55.20").priceAmount("15 000.55").uktzedCode("987654").priceWithoutPDV("15 000.55").amountWithoutPDV("15 000.55").qualityUrl(null).build(),
-                InvoiceProduct.builder().lineNumber("2").productName("Говядина").totalProductWeight("200").measure("кг.").price("155.20").priceAmount("255 000.20").uktzedCode("987654").priceWithoutPDV("15 000.55").amountWithoutPDV("15 000.55").qualityUrl("").build(),
-                InvoiceProduct.builder().lineNumber("3").productName("Курятина").totalProductWeight("300").measure("кг.").price("255.20").priceAmount("55 000.20").uktzedCode("987654").priceWithoutPDV("15 000.55").amountWithoutPDV("15 000.55").qualityUrl("").build()
+                InvoiceProduct.builder().lineNumber("1").productName("Свинина").totalProductWeight(100.0).measure("кг.").price("55.20").priceAmount("15 000.55").uktzedCode("987654").priceWithoutPDV("15 000.55").amountWithoutPDV("15 000.55").qualityUrl(null).build(),
+                InvoiceProduct.builder().lineNumber("2").productName("Говядина").totalProductWeight(200.0).measure("кг.").price("155.20").priceAmount("255 000.20").uktzedCode("987654").priceWithoutPDV("15 000.55").amountWithoutPDV("15 000.55").qualityUrl("").build(),
+                InvoiceProduct.builder().lineNumber("3").productName("Курятина").totalProductWeight(300.0).measure("кг.").price("255.20").priceAmount("55 000.20").uktzedCode("987654").priceWithoutPDV("15 000.55").amountWithoutPDV("15 000.55").qualityUrl("").build()
         );
     }
 

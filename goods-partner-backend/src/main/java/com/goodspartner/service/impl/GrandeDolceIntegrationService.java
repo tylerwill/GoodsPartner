@@ -1,7 +1,5 @@
 package com.goodspartner.service.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodspartner.configuration.properties.ClientProperties;
 import com.goodspartner.dto.InvoiceDto;
 import com.goodspartner.dto.InvoiceProduct;
@@ -11,30 +9,38 @@ import com.goodspartner.mapper.ODataInvoiceMapper;
 import com.goodspartner.mapper.ODataOrderMapper;
 import com.goodspartner.mapper.ProductMapper;
 import com.goodspartner.service.IntegrationService;
-import com.goodspartner.service.dto.external.grandedolce.*;
-import com.goodspartner.util.ExternalOrderDataEnricher;
+import com.goodspartner.service.dto.external.grandedolce.ODataContactsTypeDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataInvoiceDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataInvoiceProductDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataInvoicePropertiesDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataOrganisationCodesDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataOrganisationContactsDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataProductGtdDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataWrapperDto;
 import com.goodspartner.util.ODataUrlBuilder;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringJoiner;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,10 +71,6 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private static final String ORDER_ENTRY_SET_NAME = "Document_ЗаказПокупателя";
     private static final String ORDER_SELECT_FIELDS = "Ref_Key,Number,ДатаОтгрузки,Date,DeletionMark,АдресДоставки,Комментарий,Контрагент/Description,Ответственный/Code";
     private static final String ORDER_EXPAND_FIELDS = "Ответственный/ФизЛицо,Контрагент";
-    // Order product fetching
-    private static final String ORDER_PRODUCT_ENTRY_SET_NAME = "Document_ЗаказПокупателя_Товары";
-    private static final String PRODUCT_SELECT_FIELDS = "Ref_Key,Количество,КоличествоМест,Коэффициент,ЕдиницаИзмерения/Description,Номенклатура/Description";
-    private static final String PRODUCT_EXPAND_FIELDS = "Номенклатура,ЕдиницаИзмерения";
     // Invoice fetching
     private static final String INVOICE_ENTRY_SET_NAME = "Document_РеализацияТоваровУслуг";
     private static final String INVOICE_SELECT_FIELDS = "Ref_Key,Организация_Key,Сделка,DeletionMark,Number,Date,Posted,СуммаДокумента,АдресДоставки,ДоговорКонтрагента/Description,Контрагент/НаименованиеПолное,БанковскийСчетОрганизации/НомерСчета,БанковскийСчетОрганизации/Банк/Description,БанковскийСчетОрганизации/Банк/Code,Склад/Местонахождение,Организация/НаименованиеПолное,Ответственный/ФизЛицо/Description";
@@ -100,23 +102,15 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private final ODataOrderMapper odataOrderMapper;
     private final ProductMapper productMapper;
     private final InvoiceProductMapper invoiceProductMapper;
-    private final ExternalOrderDataEnricher enricher;
-    private final ObjectMapper objectMapper;
     private final ODataInvoiceMapper odataInvoiceMapper;
     // Props
     private final ClientProperties properties;
-    @Value("classpath:mock1CoData/orders-by-shipping-date/*")
-    private Resource[] mockedOrdersByShippingDate;
-    @Value("classpath:mock1CoData/products-by-orders-ref-key/*")
-    private Resource[] mockedProductsByOrdersRefKey;
-    @Value("classpath:mock1CoData/invoices-by-orders-ref-key/*")
-    private Resource[] mockedInvoicesByOrdersRefKey;
 
     @Override
     public List<InvoiceDto> getInvoicesByOrderRefKeys(List<String> orderRefKeys) {
         List<ODataInvoiceDto> oDataInvoiceDtos = getValidInvoicesForOrders(orderRefKeys);
 
-        List<ODataInvoiceProductDto> oDataInvoiceProductDtos = getODataInvoiceProducts(oDataInvoiceDtos);
+        List<ODataInvoiceProductDto> oDataInvoiceProductDtos = getODataInvoiceProductsPartitioned(oDataInvoiceDtos);
 
         List<List<String>> productsGTDKeys = getPartitionOfProductsGTDKeys(oDataInvoiceProductDtos);
         List<ODataProductGtdDto> oDataProductGTD = getODataProductGTD(productsGTDKeys);
@@ -178,7 +172,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         List<String> validOrdersRefKeys = getRelevantOrderRefKeys(validOrdersInvoices);
         excludingInvalidOrders(validOrdersRefKeys, oDataOrderDtosList);
 
-        List<ODataInvoiceProductDto> oDataInvoiceProductDtos = getODataInvoiceProducts(validOrdersInvoices);
+        List<ODataInvoiceProductDto> oDataInvoiceProductDtos = getODataInvoiceProductsPartitioned(validOrdersInvoices);
         Map<String, List<ODataInvoiceProductDto>> groupedInvoiceProducts = groupInvoiceProductsByInvoiceRefKey(oDataInvoiceProductDtos);
         addInvoiceProductsToInvoices(validOrdersInvoices, groupedInvoiceProducts);
         Map<String, List<InvoiceProduct>> invoiceProductGroupedByOrderRefKey = groupInvoiceProductByOrderRefKey(validOrdersInvoices);
@@ -246,9 +240,9 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .collect(Collectors.toList());
     }
 
-    private List<ODataInvoiceProductDto> getODataInvoiceProducts(List<ODataInvoiceDto> oDataInvoiceDtos) {
+    private List<ODataInvoiceProductDto> getODataInvoiceProductsPartitioned(List<ODataInvoiceDto> oDataInvoiceDtos) {
         List<List<String>> invoiceKeys = getPartitionOfInvoiceKeys(oDataInvoiceDtos);
-        return getODataInvoiceProductDtos(invoiceKeys);
+        return getODataInvoiceProducts(invoiceKeys);
     }
 
     private List<ODataInvoiceDto> getValidInvoicesForOrders(List<String> orderRefKeys) {
@@ -308,9 +302,10 @@ public class GrandeDolceIntegrationService implements IntegrationService {
      * Get orders from 1C
      */
     private ODataWrapperDto<ODataOrderDto> getOrdersByRefKeys(URI orderUriByRefKeys) {
+        log.info("Orders by refKeys uri: {}", URLDecoder.decode(orderUriByRefKeys.toString(), StandardCharsets.UTF_8));
         return webClient.get()
                 .uri(orderUriByRefKeys)
-//                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
                 })
@@ -319,37 +314,22 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     }
 
     private ODataWrapperDto<ODataOrderDto> getOrdersByShippingDate(URI orderUriByShippingDate) {
-        return fetchMockDataByRequest(orderUriByShippingDate, mockedOrdersByShippingDate, new TypeReference<>() {
-                },
-                () -> webClient.get()
-                        .uri(orderUriByShippingDate)
-//                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
-                        })
-                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
-                        .block());
+        log.info("Orders by shippingDate uri: {}", URLDecoder.decode(orderUriByShippingDate.toString(), StandardCharsets.UTF_8));
+        return webClient.get()
+                .uri(orderUriByShippingDate)
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
+                })
+                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                .block();
     }
 
-    /**
-     * Get products from 1C
-     */
-    private ODataWrapperDto<ODataProductDto> getProducts(URI productUri) {
-        return fetchMockDataByRequest(productUri, mockedProductsByOrdersRefKey, new TypeReference<>() {
-                },
-                () -> webClient.get()
-                        .uri(productUri)
-//                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataProductDto>>() {
-                        })
-                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
-                        .block());
-    }
-
-    private ODataWrapperDto<ODataInvoiceProductDto> getODataInvoiceProductDtos(URI productUri) {
+    private ODataWrapperDto<ODataInvoiceProductDto> getODataInvoiceProducts(URI productUri) {
+        log.info("InvoiceProduct uri: {}", URLDecoder.decode(productUri.toString(), StandardCharsets.UTF_8));
         return webClient.get()
                 .uri(productUri)
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoiceProductDto>>() {
                 })
@@ -359,20 +339,21 @@ public class GrandeDolceIntegrationService implements IntegrationService {
 
     private ODataWrapperDto<ODataInvoiceDto> getInvoices(URI uri) {
         log.info("Invoice uri: {}", URLDecoder.decode(uri.toString(), StandardCharsets.UTF_8));
-        return fetchMockDataByRequest(uri, mockedInvoicesByOrdersRefKey, new TypeReference<>() {
-                },
-                () -> webClient.get()
-                        .uri(uri)
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoiceDto>>() {
-                        })
-                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
-                        .block());
+        return webClient.get()
+                .uri(uri)
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoiceDto>>() {
+                })
+                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                .block();
     }
 
     private ODataWrapperDto<ODataOrganisationContactsDto> getOrganisationContacts(URI uri) {
+        log.info("Organisation contracts uri: {}", URLDecoder.decode(uri.toString(), StandardCharsets.UTF_8));
         return webClient.get()
                 .uri(uri)
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrganisationContactsDto>>() {
                 })
@@ -381,8 +362,10 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     }
 
     private ODataWrapperDto<ODataInvoicePropertiesDto> getInvoiceProperties(URI uri) {
+        log.info("Invoice properties uri: {}", URLDecoder.decode(uri.toString(), StandardCharsets.UTF_8));
         return webClient.get()
                 .uri(uri)
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoicePropertiesDto>>() {
                 })
@@ -390,9 +373,11 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .block();
     }
 
-    private ODataWrapperDto<ODataProductGtdDto> getODataProductGtdDtos(URI productUri) {
+    private ODataWrapperDto<ODataProductGtdDto> getODataProductGtd(URI productUri) {
+        log.info("Product gtd uri: {}", URLDecoder.decode(productUri.toString(), StandardCharsets.UTF_8));
         return webClient.get()
                 .uri(productUri)
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataProductGtdDto>>() {
                 })
@@ -400,9 +385,11 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .block();
     }
 
-    private ODataWrapperDto<ODataOrganisationCodesDto> getODataOrganisationCodesDtos(URI organisationCodesUri) {
+    private ODataWrapperDto<ODataOrganisationCodesDto> getODataOrganisationCodes(URI organisationCodesUri) {
+        log.info("Organisation codes uri: {}", URLDecoder.decode(organisationCodesUri.toString(), StandardCharsets.UTF_8));
         return webClient.get()
                 .uri(organisationCodesUri)
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrganisationCodesDto>>() {
                 })
@@ -410,9 +397,11 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .block();
     }
 
-    private ODataWrapperDto<ODataContactsTypeDto> getODataContactsTypeDtos(URI organisationCodesUri) {
+    private ODataWrapperDto<ODataContactsTypeDto> getODataContactsTypes(URI organisationCodesUri) {
+        log.info("Contract types uri: {}", URLDecoder.decode(organisationCodesUri.toString(), StandardCharsets.UTF_8));
         return webClient.get()
                 .uri(organisationCodesUri)
+                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataContactsTypeDto>>() {
                 })
@@ -432,18 +421,6 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .select(ORDER_SELECT_FIELDS)
                 .format(FORMAT)
                 .top(ORDER_FETCH_LIMIT)
-                .build();
-    }
-
-    private URI buildProductUri(String filter) {
-        return new ODataUrlBuilder()
-                .baseUrl(properties.getClientServerURL())
-                .hostPrefix(properties.getServer1CUriPrefix() + PREFIX_ODATA)
-                .appendEntitySetSegment(ORDER_PRODUCT_ENTRY_SET_NAME)
-                .filter(filter)
-                .expand(PRODUCT_EXPAND_FIELDS)
-                .select(PRODUCT_SELECT_FIELDS)
-                .format(FORMAT)
                 .build();
     }
 
@@ -555,11 +532,11 @@ public class GrandeDolceIntegrationService implements IntegrationService {
      * - get response and parse it to ODataWrapperDto<ODataProductDto>
      * - collect to Map<RefKey, List<ProductDto>>
      */
-    private List<ODataInvoiceProductDto> getODataInvoiceProductDtos(List<List<String>> partition) {
+    private List<ODataInvoiceProductDto> getODataInvoiceProducts(List<List<String>> partition) {
         return partition.stream()
                 .map(part -> createFilter(REF_KEY_FILTER, part))
                 .map(this::buildInvoiceProductUri)
-                .map(this::getODataInvoiceProductDtos)
+                .map(this::getODataInvoiceProducts)
                 .map(ODataWrapperDto::getValue)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
@@ -569,7 +546,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         return productGTDRefKeys.stream()
                 .map(productGTDRefKey -> createFilter(REF_KEY_FILTER, productGTDRefKey))
                 .map(this::buildProductGTDUri)
-                .map(this::getODataProductGtdDtos)
+                .map(this::getODataProductGtd)
                 .map(ODataWrapperDto::getValue)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
@@ -578,7 +555,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private List<ODataOrganisationCodesDto> getODataOrganisationCodes(Set<String> organisationRefKeys) {
         URI organisationCodesUri = buildOrganisationCodesUri();
         return organisationRefKeys.stream()
-                .map(organisationRefKey -> getODataOrganisationCodesDtos(organisationCodesUri))
+                .map(organisationRefKey -> getODataOrganisationCodes(organisationCodesUri))
                 .map(ODataWrapperDto::getValue)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
@@ -587,7 +564,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private List<ODataContactsTypeDto> getODataContactsType(Set<String> organisationRefKeys) {
         URI organisationCodesUri = buildContactsTypeUri();
         return organisationRefKeys.stream()
-                .map(organisationRefKey -> getODataContactsTypeDtos(organisationCodesUri))
+                .map(organisationRefKey -> getODataContactsTypes(organisationCodesUri))
                 .map(ODataWrapperDto::getValue)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
@@ -711,7 +688,7 @@ public class GrandeDolceIntegrationService implements IntegrationService {
 
     double getTotalOrderWeightFromInvoiceProduct(List<InvoiceProduct> products) {
         return products.stream()
-                .mapToDouble(product -> Double.parseDouble(product.getTotalProductWeight()))
+                .mapToDouble(InvoiceProduct::getTotalProductWeight)
                 .sum();
     }
 
@@ -729,35 +706,6 @@ public class GrandeDolceIntegrationService implements IntegrationService {
 
     String buildFilter(String filter, String key) {
         return String.format(filter, key);
-    }
-
-    private <T> ODataWrapperDto<T> fetchMockDataByRequest(URI integrationServiceUri, Resource[] mockResource,
-                                                          TypeReference<ODataWrapperDto<T>> typeRef,
-                                                          Supplier<ODataWrapperDto<T>> supplier) {
-        return Arrays.stream(mockResource)
-                .filter(resource -> Objects.nonNull(resource.getFilename()))
-                .filter(resource -> checkIfMockResourceMatchRequest(integrationServiceUri, resource))
-                .findFirst()
-                .map(resource -> {
-                    try {
-                        return objectMapper.readValue(
-                                FileUtils.readFileToString(resource.getFile(), StandardCharsets.UTF_8),
-                                typeRef
-                        );
-                    } catch (IOException e) {
-                        log.error("Unable to read the file: {} fallback call to service", resource.getFilename());
-                        return null;
-                    }
-                })
-                .orElseGet(supplier);
-    }
-
-    private boolean checkIfMockResourceMatchRequest(URI integrationServiceUri, Resource resource) {
-        String decodedUrlQuery = URLDecoder.decode(integrationServiceUri.toString(), StandardCharsets.UTF_8);
-        String mockFileName = FilenameUtils.removeExtension(resource.getFilename());
-        boolean found = decodedUrlQuery.contains(mockFileName == null ? "" : mockFileName);
-        log.debug("Trying to find mockFile by url: {} - {} -> {}", decodedUrlQuery, mockFileName, found);
-        return found;
     }
 
     private String createFilterByRefKey(String refKey, String castRequest, String entrySet) {

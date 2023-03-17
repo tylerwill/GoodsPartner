@@ -4,7 +4,12 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.goodspartner.dto.ProductMeasureDetails;
-import lombok.*;
+import com.goodspartner.mapper.util.MapperUtil;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Map;
 import java.util.Optional;
@@ -20,25 +25,29 @@ public class ODataInvoiceProductDto {
     private String refKey;
     @JsonAlias("LineNumber")
     private String lineNumber;
-    @JsonAlias("Количество")
-    private Double totalProductWeight;
+
+    @JsonAlias("Количество") // TODO check what is @JsonAlias("КоличествоМест")
+    private int amount;
+
     @JsonAlias("Коэффициент")
-    private Double coefficient;
+    private Double coefficient; // TODO Why do we need coefficient if we have coefficientStandard in Unit or Packaging
     @JsonAlias("Сумма")
     private Double priceAmount;
     @JsonAlias("СуммаНДС")
     private Double priceAmountPDV;
     @JsonAlias("Цена")
     private Double price;
-    @JsonAlias("КоличествоМест")
-    private int amount;
 
     private String productName;
     private String productRefKey;
     private String productGTDRefKey;
-    private String measure;
+
+    private String uktzedCode;
 
     private String qualityUrl;
+
+    private String measure;
+    private Double totalProductWeight;
     private ProductMeasureDetails productUnit;
     private ProductMeasureDetails productPackaging;
 
@@ -51,10 +60,10 @@ public class ODataInvoiceProductDto {
         Map<String, Object> productUnit = (Map<String, Object>) value.get("ЕдиницаХраненияОстатков");
         Map<String, Object> productPackaging = (Map<String, Object>) value.get("ЕдиницаИзмеренияМест");
 
-        this.productUnit = getProductMeasureDetails(productUnit);
+        this.productUnit = mapProductUnitDetails(productUnit);
         this.productPackaging = productPackaging != null
-                ? getProductMeasureDetails(productPackaging)
-                : getProductMeasureDetails(productUnit);
+                ? mapProductPackagingDetails(productPackaging)
+                : this.productUnit;
     }
 
     @JsonProperty("ЕдиницаИзмерения")
@@ -70,12 +79,25 @@ public class ODataInvoiceProductDto {
                 .orElse("");
     }
 
-    private String uktzedCode;
 
-    private ProductMeasureDetails getProductMeasureDetails(Map<String, Object> measureMap) {
+    private ProductMeasureDetails mapProductUnitDetails(Map<String, Object> measureMap) {
         return ProductMeasureDetails.builder()
                 .measureStandard((String) measureMap.get("Description"))
                 .coefficientStandard(Double.valueOf(String.valueOf(measureMap.get("Коэффициент"))))
+                .amount(amount * coefficient) // TODO check mapping order. TODO do we need here coefficientStandard?
                 .build();
     }
+
+    private ProductMeasureDetails mapProductPackagingDetails(Map<String, Object> measureMap) {
+        ProductMeasureDetails productPackaging = ProductMeasureDetails.builder()
+                .measureStandard((String) measureMap.get("Description"))
+                .coefficientStandard(Double.valueOf(String.valueOf(measureMap.get("Коэффициент"))))
+                .build();
+
+        Double packagingCoefficient = productPackaging.getCoefficientStandard();
+        productPackaging.setAmount(MapperUtil.getRoundedDouble(amount * coefficient / packagingCoefficient));
+
+        return productPackaging;
+    }
+
 }

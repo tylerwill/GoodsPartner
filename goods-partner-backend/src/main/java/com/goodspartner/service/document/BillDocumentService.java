@@ -178,7 +178,7 @@ public class BillDocumentService implements DocumentService {
                                 .build()),
                 Pair.of(20,
                         DocumentCellInfoDto.builder()
-                                .value(product.getTotalProductWeight())
+                                .value(product.getTotalProductWeight().toString())
                                 .style(CellStyles.BILL_TABLE_CELL_3)
                                 .build()),
                 Pair.of(23,

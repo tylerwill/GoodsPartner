@@ -1,6 +1,10 @@
 package com.goodspartner.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -10,17 +14,17 @@ import lombok.*;
 public class InvoiceProduct {
     private String productName;
     private String lineNumber;
-    private String totalProductWeight;
-    private String coefficient;
+    private Double totalProductWeight;
+    private Double coefficient;
     private String measure;
-    private String priceAmount;
-    private String amountWithoutPDV;
-    private String priceWithoutPDV;
-    private String price;
     private String uktzedCode;
+    private int amount;
+    private String amountWithoutPDV;
+    private String price;
+    private String priceAmount;
+    private String priceWithoutPDV;
     private Double priceAmountPDV;
     private String qualityUrl;
-    private int amount;
     private ProductMeasureDetails productUnit;
     private ProductMeasureDetails productPackaging;
 }
