@@ -7,6 +7,7 @@ import RoutePointOrdersDialog from '../RoutePointOrdersDialog/RoutePointOrdersDi
 import DocumentsDialog from "../../DocumentsDialog/DocumentsDialog";
 import DownloadIcon from "@mui/icons-material/Download";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import {apiUrl} from "../../../../../../util/util";
 
 interface RoutePointDetailsHeaderProps {
     routePoint: RoutePoint
@@ -63,7 +64,7 @@ const RoutePointDetailsHeader = ({
                 <Button
                     size={"small"}
                     sx={{mr: 2, pr: 2}}
-                    onClick={() => setDocumentDialogOpen(true)}
+                    href={`${apiUrl}/document/by-route-point/${routePoint.id}`}
                     variant='outlined'
                 >
                     <DownloadIcon sx={{mr: 1}}/> Документи

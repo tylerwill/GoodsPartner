@@ -79,7 +79,7 @@ const ActionMenu: FC<Props> = ({
             </Menu>
             <ConfirmationDialog
                 title={"Видалити користувача"}
-                text={"Ви впевнені, що бажаєте видалити користувача? Цю дію не можна буде відмінити."}
+                text={`Ви впевнені, що бажаєте видалити користувача ${user.userName}? Цю дію не можна буде відмінити.`}
                 open={deleteDialogOpen}
                 setOpen={setDeleteDialogOpen}
                 onAction={handleDelete}

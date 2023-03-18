@@ -19,7 +19,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @RestController
-@RequestMapping(path = "/api/v1/pdf-document")
+@RequestMapping(path = "/api/v1/document")
 public class DocumentPdfController {
     private static final String ATTACHMENT = "attachment; filename=";
     private static final String ROUTE_FILENAME = "route_";

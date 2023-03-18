@@ -133,18 +133,4 @@ const Users = () => {
 	)
 }
 
-// function toRoleString(role: UserRole) {
-//     switch (role) {
-//         case 'ADMIN': {
-//             return 'Адміністратор'
-//         }
-//         case 'LOGIST': {
-//             return 'Логіст'
-//         }
-//         case 'DRIVER': {
-//             return 'Водій'
-//         }
-//     }
-// }
-
 export default Users

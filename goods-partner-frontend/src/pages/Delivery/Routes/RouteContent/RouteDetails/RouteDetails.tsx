@@ -10,7 +10,7 @@ import {
 	styled,
 	Typography
 } from '@mui/material'
-import { toHoursAndMinutes } from '../../../../../util/util'
+import {apiUrl, toHoursAndMinutes} from '../../../../../util/util'
 import InfoTableItem from '../../../../../components/InfoTableItem/InfoTableItem'
 import RouteMapDialog from '../RouteMapDialog/RouteMapDialog'
 import { Route } from '../../../../../model/Route'
@@ -76,7 +76,7 @@ const RouteDetailsHeader: React.FC<RouteDetailsProps> = ({
 					</Button>
 					<Button
 						sx={{ mr: 2 }}
-						onClick={() => setRouteDocumentsOpen(true)}
+						href={`${apiUrl}/document/by-route/${route.id}`}
 						variant='outlined'
 					>
 						<DownloadIcon sx={{ mr: 1 }} /> документи для водія
@@ -90,12 +90,12 @@ const RouteDetailsHeader: React.FC<RouteDetailsProps> = ({
 					closeDialog={() => setRouteMapOpen(false)}
 				/>
 
-				<DocumentsDialog
-					isOpen={routeDocumentsOpen}
-					handleClose={() => setRouteDocumentsOpen(false)}
-					type={'route'}
-					id={route.id}
-				/>
+				{/*<DocumentsDialog*/}
+				{/*	isOpen={routeDocumentsOpen}*/}
+				{/*	handleClose={() => setRouteDocumentsOpen(false)}*/}
+				{/*	type={'route'}*/}
+				{/*	id={route.id}*/}
+				{/*/>*/}
 			</Box>
 		</Box>
 	)
