@@ -201,7 +201,7 @@ public class DefaultStatisticsService implements StatisticsService {
                     .map(e -> 1).reduce(0, Integer::sum);
         }
 
-        int roundedTravelCost = new BigDecimal(fuelConsumption).setScale(0, RoundingMode.HALF_UP).intValue();
+        int roundedTravelCost = BigDecimal.valueOf(fuelConsumption).setScale(0, RoundingMode.HALF_UP).intValue();
 
         return new CalculationRoutesResult(ordersCount, totalWeight, roundedTravelCost, totalTimeInRoutes, incompleteRoutePointsCount);
     }
@@ -217,7 +217,7 @@ public class DefaultStatisticsService implements StatisticsService {
             fuelConsumption += route.getCar().getTravelCost() * route.getDistance() / 100;
         }
 
-        int roundedTravelCost = new BigDecimal(fuelConsumption).setScale(0, RoundingMode.HALF_UP).intValue();
+        int roundedTravelCost = BigDecimal.valueOf(fuelConsumption).setScale(0, RoundingMode.HALF_UP).intValue();
 
         return new CalculationRoutesResult(ordersCount, totalWeight, roundedTravelCost);
     }

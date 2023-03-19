@@ -42,7 +42,7 @@ public class ODataInvoiceProductDto {
     private String productRefKey;
     private String productGTDRefKey;
 
-    private String uktzedCode;
+    private String uktzedCode = ""; // In case of missing productGTD doc, we should have default empty value
 
     private String qualityUrl;
 

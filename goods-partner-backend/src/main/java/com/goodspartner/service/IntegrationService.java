@@ -12,5 +12,4 @@ public interface IntegrationService {
 
     List<OrderDto> findAllByShippingDate(LocalDate date);
 
-    double calculateTotalOrdersWeight(List<OrderDto> ordersByDate);
 }

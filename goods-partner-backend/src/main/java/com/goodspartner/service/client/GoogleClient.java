@@ -4,12 +4,9 @@ import com.goodspartner.configuration.properties.GoogleGeocodeProperties;
 import com.goodspartner.exception.AddressGeocodeException;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
-import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 
 @Component
 public class GoogleClient {
@@ -37,7 +34,7 @@ public class GoogleClient {
 //                    .components(ComponentFilter.administrativeArea()) // TODO: місто Київ / Київська область / Київська обл.
                     .language(googleGeocodeProperties.getLanguage())
                     .await();
-        } catch (IOException | ApiException | InterruptedException e) {
+        } catch (Exception e) {
             throw new AddressGeocodeException(address, e);
         }
     }

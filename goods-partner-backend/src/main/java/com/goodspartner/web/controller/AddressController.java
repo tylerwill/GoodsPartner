@@ -1,8 +1,6 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.dto.AddressExternalDto;
-import com.goodspartner.entity.AddressExternal;
-import com.goodspartner.mapper.AddressExternalMapper;
 import com.goodspartner.service.AddressExternalService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -26,7 +24,6 @@ import java.util.List;
 public class AddressController {
 
     private final AddressExternalService service;
-    private final AddressExternalMapper mapper;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @GetMapping
@@ -35,11 +32,7 @@ public class AddressController {
             response = List.class)
     @ResponseStatus(HttpStatus.OK)
     public List<AddressExternalDto> getAll() {
-        return service
-                .findAll()
-                .stream()
-                .map(mapper::toAddressExternalDto)
-                .toList();
+        return service.findAll();
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
@@ -50,9 +43,7 @@ public class AddressController {
     public AddressExternalDto update(
             @ApiParam(value = "Edited AddressExternalDto", type = "AddressExternalDto", required = true)
             @RequestBody AddressExternalDto addressExternalDto) {
-        AddressExternal convertedAddressExternal = mapper.toAddressExternal(addressExternalDto);
-        AddressExternal updatedAddressExternal = service.update(convertedAddressExternal);
-        return mapper.toAddressExternalDto(updatedAddressExternal);
+        return service.update(addressExternalDto);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
@@ -63,8 +54,6 @@ public class AddressController {
     public void delete(
             @ApiParam(value = "Deleted AddressExternalDto", type = "AddressExternalDto", required = true)
             @RequestBody AddressExternalDto addressExternalDto) {
-        AddressExternal convertedAddressExternal = mapper.toAddressExternal(addressExternalDto);
-
-        service.delete(convertedAddressExternal);
+        service.delete(addressExternalDto);
     }
 }

@@ -1,7 +1,10 @@
 package com.goodspartner.service.impl;
 
+import com.goodspartner.dto.AddressExternalDto;
 import com.goodspartner.entity.AddressExternal;
+import com.goodspartner.entity.AddressExternal.OrderAddressId;
 import com.goodspartner.exception.AddressExternalNotFoundException;
+import com.goodspartner.mapper.AddressExternalMapper;
 import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.service.AddressExternalService;
 import lombok.RequiredArgsConstructor;
@@ -16,31 +19,41 @@ import java.util.List;
 public class DefaultAddressExternalService implements AddressExternalService {
 
     private final AddressExternalRepository repository;
+    private final AddressExternalMapper mapper;
 
     private static final Sort DEFAULT_ADDRESS_EXTERNAL_SORT = Sort.by(Sort.Direction.DESC, "orderAddressId");
 
-    @Transactional(readOnly = true)
     @Override
-    public List<AddressExternal> findAll() {
-        return repository.findAll(DEFAULT_ADDRESS_EXTERNAL_SORT);
+    public List<AddressExternalDto> findAll() {
+        return repository.findAll(DEFAULT_ADDRESS_EXTERNAL_SORT)
+                .stream()
+                .map(mapper::toAddressExternalDto)
+                .toList();
     }
 
     @Transactional
     @Override
-    public AddressExternal update(AddressExternal addressExternal) {
-        isPresent(addressExternal);
-        return repository.save(addressExternal);
+    public AddressExternalDto update(AddressExternalDto addressExternalDto) {
+        OrderAddressId id = mapOrderAddressId(addressExternalDto);
+        AddressExternal addressExternal = repository.findById(id)
+                .map(address -> mapper.update(address, addressExternalDto))
+                .orElseThrow(() -> new AddressExternalNotFoundException(id));
+        return mapper.toAddressExternalDto(addressExternal);
     }
 
     @Transactional
     @Override
-    public void delete(AddressExternal addressExternal) {
-        isPresent(addressExternal);
-        repository.delete(addressExternal);
+    public void delete(AddressExternalDto addressExternalDto) {
+        OrderAddressId id = mapOrderAddressId(addressExternalDto);
+        AddressExternal addressExternal = repository.findById(id)
+                .orElseThrow(() -> new AddressExternalNotFoundException(id));
+        repository.deleteById(addressExternal.getOrderAddressId());
     }
 
-    private void isPresent(AddressExternal addressExternal) {
-        AddressExternal.OrderAddressId id = addressExternal.getOrderAddressId();
-        repository.findById(id).orElseThrow(() -> new AddressExternalNotFoundException(id));
+    private OrderAddressId mapOrderAddressId(AddressExternalDto addressExternalDto) {
+        return OrderAddressId.builder()
+                .orderAddress( addressExternalDto.getOrderAddress())
+                .clientName( addressExternalDto.getClientName())
+                .build();
     }
 }

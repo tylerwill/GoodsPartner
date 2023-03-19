@@ -5,7 +5,10 @@ import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.Store;
 import com.goodspartner.service.StoreService;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -81,16 +84,5 @@ class GrandeDolceIntegrationServiceITest extends AbstractBaseITest {
         grandeDolceOrderService.findAllByShippingDate(LocalDate.of(2022, 2, 7));
         grandeDolceOrderService.findAllByShippingDate(LocalDate.of(2022, 2, 17));
         grandeDolceOrderService.findAllByShippingDate(LocalDate.of(2022, 2, 21));
-    }
-
-    @Test
-    @DisplayName("when CalculateOrders then Correct Total Orders Weight Returned")
-    void givenOrders_whenCalculateTotalOrdersWeight_thenCorrectResultReturned() {
-        double expectedTotalWeight = 2494;
-
-        List<OrderDto> ordersByDate = grandeDolceOrderService.findAllByShippingDate(DATE);
-        double totalOrdersWeight = grandeDolceOrderService.calculateTotalOrdersWeight(ordersByDate);
-
-        Assertions.assertEquals(expectedTotalWeight, totalOrdersWeight);
     }
 }

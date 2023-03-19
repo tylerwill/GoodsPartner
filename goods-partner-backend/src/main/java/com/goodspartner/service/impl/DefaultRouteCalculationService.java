@@ -203,7 +203,6 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
     List<RoutePoint> mapToRoutePoints(List<OrderExternal> orders) {
         List<RoutePoint> routePointList = new ArrayList<>();
 
-
         Map<Pair<String, MapPoint>, List<OrderExternal>> addressOrderMap = orders
                 .stream()
                 .collect(Collectors.groupingBy(orderExternal ->

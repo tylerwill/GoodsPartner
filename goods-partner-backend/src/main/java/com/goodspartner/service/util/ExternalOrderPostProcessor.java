@@ -76,7 +76,10 @@ public class ExternalOrderPostProcessor {
         ClientBusinessProperties.Cooler coolerProps = clientBusinessProperties.getCooler();
         orderDtos.stream()
                 .filter(orderDto -> checkCommentMatchKeywords(orderDto, coolerProps.getKeywords()))
-                .forEach(orderDto -> orderDto.setFrozen(true));
+                .forEach(orderDto -> {
+                    log.info("Order: {} has been marked as for COOLER", orderDto.getOrderNumber());
+                    orderDto.setFrozen(true);
+                });
     }
 
     /* Delivery Time Parsers */
@@ -85,7 +88,10 @@ public class ExternalOrderPostProcessor {
         ClientBusinessProperties.MiddayDelivery middayDeliveryProps = clientBusinessProperties.getMiddayDelivery();
         orderDtos.stream()
                 .filter(orderDto -> checkCommentMatchKeywords(orderDto, middayDeliveryProps.getKeywords()))
-                .forEach(orderDto -> orderDto.setDeliveryFinish(LocalTime.of(13, 0)));
+                .forEach(orderDto -> {
+                    log.info("Order: {} set as a midday delivery", orderDto.getOrderNumber());
+                    orderDto.setDeliveryFinish(LocalTime.of(13, 0));
+                });
     }
 
     void updateDeliveryTime(List<OrderDto> orderDtos) {

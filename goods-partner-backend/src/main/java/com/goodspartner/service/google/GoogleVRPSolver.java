@@ -291,7 +291,7 @@ public class GoogleVRPSolver implements VRPSolver {
 
     private long normalizeTravelTime(LocalTime time) {
         LocalTime normalizedTime = time.minusMinutes(clientRoutingProperties.getNormalizationTimeMinutes());
-        return normalizedTime.getHour() * 60; // minutes
+        return normalizedTime.getHour() * 60L; // minutes
     }
 
 }

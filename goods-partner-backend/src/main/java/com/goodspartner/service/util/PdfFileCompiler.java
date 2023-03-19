@@ -4,16 +4,19 @@ import com.goodspartner.service.dto.DocumentPdfType;
 import com.goodspartner.service.dto.PdfDocumentDto;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.*;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfCopy;
+import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfReader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Base64;
 import java.util.List;
@@ -207,16 +210,12 @@ public class PdfFileCompiler {
     }
 
     private void copyPdfPages(byte[] filePdf) {
-        try {
-            PdfReader pdfReader = new PdfReader(filePdf);
+        try (PdfReader pdfReader = new PdfReader(filePdf)) {
             int numberOfPages = pdfReader.getNumberOfPages();
-
             for (int page = FIRST_PAGE; page <= numberOfPages; page++) {
                 PdfImportedPage pdfImportedPage = pdfCopier.getImportedPage(pdfReader, page);
                 pdfCopier.addPage(pdfImportedPage);
             }
-
-            pdfReader.close();
         } catch (Exception e) {
             log.error("A problem occurred when PDF Quality documents were copied: {}", e.getMessage());
         }
