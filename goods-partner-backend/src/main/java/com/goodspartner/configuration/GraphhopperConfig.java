@@ -2,8 +2,10 @@ package com.goodspartner.configuration;
 
 import com.goodspartner.configuration.properties.GraphhopperProperties;
 import com.graphhopper.GraphHopper;
-import com.graphhopper.config.CHProfile;
 import com.graphhopper.config.Profile;
+import com.graphhopper.json.Statement;
+import com.graphhopper.routing.weighting.custom.CustomProfile;
+import com.graphhopper.util.CustomModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -42,12 +44,18 @@ public class GraphhopperConfig {
         GraphHopper hopper = new GraphHopper();
         hopper.setOSMFile(properties.getOsm().getFile());
         hopper.setGraphHopperLocation(properties.getOsm().getGraph());
-        hopper.setProfiles(new Profile(properties.getProfiles().getName())
+
+        Profile profile = new Profile(properties.getProfiles().getName())
                 .setVehicle(properties.getProfiles().getVehicle())
                 .setWeighting(properties.getProfiles().getWeighting())
-                .setTurnCosts(false));
+                .setTurnCosts(false);
 
-        hopper.getCHPreparationHandler().setCHProfiles(new CHProfile(properties.getProfiles().getVehicle()));
+        CustomModel customModel = new CustomModel();
+        customModel.addToSpeed(Statement.If("urban_density == CITY", Statement.Op.LIMIT, "30"));
+
+        hopper.setProfiles(new CustomProfile(profile).setCustomModel(customModel));
+        hopper.setUrbanDensityCalculation(300, 60, 2000, 30, 5);
+
         hopper.importOrLoad();
 
         return hopper;

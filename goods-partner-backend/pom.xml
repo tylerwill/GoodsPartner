@@ -156,7 +156,7 @@
         <dependency>
             <groupId>com.graphhopper</groupId>
             <artifactId>graphhopper-core</artifactId>
-            <version>5.3</version>
+            <version>7.0</version>
         </dependency>
 
         <dependency>
@@ -164,7 +164,17 @@
             <artifactId>graphhopper-reader-osm</artifactId>
             <version>3.0-pre3</version>
         </dependency>
-
+        <!--  https://discuss.graphhopper.com/t/custommodelparser-error-when-parsing-priority-statement/7386/5-->
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+            <version>3.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>commons-compiler</artifactId>
+            <version>3.1.2</version>
+        </dependency>
 
         <!--  SECURITY   -->
 
