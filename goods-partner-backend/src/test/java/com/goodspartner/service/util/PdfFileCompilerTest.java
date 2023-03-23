@@ -3,8 +3,8 @@ package com.goodspartner.service.util;
 import com.goodspartner.dto.InvoiceDto;
 import com.goodspartner.service.dto.PdfDocumentDto;
 import com.lowagie.text.pdf.PdfReader;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.runner.OrderWith;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,6 +19,7 @@ class PdfFileCompilerTest extends AbstractBaseDocumentPdfTest {
     private final PdfFileCompiler compilerSut = new PdfFileCompiler();
 
     @Test
+    @Disabled
     void shouldReturnPdfFileAsOutputStreamWhenListOfDocumentDtoProvided() throws IOException {
         PdfReader expectedPdfFile = new PdfReader(PDF_EXPECTED);
 

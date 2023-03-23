@@ -9,14 +9,34 @@
         "car": "Mercedes Vito (AA 2222 CT)",
         "amount": 9,
         "weight": 50.0,
-        "totalWeight": 450.0
+        "totalWeight": 450.0,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       },
       {
         "orderNumber": "986453",
         "car": "Mercedes Sprinter (AA 3333 CT)",
         "amount": 9,
         "weight": 50.0,
-        "totalWeight": 450.0
+        "totalWeight": 450.0,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       }
     ]
   },
@@ -30,28 +50,68 @@
         "car": "Mercedes Vito (AA 2222 CT)",
         "amount": 5,
         "weight": 10.0,
-        "totalWeight": 50.0
+        "totalWeight": 50.0,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       },
       {
         "orderNumber": "426457",
         "car": "Mercedes Vito (AA 2222 CT)",
         "amount": 10,
         "weight": 10.0,
-        "totalWeight": 100.0
+        "totalWeight": 100.0,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       },
       {
         "orderNumber": "432565",
         "car": "Mercedes Sprinter (AA 3333 CT)",
         "amount": 5,
         "weight": 10.0,
-        "totalWeight": 50.0
+        "totalWeight": 50.0,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       },
       {
         "orderNumber": "426457",
         "car": "Mercedes Sprinter (AA 3333 CT)",
         "amount": 10,
         "weight": 10.0,
-        "totalWeight": 100.0
+        "totalWeight": 100.0,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       }
     ]
   },
@@ -65,28 +125,68 @@
         "car": "Mercedes Vito (AA 2222 CT)",
         "amount": 10,
         "weight": 25.0,
-        "totalWeight": 250.0
+        "totalWeight": 250.0,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       },
       {
         "orderNumber": "986453",
         "car": "Mercedes Vito (AA 2222 CT)",
         "amount": 1,
         "weight": 25.0,
-        "totalWeight": 25.0
+        "totalWeight": 25.0,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       },
       {
         "orderNumber": "432565",
         "car": "Mercedes Sprinter (AA 3333 CT)",
         "amount": 10,
         "weight": 25.0,
-        "totalWeight": 250.0
+        "totalWeight": 250.0,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       },
       {
         "orderNumber": "986453",
         "car": "Mercedes Sprinter (AA 3333 CT)",
         "amount": 1,
         "weight": 25.0,
-        "totalWeight": 25.0
+        "totalWeight": 25.0,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       }
     ]
   }

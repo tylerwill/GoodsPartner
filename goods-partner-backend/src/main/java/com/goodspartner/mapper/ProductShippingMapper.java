@@ -39,7 +39,9 @@ public class ProductShippingMapper {
                                         this.getCarNameAndLicencePlate(carLoad.getCar()),
                                         product.getAmount(),
                                         product.getUnitWeight(),
-                                        product.getTotalProductWeight()))
+                                        product.getTotalProductWeight(),
+                                        product.getProductUnit(),
+                                        product.getProductPackaging()))
                                 )
                         )
                 )

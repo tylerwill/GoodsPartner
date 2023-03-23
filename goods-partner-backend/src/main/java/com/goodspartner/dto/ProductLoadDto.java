@@ -17,4 +17,6 @@ public class ProductLoadDto {
     private int amount;
     private double weight;
     private double totalWeight;
+    private ProductMeasureDetails productUnit;
+    private ProductMeasureDetails productPackaging;
 }

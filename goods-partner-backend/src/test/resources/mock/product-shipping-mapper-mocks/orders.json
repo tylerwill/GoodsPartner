@@ -9,14 +9,34 @@
         "amount": 5,
         "storeName": "Склад №1",
         "unitWeight": 10.00,
-        "totalProductWeight": 50.00
+        "totalProductWeight": 50.00,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       },
       {
         "productName": "8452 Масло 1й гатунок",
         "amount": 10,
         "storeName": "Склад №1",
         "unitWeight": 25.00,
-        "totalProductWeight": 250.00
+        "totalProductWeight": 250.00,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       }
     ],
 
@@ -34,7 +54,17 @@
         "amount": 10,
         "storeName": "Склад №1",
         "unitWeight": 10.0,
-        "totalProductWeight": 100.00
+        "totalProductWeight": 100.00,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       }
     ],
 
@@ -52,14 +82,34 @@
         "amount": 1,
         "storeName": "Склад №1",
         "unitWeight": 25.00,
-        "totalProductWeight": 25.00
+        "totalProductWeight": 25.00,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       },
       {
         "productName": "8795 Мука екстра",
         "amount": 9,
         "storeName": "Склад №1",
         "unitWeight": 50,
-        "totalProductWeight": 450.00
+        "totalProductWeight": 450.00,
+        "productUnit": {
+          "measureStandard": "кг",
+          "coefficientStandard": 1.0,
+          "amount": 10.0
+        },
+        "productPackaging": {
+          "measureStandard": "ящ",
+          "coefficientStandard": 10.0,
+          "amount": 1.0
+        }
       }
     ],
 

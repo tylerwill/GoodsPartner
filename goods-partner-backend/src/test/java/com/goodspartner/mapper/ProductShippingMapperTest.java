@@ -3,6 +3,7 @@ package com.goodspartner.mapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.goodspartner.dto.ProductLoadDto;
+import com.goodspartner.dto.ProductMeasureDetails;
 import com.goodspartner.dto.ProductShippingDto;
 import com.goodspartner.entity.Car;
 import com.goodspartner.entity.CarLoad;
@@ -57,21 +58,24 @@ class ProductShippingMapperTest {
         );
         car = cars.get(1);
 
+        ProductMeasureDetails productUnit = new ProductMeasureDetails("кг", 1.0, 10.0);
+        ProductMeasureDetails productPackaging = new ProductMeasureDetails("ящ", 10.0, 1.0);
+
         List<ProductLoadDto> flour = List.of(
-                new ProductLoadDto("986453", "Mercedes Vito (AA 2222 CT)", 9, 50, 450),
-                new ProductLoadDto("986453", "Mercedes Sprinter (AA 3333 CT)", 9, 50, 450)
+                new ProductLoadDto("986453", "Mercedes Vito (AA 2222 CT)", 9, 50, 450, productUnit, productPackaging),
+                new ProductLoadDto("986453", "Mercedes Sprinter (AA 3333 CT)", 9, 50, 450, productUnit, productPackaging)
         );
         List<ProductLoadDto> dye = List.of(
-                new ProductLoadDto("432565", "Mercedes Vito (AA 2222 CT)", 5, 10, 50),
-                new ProductLoadDto("426457", "Mercedes Vito (AA 2222 CT)", 10, 10, 100),
-                new ProductLoadDto("432565", "Mercedes Sprinter (AA 3333 CT)", 5, 10, 50),
-                new ProductLoadDto("426457", "Mercedes Sprinter (AA 3333 CT)", 10, 10, 100)
+                new ProductLoadDto("432565", "Mercedes Vito (AA 2222 CT)", 5, 10, 50, productUnit, productPackaging),
+                new ProductLoadDto("426457", "Mercedes Vito (AA 2222 CT)", 10, 10, 100, productUnit, productPackaging),
+                new ProductLoadDto("432565", "Mercedes Sprinter (AA 3333 CT)", 5, 10, 50, productUnit, productPackaging),
+                new ProductLoadDto("426457", "Mercedes Sprinter (AA 3333 CT)", 10, 10, 100, productUnit, productPackaging)
         );
         List<ProductLoadDto> oil = List.of(
-                new ProductLoadDto("432565", "Mercedes Vito (AA 2222 CT)", 10, 25, 250),
-                new ProductLoadDto("986453", "Mercedes Vito (AA 2222 CT)", 1, 25, 25),
-                new ProductLoadDto("432565", "Mercedes Sprinter (AA 3333 CT)", 10, 25, 250),
-                new ProductLoadDto("986453", "Mercedes Sprinter (AA 3333 CT)", 1, 25, 25)
+                new ProductLoadDto("432565", "Mercedes Vito (AA 2222 CT)", 10, 25, 250, productUnit, productPackaging),
+                new ProductLoadDto("986453", "Mercedes Vito (AA 2222 CT)", 1, 25, 25, productUnit, productPackaging),
+                new ProductLoadDto("432565", "Mercedes Sprinter (AA 3333 CT)", 10, 25, 250, productUnit, productPackaging),
+                new ProductLoadDto("986453", "Mercedes Sprinter (AA 3333 CT)", 1, 25, 25, productUnit, productPackaging)
         );
 
         productMap = Map.of(
