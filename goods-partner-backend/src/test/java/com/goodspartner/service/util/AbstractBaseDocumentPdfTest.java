@@ -3,7 +3,7 @@ package com.goodspartner.service.util;
 import com.goodspartner.dto.InvoiceDto;
 import com.goodspartner.dto.InvoiceProduct;
 import com.goodspartner.service.dto.DocumentPdfType;
-import com.goodspartner.service.dto.PdfDocumentDto;
+import com.goodspartner.service.dto.PdfDocumentContent;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -67,15 +67,16 @@ public abstract class AbstractBaseDocumentPdfTest {
         );
     }
 
-    protected PdfDocumentDto createPdfDocumentDto(String bill, String invoice) {
+    protected PdfDocumentContent createPdfDocumentDto(String bill, String invoice) {
         Map<DocumentPdfType, Set<String>> qualityDocuments = new HashMap<>();
         qualityDocuments.put(DocumentPdfType.PDF, Set.of("documents/pdf/pdf-to-insert.pdf"));
         qualityDocuments.put(DocumentPdfType.IMAGES, Set.of("documents/images/car.jpg", "documents/images/car.jpeg", "documents/images/car.png", "documents/images/car.bmp"));
-
-        return PdfDocumentDto.builder()
-                .bill(bill)
-                .invoice(invoice)
-                .qualityDocuments(qualityDocuments)
+        qualityDocuments.put(DocumentPdfType.BILL, Set.of(bill));
+        qualityDocuments.put(DocumentPdfType.INVOICE, Set.of(invoice));
+        return PdfDocumentContent.builder()
+//                .bill(bill)
+//                .invoice(invoice)
+                .documents(qualityDocuments)
                 .build();
     }
 

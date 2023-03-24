@@ -24,6 +24,7 @@ public interface ODataInvoiceMapper {
     @Mapping(target = "orderNumber", expression = "java(String.valueOf(Integer.parseInt(oDataInvoiceDto.getOrder().getOrderNumber())))")
     @Mapping(target = "orderDate", source = "oDataInvoiceDto.order", qualifiedByName = "mapOrderDate")
     @Mapping(target = "bankName", source ="oDataInvoiceDto.bankName")
+    @Mapping(target = "shippingDate", source ="oDataInvoiceDto.order.shippingDate")
     @Mapping(target = "companyAccount", source ="oDataInvoiceDto.companyAccount")
     @Mapping(target = "edrpouCode", expression = "java(oDataInvoiceDto.getOrganisationCodes().getEdrpouCode())")
     @Mapping(target = "mfoCode", expression ="java(oDataInvoiceDto.getMfoCode().trim())")

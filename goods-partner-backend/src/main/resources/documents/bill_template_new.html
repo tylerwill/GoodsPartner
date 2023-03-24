@@ -253,7 +253,7 @@
         <#list InvoiceDto.getProducts() as product>
         <tr style="font-size: 9pt">
             <td class="cell-width" style="border-right: .5pt solid black"></td>
-            <td style="border: .5pt solid black" colspan="2">${product.getLineNumber()}</td>
+            <td style="border: .5pt solid black" colspan="2">${product?counter}</td>
             <td style="border: .5pt solid black" colspan="17">${product.getProductName()}</td>
             <td style="border: .5pt solid black" colspan="3">${product.getTotalProductWeight()}</td>
             <td style="border: .5pt solid black" colspan="2">${product.getMeasure()}</td>

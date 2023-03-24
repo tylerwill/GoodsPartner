@@ -20,7 +20,7 @@ public abstract class AbstractODataInvoiceMapper {
 
     @Named("mapOrderDate")
     public String mapOrderDate(ODataOrderDto order) {
-        return getDateString(order.getShippingDate());
+        return getDateString(order.getCreationDate());
     }
 
     @Named("mapCompanyInformation")

@@ -1,9 +1,10 @@
 package com.goodspartner.service.document;
 
-import java.io.OutputStream;
+import com.goodspartner.service.dto.DocumentDto;
+
 
 public interface DocumentPdfService {
-    OutputStream getPdfDocumentsByRoute(Long routeId);
+    DocumentDto getPdfDocumentsByRoute(Long routeId);
 
-    OutputStream getPdfDocumentsByRoutePoint(Long routePointId);
+    DocumentDto getPdfDocumentsByRoutePoint(Long routePointId);
 }

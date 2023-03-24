@@ -1,8 +1,10 @@
 package com.goodspartner.web.controller;
 
 import com.goodspartner.service.document.DocumentPdfService;
+import com.goodspartner.service.dto.DocumentDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,17 +17,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.ByteArrayOutputStream;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequestMapping(path = "/api/v1/document")
 public class DocumentPdfController {
-    private static final String ATTACHMENT = "attachment; filename=";
-    private static final String ROUTE_FILENAME = "route_";
-    private static final String ROUTE_POINT_FILENAME = "route-point_";
+    private static final String ATTACHMENT = "attachment";
+    private static final String ORDER = "order_";
     private static final String FILENAME_DELIMITER = "_";
-    private static final String TIMESTAMP = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     private static final String FILE_EXTENSION = ".pdf";
 
     private final DocumentPdfService pdfService;
@@ -41,12 +40,13 @@ public class DocumentPdfController {
             response = ResponseEntity.class)
     public @ResponseBody ResponseEntity<StreamingResponseBody> pdfDocumentsByRoute(@ApiParam(value = "Need Route id to get PDF documents", required = true)
                                                                                    @PathVariable String routeId) {
+        DocumentDto documentDto = pdfService.getPdfDocumentsByRoute(Long.parseLong(routeId));
         ByteArrayOutputStream compoundPdfFileAccordingRouteId =
-                (ByteArrayOutputStream) pdfService.getPdfDocumentsByRoute(Long.parseLong(routeId));
+                (ByteArrayOutputStream) documentDto.getDocumentContent();
 
         return ResponseEntity
                 .ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, getFileName(routeId, ROUTE_FILENAME))
+                .header(HttpHeaders.CONTENT_DISPOSITION, getFileNameByRoute(documentDto))
                 .body(compoundPdfFileAccordingRouteId::writeTo);
     }
 
@@ -57,17 +57,41 @@ public class DocumentPdfController {
             response = ResponseEntity.class)
     public @ResponseBody ResponseEntity<StreamingResponseBody> pdfDocumentsByRoutePoint(@ApiParam(value = "Need routePoint id to get PDF documents", required = true)
                                                                                         @PathVariable String routePointId) {
+        DocumentDto documentDto = pdfService.getPdfDocumentsByRoutePoint(Long.parseLong(routePointId));
         ByteArrayOutputStream compoundPdfFileAccordingRoutePointId =
-                (ByteArrayOutputStream) pdfService.getPdfDocumentsByRoutePoint(Long.parseLong(routePointId));
+                (ByteArrayOutputStream) documentDto.getDocumentContent();
 
         return ResponseEntity
                 .ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, getFileName(routePointId, ROUTE_POINT_FILENAME))
+                .header(HttpHeaders.CONTENT_DISPOSITION, getFileNameByRoutePoint(documentDto))
                 .body(compoundPdfFileAccordingRoutePointId::writeTo);
     }
 
-    private String getFileName(String id, String fileNamePrefix) {
-        return ATTACHMENT +
-                fileNamePrefix + id + FILENAME_DELIMITER + TIMESTAMP + FILE_EXTENSION;
+    private String getFileNameByRoute(DocumentDto documentDto) {
+        String fileName = getFileName(documentDto);
+        return adaptFileName(fileName);
+    }
+
+    private String getFileNameByRoutePoint(DocumentDto documentDto) {
+        String fileNamePrefix = getOrderNumberPrefix(documentDto);
+        String fileNameSuffix = getFileName(documentDto);
+        return adaptFileName(fileNamePrefix + fileNameSuffix);
+    }
+
+    private String getFileName(DocumentDto documentDto) {
+        return documentDto.getDeliveryDate() + FILENAME_DELIMITER +
+                documentDto.getCarName() + FILENAME_DELIMITER +
+                documentDto.getCarLicencePlate() + FILE_EXTENSION;
+    }
+    private String getOrderNumberPrefix(DocumentDto documentDto) {
+        return ORDER + documentDto.getOrderNumber() + FILENAME_DELIMITER;
+    }
+
+    private String adaptFileName(String fileName) {
+        return ContentDisposition
+                .builder(ATTACHMENT)
+                .filename(fileName, StandardCharsets.UTF_8)
+                .build()
+                .toString();
     }
 }

@@ -1,13 +1,20 @@
 package com.goodspartner.service.util;
 
+import com.goodspartner.configuration.properties.ClientProperties;
 import com.goodspartner.dto.InvoiceDto;
-import com.goodspartner.service.dto.PdfDocumentDto;
+import com.goodspartner.service.document.impl.DefaultHtmlAggregator;
+import com.goodspartner.service.document.impl.DefaultFileFetcher;
+import com.goodspartner.service.document.FileFetcher;
+import com.goodspartner.service.document.impl.PdfFileCompiler;
+import com.goodspartner.service.dto.DocumentContent;
 import com.lowagie.text.pdf.PdfReader;
 import org.junit.jupiter.api.*;
 import org.junit.runner.OrderWith;
 
-import java.io.ByteArrayOutputStream;
+import org.springframework.web.reactive.function.client.WebClient;
+
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,17 +22,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PdfFileCompilerTest extends AbstractBaseDocumentPdfTest {
     private static final String PDF_EXPECTED = "documents/expected-pdf-file.pdf";
-
-    private final PdfFileCompiler compilerSut = new PdfFileCompiler();
+    private final FileFetcher connector = new DefaultFileFetcher(new ClientProperties(), WebClient.builder().build());
+    private final PdfFileCompiler compilerSut = new PdfFileCompiler(connector);
 
     @Test
     @Disabled
     void shouldReturnPdfFileAsOutputStreamWhenListOfDocumentDtoProvided() throws IOException {
         PdfReader expectedPdfFile = new PdfReader(PDF_EXPECTED);
 
-        List<PdfDocumentDto> documentDtoList = createPdfDocumentDtos();
+        List<DocumentContent> documentContentList = createPdfDocumentDtos();
 
-        ByteArrayOutputStream resultOutputStream = (ByteArrayOutputStream) compilerSut.getInstance().getCompiledPdfFile(documentDtoList);
+        ByteArrayOutputStream resultOutputStream = (ByteArrayOutputStream) compilerSut.getCompiledPdfFile(documentContentList);
 
         PdfReader resultPdfFile = new PdfReader(resultOutputStream.toByteArray());
 
@@ -45,18 +52,18 @@ class PdfFileCompilerTest extends AbstractBaseDocumentPdfTest {
 
     @Test
     void shouldThrowRuntimeExceptionWhenPdfDocumentDtoListIsNull() {
-        String expectedMessage = "The List of PdfDocumentDto cannot be null";
+        String expectedMessage = "The List of PdfDocumentContent cannot be null";
         Throwable resultException = assertThrows(RuntimeException.class,
-                () -> compilerSut.getInstance().getCompiledPdfFile(null));
+                () -> compilerSut.getCompiledPdfFile(null));
 
         assertEquals(expectedMessage, resultException.getMessage());
     }
 
     @Test
     void shouldThrowRuntimeExceptionWhenPdfDocumentDtoListIsEmpty() {
-        String expectedMessage = "The List of PdfDocumentDto cannot be empty";
+        String expectedMessage = "The List of PdfDocumentContent cannot be empty";
         Throwable resultException = assertThrows(RuntimeException.class,
-                () -> compilerSut.getInstance().getCompiledPdfFile(new ArrayList<>()));
+                () -> compilerSut.getCompiledPdfFile(new ArrayList<>()));
 
         assertEquals(expectedMessage, resultException.getMessage());
     }
@@ -64,14 +71,14 @@ class PdfFileCompilerTest extends AbstractBaseDocumentPdfTest {
     @Test
     @Disabled
     void createExpectedPdfFile() {
-        List<PdfDocumentDto> documentDtoList = createPdfDocumentDtos();
+        List<DocumentContent> documentContentList = createPdfDocumentDtos();
 
-        ByteArrayOutputStream resultOutputStream = (ByteArrayOutputStream) compilerSut.getCompiledPdfFile(documentDtoList);
+        ByteArrayOutputStream resultOutputStream = (ByteArrayOutputStream) compilerSut.getCompiledPdfFile(documentContentList);
         writeExpectedFile(resultOutputStream.toByteArray(), PDF_EXPECTED);
     }
 
-    private List<PdfDocumentDto> createPdfDocumentDtos() {
-        HtmlAggregator generator = new HtmlAggregator();
+    private List<DocumentContent> createPdfDocumentDtos() {
+        DefaultHtmlAggregator generator = new DefaultHtmlAggregator();
         InvoiceDto invoiceDto = createInvoiceDto(createProductsWithQualityDocuments());
         String resultBillHtml = generator.getEnrichedHtml(invoiceDto, HTML_TEMPLATE_BILL);
         String resultInvoiceHtml = generator.getEnrichedHtml(invoiceDto, HTML_TEMPLATE_INVOICE);

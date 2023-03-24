@@ -1,7 +1,9 @@
-package com.goodspartner.service.util;
+package com.goodspartner.service.document.impl;
 
+import com.goodspartner.service.document.FileCompiler;
+import com.goodspartner.service.document.FileFetcher;
+import com.goodspartner.service.dto.DocumentContent;
 import com.goodspartner.service.dto.DocumentPdfType;
-import com.goodspartner.service.dto.PdfDocumentDto;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.BaseFont;
@@ -9,7 +11,6 @@ import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
@@ -17,15 +18,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
-import java.util.Base64;
+import java.util.Set;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.Iterator;
+import java.util.Base64;
 
-@Component
 @Slf4j
-public class PdfFileCompiler {
+public class PdfFileCompiler implements FileCompiler {
 
     private static final String FONT_ARIAL = "documents/fonts/arial.ttf";
     private final static int NUMBER_OF_COPIES = 2;
@@ -36,32 +36,30 @@ public class PdfFileCompiler {
     private final ByteArrayOutputStream pdfFileHost;
     private ITextRenderer renderer;
     private final PdfCopy pdfCopier;
+    private final FileFetcher fileFetcher;
+    private List<DocumentContent> pdfDocumentContents;
 
-    private List<PdfDocumentDto> pdfDocumentDtos;
-
-    public PdfFileCompiler() {
+    public PdfFileCompiler(FileFetcher fileFetcher) {
         this(new ITextRenderer(),
                 new ByteArrayOutputStream(DEFAULT_BUFFER_SIZE),
-                new Document(PageSize.A4));
+                new Document(PageSize.A4),
+                fileFetcher);
     }
 
     public PdfFileCompiler(ITextRenderer renderer,
                            ByteArrayOutputStream pdfFileHost,
-                           Document resultPdfFile) {
+                           Document resultPdfFile,
+                           FileFetcher fileFetcher) {
         this.renderer = renderer;
         this.pdfFileHost = pdfFileHost;
         this.resultPdfFile = resultPdfFile;
         pdfCopier = new PdfCopy(resultPdfFile, pdfFileHost);
+        this.fileFetcher = fileFetcher;
     }
 
-    public PdfFileCompiler getInstance() {
-        return new PdfFileCompiler();
-    }
-
-    public OutputStream getCompiledPdfFile(List<PdfDocumentDto> pdfDocumentDtos) {
+    public OutputStream getCompiledPdfFile(List<DocumentContent> pdfDocumentContents) {
         try {
-            setPdfDocumentDtos(pdfDocumentDtos);
-
+            setPdfDocumentDtos(pdfDocumentContents);
             insertToResultPdfFile();
 
             return pdfFileHost;
@@ -70,51 +68,50 @@ public class PdfFileCompiler {
         }
     }
 
-    private void setPdfDocumentDtos(List<PdfDocumentDto> pdfDocumentDtos) {
-        requiredNotNull(pdfDocumentDtos);
-        requiredNotEmpty(pdfDocumentDtos);
-        this.pdfDocumentDtos = pdfDocumentDtos;
+    private void setPdfDocumentDtos(List<DocumentContent> pdfDocumentContents) {
+        requiredNotNull(pdfDocumentContents);
+        requiredNotEmpty(pdfDocumentContents);
+        this.pdfDocumentContents = pdfDocumentContents;
     }
 
-    private void requiredNotNull(List<PdfDocumentDto> pdfDocumentDtos) {
-        if (Objects.isNull(pdfDocumentDtos)) {
-            throw new RuntimeException("The List of PdfDocumentDto cannot be null");
+    private void requiredNotNull(List<DocumentContent> pdfDocumentContents) {
+        if (Objects.isNull(pdfDocumentContents)) {
+            throw new RuntimeException("The List of PdfDocumentContent cannot be null");
         }
     }
 
-    private void requiredNotEmpty(List<PdfDocumentDto> pdfDocumentDtos) {
-        if (pdfDocumentDtos.isEmpty()) {
-            throw new RuntimeException("The List of PdfDocumentDto cannot be empty");
+    private void requiredNotEmpty(List<DocumentContent> pdfDocumentContents) {
+        if (pdfDocumentContents.isEmpty()) {
+            throw new RuntimeException("The List of PdfDocumentContent cannot be empty");
         }
     }
 
     private void insertToResultPdfFile() throws IOException {
         resultPdfFile.open();
 
-        for (PdfDocumentDto pdfDocumentDto : pdfDocumentDtos) {
-            insertBillAndInvoicesAndImagesQualityDocuments(pdfDocumentDto);
-            insertPdfQualityDocuments(pdfDocumentDto);
+        for (DocumentContent pdfDocumentContent : pdfDocumentContents) {
+            insertBillAndInvoicesAndImagesQualityDocuments(pdfDocumentContent);
+            insertPdfQualityDocuments(pdfDocumentContent);
         }
 
         resultPdfFile.close();
     }
 
-    private void insertBillAndInvoicesAndImagesQualityDocuments(PdfDocumentDto pdfDocumentDto) throws IOException {
+    private void insertBillAndInvoicesAndImagesQualityDocuments(DocumentContent pdfDocumentContent) throws IOException {
         byte[] pdfOfBillAndInvoicesAndImagesQualityDocuments =
-                getPdfOfBillAndInvoicesAndImagesQualityDocuments(pdfDocumentDto);
+                getPdfOfBillAndInvoicesAndImagesQualityDocuments(pdfDocumentContent);
 
         copyPdfPages(pdfOfBillAndInvoicesAndImagesQualityDocuments);
-
     }
 
-    private byte[] getPdfOfBillAndInvoicesAndImagesQualityDocuments(PdfDocumentDto pdfDocumentDto) throws IOException {
+    private byte[] getPdfOfBillAndInvoicesAndImagesQualityDocuments(DocumentContent pdfDocumentContent) throws IOException {
         renderer = new ITextRenderer();
         ByteArrayOutputStream pdfHost = new ByteArrayOutputStream(DEFAULT_BUFFER_SIZE);
         setFontArial();
 
-        insertBill(pdfDocumentDto, pdfHost);
-        insertInvoiceTwice(pdfDocumentDto);
-        insertImagesQualityDocuments(pdfDocumentDto);
+        insertBill(pdfDocumentContent, pdfHost);
+        insertInvoiceTwice(pdfDocumentContent);
+        insertImagesQualityDocuments(pdfDocumentContent);
 
         renderer.finishPDF();
 
@@ -126,28 +123,34 @@ public class PdfFileCompiler {
         fontResolver.addFont(FONT_ARIAL, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
     }
 
-    private void insertBill(PdfDocumentDto pdfDocumentDto, OutputStream outputStream) {
-        renderer.setDocumentFromString(pdfDocumentDto.getBill());
+    private void insertBill(DocumentContent pdfDocumentContent, OutputStream outputStream) {
+        String bill = getDocument(pdfDocumentContent, DocumentPdfType.BILL);
+        renderer.setDocumentFromString(bill);
         renderer.layout();
         renderer.createPDF(outputStream, false);
     }
 
-    private void insertInvoiceTwice(PdfDocumentDto pdfDocumentDto) {
-        String htmlInvoice = pdfDocumentDto.getInvoice();
+    private void insertInvoiceTwice(DocumentContent pdfDocumentContent) {
+        String htmlInvoice = getDocument(pdfDocumentContent, DocumentPdfType.INVOICE);
         for (int i = 0; i < NUMBER_OF_COPIES; i++) {
             writeToPdfDocument(htmlInvoice);
         }
     }
 
+    private String getDocument(DocumentContent documentContent, DocumentPdfType documentPdfType) {
+        Set<String> documents = documentContent.getDocument(documentPdfType);
+        Iterator<String> stringIterator = documents.iterator();
+        return stringIterator.next();
+    }
+
     private void writeToPdfDocument(String docAsString) {
-//        String preparedImage = getImage(image);
         renderer.setDocumentFromString(docAsString);
         renderer.layout();
         renderer.writeNextDocument();
     }
 
-    private void insertImagesQualityDocuments(PdfDocumentDto pdfDocumentDto) {
-        Set<String> qualityDocImages = pdfDocumentDto.getQualityDocuments().get(DocumentPdfType.IMAGES);
+    private void insertImagesQualityDocuments(DocumentContent pdfDocumentContent) {
+        Set<String> qualityDocImages = pdfDocumentContent.getDocument(DocumentPdfType.IMAGES);
 
         if (qualityDocImages.isEmpty()) {
             return;
@@ -169,11 +172,11 @@ public class PdfFileCompiler {
     }
 
     private byte[] openSourceFileFromExternalHost(String fileUrl) throws IOException {
-        try (InputStream fileFromExternalHost = new URL(fileUrl).openStream()) {
-            Objects.requireNonNull(fileFromExternalHost);
-            return fileFromExternalHost.readAllBytes();
-        } catch (IOException e) {
-            log.error("There was a problem with a Quality document {} at external host: {}", fileUrl, e.getMessage());
+        String updatedUrl = fileFetcher.updateUrl(fileUrl);
+        try {
+            return fileFetcher.getFileThroughInternet(updatedUrl);
+        } catch (Exception e) {
+            log.warn("There was a problem with a Quality document {} at external host: {}", updatedUrl, e.getMessage());
             throw new IOException(e);
         }
     }
@@ -183,7 +186,7 @@ public class PdfFileCompiler {
             Objects.requireNonNull(inputStream);
             return inputStream.readAllBytes();
         } catch (Exception e) {
-            log.error("There was a problem with a Quality document {} at local host: {}", fileUrl, e.getMessage());
+            log.warn("There was a problem with a Quality document {} at local host: {}", fileUrl, e.getMessage());
             return null;
         }
     }
@@ -196,8 +199,8 @@ public class PdfFileCompiler {
                 "</html>";
     }
 
-    private void insertPdfQualityDocuments(PdfDocumentDto pdfDocumentDto) {
-        Set<String> pdfQualityDocumentUrls = pdfDocumentDto.getQualityDocuments().get(DocumentPdfType.PDF);
+    private void insertPdfQualityDocuments(DocumentContent pdfDocumentContent) {
+        Set<String> pdfQualityDocumentUrls = pdfDocumentContent.getDocument(DocumentPdfType.PDF);
 
         if (pdfQualityDocumentUrls.isEmpty()) {
             return;
@@ -217,7 +220,7 @@ public class PdfFileCompiler {
                 pdfCopier.addPage(pdfImportedPage);
             }
         } catch (Exception e) {
-            log.error("A problem occurred when PDF Quality documents were copied: {}", e.getMessage());
+            log.warn("A problem occurred when PDF Quality documents were copied: {}", e.getMessage());
         }
     }
 }

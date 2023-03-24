@@ -2,6 +2,7 @@ package com.goodspartner.dto;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -37,4 +38,6 @@ public class InvoiceDto {
     private String bankName;
     private String edrpouCode;
     private String mfoCode;
+
+    private LocalDate shippingDate;
 }

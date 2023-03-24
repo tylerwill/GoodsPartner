@@ -1,6 +1,7 @@
 package com.goodspartner.service.util;
 
 import com.goodspartner.dto.InvoiceDto;
+import com.goodspartner.service.document.impl.DefaultHtmlAggregator;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -8,9 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class HtmlAggregatorTest extends AbstractBaseDocumentPdfTest {
+public class DefaultHtmlAggregatorTest extends AbstractBaseDocumentPdfTest {
 
-    protected HtmlAggregator generatorSut = new HtmlAggregator();
+    protected DefaultHtmlAggregator generatorSut = new DefaultHtmlAggregator();
 
     @Test
     void shouldReturnHtmlAsStringWithInsertedDataOfBill() {
