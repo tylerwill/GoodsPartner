@@ -5,15 +5,12 @@ import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
-import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.User;
-import com.goodspartner.event.Action;
 import com.goodspartner.event.ActionType;
 import com.goodspartner.event.EventType;
-import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.AddressExternalNotFoundException;
 import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.exception.OrderNotFoundException;
@@ -23,7 +20,7 @@ import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.OrderExternalRepository;
-import com.goodspartner.service.LiveEventService;
+import com.goodspartner.service.EventService;
 import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.service.UserService;
 import com.goodspartner.web.controller.request.ExcludeOrderRequest;
@@ -46,6 +43,7 @@ import java.util.stream.Collectors;
 import static com.goodspartner.entity.DeliveryFormationStatus.ORDERS_LOADED;
 import static com.goodspartner.entity.DeliveryFormationStatus.READY_FOR_CALCULATION;
 import static com.goodspartner.entity.User.UserRole.DRIVER;
+import static com.goodspartner.event.EventMessageTemplate.DELIVERY_READY;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -61,7 +59,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
     private final DeliveryRepository deliveryRepository;
     private final CarRepository carRepository;
     // Services
-    private final LiveEventService liveEventService;
+    private final EventService eventService;
     private final UserService userService;
 
     @Transactional(readOnly = true)
@@ -176,10 +174,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
             delivery.setFormationStatus(DeliveryFormationStatus.READY_FOR_CALCULATION);
             deliveryRepository.save(delivery);
             // Publishing refresh event to FE
-            liveEventService.publishToAdminAndLogistician(
-                    new LiveEvent(DeliveryHistoryTemplate.DELIVERY_READY.getTemplate(),
-                            EventType.INFO,
-                            new Action(ActionType.DELIVERY_UPDATED, delivery.getId())));
+            eventService.publishForLogist(DELIVERY_READY.getTemplate(), EventType.INFO, ActionType.DELIVERY_UPDATED, delivery.getId());
         }
     }
 

@@ -1,39 +1,13 @@
 package com.goodspartner.service;
 
-import com.goodspartner.entity.Delivery;
-import com.goodspartner.entity.DeliveryHistoryTemplate;
-import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
-import com.goodspartner.entity.RoutePoint;
-import com.goodspartner.event.LiveEvent;
+import com.goodspartner.event.ActionType;
+import com.goodspartner.event.EventType;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface EventService {
+    void publishForLogist(String eventMessage, EventType eventType, ActionType actionType, UUID deliveryId);
 
-    void publishDeliveryEvent(DeliveryHistoryTemplate template, UUID id);
-
-    void publishRouteStatusChangeAuto(Route route);
-
-    void publishDeliveryCompleted(Delivery delivery);
-
-    void publishRouteUpdated(Route route);
-
-    void publishRoutePointUpdated(RoutePoint routePoint, Route route);
-
-    void publishEvent(LiveEvent event);
-
-    void publishCoordinatesUpdated(RoutePoint routePoint);
-
-    void publishDeliveryTimeRangeWarning(Route route);
-
-    /* ORDERS events */
-
-    void publishOrdersStatus(DeliveryHistoryTemplate template, UUID deliveryId);
-
-    void publishDroppedOrdersEvent(UUID deliveryId, List<OrderExternal> orders);
-
-    void publishRoutesUpdated(UUID deliveryId);
-
+    void publishForDriverAndLogist(String eventMessage, EventType eventType, ActionType actionType, Route route);
 }

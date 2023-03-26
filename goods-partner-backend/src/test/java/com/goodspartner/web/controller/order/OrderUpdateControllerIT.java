@@ -134,7 +134,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
                         .content(objectMapper.writeValueAsString(orderDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-delivery-type-postal-response.json")));
-        assertSelectCount(3); // OrderById + isAllOrdersValid verification + Delivery
+        assertSelectCount(4); // OrderById + isAllOrdersValid verification + Delivery
         assertUpdateCount(2); // Update Orders + Addresses + Delivery
 
         Delivery deliveryAfter = deliveryRepository.findByIdWithOrders(DELIVERY_ID).get();
@@ -176,7 +176,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-response.json")));
-        assertSelectCount(4); // OrderById + AddressExternal + InvalidOrders + DeliveryForUpdate
+        assertSelectCount(5); // OrderById + AddressExternal + InvalidOrders + DeliveryForUpdate + Event
         assertUpdateCount(3); // Update Orders + Addresses + Delivery
 
         Delivery deliveryAfter = deliveryRepository.findByIdWithOrders(DELIVERY_ID).get();

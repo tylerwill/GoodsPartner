@@ -5,7 +5,6 @@ import com.goodspartner.dto.RoutePointDto;
 import com.goodspartner.facade.RoutingFacade;
 import com.goodspartner.mapper.RouteMapper;
 import com.goodspartner.service.RouteService;
-import com.goodspartner.web.action.RouteAction;
 import com.goodspartner.web.controller.response.RouteActionResponse;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -49,10 +48,15 @@ public class RouteController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
-    @PostMapping("/{id}/{action}")
-    public RouteActionResponse apply(@PathVariable long id,
-                                     @PathVariable String action) {
-        return routingFacade.updateRoute(id, RouteAction.of(action));
+    @PostMapping("/{routeId}/start")
+    public RouteActionResponse start(@PathVariable long routeId) {
+        return routingFacade.startRoute(routeId);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
+    @PostMapping("/{routeId}/complete")
+    public RouteActionResponse complete(@PathVariable long routeId) {
+        return routingFacade.completeRoute(routeId);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")

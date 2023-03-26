@@ -24,15 +24,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static com.goodspartner.entity.User.UserRole.DRIVER;
+
 @Slf4j
 @Service
 @AllArgsConstructor
 public class DefaultLiveEventService implements LiveEventService {
 
-    private static final LiveEvent HEAR_BEAT_EVENT = new LiveEvent("Keep alive", EventType.HEARTBEAT);
+    private static final LiveEvent HEAR_BEAT_EVENT =
+            LiveEvent.builder()
+                    .message("Keep alive")
+                    .type(EventType.HEARTBEAT)
+                    .build();
 
-    private static final int TIME_TO_LIVE = 60000;
-    private static final String DRIVER_ROLE = "DRIVER";
+    private static final int TIME_TO_LIVE = 60000 * 10; // 10 min keep active sessions before removal from system
 
     private final Map<UserDto, List<Subscriber>> listeners = new ConcurrentHashMap<>();
     private final UserService userService;
@@ -91,7 +96,7 @@ public class DefaultLiveEventService implements LiveEventService {
                     // Remove full group
                     boolean groupEmpty = subscribers.isEmpty();
                     if (groupEmpty) {
-                        log.info("Removing empty subscribers group for: {}",  entry.getKey().getEmail());
+                        log.info("Removing empty subscribers group for: {}", entry.getKey().getEmail());
                     }
                     return groupEmpty;
                 });
@@ -106,12 +111,12 @@ public class DefaultLiveEventService implements LiveEventService {
 
     @NotNull
     private Predicate<UserDto> isAdminOrLogisticianOrResponsibleDriver(User driver) {
-        return user -> !user.getRole().equals(DRIVER_ROLE) || driver.getEmail().equals(user.getEmail());
+        return user -> !user.getRole().equals(DRIVER.name()) || driver.getEmail().equals(user.getEmail());
     }
 
     @NotNull
     private Predicate<UserDto> isAdminOrLogistician() {
-        return user -> !user.getRole().equals(DRIVER_ROLE);
+        return user -> !user.getRole().equals(DRIVER.name());
     }
 
     @Getter

@@ -37,7 +37,7 @@ class DefaultCarServiceITest extends AbstractBaseITest {
         UserDto userDto = new UserDto(1,
                 "Oleg Dudka",
                 "test-driver@gmail.com",
-                User.UserRole.DRIVER.getName(),
+                User.UserRole.DRIVER.name(),
                 true);
 
         CarDto carDto = new CarDto();
@@ -96,7 +96,7 @@ class DefaultCarServiceITest extends AbstractBaseITest {
         UserDto userDto = new UserDto(555,
                 "Vasya Pupkin",
                 "userEmail@gmail.com",
-                User.UserRole.DRIVER.getName(),
+                User.UserRole.DRIVER.name(),
                 true);
 
         CarDto payload = new CarDto();
@@ -132,7 +132,7 @@ class DefaultCarServiceITest extends AbstractBaseITest {
         UserDto userDto = new UserDto(555,
                 "Vasya Pupkin",
                 "userEmail@gmail.com",
-                User.UserRole.DRIVER.getName(),
+                User.UserRole.DRIVER.name(),
                 true);
 
         CarDto payload = new CarDto();

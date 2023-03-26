@@ -67,7 +67,7 @@ public class RoutePointControllerIT extends AbstractWebITest {
                 .andExpect(jsonPath("$.routePointId").value("1052"))
                 .andExpect(jsonPath("$.routePointStatus").value("DONE"))
                 .andExpect(jsonPath("$.pointCompletedAt").value(any(String.class)));
-        assertSelectCount(10);
+        assertSelectCount(9);
         assertInsertCount(2);
         assertUpdateCount(3);
     }
@@ -92,7 +92,7 @@ public class RoutePointControllerIT extends AbstractWebITest {
                 .andExpect(jsonPath("$.routePointId").value("1052"))
                 .andExpect(jsonPath("$.routePointStatus").value("DONE"))
                 .andExpect(jsonPath("$.pointCompletedAt").value(any(String.class)));
-        assertSelectCount(13);
+        assertSelectCount(12);
         assertInsertCount(3);
         assertUpdateCount(3);
     }

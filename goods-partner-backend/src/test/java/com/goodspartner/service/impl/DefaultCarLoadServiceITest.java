@@ -26,7 +26,7 @@ class DefaultCarLoadServiceITest extends AbstractBaseITest {
 
     private static final String DEFAULT_DRIVER_NAME = "Test Driver";
     private static final String DEFAULT_DRIVER_EMAIL = "test-driver@gmail.com";
-    private static final String DRIVER_ROLE = DRIVER.getName();
+    private static final String DRIVER_ROLE = DRIVER.name();
 
     @Autowired
     private DefaultCarLoadService carLoadService;

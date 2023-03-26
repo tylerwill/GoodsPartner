@@ -39,8 +39,8 @@ public class DefaultDeliveryHistoryService implements DeliveryHistoryService {
     }
 
     private DeliveryHistory createNewDeliveryHistory(DeliveryAuditEvent event) {
-        Delivery delivery = deliveryRepository.findById(event.getDeliveryId())
-                .orElseThrow(() -> new DeliveryNotFoundException(event.getDeliveryId()));
+        Delivery delivery = deliveryRepository.findById(event.deliveryId())
+                .orElseThrow(() -> new DeliveryNotFoundException(event.deliveryId()));
 
         Map<String, String> currentAuditorData = AuditorBuilder.getCurrentAuditorData();
         String role = currentAuditorData.get("roleTranslated");
@@ -51,7 +51,7 @@ public class DefaultDeliveryHistoryService implements DeliveryHistoryService {
                 .createdAt(LocalDateTime.now())
                 .role(role)
                 .userEmail(userEmail)
-                .action(event.getAction())
+                .action(event.action())
                 .build();
     }
 }

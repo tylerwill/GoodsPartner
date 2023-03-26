@@ -18,6 +18,8 @@ public interface DeliveryService {
 
     Delivery add(DeliveryDto deliveryDto);
 
+    void update(Delivery delivery);
+
     Delivery delete(UUID id);
 
     /* --- Data retrieval --- */

@@ -1,16 +1,17 @@
 package com.goodspartner.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @AllArgsConstructor
 public enum DeliveryFormationStatus {
-    ORDERS_LOADING("ORDERS_LOADING"),
-    ORDERS_LOADED("ORDERS_LOADED"),
-    READY_FOR_CALCULATION("READY_FOR_CALCULATION"),
-    ROUTE_CALCULATION("ROUTE_CALCULATION"),
-    CALCULATION_COMPLETED("CALCULATION_COMPLETED");
 
-    @Getter
-    private final String status;
+    ORDERS_LOADING,
+    ORDERS_LOADING_FAILED,
+    ORDERS_LOADED,
+
+    READY_FOR_CALCULATION,
+    ROUTE_CALCULATION,
+    ROUTE_CALCULATION_FAILED,
+    CALCULATION_COMPLETED,
+
 }

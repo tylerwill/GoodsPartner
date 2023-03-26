@@ -86,6 +86,7 @@ public class DeliveryController {
         return deliveryMapper.toDeliveryDto(deliveryFacade.calculateDelivery(id));
     }
 
+    // TODO require refactoring
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
     @PostMapping("/{id}/{action}")
     @ApiOperation(value = "Approve Delivery",

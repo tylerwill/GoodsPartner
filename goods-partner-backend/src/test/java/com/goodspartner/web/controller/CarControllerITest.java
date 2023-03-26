@@ -49,7 +49,7 @@ public class CarControllerITest extends AbstractWebITest {
         UserDto userDto = new UserDto(1,
                 "Oleg Dudka",
                 "test-driver@gmail.com",
-                User.UserRole.DRIVER.getName(),
+                User.UserRole.DRIVER.name(),
                 true);
 
         CarDto carDto = new CarDto(
@@ -95,7 +95,7 @@ public class CarControllerITest extends AbstractWebITest {
         UserDto userDto = new UserDto(555,
                 "Vasya Pupkin",
                 "userEmail@gmail.com",
-                User.UserRole.DRIVER.getName(),
+                User.UserRole.DRIVER.name(),
                 true);
 
         CarDto carDto = new CarDto();
@@ -316,7 +316,7 @@ public class CarControllerITest extends AbstractWebITest {
         UserDto userDto = new UserDto(555,
                 "Vasya Pupkin",
                 "userEmail@gmail.com",
-                User.UserRole.DRIVER.getName(),
+                User.UserRole.DRIVER.name(),
                 true);
 
         CarDto payload = new CarDto();

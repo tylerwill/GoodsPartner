@@ -3,13 +3,10 @@ package com.goodspartner.service.util;
 import com.goodspartner.entity.CarLoad;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
-import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
-import com.goodspartner.event.Action;
 import com.goodspartner.event.ActionType;
 import com.goodspartner.event.EventType;
-import com.goodspartner.event.LiveEvent;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.OrderExternalRepository;
@@ -26,6 +23,15 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.UUID;
 
+import static com.goodspartner.event.EventMessageTemplate.DELIVERY_CALCULATED;
+import static com.goodspartner.event.EventMessageTemplate.DELIVERY_CALCULATION_FAILED;
+import static com.goodspartner.event.EventMessageTemplate.DROPPED_ORDERS;
+import static com.goodspartner.event.EventMessageTemplate.EventPlaceholder.DROPPED_ORDERS_AMOUNT;
+import static com.goodspartner.event.EventMessageTemplate.ORDERS_UPDATED;
+import static com.goodspartner.event.EventMessageTemplate.ROUTES_UPDATED;
+import static com.goodspartner.event.EventType.ERROR;
+import static com.goodspartner.event.EventType.SUCCESS;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -40,8 +46,9 @@ public class DeliveryCalculationHelper {
     private final DeliveryRepository deliveryRepository;
 
     @Async("goodsPartnerThreadPoolTaskExecutor")
-    public void calculate(UUID deliveryId) {
-        log.info("Started calculation for delivery with id: {}", deliveryId);
+    public void calculate(Delivery delivery) {
+        UUID deliveryId = delivery.getId();
+        log.info("Started calculation for delivery with id: {} by date: {}", deliveryId, delivery.getDeliveryDate());
 
         try {
             List<OrderExternal> includedOrders = orderExternalRepository.findOrdersForCalculation(deliveryId);
@@ -58,29 +65,41 @@ public class DeliveryCalculationHelper {
             List<Route> routes = ListUtils.union(coolerRoutes, regularRoutes);
             List<CarLoad> carLoads = ListUtils.union(coolerCarLoad, regularCarLoads);
 
-            // Update Delivery
+            // Update Delivery require separate transaction to avoid lazyinitexcp
             txWrapper.runNewTransaction(() -> {
-                log.info("Saving calculation result ot delivery");
-                Delivery delivery = deliveryRepository.findById(deliveryId)
+                log.info("Saving calculation result ot delivery, id: {}, date: {}", delivery.getId(), delivery.getDeliveryDate());
+                Delivery savedDelivery = deliveryRepository.findById(deliveryId)
                         .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
-                delivery.setRoutes(routes);
-                delivery.setRouteCount(routes.size());
-                delivery.setCarLoads(carLoads);
-                delivery.setFormationStatus(DeliveryFormationStatus.CALCULATION_COMPLETED);
-                return deliveryRepository.save(delivery);
+                savedDelivery.setRoutes(routes);
+                savedDelivery.setRouteCount(routes.size());
+                savedDelivery.setCarLoads(carLoads);
+                savedDelivery.setFormationStatus(DeliveryFormationStatus.CALCULATION_COMPLETED);
+                return deliveryRepository.save(savedDelivery);
             });
 
-            log.info("Sending notification for calculation status");
-            eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CALCULATED, deliveryId);
-            eventService.publishDroppedOrdersEvent(deliveryId, includedOrders);
-            eventService.publishRoutesUpdated(deliveryId);
-            // TODO routeUpdate required on FE as well
+            log.info("Sending notification for calculation status for delivery, id: {}, date: {}", delivery.getId(), delivery.getDeliveryDate());
+            publishEvents(deliveryId, includedOrders);
             log.info("Finished calculation for delivery with id: {}", deliveryId);
         } catch (Exception exception) {
-            // TODO set delivery failed and allow recalculation from FE side
-            eventService.publishEvent(new LiveEvent("Помилка розрахування доставки", EventType.ERROR,
-                    new Action(ActionType.INFO, deliveryId)));
-            throw new RuntimeException(exception);
+            // Update delivery status
+            delivery.setFormationStatus(DeliveryFormationStatus.ROUTE_CALCULATION_FAILED);
+            deliveryRepository.save(delivery);
+            // Notify failed
+            eventService.publishForLogist(DELIVERY_CALCULATION_FAILED.getTemplate(), ERROR, ActionType.DELIVERY_UPDATED, deliveryId);
+            log.error("Exception while async delivery calculation: {}", delivery, exception);
+        }
+    }
+
+    private void publishEvents(UUID deliveryId, List<OrderExternal> includedOrders) {
+        eventService.publishForLogist(DELIVERY_CALCULATED.withAudit(), SUCCESS, ActionType.DELIVERY_UPDATED, deliveryId);
+        eventService.publishForLogist(ROUTES_UPDATED.getTemplate(), EventType.INFO, ActionType.ROUTE_UPDATED, deliveryId);
+
+        List<OrderExternal> droppedOrders = includedOrders.stream().filter(OrderExternal::isDropped).toList();
+        if (droppedOrders.isEmpty()) {
+            eventService.publishForLogist(ORDERS_UPDATED.getTemplate(), EventType.INFO, ActionType.ORDER_UPDATED, deliveryId);
+        } else {
+            String eventMessage = DROPPED_ORDERS.withValues(DROPPED_ORDERS_AMOUNT, String.valueOf(droppedOrders.size()));
+            eventService.publishForLogist(eventMessage, EventType.WARNING, ActionType.ORDER_UPDATED, deliveryId);
         }
     }
 

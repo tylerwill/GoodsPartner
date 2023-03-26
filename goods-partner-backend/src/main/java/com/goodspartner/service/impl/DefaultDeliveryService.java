@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -127,5 +128,13 @@ public class DefaultDeliveryService implements DeliveryService {
         deliveryDto.setFormationStatus(ORDERS_LOADING);
 
         return deliveryRepository.save(deliveryMapper.toDelivery(deliveryDto));
+    }
+
+    @Override
+    public void update(Delivery delivery) {
+        if (Objects.isNull(delivery.getId())) {
+            throw new IllegalArgumentException("Not a persistent delivery by date: " + delivery.getDeliveryDate());
+        }
+        deliveryRepository.save(delivery); // assume to update delivery with id;
     }
 }

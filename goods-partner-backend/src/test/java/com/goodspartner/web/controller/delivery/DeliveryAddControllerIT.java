@@ -11,17 +11,19 @@ import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
-import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.event.Action;
+import com.goodspartner.event.ActionType;
+import com.goodspartner.event.EventMessageTemplate;
 import com.goodspartner.event.EventType;
 import com.goodspartner.event.LiveEvent;
 import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.OrderExternalRepository;
-import com.goodspartner.service.EventService;
 import com.goodspartner.service.IntegrationService;
+import com.goodspartner.service.LiveEventService;
 import com.goodspartner.service.client.GoogleClient;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.Geometry;
@@ -29,8 +31,6 @@ import com.google.maps.model.LatLng;
 import com.google.maps.model.LocationType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -55,6 +55,8 @@ import static com.goodspartner.entity.DeliveryFormationStatus.ORDERS_LOADING;
 import static com.goodspartner.entity.DeliveryFormationStatus.READY_FOR_CALCULATION;
 import static com.goodspartner.entity.DeliveryStatus.DRAFT;
 import static com.goodspartner.entity.DeliveryType.REGULAR;
+import static com.goodspartner.event.EventType.INFO;
+import static com.goodspartner.event.EventType.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -98,7 +100,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
     @MockBean
     private GoogleClient googleClient;
     @MockBean
-    private EventService eventService;
+    private LiveEventService liveEventService;
 
     @Autowired
     private DeliveryRepository deliveryRepository;
@@ -106,9 +108,6 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
     private AddressExternalRepository addressExternalRepository;
     @Autowired
     private OrderExternalRepository orderExternalRepository;
-
-    @Captor
-    private ArgumentCaptor<LiveEvent> liveEventArgumentCaptor;
 
     // Query count is not applicable in this test due to Async thread
     @Test
@@ -205,17 +204,32 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         // Then
         Thread.sleep(2000); // Waiting while async thread completes
         verifyOrdersFetchedDeliveryEnriched(addedDelivery, 0); // Rescheduled + Known one
-        verifyDeliveryState(addedDelivery, ORDERS_LOADING);
+        verifyDeliveryState(addedDelivery, DeliveryFormationStatus.ORDERS_LOADING_FAILED);
 
-        Mockito.verify(eventService, times(1))
-                .publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CREATED, addedDelivery.getId());
-        Mockito.verify(eventService, times(1))
-                .publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADING, addedDelivery.getId());
-        Mockito.verify(eventService, times(1)).publishEvent(liveEventArgumentCaptor.capture());
+        LiveEvent deliveryCreatedEvent = LiveEvent.builder()
+                .message("Логіст Test Logist створив(ла) доставку")
+                .type(INFO)
+                .action(new Action(ActionType.DELIVERY_CREATED, addedDelivery.getId()))
+                .build();
+        Mockito.verify(liveEventService, times(1))
+                .publishToAdminAndLogistician(deliveryCreatedEvent);
 
-        LiveEvent errorLiveEvent = liveEventArgumentCaptor.getValue();
-        assertEquals(EventType.ERROR, errorLiveEvent.getType());
-        assertEquals("Помилка під час вивантаження замовлень з 1С", errorLiveEvent.getMessage());
+        LiveEvent ordersLoadingEvent = LiveEvent.builder()
+                .message(EventMessageTemplate.ORDERS_LOADING.getTemplate())
+                .type(INFO)
+                .action(new Action(ActionType.INFO, addedDelivery.getId()))
+                .build();
+        Mockito.verify(liveEventService, times(1))
+                .publishToAdminAndLogistician(ordersLoadingEvent);
+
+
+        LiveEvent ordersFailedEvent = LiveEvent.builder()
+                .message(EventMessageTemplate.ORDERS_LOADING_FAILED.getTemplate())
+                .type(EventType.ERROR)
+                .action(new Action(ActionType.DELIVERY_UPDATED, addedDelivery.getId()))
+                .build();
+        Mockito.verify(liveEventService, times(1))
+                .publishToAdminAndLogistician(ordersFailedEvent);
     }
 
     private void verifyDeliveryState(DeliveryDto addedDeliveryResponse,
@@ -271,14 +285,30 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
     }
 
     private void verifyRequiredEventsEmmitted(DeliveryDto addedDelivery) {
-        Mockito.verify(eventService, times(1))
-                .publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CREATED, addedDelivery.getId());
 
-        Mockito.verify(eventService, times(1))
-                .publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADING, addedDelivery.getId());
+        LiveEvent deliveryCreatedEvent = LiveEvent.builder()
+                .message("Логіст Test Logist створив(ла) доставку")
+                .type(INFO)
+                .action(new Action(ActionType.DELIVERY_CREATED, addedDelivery.getId()))
+                .build();
+        Mockito.verify(liveEventService, times(1))
+                .publishToAdminAndLogistician(deliveryCreatedEvent);
 
-        Mockito.verify(eventService, times(1))
-                .publishOrdersStatus(DeliveryHistoryTemplate.ORDERS_LOADED, addedDelivery.getId());
+        LiveEvent ordersLoadingEvent = LiveEvent.builder()
+                .message(EventMessageTemplate.ORDERS_LOADING.getTemplate())
+                .type(INFO)
+                .action(new Action(ActionType.INFO, addedDelivery.getId()))
+                .build();
+        Mockito.verify(liveEventService, times(1))
+                .publishToAdminAndLogistician(ordersLoadingEvent);
+
+        LiveEvent ordersLoadedEvent = LiveEvent.builder()
+                .message(EventMessageTemplate.ORDERS_LOADED.getTemplate())
+                .type(SUCCESS)
+                .action(new Action(ActionType.ORDER_UPDATED, addedDelivery.getId()))
+                .build();
+        Mockito.verify(liveEventService, times(1))
+                .publishToAdminAndLogistician(ordersLoadedEvent);
     }
 
     private void mockIntegrationService(String mockPath) {

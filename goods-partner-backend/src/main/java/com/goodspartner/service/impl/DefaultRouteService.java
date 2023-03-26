@@ -76,7 +76,7 @@ public class DefaultRouteService implements RouteService {
     @Transactional
     public Route updateRoute(long routeId, RouteAction action) {
 
-        Route route = routeRepository.findExtendedById(routeId) // TODO fetch with delivery?
+        Route route = routeRepository.findExtendedById(routeId)
                 .orElseThrow(() -> new RouteNotFoundException("Route not found"));
 
         action.perform(route);

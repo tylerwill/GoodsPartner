@@ -42,13 +42,9 @@ public class User {
     @Column(name = "enabled")
     private boolean enabled = false;
 
-    @AllArgsConstructor
-    @Getter
     public enum UserRole {
-        ADMIN("ADMIN"),
-        DRIVER("DRIVER"),
-        LOGISTICIAN("LOGISTICIAN");
-
-        private final String name;
+        ADMIN,
+        DRIVER,
+        LOGISTICIAN
     }
 }

@@ -40,6 +40,7 @@ const Delivery = () => {
     )
 
     const [recalculateConfirmationDialogOpen, setRecalculateConfirmationDialogOpen] = useState(false);
+    const [approveConfirmationDialogOpen, setApproveConfirmationDialogOpen] = useState(false);
 
     const approveDeliveryHandler = useCallback(() => {
         approveDelivery(String(deliveryId))
@@ -55,20 +56,24 @@ const Delivery = () => {
 
     const isDriver = user.role === UserRole.DRIVER
 
+    const calculationFailed = delivery.formationStatus === DeliveryFormationStatus.ROUTE_CALCULATION_FAILED;
+
     const calculationEnabled =
         (delivery.formationStatus === DeliveryFormationStatus.READY_FOR_CALCULATION
             || delivery.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED)
         && !isDriver;
 
-    const recalculationButtonVisible = delivery.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED
+    let recalculationButtonVisible = delivery.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED
         && !isDriver && delivery.status === DeliveryStatus.DRAFT;
+
+    recalculationButtonVisible = recalculationButtonVisible || calculationFailed;
 
     const firstCalculationButtonVisible = delivery.formationStatus === DeliveryFormationStatus.READY_FOR_CALCULATION && !isDriver;
 
     const isPreApprove =
         delivery.formationStatus ===
         DeliveryFormationStatus.CALCULATION_COMPLETED && !isDriver
-    const isApproveEnabled = delivery.status === DeliveryStatus.DRAFT
+    const isApproveEnabled = delivery.status === DeliveryStatus.DRAFT || !calculationFailed;
 
     const calculated =
         delivery?.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED
@@ -119,7 +124,7 @@ const Delivery = () => {
                         {isPreApprove && (
                             <ApproveButton
                                 enabled={isApproveEnabled}
-                                onClick={approveDeliveryHandler}
+                                onClick={() => setApproveConfirmationDialogOpen(true)}
                             />
                         )}
                     </Box>
@@ -150,6 +155,17 @@ const Delivery = () => {
                     <ConfirmationDialog
                         title={"Перерахувати доставку"}
                         text={"Ви впевнені, що бажаєте перерахувати доставку? Цю дію не можна буде відмінити."}
+                        open={approveConfirmationDialogOpen}
+                        setOpen={setApproveConfirmationDialogOpen}
+                        onAction={() => {
+                            approveDeliveryHandler();
+                            setApproveConfirmationDialogOpen(false);
+                        }}
+                    />
+
+                    <ConfirmationDialog
+                        title={"Затвердити доставку"}
+                        text={"Ви впевнені, що бажаєте затвердити доставку? Цю дію не можна буде відмінити."}
                         open={recalculateConfirmationDialogOpen}
                         setOpen={setRecalculateConfirmationDialogOpen}
                         onAction={() => {

@@ -158,19 +158,20 @@ function EnhancedTable({deliveries, deleteDeliveryHandler}) {
                                             <TableCell align='left'>
                                                 {delivery.routeCount ?? '-'}
                                             </TableCell>
-                                            <TableCell align='center'>
-                                                {
-                                                    delivery.status === DeliveryStatus.DRAFT &&
-                                                <Button variant={'contained'} color="error"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            deleteDeliveryHandler(delivery)
-                                                        }}
-                                                >
-                                                    Видалити
-                                                </Button>
-                                                }
-                                            </TableCell>
+                                            {/* FIXME: Temporary removed*/}
+                                            {/*<TableCell align='center'>*/}
+                                            {/*    {*/}
+                                            {/*        delivery.status === DeliveryStatus.DRAFT &&*/}
+                                            {/*    <Button variant={'contained'} color="error"*/}
+                                            {/*            onClick={(e) => {*/}
+                                            {/*                e.stopPropagation();*/}
+                                            {/*                deleteDeliveryHandler(delivery)*/}
+                                            {/*            }}*/}
+                                            {/*    >*/}
+                                            {/*        Видалити*/}
+                                            {/*    </Button>*/}
+                                            {/*    }*/}
+                                            {/*</TableCell>*/}
                                         </TableRow>
                                     )
                                 })}
@@ -180,7 +181,7 @@ function EnhancedTable({deliveries, deleteDeliveryHandler}) {
                                         height: 53 * emptyRows
                                     }}
                                 >
-                                    <TableCell colSpan={6}/>
+                                    <TableCell colSpan={5}/>
                                 </TableRow>
                             )}
                         </TableBody>

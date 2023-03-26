@@ -5,7 +5,7 @@ import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
 import com.goodspartner.config.TestSecurityEnableConfig;
-import com.goodspartner.service.EventService;
+import com.goodspartner.service.LiveEventService;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -16,9 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.UUID;
-
-import static com.goodspartner.entity.DeliveryHistoryTemplate.DELIVERY_APPROVED;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertUpdateCount;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class DeliveryApproveControllerIT extends AbstractWebITest {
 
     @MockBean
-    private EventService eventService;
+    private LiveEventService liveEventService;
 
     @Test
     @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml", skipCleaningFor = "flyway_schema_history",
@@ -50,9 +47,9 @@ public class DeliveryApproveControllerIT extends AbstractWebITest {
                         .session(getLogistSession()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/delivery/approve-delivery-response.json")));
-        Mockito.verify(eventService, times(1)).publishDeliveryEvent(DELIVERY_APPROVED, UUID.fromString("00000000-0000-0000-0000-000000000111"));
-        Mockito.verify(eventService, times(1)).publishRouteStatusChangeAuto(any());
-        assertSelectCount(2); // Select Delivery
+        Mockito.verify(liveEventService, times(1)).publishToAdminAndLogistician(any());
+        Mockito.verify(liveEventService, times(1)).publishToDriver(any(), any());
+        assertSelectCount(3); // Select Delivery
         assertUpdateCount(2); // Update Delivery status + Update Route Status
     }
 
@@ -69,8 +66,8 @@ public class DeliveryApproveControllerIT extends AbstractWebITest {
                 .andExpect(content().json("{" +
                         "\"status\":\"NOT_FOUND\"," +
                         "\"message\":\"Відсутня доставка з id: 00000000-0000-0000-0000-000000000999\"}"));
-        Mockito.verify(eventService, times(0)).publishDeliveryEvent(any(), any());
-        Mockito.verify(eventService, times(0)).publishRouteStatusChangeAuto(any());
+        Mockito.verify(liveEventService, times(0)).publishToAdminAndLogistician(any());
+        Mockito.verify(liveEventService, times(0)).publishToDriver(any(), any());
         assertSelectCount(1);
     }
 
@@ -87,8 +84,8 @@ public class DeliveryApproveControllerIT extends AbstractWebITest {
                 .andExpect(content().json("{" +
                         "\"status\":\"BAD_REQUEST\"," +
                         "\"message\":\"Підтвердження можливе лише для доставки в статусі - Створена\"}\n"));
-        Mockito.verify(eventService, times(0)).publishDeliveryEvent(any(), any());
-        Mockito.verify(eventService, times(0)).publishRouteStatusChangeAuto(any());
+        Mockito.verify(liveEventService, times(0)).publishToAdminAndLogistician(any());
+        Mockito.verify(liveEventService, times(0)).publishToDriver(any(), any());
         assertSelectCount(1);
     }
 

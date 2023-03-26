@@ -3,9 +3,9 @@ package com.goodspartner.facade.impl;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
-import com.goodspartner.entity.DeliveryHistoryTemplate;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RouteStatus;
+import com.goodspartner.event.ActionType;
 import com.goodspartner.exception.delivery.IllegalDeliveryStateForRecalculation;
 import com.goodspartner.facade.DeliveryFacade;
 import com.goodspartner.facade.OrderFacade;
@@ -21,6 +21,11 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.goodspartner.entity.DeliveryStatus.DRAFT;
+import static com.goodspartner.event.ActionType.ROUTE_UPDATED;
+import static com.goodspartner.event.EventMessageTemplate.DELIVERY_APPROVED;
+import static com.goodspartner.event.EventMessageTemplate.DELIVERY_CREATED;
+import static com.goodspartner.event.EventMessageTemplate.ROUTE_STATUS_AUTO;
+import static com.goodspartner.event.EventType.INFO;
 
 @Service
 @RequiredArgsConstructor
@@ -35,23 +40,23 @@ public class DefaultDeliveryFacade implements DeliveryFacade {
     public Delivery add(DeliveryDto deliveryDto) {
         Delivery delivery = deliveryService.add(deliveryDto);
         orderFacade.processOrdersForDeliveryAsync(delivery); // Async
-        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_CREATED, delivery.getId());
+        eventService.publishForLogist(DELIVERY_CREATED.withAudit(), INFO, ActionType.DELIVERY_CREATED, delivery.getId());
         return delivery;
     }
 
-    @Override
     @Transactional
+    @Override
     public Delivery approve(UUID deliveryId, DeliveryAction action) {
 
         Delivery delivery = deliveryService.findById(deliveryId);
 
         action.perform(delivery);
 
-        eventService.publishDeliveryEvent(DeliveryHistoryTemplate.DELIVERY_APPROVED, delivery.getId());
+        eventService.publishForLogist(DELIVERY_APPROVED.withAudit(), INFO, ActionType.DELIVERY_UPDATED, deliveryId);
 
         List<Route> routes = delivery.getRoutes();
         routes.forEach(route -> route.setStatus(RouteStatus.APPROVED));
-        routes.forEach(eventService::publishRouteStatusChangeAuto);
+        routes.forEach(route -> eventService.publishForDriverAndLogist(ROUTE_STATUS_AUTO.withRouteValues(route), INFO, ROUTE_UPDATED, route));
 
         return delivery;
     }
@@ -69,7 +74,7 @@ public class DefaultDeliveryFacade implements DeliveryFacade {
 
         delivery.setFormationStatus(DeliveryFormationStatus.ROUTE_CALCULATION);
 
-        deliveryCalculationHelper.calculate(deliveryId);  // Calculated in async method
+        deliveryCalculationHelper.calculate(delivery);  // Calculated in async method
 
         return delivery;
     }

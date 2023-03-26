@@ -85,13 +85,14 @@ const Deliveries = () => {
                 onCreate={addNewDeliveryHandler}
             />
 
-            <ConfirmationDialog
-                title={"Видалити доставку"}
-                text={"Ви впевнені, що бажаєте видалити доставку? Цю дію не можна буде відмінити."}
-                open={deleteDeliveryDialogOpen}
-                setOpen={setDeleteDeliveryDialogOpen}
-                onAction={deleteDeliveryAction}
-            />
+            {/* FIXME: Temporary removed*/}
+            {/*<ConfirmationDialog*/}
+            {/*    title={"Видалити доставку"}*/}
+            {/*    text={"Ви впевнені, що бажаєте видалити доставку? Цю дію не можна буде відмінити."}*/}
+            {/*    open={deleteDeliveryDialogOpen}*/}
+            {/*    setOpen={setDeleteDeliveryDialogOpen}*/}
+            {/*    onAction={deleteDeliveryAction}*/}
+            {/*/>*/}
 
             {error && <ErrorAlert error={error}/>}
         </section>

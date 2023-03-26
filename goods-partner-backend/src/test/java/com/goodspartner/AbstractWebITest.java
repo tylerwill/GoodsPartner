@@ -16,11 +16,11 @@ public class AbstractWebITest extends AbstractBaseITest {
 
     private static final String DEFAULT_DRIVER_NAME = "Test Driver";
     private static final String DEFAULT_DRIVER_EMAIL = "test-driver@gmail.com";
-    private static final String DRIVER_ROLE = DRIVER.getName();
+    private static final String DRIVER_ROLE = DRIVER.name();
 
     private static final String DEFAULT_LOGIST_NAME = "Test Logist";
     private static final String DEFAULT_LOGIST_EMAIL = "test-logist@gmail.com";
-    private static final String LOGIST_ROLE = LOGISTICIAN.getName();
+    private static final String LOGIST_ROLE = LOGISTICIAN.name();
 
     @Autowired
     protected MockMvc mockMvc;

@@ -8,6 +8,8 @@ import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RoutePoint;
 import com.goodspartner.entity.RouteStatus;
+import com.goodspartner.event.ActionType;
+import com.goodspartner.event.EventType;
 import com.goodspartner.exception.AddressExternalNotFoundException;
 import com.goodspartner.exception.DistanceOutOfLimitException;
 import com.goodspartner.exception.RoutePointNotFoundException;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.goodspartner.entity.RoutePointStatus.PENDING;
+import static com.goodspartner.event.EventMessageTemplate.DRIVER_CLIENT_ADDRESS_UPDATE;
 
 @Slf4j
 @Service
@@ -88,7 +91,9 @@ public class DefaultRoutePointService implements RoutePointService {
         addressExternal.setLatitude(coordinates.getLatitude());
         addressExternal.setLongitude(coordinates.getLongitude());
 
-        eventService.publishCoordinatesUpdated(routePoint);
+        eventService.publishForDriverAndLogist(
+                DRIVER_CLIENT_ADDRESS_UPDATE.withRoutePointValues(routePoint),
+                EventType.INFO, ActionType.INFO, routePoint.getRoute());
     }
 
     private void validateCoordinatesDistance(MapPoint mapPoint, Coordinates coordinates) {
