@@ -14,19 +14,19 @@ jobs:
         java-version: '17'
         distribution: 'adopt'
 
-    - name: Build with Maven
-      env:
-        CI: ""
-        GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
-        PROD_BASE_URL: ${{ env.PROD_BASE_URL }}
-      run: mvn --batch-mode clean install  -Dmaven.test.skip=true
-
     - name: show env vars
       env:
         CI: ""
         GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
         PROD_BASE_URL: ${{ env.PROD_BASE_URL }}
-      run: echo " 1 ${{ secrets.GOOGLE_MAPS_API_KEY }}  2 ${{ env.PROD_BASE_URL }} 3 ${{ env }}"
+      run: echo " 1 ${{ vars.PROD_BASE_URL }}  2 ${{ env.PROD_BASE_URL }} 3 ${{ env }}"
+
+    - name: Build with Maven
+      env:
+        CI: ""
+        GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+        PROD_BASE_URL: ${{ vars.PROD_BASE_URL }}
+      run: mvn --batch-mode clean install  -Dmaven.test.skip=true
 
     - name: Install SSH Key
       uses: shimataro/ssh-key-action@v2
