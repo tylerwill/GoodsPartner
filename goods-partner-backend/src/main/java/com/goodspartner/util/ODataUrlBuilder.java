@@ -12,7 +12,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-@Component
 @NoArgsConstructor
 public class ODataUrlBuilder {
     private List<ODataUrlBuilder.Segment> segments = new ArrayList<>(1);

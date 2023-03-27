@@ -69,7 +69,7 @@ const Shipping = () => {
 
     return (
         <Box sx={{paddingLeft: '24px', paddingRight: '24px'}}>
-            <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} sx={{mb:2}}>
+            <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} sx={{mb: 2}}>
                 <Box alignItems={'center'} sx={{display: 'flex', justifyContent: 'flex-start'}}>
                     <Button onClick={expandAllHandler}>
                         <UnfoldMoreIcon
@@ -187,27 +187,32 @@ const Row = ({shipping, collapseAll, expandAll, reset}) => {
                                             <TableCell>Замовлення</TableCell>
                                             <TableCell>Машина</TableCell>
                                             <TableCell>Кількість</TableCell>
-                                            <TableCell>Вага</TableCell>
+                                            <TableCell>Упаковка</TableCell>
                                             <TableCell>Загальна вага</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {shipping.productLoadDtos.map(load => (
-                                            <TableRow
-                                                key={'shipping' + load.orderNumber}
-                                                sx={{
-                                                    '&:last-child td, &:last-child th': {border: 0}
-                                                }}
-                                            >
-                                                <TableCell component='th' scope='row'>
-                                                    {load.orderNumber}
-                                                </TableCell>
-                                                <TableCell> {load.car}</TableCell>
-                                                <TableCell> {load.amount}</TableCell>
-                                                <TableCell> {load.weight} кг</TableCell>
-                                                <TableCell> {load.totalWeight} кг</TableCell>
-                                            </TableRow>
-                                        ))}
+                                        {shipping.productLoadDtos.map(load => {
+                                            const count = load.productPackaging.amount + ' ' + load.productPackaging.measureStandard;
+                                            const totalWeight = load.productUnit.amount + ' ' + load.productUnit.measureStandard;
+                                            const packaging = load.productPackaging.coefficientStandard + ' ' + load.productUnit.measureStandard;
+                                            return (<TableRow
+                                                    key={'shipping' + load.orderNumber}
+                                                    sx={{
+                                                        '&:last-child td, &:last-child th': {border: 0}
+                                                    }}
+                                                >
+                                                    <TableCell component='th' scope='row'>
+                                                        {load.orderNumber}
+                                                    </TableCell>
+                                                    <TableCell> {load.car}</TableCell>
+                                                    <TableCell> {count}</TableCell>
+                                                    <TableCell> {packaging}</TableCell>
+                                                    <TableCell> {totalWeight}</TableCell>
+                                                </TableRow>
+                                            )
+                                        })
+                                        }
                                     </TableBody>
                                 </Table>
                             </TableContainer>

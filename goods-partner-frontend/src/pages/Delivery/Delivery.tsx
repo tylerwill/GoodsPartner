@@ -60,6 +60,7 @@ const Delivery = () => {
 
     const calculationEnabled =
         (delivery.formationStatus === DeliveryFormationStatus.READY_FOR_CALCULATION
+            || delivery.formationStatus === DeliveryFormationStatus.ROUTE_CALCULATION_FAILED
             || delivery.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED)
         && !isDriver;
 
@@ -73,6 +74,7 @@ const Delivery = () => {
     const isPreApprove =
         delivery.formationStatus ===
         DeliveryFormationStatus.CALCULATION_COMPLETED && !isDriver
+
     const isApproveEnabled = delivery.status === DeliveryStatus.DRAFT || !calculationFailed;
 
     const calculated =
@@ -153,8 +155,8 @@ const Delivery = () => {
                     </Box>
 
                     <ConfirmationDialog
-                        title={"Перерахувати доставку"}
-                        text={"Ви впевнені, що бажаєте перерахувати доставку? Цю дію не можна буде відмінити."}
+                        title={"Затвердити доставку"}
+                        text={"Ви впевнені, що бажаєте затвердити доставку? Цю дію не можна буде відмінити."}
                         open={approveConfirmationDialogOpen}
                         setOpen={setApproveConfirmationDialogOpen}
                         onAction={() => {
@@ -164,8 +166,8 @@ const Delivery = () => {
                     />
 
                     <ConfirmationDialog
-                        title={"Затвердити доставку"}
-                        text={"Ви впевнені, що бажаєте затвердити доставку? Цю дію не можна буде відмінити."}
+                        title={"Перерахувати доставку"}
+                        text={"Ви впевнені, що бажаєте перерахувати доставку? Цю дію не можна буде відмінити."}
                         open={recalculateConfirmationDialogOpen}
                         setOpen={setRecalculateConfirmationDialogOpen}
                         onAction={() => {

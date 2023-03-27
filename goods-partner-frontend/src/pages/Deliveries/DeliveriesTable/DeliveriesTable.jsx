@@ -52,10 +52,6 @@ const headCells = [
     {
         id: 'carCount',
         label: 'Кількість машин'
-    },
-    {
-        id: 'action',
-        label: ''
     }
 ]
 

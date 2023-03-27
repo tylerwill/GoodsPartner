@@ -1,3 +1,5 @@
+import {ProductMeasureDetails} from "./Product";
+
 export interface DeliveryShipping {
 	article: string
 	totalAmount: number
@@ -11,4 +13,6 @@ export interface ProductLoadDto {
 	amount: number
 	weight: number
 	totalWeight: number
+	productUnit: ProductMeasureDetails
+	productPackaging: ProductMeasureDetails
 }

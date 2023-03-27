@@ -95,7 +95,7 @@ export const Clients = () => {
                                                         startIcon={<CreateIcon/>}/> {clientAddress.mapPoint.address}
                                             </Box>
                                             </TableCell>
-                                            <TableCell align='center'>{clientAddress.mapPoint.status}</TableCell>
+                                            <TableCell align='center'>{toStatusString(clientAddress.mapPoint.status)}</TableCell>
                                         </TableRow>
                                     ))}
                             </TableBody>
@@ -120,4 +120,20 @@ export const Clients = () => {
                                                                currentMapPoint={currentMapPoint}/>}
         </section>
     )
+}
+
+const toStatusString = (status: MapPointStatus) => {
+    switch (status) {
+        case MapPointStatus.AUTOVALIDATED :{
+            return 'Автовалідація'
+        }
+
+        case MapPointStatus.KNOWN : {
+            return 'Відомий'
+        }
+
+        case MapPointStatus.UNKNOWN : {
+            return 'Невідомий'
+        }
+    }
 }

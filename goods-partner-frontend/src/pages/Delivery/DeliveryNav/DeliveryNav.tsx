@@ -47,6 +47,7 @@ export const DeliveryNav: FC<DeliveryNavProps> = ({calculated}) => {
             {
                 tabLabels.map(t =>
                     <Button component={Link} to={t.to}
+                            key={"delNav" + t.to}
                             startIcon={t.icon} color="inherit" disabled={!t.enabled}>{t.name}</Button>)
             }
 
