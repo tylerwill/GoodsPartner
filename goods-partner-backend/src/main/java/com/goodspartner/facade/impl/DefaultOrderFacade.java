@@ -66,7 +66,7 @@ public class DefaultOrderFacade implements OrderFacade {
             List<OrderExternal> externalOrders = orderExternalMapper.toOrderExternalList(orderDtos);
             orderExternalService.bindExternalOrdersWithDelivery(externalOrders, delivery);
 
-            String ordersLoadedMessage = ORDERS_LOADED.withValues(LOADED_ORDERS_VALUE, delivery.getDeliveryDate().format(DateTimeFormatter.ISO_DATE));
+            String ordersLoadedMessage = ORDERS_LOADED.withValues(LOADED_ORDERS_VALUE, String.valueOf(externalOrders.size()));
             eventService.publishForLogist(ordersLoadedMessage, EventType.SUCCESS, ActionType.ORDER_UPDATED, deliveryId);
             log.info("Saved orders for delivery {} on {} deliveryDate", deliveryId, deliveryDate);
 

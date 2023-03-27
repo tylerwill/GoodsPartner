@@ -133,7 +133,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         // Then
         verifyOrdersFetchedDeliveryEnriched(addedDelivery, 7); // 6 Orders from 1C + 1 order rescheduled
         verifyDeliveryState(addedDelivery, ORDERS_LOADED);
-        verifyRequiredEventsEmmitted(addedDelivery);
+        verifyRequiredEventsEmmitted(addedDelivery, 6);
         verifyAddedAddresses();
         verifyOrdersState(addedDelivery);
     }
@@ -159,7 +159,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         // Then
         verifyOrdersFetchedDeliveryEnriched(addedDelivery, 2); // Rescheduled + Known one
         verifyDeliveryState(addedDelivery, READY_FOR_CALCULATION);
-        verifyRequiredEventsEmmitted(addedDelivery);
+        verifyRequiredEventsEmmitted(addedDelivery, 1);
     }
 
     @Test
@@ -167,7 +167,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     public void addDelivery_NoOrdersFrom1C_RescheduledOrderAttached() throws Exception {
         // Given
-        when(integrationService.findAllByShippingDate(SHIPPING_DATE)).thenReturn(Collections.emptyList());
+        when(integrationService.findAllByShippingDate(SHIPPING_DATE)).thenReturn(Collections.emptyList()); // 0 orders from 1C
         // When
         DeliveryDto addedDelivery = objectMapper.readValue(
                 mockMvc.perform(post("/api/v1/deliveries")
@@ -181,7 +181,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         // Then
         verifyOrdersFetchedDeliveryEnriched(addedDelivery, 1); // Rescheduled + Known one
         verifyDeliveryState(addedDelivery, READY_FOR_CALCULATION);
-        verifyRequiredEventsEmmitted(addedDelivery);
+        verifyRequiredEventsEmmitted(addedDelivery, 0);
         verifyRescheduledOrder(addedDelivery);
     }
 
@@ -215,13 +215,12 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
                 .publishToAdminAndLogistician(deliveryCreatedEvent);
 
         LiveEvent ordersLoadingEvent = LiveEvent.builder()
-                .message(EventMessageTemplate.ORDERS_LOADING.getTemplate())
+                .message("Розпочато синхронізацію замовлень з 1С для доставки на 2022-07-10")
                 .type(INFO)
                 .action(new Action(ActionType.INFO, addedDelivery.getId()))
                 .build();
         Mockito.verify(liveEventService, times(1))
                 .publishToAdminAndLogistician(ordersLoadingEvent);
-
 
         LiveEvent ordersFailedEvent = LiveEvent.builder()
                 .message(EventMessageTemplate.ORDERS_LOADING_FAILED.getTemplate())
@@ -284,7 +283,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
                         .orElse(false));
     }
 
-    private void verifyRequiredEventsEmmitted(DeliveryDto addedDelivery) {
+    private void verifyRequiredEventsEmmitted(DeliveryDto addedDelivery, int orderCount) {
 
         LiveEvent deliveryCreatedEvent = LiveEvent.builder()
                 .message("Логіст Test Logist створив(ла) доставку")
@@ -295,7 +294,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
                 .publishToAdminAndLogistician(deliveryCreatedEvent);
 
         LiveEvent ordersLoadingEvent = LiveEvent.builder()
-                .message(EventMessageTemplate.ORDERS_LOADING.getTemplate())
+                .message("Розпочато синхронізацію замовлень з 1С для доставки на 2022-07-10")
                 .type(INFO)
                 .action(new Action(ActionType.INFO, addedDelivery.getId()))
                 .build();
@@ -303,7 +302,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
                 .publishToAdminAndLogistician(ordersLoadingEvent);
 
         LiveEvent ordersLoadedEvent = LiveEvent.builder()
-                .message(EventMessageTemplate.ORDERS_LOADED.getTemplate())
+                .message(String.format("Збережено %d замовлень з 1С", orderCount))
                 .type(SUCCESS)
                 .action(new Action(ActionType.ORDER_UPDATED, addedDelivery.getId()))
                 .build();

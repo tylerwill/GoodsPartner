@@ -8,6 +8,7 @@ import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.entity.User;
 import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.exception.DeliveryNotFoundException;
+import com.goodspartner.exception.delivery.DeliveryAlreadyExistException;
 import com.goodspartner.exception.delivery.IllegalDeliveryStateForDeletion;
 import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.CarRepository;
@@ -121,7 +122,7 @@ public class DefaultDeliveryService implements DeliveryService {
     public Delivery add(DeliveryDto deliveryDto) {
         deliveryRepository.findByDeliveryDate(deliveryDto.getDeliveryDate())
                 .ifPresent(delivery -> {
-                    throw new IllegalArgumentException("There is already delivery on date: " + deliveryDto.getDeliveryDate());
+                    throw new DeliveryAlreadyExistException(deliveryDto.getDeliveryDate());
                 });
 
         deliveryDto.setStatus(DRAFT);

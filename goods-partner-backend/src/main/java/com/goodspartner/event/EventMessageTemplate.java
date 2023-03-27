@@ -32,8 +32,8 @@ public enum EventMessageTemplate {
     ROUTE_POINT_TIME_RANGE_WARNING("Увага! Маршрут ${carName} ${carLicensePlate} має зупинки що не потрапляють у заданий час доставки. При потребі перебудуйте маршрут."),
 
     // Orders
-    ORDERS_LOADING("Розпочато синхронізацію замовлень з 1С для доставки на {deliveryDate}"),
-    ORDERS_LOADED("Збережено {loadedOrders} замовлень з 1С"),
+    ORDERS_LOADING("Розпочато синхронізацію замовлень з 1С для доставки на ${deliveryDate}"),
+    ORDERS_LOADED("Збережено ${loadedOrders} замовлень з 1С"),
     ORDERS_LOADING_FAILED("Помилка під час вивантаження замовлень з 1С"),
     DROPPED_ORDERS("Увага! У розрахунок доставки не увійшли ${droppedOrdersAmount} замовлень"),
     ORDERS_UPDATED("Замовлення оновленні"),

@@ -3,6 +3,7 @@ package com.goodspartner.web.handler;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.NoOrdersFoundForDelivery;
 import com.goodspartner.exception.NoRoutesFoundForDelivery;
+import com.goodspartner.exception.delivery.DeliveryAlreadyExistException;
 import com.goodspartner.exception.delivery.IllegalDeliveryStateForApproval;
 import com.goodspartner.exception.delivery.IllegalDeliveryStateForDeletion;
 import com.goodspartner.exception.delivery.IllegalDeliveryStateForOrderUpdate;
@@ -24,6 +25,8 @@ public class DeliveryControllerAdvice {
     }
 
     @ExceptionHandler({
+            DeliveryAlreadyExistException.class,
+
             IllegalDeliveryStateForApproval.class,
             IllegalDeliveryStateForDeletion.class,
             IllegalDeliveryStateForRecalculation.class,
