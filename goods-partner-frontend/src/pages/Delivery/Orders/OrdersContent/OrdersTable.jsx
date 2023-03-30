@@ -9,9 +9,13 @@ import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore'
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess'
 import {DeliveryOrdersBasicTable} from "./DeliveryOrdersBasicTable/DeliveryOrdersBasicTable";
 import {DeliveryOrdersShortTable} from "./DeliveryOrdersShortTable/DeliveryOrdersShortTable";
-import DownloadIcon from "@mui/icons-material/Download";
+import TextSnippetIcon from '@mui/icons-material/TextSnippet';
+import UnarchiveIcon from '@mui/icons-material/Unarchive';
+import {useParams} from "react-router-dom";
+import {apiUrl} from "../../../../util/util";
 
 const OrdersTable = ({orders, keyPrefix, updateOrder, isExcluded, basic}) => {
+    const {deliveryId} = useParams()
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(25)
 
@@ -65,8 +69,21 @@ const OrdersTable = ({orders, keyPrefix, updateOrder, isExcluded, basic}) => {
             {!basic && <Box display={'flex'} sx={{mb: 2}}>
                 <Button
                     variant='outlined'
+                    size={"small"}
+                    target={"_blank"}
+                    href={`${apiUrl}/documents?deliveryId=${deliveryId}&deliveryType=${orders[0].deliveryType}`}
                 >
-                    <DownloadIcon sx={{mr: 1}}/> документи
+                    <TextSnippetIcon sx={{mr: 1}}/> документи
+                </Button>
+
+                <Button
+                    sx={{ml:2}}
+                    size={"small"}
+                    href={`${apiUrl}/reports/shipment?deliveryId=${deliveryId}&deliveryType=${orders[0].deliveryType}`}
+                    target={"_blank"}
+                    variant='outlined'
+                >
+                    <UnarchiveIcon sx={{mr: 1}}/> відвантаження
                 </Button>
             </Box>
             }
@@ -89,10 +106,7 @@ const OrdersTable = ({orders, keyPrefix, updateOrder, isExcluded, basic}) => {
                             : <DeliveryOrdersShortTable orders={orders}
                                                         keyPrefix={keyPrefix}
                                                         page={page}
-                                                        rowsPerPage={rowsPerPage}
-                                                        collapseAll={collapseAll}
-                                                        expandAll={expandAll}
-                                                        reset={reset}/>
+                                                        rowsPerPage={rowsPerPage}/>
                     }
 
                 </TableContainer>

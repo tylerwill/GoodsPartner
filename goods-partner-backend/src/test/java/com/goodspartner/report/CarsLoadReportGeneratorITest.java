@@ -2,12 +2,7 @@ package com.goodspartner.report;
 
 import com.goodspartner.dto.Product;
 import com.goodspartner.dto.ProductMeasureDetails;
-import com.goodspartner.entity.Car;
-import com.goodspartner.entity.CarLoad;
-import com.goodspartner.entity.Delivery;
-import com.goodspartner.entity.OrderExternal;
-import com.goodspartner.entity.User;
-import com.goodspartner.report.dto.ProductLoadDetails;
+import com.goodspartner.entity.*;
 import com.goodspartner.repository.DeliveryRepository;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +46,7 @@ class CarsLoadReportGeneratorITest {
         Mockito.when(deliveryRepository.findById(delivery.getId())).thenReturn(Optional.of(delivery));
 
         // when
-        ReportResult reportResult = carsLoadReportGenerator.generateReport(delivery.getId());
+        ReportResult reportResult = carsLoadReportGenerator.generateReport(delivery.getId(), DeliveryType.REGULAR);
 
         // then
         new File(REPORTS_DESTINATION).mkdirs();
@@ -131,7 +126,7 @@ class CarsLoadReportGeneratorITest {
 
         new File(REPORTS_DESTINATION).mkdirs();
 
-        ReportResult reportResult = carsLoadReportGenerator.generateReport(delivery.getId());
+        ReportResult reportResult = carsLoadReportGenerator.generateReport(delivery.getId(), DeliveryType.REGULAR);
 
         File destinationFile = new File(REPORTS_DESTINATION, reportResult.name());
         writeReportToFile(reportResult, destinationFile);
@@ -202,7 +197,7 @@ class CarsLoadReportGeneratorITest {
         return delivery;
     }
 
-    private ProductMeasureDetails getProductUnit(){
+    private ProductMeasureDetails getProductUnit() {
         return ProductMeasureDetails.builder()
                 .amount(6.0)
                 .measureStandard("кг")
@@ -210,7 +205,7 @@ class CarsLoadReportGeneratorITest {
                 .build();
     }
 
-    private ProductMeasureDetails getProductPackaging(){
+    private ProductMeasureDetails getProductPackaging() {
         return ProductMeasureDetails.builder()
                 .amount(1.0)
                 .measureStandard("ящ")

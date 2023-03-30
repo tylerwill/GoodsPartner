@@ -10,16 +10,7 @@ import com.goodspartner.mapper.ODataInvoiceMapper;
 import com.goodspartner.mapper.ODataOrderMapper;
 import com.goodspartner.mapper.ProductMapper;
 import com.goodspartner.service.IntegrationService;
-import com.goodspartner.service.dto.external.grandedolce.ODataContactsTypeDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataInvoiceDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataInvoiceProductDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataInvoicePropertiesDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataOrganisationCodesDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataOrganisationContactsDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataProductGtdDto;
-import com.goodspartner.service.dto.external.grandedolce.ODataWrapperDto;
+import com.goodspartner.service.dto.external.grandedolce.*;
 import com.goodspartner.util.ODataUrlBuilder;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
@@ -35,14 +26,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -150,9 +134,8 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         Map<String, String> contactMap = getContactMap(oDataOrganisationContactsDtos);
         addOrganisationContactsToInvoices(oDataInvoiceDtos, contactMap);
 
-        URI invoicePropertiesUri = buildInvoicePropertiesUri(createCastFilterByRefKeys(getInvoicesRefKeys(oDataInvoiceDtos), OBJECT_CAST_REQUEST, INVOICE_ENTRY_SET_NAME));
-        ODataWrapperDto<ODataInvoicePropertiesDto> invoicePropertiesWrapper = getInvoiceProperties(invoicePropertiesUri);
-        List<ODataInvoicePropertiesDto> rawInvoiceProperties = invoicePropertiesWrapper.getValue();
+        List<List<String>> invoicesKeys = getInvoicesKeys(oDataInvoiceDtos);
+        List<ODataInvoicePropertiesDto> rawInvoiceProperties = getODataInvoicePropertiesDto(invoicesKeys);
         List<ODataInvoicePropertiesDto> invoiceProperties = filterBuhBaseProperties(rawInvoiceProperties);
         Map<String, Boolean> buhBasePropertiesMap = getBuhBasePropertiesMap(invoiceProperties);
         addBuhBasePropertyToInvoices(oDataInvoiceDtos, buhBasePropertiesMap);
@@ -186,12 +169,6 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 oDataOrderDtosList.size(), deliveryDate, System.currentTimeMillis() - startTime);
 
         return odataOrderMapper.toOrderDtosList(oDataOrderDtosList);
-    }
-
-    private List<String> getInvoicesRefKeys(List<ODataInvoiceDto> oDataInvoiceDtos) {
-        return oDataInvoiceDtos.stream()
-                .map(ODataInvoiceDto::getRefKey)
-                .collect(Collectors.toList());
     }
 
     private List<ODataInvoicePropertiesDto> filterBuhBaseProperties(List<ODataInvoicePropertiesDto> source) {
@@ -299,126 +276,126 @@ public class GrandeDolceIntegrationService implements IntegrationService {
     private ODataWrapperDto<ODataOrderDto> getOrdersByRefKeys(URI orderUriByRefKeys) {
         log.info("Orders by refKeys uri: {}", URLDecoder.decode(orderUriByRefKeys.toString(), StandardCharsets.UTF_8));
         return Optional.ofNullable(
-                webClient.get()
-                        .uri(orderUriByRefKeys)
-                        .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
-                        })
-                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
-                        .block())
+                        webClient.get()
+                                .uri(orderUriByRefKeys)
+                                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+                                .retrieve()
+                                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
+                                })
+                                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                                .block())
                 .orElseThrow(EmptyIntegrationCallResult::new);
     }
 
     private ODataWrapperDto<ODataOrderDto> getOrdersByShippingDate(URI orderUriByShippingDate) {
         log.info("Orders by shippingDate uri: {}", URLDecoder.decode(orderUriByShippingDate.toString(), StandardCharsets.UTF_8));
         return Optional.ofNullable(
-                webClient.get()
-                        .uri(orderUriByShippingDate)
-                        .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
-                        })
-                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
-                        .block())
+                        webClient.get()
+                                .uri(orderUriByShippingDate)
+                                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+                                .retrieve()
+                                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrderDto>>() {
+                                })
+                                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                                .block())
                 .orElseThrow(EmptyIntegrationCallResult::new);
     }
 
     private ODataWrapperDto<ODataInvoiceProductDto> getODataInvoiceProducts(URI productUri) {
         log.info("InvoiceProduct uri: {}", URLDecoder.decode(productUri.toString(), StandardCharsets.UTF_8));
         return Optional.ofNullable(
-                webClient.get()
-                        .uri(productUri)
-                        .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoiceProductDto>>() {
-                        })
-                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
-                        .block())
+                        webClient.get()
+                                .uri(productUri)
+                                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+                                .retrieve()
+                                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoiceProductDto>>() {
+                                })
+                                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                                .block())
                 .orElseThrow(EmptyIntegrationCallResult::new);
     }
 
     private ODataWrapperDto<ODataInvoiceDto> getInvoices(URI uri) {
         log.info("Invoice uri: {}", URLDecoder.decode(uri.toString(), StandardCharsets.UTF_8));
         return Optional.ofNullable(
-                webClient.get()
-                        .uri(uri)
-                        .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoiceDto>>() {
-                        })
-                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
-                        .block())
+                        webClient.get()
+                                .uri(uri)
+                                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+                                .retrieve()
+                                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoiceDto>>() {
+                                })
+                                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                                .block())
                 .orElseThrow(EmptyIntegrationCallResult::new);
     }
 
     private ODataWrapperDto<ODataOrganisationContactsDto> getOrganisationContacts(URI uri) {
         log.info("Organisation contracts uri: {}", URLDecoder.decode(uri.toString(), StandardCharsets.UTF_8));
         return Optional.ofNullable(
-                webClient.get()
-                        .uri(uri)
-                        .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrganisationContactsDto>>() {
-                        })
-                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
-                        .block())
+                        webClient.get()
+                                .uri(uri)
+                                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+                                .retrieve()
+                                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrganisationContactsDto>>() {
+                                })
+                                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                                .block())
                 .orElseThrow(EmptyIntegrationCallResult::new);
     }
 
     private ODataWrapperDto<ODataInvoicePropertiesDto> getInvoiceProperties(URI uri) {
         log.info("Invoice properties uri: {}", URLDecoder.decode(uri.toString(), StandardCharsets.UTF_8));
         return Optional.ofNullable(
-                webClient.get()
-                        .uri(uri)
-                        .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoicePropertiesDto>>() {
-                        })
-                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
-                        .block())
+                        webClient.get()
+                                .uri(uri)
+                                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+                                .retrieve()
+                                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataInvoicePropertiesDto>>() {
+                                })
+                                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                                .block())
                 .orElseThrow(EmptyIntegrationCallResult::new);
     }
 
     private ODataWrapperDto<ODataProductGtdDto> getODataProductGtd(URI productUri) {
         log.info("Product gtd uri: {}", URLDecoder.decode(productUri.toString(), StandardCharsets.UTF_8));
         return Optional.ofNullable(
-                webClient.get()
-                        .uri(productUri)
-                        .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataProductGtdDto>>() {
-                        })
-                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
-                        .block())
+                        webClient.get()
+                                .uri(productUri)
+                                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+                                .retrieve()
+                                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataProductGtdDto>>() {
+                                })
+                                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                                .block())
                 .orElseThrow(EmptyIntegrationCallResult::new);
     }
 
     private ODataWrapperDto<ODataOrganisationCodesDto> getODataOrganisationCodes(URI organisationCodesUri) {
         log.info("Organisation codes uri: {}", URLDecoder.decode(organisationCodesUri.toString(), StandardCharsets.UTF_8));
         return Optional.ofNullable(
-                webClient.get()
-                        .uri(organisationCodesUri)
-                        .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrganisationCodesDto>>() {
-                        })
-                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
-                        .block())
+                        webClient.get()
+                                .uri(organisationCodesUri)
+                                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+                                .retrieve()
+                                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataOrganisationCodesDto>>() {
+                                })
+                                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                                .block())
                 .orElseThrow(EmptyIntegrationCallResult::new);
     }
 
     private ODataWrapperDto<ODataContactsTypeDto> getODataContactsTypes(URI organisationCodesUri) {
         log.info("Contract types uri: {}", URLDecoder.decode(organisationCodesUri.toString(), StandardCharsets.UTF_8));
         return Optional.ofNullable(
-                webClient.get()
-                        .uri(organisationCodesUri)
-                        .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataContactsTypeDto>>() {
-                        })
-                        .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
-                        .block())
+                        webClient.get()
+                                .uri(organisationCodesUri)
+                                .headers(httpHeaders -> httpHeaders.setBasicAuth(properties.getLogin(), properties.getPassword()))
+                                .retrieve()
+                                .bodyToMono(new ParameterizedTypeReference<ODataWrapperDto<ODataContactsTypeDto>>() {
+                                })
+                                .retryWhen(Retry.backoff(RETRY_ATTEMPTS, Duration.ofSeconds(RETRY_DELAY)))
+                                .block())
                 .orElseThrow(EmptyIntegrationCallResult::new);
     }
 
@@ -534,6 +511,12 @@ public class GrandeDolceIntegrationService implements IntegrationService {
         return Lists.partition(listRefKeys, PARTITION_SIZE);
     }
 
+    private List<List<String>> getInvoicesKeys(List<ODataInvoiceDto> oDataInvoiceDtos) {
+        return Lists.partition(oDataInvoiceDtos.stream()
+                .map(ODataInvoiceDto::getRefKey)
+                .collect(Collectors.toList()), INVOICE_PARTITION_SIZE);
+    }
+
     private List<String> getContactsTypeKeys(List<ODataContactsTypeDto> invoiceProductsStream) {
         return invoiceProductsStream.stream()
                 .map(ODataContactsTypeDto::getRefKey)
@@ -561,6 +544,16 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                 .map(productGTDRefKey -> createFilter(REF_KEY_FILTER, productGTDRefKey))
                 .map(this::buildProductGTDUri)
                 .map(this::getODataProductGtd)
+                .map(ODataWrapperDto::getValue)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    private List<ODataInvoicePropertiesDto> getODataInvoicePropertiesDto(List<List<String>> invoiceRefKeys) {
+        return invoiceRefKeys.stream()
+                .map(invoicesRefKey -> createCastFilterByRefKeys(invoicesRefKey, OBJECT_CAST_REQUEST, INVOICE_ENTRY_SET_NAME))
+                .map(this::buildInvoicePropertiesUri)
+                .map(this::getInvoiceProperties)
                 .map(ODataWrapperDto::getValue)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
@@ -601,7 +594,9 @@ public class GrandeDolceIntegrationService implements IntegrationService {
 
     private Map<String, String> groupUktzedCodeByProductGtdRefKey(List<ODataProductGtdDto> oDataProductGTD) {
         return oDataProductGTD.stream()
-                .collect(Collectors.toMap(ODataProductGtdDto::getRefKey, ODataProductGtdDto::getUktzedCode));
+                .collect(Collectors.toMap(ODataProductGtdDto::getRefKey,
+                        ODataProductGtdDto::getUktzedCode,
+                        (key1, key2) -> key1));
     }
 
     private Map<String, ODataOrganisationCodesDto> groupCodesByRefKey(List<ODataOrganisationCodesDto> organisationCodesDtos) {

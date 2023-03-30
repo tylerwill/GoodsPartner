@@ -1,26 +1,25 @@
 package com.goodspartner.web.controller;
 
+import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.service.document.DocumentPdfService;
 import com.goodspartner.service.dto.DocumentDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 @RestController
-@RequestMapping(path = "/api/v1/document")
+@RequestMapping(path = "/api/v1/documents")
 public class DocumentPdfController {
     private static final String ATTACHMENT = "attachment";
     private static final String ORDER = "order_";
@@ -34,12 +33,12 @@ public class DocumentPdfController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
-    @GetMapping(value = "/by-route/{routeId}", produces = "application/pdf")
+    @GetMapping(params = "routeId", produces = "application/pdf")
     @ApiOperation(value = "Get a compiled PDF file based on Route id",
             notes = "Return a compiled PDF file",
             response = ResponseEntity.class)
     public @ResponseBody ResponseEntity<StreamingResponseBody> pdfDocumentsByRoute(@ApiParam(value = "Need Route id to get PDF documents", required = true)
-                                                                                   @PathVariable String routeId) {
+                                                                                   @RequestParam String routeId) {
         DocumentDto documentDto = pdfService.getPdfDocumentsByRoute(Long.parseLong(routeId));
         ByteArrayOutputStream compoundPdfFileAccordingRouteId =
                 (ByteArrayOutputStream) documentDto.getDocumentContent();
@@ -51,13 +50,32 @@ public class DocumentPdfController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
-    @GetMapping(value = "/by-route-point/{routePointId}", produces = "application/pdf")
+    @GetMapping(params = "routePointId", produces = "application/pdf")
     @ApiOperation(value = "Get a compiled PDF file based on routePoint id",
             notes = "Return a compiled PDF file",
             response = ResponseEntity.class)
     public @ResponseBody ResponseEntity<StreamingResponseBody> pdfDocumentsByRoutePoint(@ApiParam(value = "Need routePoint id to get PDF documents", required = true)
-                                                                                        @PathVariable String routePointId) {
+                                                                                        @RequestParam String routePointId) {
         DocumentDto documentDto = pdfService.getPdfDocumentsByRoutePoint(Long.parseLong(routePointId));
+        ByteArrayOutputStream compoundPdfFileAccordingRoutePointId =
+                (ByteArrayOutputStream) documentDto.getDocumentContent();
+
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, getFileNameByRoutePoint(documentDto))
+                .body(compoundPdfFileAccordingRoutePointId::writeTo);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
+    @GetMapping(params = "deliveryId", produces = "application/pdf")
+    @ApiOperation(value = "Get a compiled PDF file based on delivery id and delivery type",
+            notes = "Return a compiled PDF file",
+            response = ResponseEntity.class)
+    public @ResponseBody ResponseEntity<StreamingResponseBody> pdfDocumentsByDeliveryIdAndDeliveryType(@RequestParam UUID deliveryId,
+                                                                                                       @RequestParam DeliveryType deliveryType) {
+        DocumentDto documentDto = pdfService.getPdfDocumentsByDeliveryId(deliveryId, deliveryType);
+        documentDto.setCarName(deliveryType.getName());
+        documentDto.setCarLicencePlate(StringUtils.EMPTY);
         ByteArrayOutputStream compoundPdfFileAccordingRoutePointId =
                 (ByteArrayOutputStream) documentDto.getDocumentContent();
 

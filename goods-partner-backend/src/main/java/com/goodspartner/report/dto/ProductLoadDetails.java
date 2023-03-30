@@ -12,4 +12,6 @@ public class ProductLoadDetails {
     private Product product;
     private String clientName;
     private String clientAddress;
+    private String orderNumber;
+    private String comment;
 }

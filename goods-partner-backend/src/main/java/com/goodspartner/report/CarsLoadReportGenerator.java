@@ -1,10 +1,7 @@
 package com.goodspartner.report;
 
 import com.goodspartner.dto.Product;
-import com.goodspartner.entity.Car;
-import com.goodspartner.entity.CarLoad;
-import com.goodspartner.entity.Delivery;
-import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.entity.*;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.mapper.util.MapperUtil;
 import com.goodspartner.report.dto.CarLoadDetails;
@@ -41,7 +38,7 @@ public class CarsLoadReportGenerator implements ReportGenerator {
     @SneakyThrows
     @Override
     @Transactional(readOnly = true)
-    public ReportResult generateReport(UUID deliveryId) {
+    public ReportResult generateReport(UUID deliveryId, DeliveryType loadType) {
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new DeliveryNotFoundException(deliveryId));
 

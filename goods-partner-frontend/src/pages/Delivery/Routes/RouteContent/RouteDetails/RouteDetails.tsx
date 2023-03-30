@@ -76,7 +76,8 @@ const RouteDetailsHeader: React.FC<RouteDetailsProps> = ({
 					</Button>
 					<Button
 						sx={{ mr: 2 }}
-						href={`${apiUrl}/document/by-route/${route.id}`}
+						target={"_blank"}
+						href={`${apiUrl}/documents/?routeId=${route.id}`}
 						variant='outlined'
 					>
 						<DownloadIcon sx={{ mr: 1 }} /> документи для водія

@@ -18,9 +18,7 @@ export const Orders = () => {
     const {deliveryId} = useParams()
 
     const {
-        data: orders,
-        isLoading,
-        error
+        data: orders
     } = useGetOrdersForDeliveryQuery(String(deliveryId))
 
     const isOrderAddressDialogOpen = useAppSelector(
@@ -51,7 +49,44 @@ export const Orders = () => {
         return <Loading/>
     }
 
+    const {tabs, tabLabels} = getTabsAndOrders(orders);
 
+    return (
+        <Box sx={{padding: '0 24px'}}>
+            <BasicTabs
+                labels={tabLabels}
+                setTabIndex={setOrdersTabHandler}
+                tabIndex={orderTabIndex}
+            >
+
+                {
+                    tabs.map(e => <OrdersTable
+                        basic={e.basic}
+                        isExcluded={e.isExcluded}
+                        orders={e.orders}
+                        keyPrefix={e.keyPrefix}
+                        key={"OrderTab" + e.keyPrefix}
+                        updateOrder={updateOrderHandler}
+                    />)
+                }
+
+            </BasicTabs>
+
+            {isOrderAddressDialogOpen && <ChooseAddressDialog/>}
+
+            {isExcludeOrderDialogOpen && <ExcludeOrderDialog/>}
+
+            {isDeliveryTypeDialogOpen && <DeliveryTypeDialog/>}
+        </Box>
+    )
+}
+
+interface OrdersTabsAndLabels {
+    tabLabels: any[]
+    tabs: any[]
+}
+
+const getTabsAndOrders = (orders: Order[]): OrdersTabsAndLabels => {
     // TODO: Maybe use memo to not recalculate
     const ordersWithInvalidAddress = orders
         .filter(order => order.deliveryType === DeliveryType.REGULAR)
@@ -82,51 +117,60 @@ export const Orders = () => {
 
     const droppedOrders = orders.filter(order => order.dropped);
 
-    const tabLabels = [
-        {name: `Grande Dolce (${grandeDolceOrders.length})`, enabled: true},
-        {name: `Пошта (${postalOrders.length})`, enabled: true},
-        {name: `Самовивіз (${selfOrders.length})`, enabled: true},
-        {name: `Фасовка (${prePackOrders.length})`, enabled: true},
-        {name: `Вилучені (${excludedOrders.length})`, enabled: true}
-    ]
+    const tabLabels = [];
 
+    const tabs = [];
 
-    const tabs = [
-        {
+    if (grandeDolceOrders.length !== 0) {
+        tabLabels.push({name: `Grande Dolce (${grandeDolceOrders.length})`, enabled: true});
+        tabs.push({
             orders: grandeDolceOrders,
             keyPrefix: 'grandeDolce',
-            basic:true
-        },
-        {
+            basic: true
+        });
+    }
+
+    if (postalOrders.length !== 0) {
+        tabLabels.push({name: `Пошта (${postalOrders.length})`, enabled: true});
+        tabs.push({
             orders: postalOrders,
             keyPrefix: 'postalOrders'
-        },
-        {
+        });
+    }
+
+    if (selfOrders.length !== 0) {
+        tabLabels.push({name: `Самовивіз (${selfOrders.length})`, enabled: true});
+        tabs.push({
             orders: selfOrders,
             keyPrefix: 'selfOrders'
-        },
-        {
+        });
+    }
+
+    if (prePackOrders.length !== 0) {
+        tabLabels.push({name: `Фасовка (${prePackOrders.length})`, enabled: true});
+        tabs.push({
             orders: prePackOrders,
             keyPrefix: 'prePackOrders'
-        },
+        });
+    }
 
-        {
+
+    if (excludedOrders.length !== 0) {
+        tabLabels.push({name: `Вилучені (${excludedOrders.length})`, enabled: true});
+        tabs.push({
             orders: excludedOrders,
             keyPrefix: 'excluded',
             isExcluded: true,
-            basic:true
-        },
-
-
-    ];
-
+            basic: true
+        });
+    }
 
     if (droppedOrders.length !== 0) {
         tabLabels.push({name: `Нерозраховані (${droppedOrders.length})`, enabled: true});
         tabs.push({
             orders: droppedOrders,
             keyPrefix: 'dropped',
-            basic:true
+            basic: true
         });
     }
 
@@ -135,37 +179,12 @@ export const Orders = () => {
         tabs.push({
             orders: ordersWithInvalidAddress,
             keyPrefix: 'invalid',
-            basic:true
+            basic: true
         });
     }
 
-
-    return (
-        <Box sx={{padding: '0 24px'}}>
-            <BasicTabs
-                labels={tabLabels}
-                setTabIndex={setOrdersTabHandler}
-                tabIndex={orderTabIndex}
-            >
-
-                {
-                    tabs.map(e => <OrdersTable
-                        basic={e.basic}
-                        isExcluded={e.isExcluded}
-                        orders={e.orders}
-                        keyPrefix={e.keyPrefix}
-                        key={"OrderTab" + e.keyPrefix}
-                        updateOrder={updateOrderHandler}
-                    />)
-                }
-
-            </BasicTabs>
-
-            {isOrderAddressDialogOpen && <ChooseAddressDialog/>}
-
-            {isExcludeOrderDialogOpen && <ExcludeOrderDialog/>}
-
-            {isDeliveryTypeDialogOpen && <DeliveryTypeDialog/>}
-        </Box>
-    )
+    return {
+        tabs,
+        tabLabels
+    }
 }

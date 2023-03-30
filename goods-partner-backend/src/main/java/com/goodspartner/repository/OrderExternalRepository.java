@@ -1,6 +1,7 @@
 package com.goodspartner.repository;
 
 import com.goodspartner.entity.Car;
+import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.entity.OrderExternal;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -42,6 +43,12 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, Lo
             "  AND o.rescheduleDate IS NULL " +
             "  AND o.delivery IS NULL")
     List<OrderExternal> findScheduledOrders(Sort sort);
+
+    @Query("SELECT o FROM OrderExternal o " +
+            "WHERE o.delivery.id = :deliveryId " +
+            "AND o.deliveryType = :deliveryType " +
+            "AND o.excluded = false")
+    List<OrderExternal> findOrdersByDeliveryIdAndDeliveryType(@Param("deliveryId") UUID deliveryId, @Param("deliveryType") DeliveryType deliveryType);
 
     @EntityGraph(attributePaths = {"delivery"})
     @Query("SELECT o FROM OrderExternal o " +

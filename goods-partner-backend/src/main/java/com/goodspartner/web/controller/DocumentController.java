@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.zip.ZipOutputStream;
 
 @RestController
-@RequestMapping(path = "/api/v1/document")
+@RequestMapping(path = "/api/v1/documents")
 public class DocumentController {
     private static final String ATTACHMENT = "attachment";
     private static final String INVOICE_ZIP_FILENAME = "invoices_" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));

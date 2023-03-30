@@ -1,9 +1,11 @@
 package com.goodspartner.web.controller;
 
-import com.goodspartner.report.CarsLoadReportGenerator;
+import com.goodspartner.entity.DeliveryType;
+import com.goodspartner.report.ReportGenerator;
 import com.goodspartner.report.ReportResult;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,11 +21,16 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/reports")
-@RequiredArgsConstructor
 @Slf4j
 public class ReportController {
 
-    private final CarsLoadReportGenerator carsLoadReportGenerator;
+    @Autowired
+    @Qualifier("carsLoadReportGenerator")
+    private ReportGenerator carsLoadReportGenerator;
+
+    @Autowired
+    @Qualifier("productReportGenerator")
+    private ReportGenerator productReportGenerator;
 
     private static HttpEntity<byte[]> toHttpEntity(ReportResult reportResult) {
         ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
@@ -39,9 +46,15 @@ public class ReportController {
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
     @GetMapping("/carsload")
     public HttpEntity<byte[]> generateCarsLoadReport(@RequestParam UUID deliveryId) {
-        ReportResult reportResult = carsLoadReportGenerator.generateReport(deliveryId);
+        ReportResult reportResult = carsLoadReportGenerator.generateReport(deliveryId, DeliveryType.REGULAR);
         return toHttpEntity(reportResult);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN', 'DRIVER')")
+    @GetMapping("/shipment")
+    public HttpEntity<byte[]> generateProductsLoadReport(@RequestParam UUID deliveryId, @RequestParam DeliveryType deliveryType) {
+        ReportResult reportResult = productReportGenerator.generateReport(deliveryId, deliveryType);
+        return toHttpEntity(reportResult);
+    }
 
 }

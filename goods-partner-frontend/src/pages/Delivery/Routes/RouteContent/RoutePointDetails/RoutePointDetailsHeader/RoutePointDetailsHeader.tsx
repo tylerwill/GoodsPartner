@@ -64,7 +64,8 @@ const RoutePointDetailsHeader = ({
                 <Button
                     size={"small"}
                     sx={{mr: 2, pr: 2}}
-                    href={`${apiUrl}/document/by-route-point/${routePoint.id}`}
+                    target={"_blank"}
+                    href={`${apiUrl}/documents?routePointId=${routePoint.id}`}
                     variant='outlined'
                 >
                     <DownloadIcon sx={{mr: 1}}/> Документи

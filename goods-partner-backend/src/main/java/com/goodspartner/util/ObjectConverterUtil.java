@@ -20,4 +20,10 @@ public class ObjectConverterUtil {
     public static List<String> getOrdersRefKeysFromRoutePoint(RoutePoint routePoint) {
         return getOrdersRefKeysFromRoutePointList(List.of(routePoint));
     }
+
+    public static List<String> getOrdersRefKeysFromOrders(List<OrderExternal> orderExternals) {
+        return orderExternals.stream()
+                .map(OrderExternal::getRefKey)
+                .collect(Collectors.toList());
+    }
 }

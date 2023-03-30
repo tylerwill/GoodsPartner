@@ -11,12 +11,14 @@ interface OrdersBasicTable {
     page: number
     rowsPerPage: number
     orders: Order[]
+    keyPrefix: string
 }
 
 export const DeliveryOrdersShortTable: FC<OrdersBasicTable> = ({
                                                                    page,
                                                                    rowsPerPage,
-                                                                   orders
+                                                                   orders,
+                                                                   keyPrefix
                                                                }) => {
 
 
@@ -37,7 +39,8 @@ export const DeliveryOrdersShortTable: FC<OrdersBasicTable> = ({
             {/*TODO: [Tolik] Think about keys */}
             {orders
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((order, index) => <OrderTableRow order={order}/>)}
+                .map((order, index) => <OrderTableRow
+                    key={keyPrefix + index} order={order}/>)}
 
             {emptyRows > 0 && (
                 <TableRow

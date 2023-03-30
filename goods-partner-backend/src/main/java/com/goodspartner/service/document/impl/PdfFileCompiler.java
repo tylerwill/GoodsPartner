@@ -18,11 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Set;
-import java.util.List;
-import java.util.Objects;
-import java.util.Iterator;
-import java.util.Base64;
+import java.util.*;
 
 @Slf4j
 public class PdfFileCompiler implements FileCompiler {
@@ -64,6 +60,7 @@ public class PdfFileCompiler implements FileCompiler {
 
             return pdfFileHost;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -125,6 +122,7 @@ public class PdfFileCompiler implements FileCompiler {
 
     private void insertBill(DocumentContent pdfDocumentContent, OutputStream outputStream) {
         String bill = getDocument(pdfDocumentContent, DocumentPdfType.BILL);
+        bill = bill.replaceAll("& ", "&amp; ");
         renderer.setDocumentFromString(bill);
         renderer.layout();
         renderer.createPDF(outputStream, false);
@@ -132,6 +130,7 @@ public class PdfFileCompiler implements FileCompiler {
 
     private void insertInvoiceTwice(DocumentContent pdfDocumentContent) {
         String htmlInvoice = getDocument(pdfDocumentContent, DocumentPdfType.INVOICE);
+        htmlInvoice = htmlInvoice.replaceAll("& ", "&amp; ");
         for (int i = 0; i < NUMBER_OF_COPIES; i++) {
             writeToPdfDocument(htmlInvoice);
         }

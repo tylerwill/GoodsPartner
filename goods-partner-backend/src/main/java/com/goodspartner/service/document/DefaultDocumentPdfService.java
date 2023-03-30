@@ -2,8 +2,12 @@ package com.goodspartner.service.document;
 
 import com.goodspartner.configuration.properties.ClientProperties;
 import com.goodspartner.dto.InvoiceDto;
+import com.goodspartner.entity.DeliveryType;
+import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.entity.RoutePoint;
+import com.goodspartner.exception.NoOrdersFoundForDelivery;
 import com.goodspartner.exception.RoutePointNotFoundException;
+import com.goodspartner.repository.OrderExternalRepository;
 import com.goodspartner.repository.RoutePointRepository;
 import com.goodspartner.service.IntegrationService;
 import com.goodspartner.service.dto.DocumentContent;
@@ -18,6 +22,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -26,6 +31,7 @@ public class DefaultDocumentPdfService implements DocumentPdfService {
 
     private final IntegrationService integrationService;
     private final RoutePointRepository routePointRepository;
+    private final OrderExternalRepository orderExternalRepository;
     private final AbstractDocumentFactory documentFactory;
     private final ClientProperties clientProperties;
     private final WebClient webClient;
@@ -46,11 +52,36 @@ public class DefaultDocumentPdfService implements DocumentPdfService {
         return getDocumentDto(routePoint);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public DocumentDto getPdfDocumentsByDeliveryId(UUID deliveryId, DeliveryType deliveryType) {
+        List<OrderExternal> orders = orderExternalRepository.findOrdersByDeliveryIdAndDeliveryType(deliveryId, deliveryType);
+        if (orders.isEmpty()) {
+            throw new NoOrdersFoundForDelivery(deliveryId, deliveryType);
+        }
+        return getDocumentDtoByOrderExternal(orders);
+    }
+
+    private DocumentDto getDocumentDtoByOrderExternal(List<OrderExternal> orders) {
+        List<String> refKeys = ObjectConverterUtil.getOrdersRefKeysFromOrders(orders);
+        List<InvoiceDto> invoicesDto = integrationService.getInvoicesByOrderRefKeys(refKeys);
+
+        return createDocumentDto(invoicesDto);
+    }
+
     private DocumentDto getDocumentDto(List<RoutePoint> routePoints) {
         List<String> refKeys = ObjectConverterUtil.getOrdersRefKeysFromRoutePointList(routePoints);
         List<InvoiceDto> invoicesDto = integrationService.getInvoicesByOrderRefKeys(refKeys);
 
         return createDocumentDto(routePoints, invoicesDto);
+    }
+
+    private DocumentDto createDocumentDto(List<InvoiceDto> invoicesDto) {
+        DocumentDto documentDto = new DocumentDto();
+
+        setOrderAndDeliveryDateToDocumentDto(invoicesDto, documentDto);
+        setPdfContentToDocumentDto(invoicesDto, documentDto);
+        return documentDto;
     }
 
     private DocumentDto createDocumentDto(List<RoutePoint> routePoints, List<InvoiceDto> invoicesDto) {
