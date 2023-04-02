@@ -74,7 +74,7 @@ const RoutePointOrdersDialog = ({
 								<TableCell>Артикул</TableCell>
 								<TableCell>Кількість</TableCell>
 								<TableCell>Упаковка</TableCell>
-								<TableCell>Загальна вага</TableCell>
+								<TableCell>Всього</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>

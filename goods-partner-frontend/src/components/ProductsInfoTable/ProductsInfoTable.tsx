@@ -21,7 +21,7 @@ export const ProductsInfoTable: FC<ProductsInfoTableProps> = ({order, keyPrefix}
                     <TableCell sx={{width: '500px'}}>Артикул</TableCell>
                     <TableCell>Кількість</TableCell>
                     <TableCell>Упаковка</TableCell>
-                    <TableCell>Загальна вага</TableCell>
+                    <TableCell>Всьго</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
