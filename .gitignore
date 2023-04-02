@@ -68,6 +68,7 @@ database.env
 .eslintcache
 
 logs
+temp_pdf_files
 
 # frontend
 goods-partner-frontend/package-lock.json

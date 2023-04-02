@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -25,6 +30,8 @@ public class DocumentPdfController {
     private static final String ORDER = "order_";
     private static final String FILENAME_DELIMITER = "_";
     private static final String FILE_EXTENSION = ".pdf";
+    private static final int DEFAULT_BUFFER_SIZE = 8 * 1024;
+
 
     private final DocumentPdfService pdfService;
 
@@ -40,13 +47,11 @@ public class DocumentPdfController {
     public @ResponseBody ResponseEntity<StreamingResponseBody> pdfDocumentsByRoute(@ApiParam(value = "Need Route id to get PDF documents", required = true)
                                                                                    @RequestParam String routeId) {
         DocumentDto documentDto = pdfService.getPdfDocumentsByRoute(Long.parseLong(routeId));
-        ByteArrayOutputStream compoundPdfFileAccordingRouteId =
-                (ByteArrayOutputStream) documentDto.getDocumentContent();
 
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, getFileNameByRoute(documentDto))
-                .body(compoundPdfFileAccordingRouteId::writeTo);
+                .body(outputStream -> uploadPdf(documentDto, outputStream));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
@@ -57,13 +62,11 @@ public class DocumentPdfController {
     public @ResponseBody ResponseEntity<StreamingResponseBody> pdfDocumentsByRoutePoint(@ApiParam(value = "Need routePoint id to get PDF documents", required = true)
                                                                                         @RequestParam String routePointId) {
         DocumentDto documentDto = pdfService.getPdfDocumentsByRoutePoint(Long.parseLong(routePointId));
-        ByteArrayOutputStream compoundPdfFileAccordingRoutePointId =
-                (ByteArrayOutputStream) documentDto.getDocumentContent();
 
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, getFileNameByRoutePoint(documentDto))
-                .body(compoundPdfFileAccordingRoutePointId::writeTo);
+                .body(outputStream -> uploadPdf(documentDto, outputStream));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'LOGIST', 'DRIVER')")
@@ -76,13 +79,11 @@ public class DocumentPdfController {
         DocumentDto documentDto = pdfService.getPdfDocumentsByDeliveryId(deliveryId, deliveryType);
         documentDto.setCarName(deliveryType.getName());
         documentDto.setCarLicencePlate(StringUtils.EMPTY);
-        ByteArrayOutputStream compoundPdfFileAccordingRoutePointId =
-                (ByteArrayOutputStream) documentDto.getDocumentContent();
 
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, getFileNameByRoutePoint(documentDto))
-                .body(compoundPdfFileAccordingRoutePointId::writeTo);
+                .body(outputStream -> uploadPdf(documentDto, outputStream));
     }
 
     private String getFileNameByRoute(DocumentDto documentDto) {
@@ -111,5 +112,15 @@ public class DocumentPdfController {
                 .filename(fileName, StandardCharsets.UTF_8)
                 .build()
                 .toString();
+    }
+    private void uploadPdf(DocumentDto documentDto, OutputStream outputStream) throws IOException {
+        File file = new File(documentDto.getDocumentContent());
+        InputStream inputStream = new FileInputStream(file);
+        int nRead;
+        byte[] data = new byte[DEFAULT_BUFFER_SIZE];
+        while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+            outputStream.write(data, 0, nRead);
+        }
+        inputStream.close();
     }
 }

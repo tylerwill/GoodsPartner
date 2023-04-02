@@ -14,51 +14,58 @@ import lombok.extern.slf4j.Slf4j;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 @Slf4j
 public class PdfFileCompiler implements FileCompiler {
 
     private static final String FONT_ARIAL = "documents/fonts/arial.ttf";
-    private final static int NUMBER_OF_COPIES = 2;
-    private final static int DEFAULT_BUFFER_SIZE = 8 * 1024;
-    private final static int FIRST_PAGE = 1;
+    private static final String TMP_EXTENSION = "%s/%s.pdf.tmp";
+    private static final Path TEMP_PDF_FILES = Paths.get("temp_pdf_files");
+
+    private static final int NUMBER_OF_COPIES = 2;
+    private static final int FIRST_PAGE = 1;
 
     private final Document resultPdfFile;
-    private final ByteArrayOutputStream pdfFileHost;
+
     private ITextRenderer renderer;
-    private final PdfCopy pdfCopier;
+    private PdfCopy pdfCopier;
     private final FileFetcher fileFetcher;
     private List<DocumentContent> pdfDocumentContents;
 
     public PdfFileCompiler(FileFetcher fileFetcher) {
         this(new ITextRenderer(),
-                new ByteArrayOutputStream(DEFAULT_BUFFER_SIZE),
                 new Document(PageSize.A4),
                 fileFetcher);
     }
 
     public PdfFileCompiler(ITextRenderer renderer,
-                           ByteArrayOutputStream pdfFileHost,
                            Document resultPdfFile,
                            FileFetcher fileFetcher) {
         this.renderer = renderer;
-        this.pdfFileHost = pdfFileHost;
         this.resultPdfFile = resultPdfFile;
-        pdfCopier = new PdfCopy(resultPdfFile, pdfFileHost);
         this.fileFetcher = fileFetcher;
     }
 
-    public OutputStream getCompiledPdfFile(List<DocumentContent> pdfDocumentContents) {
-        try {
+    public String getCompiledPdfFile(List<DocumentContent> pdfDocumentContents) {
+        String tempPdfFileName = String.format(TMP_EXTENSION, TEMP_PDF_FILES.toString(), UUID.randomUUID());
+        try (FileOutputStream pdfFileHost = new FileOutputStream(tempPdfFileName)) {
+            pdfCopier = new PdfCopy(resultPdfFile, pdfFileHost);
             setPdfDocumentDtos(pdfDocumentContents);
             insertToResultPdfFile();
-
-            return pdfFileHost;
+            return tempPdfFileName;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
@@ -83,7 +90,7 @@ public class PdfFileCompiler implements FileCompiler {
         }
     }
 
-    private void insertToResultPdfFile() throws IOException {
+    private void insertToResultPdfFile() {
         resultPdfFile.open();
 
         for (DocumentContent pdfDocumentContent : pdfDocumentContents) {
@@ -94,25 +101,29 @@ public class PdfFileCompiler implements FileCompiler {
         resultPdfFile.close();
     }
 
-    private void insertBillAndInvoicesAndImagesQualityDocuments(DocumentContent pdfDocumentContent) throws IOException {
-        byte[] pdfOfBillAndInvoicesAndImagesQualityDocuments =
+    private void insertBillAndInvoicesAndImagesQualityDocuments(DocumentContent pdfDocumentContent) {
+        String pdfOfBillAndInvoicesAndImagesQualityDocuments =
                 getPdfOfBillAndInvoicesAndImagesQualityDocuments(pdfDocumentContent);
 
         copyPdfPages(pdfOfBillAndInvoicesAndImagesQualityDocuments);
     }
 
-    private byte[] getPdfOfBillAndInvoicesAndImagesQualityDocuments(DocumentContent pdfDocumentContent) throws IOException {
+    private String getPdfOfBillAndInvoicesAndImagesQualityDocuments(DocumentContent pdfDocumentContent) {
         renderer = new ITextRenderer();
-        ByteArrayOutputStream pdfHost = new ByteArrayOutputStream(DEFAULT_BUFFER_SIZE);
-        setFontArial();
+        String tempPdfFileName = String.format(TMP_EXTENSION, TEMP_PDF_FILES, UUID.randomUUID());
 
-        insertBill(pdfDocumentContent, pdfHost);
-        insertInvoiceTwice(pdfDocumentContent);
-        insertImagesQualityDocuments(pdfDocumentContent);
+        try (FileOutputStream pdfHost = new FileOutputStream(tempPdfFileName)) {
+            setFontArial();
 
-        renderer.finishPDF();
+            insertBill(pdfDocumentContent, pdfHost);
+            insertInvoiceTwice(pdfDocumentContent);
+            insertImagesQualityDocuments(pdfDocumentContent);
 
-        return pdfHost.toByteArray();
+            renderer.finishPDF();
+        } catch (Exception e) {
+            log.warn("Get Pdf of Bill, Invoices and ImagesDocuments problem: {}", e.getMessage());
+        }
+        return tempPdfFileName;
     }
 
     private void setFontArial() throws IOException {
@@ -208,16 +219,27 @@ public class PdfFileCompiler implements FileCompiler {
         pdfQualityDocumentUrls.stream()
                 .map(this::openSourceFile)
                 .filter(Objects::nonNull)
-                .forEach(this::copyPdfPages);
+                .forEach(this::writeCopyPdfPages);
     }
 
-    private void copyPdfPages(byte[] filePdf) {
+    private void writeCopyPdfPages(byte[] openSourceFile) {
+        String tempPdfFileName = String.format(TMP_EXTENSION, TEMP_PDF_FILES, UUID.randomUUID());
+        try (FileOutputStream file = new FileOutputStream(tempPdfFileName)) {
+            file.write(openSourceFile);
+        } catch (Exception e) {
+            log.warn("Insert Pdf Quality Documents problem: {}", e.getMessage());
+        }
+        copyPdfPages(tempPdfFileName);
+    }
+
+    private void copyPdfPages(String filePdf) {
         try (PdfReader pdfReader = new PdfReader(filePdf)) {
             int numberOfPages = pdfReader.getNumberOfPages();
             for (int page = FIRST_PAGE; page <= numberOfPages; page++) {
                 PdfImportedPage pdfImportedPage = pdfCopier.getImportedPage(pdfReader, page);
                 pdfCopier.addPage(pdfImportedPage);
             }
+            Files.delete(Path.of(filePdf));
         } catch (Exception e) {
             log.warn("A problem occurred when PDF Quality documents were copied: {}", e.getMessage());
         }

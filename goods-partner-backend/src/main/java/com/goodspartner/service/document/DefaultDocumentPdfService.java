@@ -119,7 +119,7 @@ public class DefaultDocumentPdfService implements DocumentPdfService {
         List<DocumentContent> documentContents = invoicesDto.stream()
                 .map(invoiceDto -> getDocumentContent(htmlAggregator, invoiceDto))
                 .toList();
-        OutputStream pdfDocument = documentFactory.createFileCompiler(fileFetcher).getCompiledPdfFile(documentContents);
+        String pdfDocument = documentFactory.createFileCompiler(fileFetcher).getCompiledPdfFile(documentContents);
         documentDto.setDocumentContent(pdfDocument);
     }
 

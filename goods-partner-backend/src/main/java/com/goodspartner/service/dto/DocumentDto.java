@@ -3,8 +3,6 @@ package com.goodspartner.service.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.OutputStream;
-
 @Setter
 @Getter
 public class DocumentDto {
@@ -12,5 +10,5 @@ public class DocumentDto {
     private String carLicencePlate;
     private String orderNumber;
     private String deliveryDate;
-    private OutputStream documentContent;
+    private String documentContent;
 }
