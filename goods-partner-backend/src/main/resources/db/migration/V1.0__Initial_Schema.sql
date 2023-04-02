@@ -1,32 +1,20 @@
 create sequence routes_sequence
     increment by 50;
 
-alter sequence routes_sequence owner to postgres;
-
 create sequence cars_id_sequence
     increment by 50;
-
-alter sequence cars_id_sequence owner to postgres;
 
 create sequence orders_external_id_sequence
     increment by 50;
 
-alter sequence orders_external_id_sequence owner to postgres;
-
 create sequence users_id_sequence
     increment by 50;
-
-alter sequence users_id_sequence owner to postgres;
 
 create sequence route_points_sequence
     increment by 50;
 
-alter sequence route_points_sequence owner to postgres;
-
 create sequence tasks_id_sequence
     increment by 50;
-
-alter sequence tasks_id_sequence owner to postgres;
 
 create table if not exists flyway_schema_history
 (
@@ -44,9 +32,6 @@ create table if not exists flyway_schema_history
     success        boolean                 not null
     );
 
-alter table flyway_schema_history
-    owner to postgres;
-
 create index if not exists flyway_schema_history_s_idx
     on flyway_schema_history (success);
 
@@ -60,9 +45,6 @@ create table if not exists users
     role      varchar(255)                                           not null,
     enabled   boolean                                                not null
     );
-
-alter table users
-    owner to postgres;
 
 alter sequence users_id_sequence owned by users.id;
 
@@ -82,9 +64,6 @@ create table if not exists cars
     references users
     );
 
-alter table cars
-    owner to postgres;
-
 alter sequence cars_id_sequence owned by cars.id;
 
 create table if not exists grandedolce_addresses
@@ -98,9 +77,6 @@ create table if not exists grandedolce_addresses
     primary key (order_address, client_name)
     );
 
-alter table grandedolce_addresses
-    owner to postgres;
-
 create table if not exists deliveries
 (
     id               uuid                  not null
@@ -113,9 +89,6 @@ create table if not exists deliveries
     route_count      integer
     );
 
-alter table deliveries
-    owner to postgres;
-
 create table if not exists car_loads
 (
     id          uuid    not null
@@ -127,9 +100,6 @@ create table if not exists car_loads
     constraint fk_car_loads_on_car_id
     references cars
 );
-
-alter table car_loads
-    owner to postgres;
 
 create table if not exists deliveries_history
 (
@@ -144,9 +114,6 @@ create table if not exists deliveries_history
     action      varchar(255) not null
     );
 
-alter table deliveries_history
-    owner to postgres;
-
 create table if not exists store
 (
     id        uuid          not null
@@ -156,9 +123,6 @@ create table if not exists store
     latitude  numeric(8, 2) not null,
     longitude numeric(8, 2) not null
     );
-
-alter table store
-    owner to postgres;
 
 create table if not exists routes
 (
@@ -185,9 +149,6 @@ create table if not exists routes
     references store
     );
 
-alter table routes
-    owner to postgres;
-
 alter sequence routes_sequence owned by routes.id;
 
 create table if not exists route_points
@@ -210,9 +171,6 @@ create table if not exists route_points
     matching_time            boolean default false,
     map_point                jsonb                                                      not null
     );
-
-alter table route_points
-    owner to postgres;
 
 alter sequence route_points_sequence owned by route_points.id;
 
@@ -249,9 +207,6 @@ create table if not exists grandedolce_orders
     map_point       jsonb                                                                not null
     );
 
-alter table grandedolce_orders
-    owner to postgres;
-
 alter sequence orders_external_id_sequence owned by grandedolce_orders.id;
 
 create table if not exists settings
@@ -261,9 +216,6 @@ create table if not exists settings
     properties  varchar(1000) not null,
     primary key (group_id, category_id)
     );
-
-alter table settings
-    owner to postgres;
 
 create table if not exists tasks
 (
@@ -276,9 +228,6 @@ create table if not exists tasks
     constraint fk_task_on_car_id
     references cars
     );
-
-alter table tasks
-    owner to postgres;
 
 alter sequence tasks_id_sequence owned by tasks.id;
 
