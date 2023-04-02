@@ -1,14 +1,7 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.entity.AddressExternal;
-import com.goodspartner.entity.AddressStatus;
-import com.goodspartner.entity.Delivery;
-import com.goodspartner.entity.DeliveryFormationStatus;
-import com.goodspartner.entity.DeliveryStatus;
-import com.goodspartner.entity.DeliveryType;
-import com.goodspartner.entity.OrderExternal;
-import com.goodspartner.entity.User;
+import com.goodspartner.entity.*;
 import com.goodspartner.event.ActionType;
 import com.goodspartner.event.EventType;
 import com.goodspartner.exception.AddressExternalNotFoundException;
@@ -50,7 +43,7 @@ import static com.goodspartner.event.EventMessageTemplate.DELIVERY_READY;
 @Service
 public class DefaultOrderExternalService implements OrderExternalService {
 
-    private static final Sort DEFAULT_ORDER_EXTERNAL_SORT = Sort.by(Sort.Direction.DESC, "shippingDate", "orderNumber");
+    private static final Sort DEFAULT_ORDER_EXTERNAL_SORT = Sort.by(Sort.Direction.DESC, "orderWeight", "orderNumber");
 
     private final OrderExternalMapper orderExternalMapper;
     // Repos

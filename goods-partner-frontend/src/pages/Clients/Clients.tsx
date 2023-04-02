@@ -1,4 +1,4 @@
-import {Box, Button, Typography} from '@mui/material'
+import {Box, Button, Chip, Typography} from '@mui/material'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -16,6 +16,8 @@ import {ChooseAddressDialog} from "../../components/ChooseAddressDialog/ChooseAd
 import MapPoint from "../../model/MapPoint";
 import {MapPointStatus} from "../../model/MapPointStatus";
 import {ClientAddress} from "../../model/ClientAddress";
+import {OverridableStringUnion} from "@mui/types";
+import {ChipPropsColorOverrides} from "@mui/material/Chip/Chip";
 
 export const Clients = () => {
     const {data: clientsAddresses, error, isLoading} = useGetClientsAddressesQuery()
@@ -95,7 +97,9 @@ export const Clients = () => {
                                                         startIcon={<CreateIcon/>}/> {clientAddress.mapPoint.address}
                                             </Box>
                                             </TableCell>
-                                            <TableCell align='center'>{toStatusString(clientAddress.mapPoint.status)}</TableCell>
+                                            <TableCell align='center'>
+                                                {AddressStatusChip(clientAddress.mapPoint.status)}
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                             </TableBody>
@@ -122,18 +126,38 @@ export const Clients = () => {
     )
 }
 
-const toStatusString = (status: MapPointStatus) => {
+
+const AddressStatusChip = (status: MapPointStatus) => {
+    let text
+    let color: OverridableStringUnion<'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning',
+        ChipPropsColorOverrides>;
+
     switch (status) {
-        case MapPointStatus.AUTOVALIDATED :{
-            return 'Автовалідація'
+        case MapPointStatus.AUTOVALIDATED : {
+            text = 'Авто'
+            color = 'success'
+            break
         }
 
         case MapPointStatus.KNOWN : {
-            return 'Відомий'
+            text = 'Вручну'
+            color = 'default'
+            break
         }
 
         case MapPointStatus.UNKNOWN : {
-            return 'Невідомий'
+            text = 'Невідомий'
+            color = 'error'
+            break
         }
     }
+
+    return (
+        <Chip
+            label={text}
+            sx={{color: '#000', borderWidth: '2px'}}
+            color={color}
+            variant='outlined'
+        />
+    )
 }

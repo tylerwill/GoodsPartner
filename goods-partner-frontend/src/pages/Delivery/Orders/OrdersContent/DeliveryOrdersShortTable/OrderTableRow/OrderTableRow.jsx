@@ -29,13 +29,10 @@ const OrderTableRow = ({order}) => {
         dispatch(setDeliveryTypeDialogOpen(true))
     }, [dispatch, setDeliveryTypeDialogOpen, order])
 
-    let styles = {
-        '& > *': {borderBottom: 'unset'}
-    }
+    let styles = {}
 
     if (order.excluded) {
         styles = {
-            ...styles,
             background: 'rgba(0, 0, 0, 0.04)'
         }
     }

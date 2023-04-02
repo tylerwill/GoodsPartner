@@ -65,7 +65,7 @@ const AdditionalInfo = ({ order, updateOrder }: AdditionalInfoProps) => {
 				</Box>
 			</Grid>
 
-			<Grid item xs={3}>
+			<Grid item xs={2}>
 				<Typography
 					sx={{ mb: 1 }}
 					variant='caption'
@@ -83,7 +83,21 @@ const AdditionalInfo = ({ order, updateOrder }: AdditionalInfoProps) => {
 				</Box>
 			</Grid>
 
-			<Grid item xs={3}>
+			<Grid item xs={2}>
+				<Typography
+					sx={{ mb: 1 }}
+					variant='caption'
+					display='block'
+					gutterBottom
+				>
+					Менеджер
+				</Typography>
+				<Typography variant='caption' display='block' gutterBottom>
+					{order.managerFullName}
+				</Typography>
+			</Grid>
+
+			<Grid item xs={2}>
 				<Typography
 					sx={{ mb: 1 }}
 					variant='caption'
@@ -96,6 +110,7 @@ const AdditionalInfo = ({ order, updateOrder }: AdditionalInfoProps) => {
 					{order.orderWeight} кг
 				</Typography>
 			</Grid>
+
 
 			{/* TODO: Change font fize to 14px in rem*/}
 			<Grid item xs={3}>

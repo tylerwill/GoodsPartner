@@ -90,7 +90,7 @@ export const Tasks = () => {
                 </Typography>
 
                 <Button onClick={() => setIsAddTaskDialogOpen(true)} variant='contained'>
-                    Додати задачу
+                    Додати завдання
                 </Button>
             </Box>
             <Box mt={2}>

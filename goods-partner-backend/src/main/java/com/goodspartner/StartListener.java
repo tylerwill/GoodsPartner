@@ -13,7 +13,7 @@ public class StartListener {
     private final SettingsCache settingsCache;
 
     @EventListener(ApplicationReadyEvent.class)
-    public void onReadyEvent(@SuppressWarnings("unused") ApplicationReadyEvent applicationReadyEvent) {
+    public void onReadyEvent() {
         settingsCache.setUpCache();
     }
 

@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Grid from '@mui/material/Grid'
@@ -47,6 +47,13 @@ export const AddTaskDialog: FC<AddTaskDialogProps> = ({
     tomorrow.setDate(tomorrow.getDate() + 1)
     const defaultDate = tomorrow.toJSON().slice(0, 10).replace(/-/g, '-')
     const [dateOfExecution, setDateOfExecution] = useState(task.executionDate ?? defaultDate)
+
+    useEffect(()=> {
+        if(!task.car) {
+            const defaultCar = cars[0];
+            setTask({...task, car: defaultCar})
+        }
+    }, [])
 
     console.log("task", task);
     console.log("execution", dateOfExecution);
@@ -143,7 +150,7 @@ export const AddTaskDialog: FC<AddTaskDialogProps> = ({
                             />
                         </Grid>
                         <Grid item xs={12} display={'flex'}>
-                            <Button variant="contained" component="label">
+                            <Button disabled variant="contained" component="label">
                                 Завантажити документи
                                 <input hidden accept="*/*" multiple type="file" />
                             </Button>

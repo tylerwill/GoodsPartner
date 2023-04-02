@@ -1,5 +1,6 @@
 import {format} from 'date-fns'
 import {DeliveryType} from '../model/DeliveryType'
+import Order from "../model/Order";
 
 export const currentHost = () => {
     return process.env.NODE_ENV === 'development'
@@ -35,4 +36,8 @@ export const toDeliveryTypeString = (deliveryType: DeliveryType) => {
 
 export const formatDecimalNumber = (value: number) => {
     return value.toFixed(2)
+}
+
+export const isTimeShifted = (order: Order) => {
+    return order.deliveryStart !== '09:00' || order.deliveryFinish !== '18:00';
 }

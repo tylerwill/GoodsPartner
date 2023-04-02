@@ -31,7 +31,7 @@ export const DeliveryOrdersShortTable: FC<OrdersBasicTable> = ({
             <TableRow>
                 <TableCell sx={{minWidth: '135px'}}>№ замовлення</TableCell>
                 <TableCell>Клієнт</TableCell>
-                <TableCell>Комментар</TableCell>
+                <TableCell>Коментар</TableCell>
                 <TableCell/>
             </TableRow>
         </TableHead>

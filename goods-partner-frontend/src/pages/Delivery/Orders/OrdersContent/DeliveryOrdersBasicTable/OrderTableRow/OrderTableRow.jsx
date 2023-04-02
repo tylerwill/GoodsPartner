@@ -15,9 +15,12 @@ import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import OrderAdditionalInfo from '../../OrderAdditionalInfo/OrderAdditionalInfo'
 import OrderActionMenu from '../../OrderActionMenu/OrderActionMenu'
-import {toDeliveryTypeString} from '../../../../../../util/util'
+import {isTimeShifted} from '../../../../../../util/util'
 import {ProductsInfoTable} from "../../../../../../components/ProductsInfoTable/ProductsInfoTable";
 import {Tooltip} from "@mui/material";
+import AcUnitIcon from '@mui/icons-material/AcUnit';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import ScaleIcon from '@mui/icons-material/Scale';
 
 const OrderTableRow = ({
                            order,
@@ -27,7 +30,7 @@ const OrderTableRow = ({
                            expandAll,
                            reset,
                            isExcluded,
-                            colSpan
+                           colSpan
                        }) => {
     const dispatch = useAppDispatch()
     const from = order.deliveryStart ?? '09:00'
@@ -61,7 +64,7 @@ const OrderTableRow = ({
             background: 'rgba(0, 0, 0, 0.04)'
         }
     }
-    const address = order.mapPoint.status  === 'UNKNOWN' ? order.address : order.mapPoint.address;
+    const address = order.mapPoint.status === 'UNKNOWN' ? order.address : order.mapPoint.address;
     const isInvalid = order.mapPoint.status === 'UNKNOWN' && order.deliveryType === 'REGULAR';
     return (
         <>
@@ -87,7 +90,7 @@ const OrderTableRow = ({
                 <TableCell>
 
                     {isInvalid ? (
-                        <Box sx={{ml: 1, width:'100%', minHeight:'20px', backgroundColor: '#FFECB3'}}>
+                        <Box sx={{ml: 1, width: '100%', minHeight: '20px', backgroundColor: '#FFECB3'}}>
                             {address}
                         </Box>
                     ) : (
@@ -103,7 +106,9 @@ const OrderTableRow = ({
                 <TableCell>
                     {from} - {to}
                 </TableCell>
-                <TableCell>{order.managerFullName}</TableCell>
+                <TableCell>
+                    <Infographic order={order}/>
+                </TableCell>
                 {isExcluded && <TableCell>{order.excludeReason}</TableCell>}
                 <TableCell align='center'>
                     <OrderActionMenu
@@ -126,4 +131,17 @@ const OrderTableRow = ({
         </>
     )
 }
+
+const Infographic = ({order}) => {
+    const isFrozen = order.frozen;
+    const isTimeshifted = isTimeShifted(order);
+    const isOrderWeightWarn = Math.ceil(+order.orderWeight) > 200;
+
+    return <Box display={'flex'} alignItems={'center'} gap={0.5}>
+        {isOrderWeightWarn && <ScaleIcon color={'error'}/>}
+        {isTimeshifted && <AccessTimeIcon color={'success'}/>}
+        {isFrozen && <AcUnitIcon color={'primary'}/>}
+    </Box>
+}
+
 export default OrderTableRow
