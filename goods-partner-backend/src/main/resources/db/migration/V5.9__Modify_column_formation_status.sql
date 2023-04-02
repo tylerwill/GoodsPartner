@@ -1,1 +1,0 @@
-ALTER TABLE deliveries ALTER COLUMN formation_status TYPE VARCHAR(50);

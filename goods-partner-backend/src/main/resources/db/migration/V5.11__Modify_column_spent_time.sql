@@ -1,1 +1,0 @@
-ALTER TABLE routes ALTER COLUMN spent_time DROP NOT NULL;

@@ -1,1 +1,0 @@
-ALTER TABLE grandedolce_orders ADD COLUMN dropped BOOLEAN DEFAULT FALSE;
