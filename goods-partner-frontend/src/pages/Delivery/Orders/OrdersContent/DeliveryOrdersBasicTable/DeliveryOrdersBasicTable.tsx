@@ -46,7 +46,7 @@ export const DeliveryOrdersBasicTable: FC<OrdersBasicTable> = ({
                 <TableCell>Клієнт</TableCell>
                 <TableCell>Адреса</TableCell>
                 <TableCell sx={{minWidth: '135px'}}>Час доставки</TableCell>
-                <TableCell></TableCell>
+                <TableCell sx={{minWidth: '115px'}}></TableCell>
                 {isExcluded && <TableCell>Причина вилучення</TableCell>}
                 <TableCell/>
             </TableRow>

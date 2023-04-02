@@ -3,9 +3,9 @@ import {DeliveryType} from '../model/DeliveryType'
 import Order from "../model/Order";
 
 export const currentHost = () => {
-    return process.env.NODE_ENV === 'development'
-        ? process.env.REACT_APP_LOCALHOST_BASE_URL
-        : process.env.REACT_APP_PROD_BASE_URL
+    return import.meta.env.DEV
+        ? import.meta.env.VITE_LOCALHOST_BASE_URL
+        : import.meta.env.VITE_PROD_BASE_URL
 }
 
 export const apiUrl = `${currentHost()}api/v1`

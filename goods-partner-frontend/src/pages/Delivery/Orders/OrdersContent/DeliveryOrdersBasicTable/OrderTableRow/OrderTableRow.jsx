@@ -138,9 +138,28 @@ const Infographic = ({order}) => {
     const isOrderWeightWarn = Math.ceil(+order.orderWeight) > 200;
 
     return <Box display={'flex'} alignItems={'center'} gap={0.5}>
-        {isOrderWeightWarn && <ScaleIcon color={'error'}/>}
-        {isTimeshifted && <AccessTimeIcon color={'success'}/>}
-        {isFrozen && <AcUnitIcon color={'primary'}/>}
+        {isOrderWeightWarn &&
+            <Tooltip
+                title='Вага перевищує 200 кг'
+                placement='top'
+                arrow
+            >
+                <ScaleIcon color={'error'} cursor={'pointer'}/>
+            </Tooltip>}
+
+        {isTimeshifted &&
+            <Tooltip
+                title='Нестандартний час доставки'
+                placement='top'
+                arrow>
+                <AccessTimeIcon color={'success'} cursor={'pointer'}/>
+            </Tooltip>}
+        {isFrozen && <Tooltip
+            title='Містить заморозку'
+            placement='top'
+            arrow>
+            <AcUnitIcon color={'primary'} cursor={'pointer'}/>
+        </Tooltip>}
     </Box>
 }
 
