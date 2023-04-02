@@ -3,9 +3,7 @@ package com.goodspartner.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goodspartner.annotations.SettingsAllocation;
 import com.goodspartner.dto.ClientBusinessPropertiesDto;
-import com.goodspartner.dto.ClientPropertiesDto;
 import com.goodspartner.dto.ClientRoutingPropertiesDto;
-import com.goodspartner.dto.GoogleGeocodePropertiesDto;
 import com.goodspartner.dto.SettingsDto;
 import com.goodspartner.entity.Setting;
 import com.goodspartner.entity.SettingsCategory;
@@ -20,12 +18,9 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.goodspartner.entity.SettingsCategory.ACCOUNTING;
 import static com.goodspartner.entity.SettingsCategory.BUSINESS;
-import static com.goodspartner.entity.SettingsCategory.GEOCODE;
 import static com.goodspartner.entity.SettingsCategory.ROUTING;
 import static com.goodspartner.entity.SettingsGroup.CLIENT;
-import static com.goodspartner.entity.SettingsGroup.GOOGLE;
 
 @Component
 public class SettingParser {
@@ -37,22 +32,16 @@ public class SettingParser {
     public SettingParser(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
         this.keyToSettingFunctionMap = Map.of(
-                toKey(CLIENT, ACCOUNTING),
-                (settingsDto, properties) -> settingsDto.setClientProperties(mapProps(objectMapper, properties, ClientPropertiesDto.class)),
                 toKey(CLIENT, ROUTING),
                 (settingsDto, properties) -> settingsDto.setClientRoutingProperties(mapProps(objectMapper, properties, ClientRoutingPropertiesDto.class)),
                 toKey(CLIENT, BUSINESS),
-                (settingsDto, properties) -> settingsDto.setClientBusinessProperties(mapProps(objectMapper, properties, ClientBusinessPropertiesDto.class)),
-                toKey(GOOGLE, GEOCODE),
-                (settingsDto, properties) -> settingsDto.setGoogleGeocodeProperties(mapProps(objectMapper, properties, GoogleGeocodePropertiesDto.class))
+                (settingsDto, properties) -> settingsDto.setClientBusinessProperties(mapProps(objectMapper, properties, ClientBusinessPropertiesDto.class))
         );
     }
 
     public List<Setting> getSettingsList(SettingsDto settingExternalDto) {
-        return Stream.of(settingExternalDto.getClientProperties(),
-                        settingExternalDto.getClientRoutingProperties(),
-                        settingExternalDto.getClientBusinessProperties(),
-                        settingExternalDto.getGoogleGeocodeProperties())
+        return Stream.of(settingExternalDto.getClientRoutingProperties(),
+                        settingExternalDto.getClientBusinessProperties())
                 .filter(Objects::nonNull)
                 .map(this::toSetting)
                 .collect(Collectors.toList());

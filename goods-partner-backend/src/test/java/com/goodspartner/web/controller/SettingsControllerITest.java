@@ -23,7 +23,6 @@ class SettingsControllerITest extends AbstractWebITest {
 
     private static final String SETTINGS_ENDPOINT = "/api/v1/settings";
     private static final String SETTINGS_DATASET = "datasets/settings/settings-dataset.json";
-    private static final String SETTINGS_REQUEST = "datasets/settings/request-settings-dto.json";
     private static final String SETTINGS_RESPONSE = "datasets/settings/response-settings-dto.json";
 
     @Test
@@ -38,23 +37,6 @@ class SettingsControllerITest extends AbstractWebITest {
         mockMvc.perform(MockMvcRequestBuilders
                         .get(SETTINGS_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(content().json(getResponseAsString(SETTINGS_RESPONSE)));
-    }
-
-    @Test
-    @DataSet(value = SETTINGS_DATASET,
-            cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
-    void shouldAddSettingsThatWereProvidedFromFe() throws Exception {
-        var context = mockMvc.getDispatcherServlet().getWebApplicationContext();
-        Objects.requireNonNull(context);
-        var cacheBean = context.getBean(SettingsCache.class);
-        cacheBean.setUpCache();
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .put(SETTINGS_ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(getResponseAsString(SETTINGS_REQUEST)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString(SETTINGS_RESPONSE)));
     }

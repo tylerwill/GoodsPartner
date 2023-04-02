@@ -1,9 +1,7 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.configuration.properties.ClientBusinessProperties;
-import com.goodspartner.configuration.properties.ClientProperties;
 import com.goodspartner.configuration.properties.ClientRoutingProperties;
-import com.goodspartner.configuration.properties.GoogleGeocodeProperties;
 import com.goodspartner.configuration.properties.PropertyAggregate;
 import com.goodspartner.dto.SettingsDto;
 import com.goodspartner.entity.Setting;
@@ -29,10 +27,8 @@ public class DefaultSettingsService implements SettingsCache {
     private final SettingsMapper mapper;
     private final SettingParser parser;
     // Properties
-    private final ClientProperties clientProperties;
     private final ClientRoutingProperties clientRoutingProperties;
     private final ClientBusinessProperties clientBusinessProperties;
-    private final GoogleGeocodeProperties googleGeocodeProperties;
 
     @Transactional(readOnly = true)
     public void setUpCache() {
@@ -54,20 +50,16 @@ public class DefaultSettingsService implements SettingsCache {
     @Override
     public SettingsDto getSettings() {
         PropertyAggregate propertyAggregate = PropertyAggregate.builder()
-                .clientProperties(clientProperties)
                 .clientRoutingProperties(clientRoutingProperties)
                 .clientBusinessProperties(clientBusinessProperties)
-                .googleGeocodeProperties(googleGeocodeProperties)
                 .build();
         return mapper.mapAggregate(propertyAggregate);
     }
 
     private void updatePropertyEntities(SettingsDto settingsDto) {
         PropertyAggregate aggregator = PropertyAggregate.builder()
-                .clientProperties(clientProperties)
                 .clientRoutingProperties(clientRoutingProperties)
                 .clientBusinessProperties(clientBusinessProperties)
-                .googleGeocodeProperties(googleGeocodeProperties)
                 .build();
         mapper.update(aggregator, settingsDto);
     }

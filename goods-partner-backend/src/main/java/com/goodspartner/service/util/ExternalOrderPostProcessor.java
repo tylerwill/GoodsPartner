@@ -40,7 +40,7 @@ public class ExternalOrderPostProcessor {
     void checkIfPostal(List<OrderDto> orderDtos) {
         Postal postalProps = clientBusinessProperties.getPostal();
         orderDtos.stream()
-                .filter(orderDto -> checkCommentMatchKeywords(orderDto, postalProps.getKeywords()))
+                .filter(orderDto -> checkOrderMatchKeywords(orderDto, postalProps.getKeywords()))
                 .forEach(orderDto -> {
                     log.info("Order: {} has been marked as POSTAL", orderDto.getOrderNumber());
                     orderDto.setDeliveryType(DeliveryType.POSTAL);
@@ -51,7 +51,7 @@ public class ExternalOrderPostProcessor {
     void checkIfSelfService(List<OrderDto> orderDtos) {
         SelfService selfServiceProps = clientBusinessProperties.getSelfService();
         orderDtos.stream()
-                .filter(orderDto -> checkCommentMatchKeywords(orderDto, selfServiceProps.getKeywords()))
+                .filter(orderDto -> checkOrderMatchKeywords(orderDto, selfServiceProps.getKeywords()))
                 .forEach(orderDto -> {
                     log.info("Order: {} has been marked as SELF_SERVICE", orderDto.getOrderNumber());
                     orderDto.setDeliveryType(DeliveryType.SELF_SERVICE);
@@ -62,7 +62,7 @@ public class ExternalOrderPostProcessor {
     void checkIfPrePacking(List<OrderDto> orderDtos) {
         PrePacking prePackingProps = clientBusinessProperties.getPrePacking();
         orderDtos.stream()
-                .filter(orderDto -> checkCommentMatchKeywords(orderDto, prePackingProps.getKeywords()))
+                .filter(orderDto -> checkOrderMatchKeywords(orderDto, prePackingProps.getKeywords()))
                 .forEach(orderDto -> {
                     log.info("Order: {} has been marked as PRE_PACKING", orderDto.getOrderNumber());
                     orderDto.setDeliveryType(DeliveryType.PRE_PACKING);
@@ -75,7 +75,7 @@ public class ExternalOrderPostProcessor {
     private void checkIfCoolerCarRequired(List<OrderDto> orderDtos) {
         ClientBusinessProperties.Cooler coolerProps = clientBusinessProperties.getCooler();
         orderDtos.stream()
-                .filter(orderDto -> checkCommentMatchKeywords(orderDto, coolerProps.getKeywords()))
+                .filter(orderDto -> checkOrderMatchKeywords(orderDto, coolerProps.getKeywords()))
                 .forEach(orderDto -> {
                     log.info("Order: {} has been marked as for COOLER", orderDto.getOrderNumber());
                     orderDto.setFrozen(true);
@@ -87,7 +87,7 @@ public class ExternalOrderPostProcessor {
     private void checkMiddayDelivery(List<OrderDto> orderDtos) {
         ClientBusinessProperties.MiddayDelivery middayDeliveryProps = clientBusinessProperties.getMiddayDelivery();
         orderDtos.stream()
-                .filter(orderDto -> checkCommentMatchKeywords(orderDto, middayDeliveryProps.getKeywords()))
+                .filter(orderDto -> checkOrderMatchKeywords(orderDto, middayDeliveryProps.getKeywords()))
                 .forEach(orderDto -> {
                     log.info("Order: {} set as a midday delivery", orderDto.getOrderNumber());
                     orderDto.setDeliveryFinish(LocalTime.of(13, 0));
@@ -100,13 +100,22 @@ public class ExternalOrderPostProcessor {
 
     // --- Comment Parsers ---
 
-    boolean checkCommentMatchKeywords(OrderDto orderDto, List<String> keywords) {
-        return Optional.ofNullable(orderDto.getComment())
+    boolean checkOrderMatchKeywords(OrderDto orderDto, List<String> keywords) {
+        boolean commentMatch = Optional.ofNullable(orderDto.getComment())
                 .map(String::toLowerCase)
                 .map(orderCommentLowerCase -> keywords.stream()
                         .map(String::toLowerCase)
                         .anyMatch(orderCommentLowerCase::contains))
                 .orElse(false);
+
+        boolean addressMatch = Optional.ofNullable(orderDto.getAddress())
+                .map(String::toLowerCase)
+                .map(orderAddressLowerCase -> keywords.stream()
+                        .map(String::toLowerCase)
+                        .anyMatch(orderAddressLowerCase::contains))
+                .orElse(false);
+
+        return commentMatch || addressMatch;
     }
 
     /* Util */

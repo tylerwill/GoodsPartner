@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SettingExternalDtoParserTest {
 
-    private final String expectedClientPropertiesDtoProperties = "{\"clientServerURL\":\"localhost:5432\",\"server1CUriPrefix\":\"test\",\"login\":\"bookkeeper\",\"password\":\"password\",\"documentsUriPrefix\":\"document/test\"}";
     private final String expectedClientBusinessPropertiesDtoProperties = "{\"prePacking\":{\"address\":\"Dnipro\",\"keywords\":[]},\"selfService\":{\"address\":\"Kiev\",\"keywords\":[]},\"postal\":{\"address\":\"Lviv\",\"keywords\":[]}}";
     private final String expectedClientRoutingPropertiesDtoProperties = "{\"unloadingTimeMinutes\":15,\"maxRouteTimeMinutes\":500,\"depotStartTime\":\"08:00:00\",\"depotFinishTime\":\"09:00:00\",\"defaultDeliveryStartTime\":\"09:00:00\",\"defaultDeliveryFinishTime\":\"18:00:00\",\"maxTimeProcessingSolutionSeconds\":20}";
 
@@ -40,7 +39,6 @@ class SettingExternalDtoParserTest {
 
         assertEquals(SettingsGroup.CLIENT, settingExternal.getSettingKey().getGroup());
         assertEquals(SettingsCategory.ACCOUNTING, settingExternal.getSettingKey().getCategory());
-        assertEquals(expectedClientPropertiesDtoProperties, settingExternal.getProperties());
     }
 
     @Test
@@ -62,9 +60,8 @@ class SettingExternalDtoParserTest {
         String resultListAsString = resultList.toString();
 
         assertNotNull(resultList);
-        assertEquals(4, resultList.size());
+        assertEquals(2, resultList.size());
 
-        assertTrue(resultListAsString.contains(expectedClientPropertiesDtoProperties));
         assertTrue(resultListAsString.contains(expectedClientBusinessPropertiesDtoProperties));
         assertTrue(resultListAsString.contains(expectedClientRoutingPropertiesDtoProperties));
     }
@@ -78,18 +75,13 @@ class SettingExternalDtoParserTest {
         SettingsDto resultSettingsDto = parser.getSettingsDto(resultExternalList);
 
         assertNotNull(resultSettingsDto);
-        assertEquals(incomeSettingsDto.getClientProperties().getClientServerURL(), resultSettingsDto.getClientProperties().getClientServerURL());
         assertEquals(incomeSettingsDto.getClientBusinessProperties().getPrePacking().getAddress(), resultSettingsDto.getClientBusinessProperties().getPrePacking().getAddress());
-        assertEquals(incomeSettingsDto.getGoogleGeocodeProperties().getApiKey(), resultSettingsDto.getGoogleGeocodeProperties().getApiKey());
     }
 
     private SettingsDto createSettingsDto() {
         var settingDto = new SettingsDto();
-        settingDto.setClientProperties(createClientPropertiesDto());
         settingDto.setClientRoutingProperties(createClientRoutingProperties());
         settingDto.setClientBusinessProperties(createClientBusinessPropertiesDto());
-        settingDto.setGoogleGeocodeProperties(createGoogleGeocodePropertiesDto());
-
         return settingDto;
     }
 

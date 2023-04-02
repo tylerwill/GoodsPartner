@@ -5,8 +5,5 @@
     "login": "bookkeeper",
     "password": "password",
     "documentsUriPrefix": "document/test"
-  },
-  "googleGeocodeProperties": {
-    "apiKey": "ApiKey-87987-23654asdf"
   }
 }

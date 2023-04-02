@@ -8,7 +8,6 @@ import com.goodspartner.configuration.properties.ClientProperties;
 import com.goodspartner.configuration.properties.ClientRoutingProperties;
 import com.goodspartner.configuration.properties.GoogleGeocodeProperties;
 import com.goodspartner.dto.ClientBusinessPropertiesDto;
-import com.goodspartner.dto.ClientPropertiesDto;
 import com.goodspartner.dto.ClientRoutingPropertiesDto;
 import com.goodspartner.dto.GoogleGeocodePropertiesDto;
 import com.goodspartner.dto.SettingsDto;
@@ -30,17 +29,8 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 public class AbstractBaseCacheITest {
-    private final static String CLIENT_ACCOUNTING_PROP_DB = "{\"clientServerURL\": \"localhost:5432 REV-DB\",\"server1CUriPrefix\": \"test REV-DB\",\"login\": \"bookkeeper REV-DB\",\"password\": \"password REV-DB\",\"documentsUriPrefix\": \"document/test REV-DB\"}";
     private final static String CLIENT_BUSINESS_PROP_DB = "{\"prePacking\": {  \"address\": \"Dnipro REV-DB\"},\"selfService\": {  \"address\": \"Kiev REV-DB\"},\"postal\": {  \"address\": \"Lviv REV-DB\"}}";
-    private final static String GOOGLE_GEOCODE_PROP_DB = "{\"apiKey\": \"ApiKey-87987-23654asdf REV-DB\"}";
 
-    private final static String CLIENT_ACCOUNTING_PROP_FE = "{\"clientServerURL\": \"localhost:5432 REV-FE\",\"server1CUriPrefix\": \"test REV-FE\",\"login\": \"bookkeeper REV-FE\",\"password\": \"password REV-FE\",\"documentsUriPrefix\": \"document/test REV-FE\"}";
-    private final static String CLIENT_BUSINESS_PROP_FE = "{\"prePacking\": {  \"address\": \"Dnipro REV-FE\"},\"selfService\": {  \"address\": \"Kiev REV-FE\"},\"postal\": {  \"address\": \"Lviv REV-FE\"}}";
-    private final static String GOOGLE_GEOCODE_PROP_FE = "{\"apiKey\": \"ApiKey-87987-23654asdf REV-FE\"}";
-
-    private final static String CLIENT_ACCOUNTING_CLASS = "com.goodspartner.dto.ClientPropertiesDto";
-    private final static String CLIENT_BUSINESS_CLASS = "com.goodspartner.dto.ClientBusinessPropertiesDto";
-    private final static String GOOGLE_GEOCODE_CLASS = "com.goodspartner.dto.GoogleGeocodePropertiesDto";
     @Mock
     protected SettingsRepository repository;
     protected DefaultSettingsService settingsCache;
@@ -80,26 +70,19 @@ public class AbstractBaseCacheITest {
         googleGeocode.setApiKey("ApiKey-87987-23654asdf YAML");
 
         settingsCache = new DefaultSettingsService(repository, mapper, parser,
-                clientAccount,
                 clientRouting,
-                clientBusiness,
-                googleGeocode);
+                clientBusiness);
     }
 
     protected List<Setting> createSettingsListDb() {
-        return List.of(createSettingsInstance(SettingsGroup.CLIENT, SettingsCategory.ACCOUNTING, CLIENT_ACCOUNTING_PROP_DB, CLIENT_ACCOUNTING_CLASS),
-                createSettingsInstance(SettingsGroup.CLIENT, SettingsCategory.BUSINESS, CLIENT_BUSINESS_PROP_DB, CLIENT_BUSINESS_CLASS),
-                createSettingsInstance(SettingsGroup.GOOGLE, SettingsCategory.GEOCODE, GOOGLE_GEOCODE_PROP_DB, GOOGLE_GEOCODE_CLASS));
+        return List.of(createSettingsInstance(SettingsGroup.CLIENT, SettingsCategory.BUSINESS, CLIENT_BUSINESS_PROP_DB));
     }
 
     protected List<Setting> createPartialSettingsListDb() {
-        return List.of(createSettingsInstance(SettingsGroup.CLIENT, SettingsCategory.BUSINESS, CLIENT_BUSINESS_PROP_DB, CLIENT_BUSINESS_CLASS),
-                createSettingsInstance(SettingsGroup.GOOGLE, SettingsCategory.GEOCODE, GOOGLE_GEOCODE_PROP_DB, GOOGLE_GEOCODE_CLASS));
+        return List.of(createSettingsInstance(SettingsGroup.CLIENT, SettingsCategory.BUSINESS, CLIENT_BUSINESS_PROP_DB));
     }
     protected SettingsDto createEmptySettingDto() {
         var settingDto = new SettingsDto();
-
-        settingDto.setClientProperties(new ClientPropertiesDto());
 
         var clientBusinessDto = new ClientBusinessPropertiesDto();
         clientBusinessDto.setPrePacking(new ClientBusinessPropertiesDto.PrePackingDto());
@@ -108,12 +91,11 @@ public class AbstractBaseCacheITest {
         settingDto.setClientBusinessProperties(clientBusinessDto);
 
         settingDto.setClientRoutingProperties(new ClientRoutingPropertiesDto());
-        settingDto.setGoogleGeocodeProperties(new GoogleGeocodePropertiesDto());
 
         return settingDto;
     }
 
-    protected Setting createSettingsInstance(SettingsGroup group, SettingsCategory category, String property, String clazz) {
+    protected Setting createSettingsInstance(SettingsGroup group, SettingsCategory category, String property) {
         var settings = new Setting();
         settings.setSettingKey(new Setting.SettingKey(group, category));
         settings.setProperties(property + group.getValue());
@@ -122,33 +104,17 @@ public class AbstractBaseCacheITest {
 
     protected SettingsDto createSettingsDtoWithPartialProperties() {
         var settingDto = new SettingsDto();
-        settingDto.setClientProperties(new ClientPropertiesDto());
         settingDto.setClientRoutingProperties(createClientRoutingProperties());
         settingDto.setClientBusinessProperties(createClientBusinessPropertiesDto());
-        settingDto.setGoogleGeocodeProperties(createGoogleGeocodePropertiesDto());
-
         return settingDto;
     }
 
     protected SettingsDto createSettingsDtoWithAllProperties() {
         var settingDto = new SettingsDto();
-        settingDto.setClientProperties(createClientPropertiesDto());
         settingDto.setClientRoutingProperties(createClientRoutingProperties());
         settingDto.setClientBusinessProperties(createClientBusinessPropertiesDto());
-        settingDto.setGoogleGeocodeProperties(createGoogleGeocodePropertiesDto());
 
         return settingDto;
-    }
-
-    private ClientPropertiesDto createClientPropertiesDto() {
-        var clientProperty = new ClientPropertiesDto();
-        clientProperty.setClientServerURL("localhost:5432 REV-FE");
-        clientProperty.setServer1CUriPrefix("test REV-FE");
-        clientProperty.setLogin("bookkeeper REV-FE");
-        clientProperty.setPassword("password REV-FE");
-        clientProperty.setDocumentsUriPrefix("document/test REV-FE");
-
-        return clientProperty;
     }
 
     private ClientRoutingPropertiesDto createClientRoutingProperties() {

@@ -1,11 +1,4 @@
 {
-  "clientProperties":{
-    "clientServerURL":"localhost:5432",
-    "server1CUriPrefix":"test",
-    "login":"bookkeeper",
-    "password":"password",
-    "documentsUriPrefix":"document/test"
-  },
   "clientRoutingProperties":{
     "unloadingTimeMinutes":15,
     "maxRouteTimeMinutes":600,
@@ -33,6 +26,7 @@
       "address":"Lviv",
       "keywords":[
         "нова пошта",
+        "новая почта",
         "новапошта",
         "нп",
         "делівері",
@@ -41,8 +35,5 @@
         "деливери"
       ]
     }
-  },
-  "googleGeocodeProperties":{
-    "apiKey":"ApiKey-87987-23654asdf"
   }
 }

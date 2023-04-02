@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 public class PropertyAggregate {
 
-    private ClientProperties clientProperties;
     private ClientRoutingProperties clientRoutingProperties;
+
     private ClientBusinessProperties clientBusinessProperties;
-    private GoogleGeocodeProperties googleGeocodeProperties;
 
 }
