@@ -42,6 +42,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.goodspartner.entity.ExcludeReasons.DROPPED_ORDER;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -109,6 +111,7 @@ public class DefaultRouteCalculationService implements RouteCalculationService {
                 .forEach(orderExternal -> {
                     orderExternal.setDropped(true);
                     orderExternal.setRoutePoint(null); // Do not save droppedRoutePoints
+                    orderExternal.setExcludeReason(DROPPED_ORDER.formatWithOrderNumber(orderExternal.getOrderNumber()));
                 });
 
         orderExternalRepository.saveAll(orders);

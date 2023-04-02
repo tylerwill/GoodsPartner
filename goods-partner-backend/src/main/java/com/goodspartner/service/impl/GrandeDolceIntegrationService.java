@@ -10,7 +10,16 @@ import com.goodspartner.mapper.ODataInvoiceMapper;
 import com.goodspartner.mapper.ODataOrderMapper;
 import com.goodspartner.mapper.ProductMapper;
 import com.goodspartner.service.IntegrationService;
-import com.goodspartner.service.dto.external.grandedolce.*;
+import com.goodspartner.service.dto.external.grandedolce.ODataContactsTypeDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataInvoiceDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataInvoiceProductDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataInvoicePropertiesDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataOrganisationCodesDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataOrganisationContactsDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataProductGtdDto;
+import com.goodspartner.service.dto.external.grandedolce.ODataWrapperDto;
 import com.goodspartner.util.ODataUrlBuilder;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
@@ -26,17 +35,25 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.goodspartner.entity.ExcludeReasons.DELETED_ORDER_EXCLUDE_REASON;
+import static com.goodspartner.entity.ExcludeReasons.INVOICE_MISSED_EXCLUDE_REASON;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class GrandeDolceIntegrationService implements IntegrationService {
     // Order exclude reasons
-    private static final String DELETED_ORDER_EXCLUDE_REASON = "Замовлення: %s має флаг видалення в 1С";
-    private static final String INVOICE_MISSED_EXCLUDE_REASON = "Відсутня або видалена видаткова в 1С для замовлення: %s";
     // 1C data fetch configuration // TODO move to properties.yml and later to configuration
     private static final int PARTITION_SIZE = 100;
     private static final int INVOICE_PARTITION_SIZE = 25;
@@ -184,13 +201,13 @@ public class GrandeDolceIntegrationService implements IntegrationService {
                         oDataOrderDto.getOrderNumber(),
                         oDataOrderDto.getShippingDate(),
                         oDataOrderDto.getClientName()));
-                excludeOrder(oDataOrderDto, String.format(DELETED_ORDER_EXCLUDE_REASON, oDataOrderDto.getOrderNumber()));
+                excludeOrder(oDataOrderDto, DELETED_ORDER_EXCLUDE_REASON.formatWithOrderNumber(oDataOrderDto.getOrderNumber()));
             } else if (!relevantOrderRefKeys.contains(oDataOrderDto.getRefKey())) {
                 log.info(String.format("Order with number %s, shipping date %s and client %s has been excluded because it does not apply to any invoices",
                         oDataOrderDto.getOrderNumber(),
                         oDataOrderDto.getShippingDate(),
                         oDataOrderDto.getClientName()));
-                excludeOrder(oDataOrderDto, String.format(INVOICE_MISSED_EXCLUDE_REASON, oDataOrderDto.getOrderNumber()));
+                excludeOrder(oDataOrderDto, INVOICE_MISSED_EXCLUDE_REASON.formatWithOrderNumber(oDataOrderDto.getOrderNumber()));
             }
         }
     }
