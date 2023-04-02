@@ -75,7 +75,7 @@ const Delivery = () => {
         delivery.formationStatus ===
         DeliveryFormationStatus.CALCULATION_COMPLETED && !isDriver
 
-    const isApproveEnabled = delivery.status === DeliveryStatus.DRAFT || !calculationFailed;
+    const isApproveEnabled = delivery.status === DeliveryStatus.DRAFT;
 
     const calculated =
         delivery?.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED
