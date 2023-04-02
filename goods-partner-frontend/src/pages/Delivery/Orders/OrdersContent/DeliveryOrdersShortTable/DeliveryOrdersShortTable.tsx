@@ -5,6 +5,7 @@ import TableBody from "@mui/material/TableBody";
 import Table from "@mui/material/Table";
 import React, {FC} from "react";
 import Order from "../../../../../model/Order";
+// @ts-ignore
 import OrderTableRow from "./OrderTableRow/OrderTableRow";
 
 interface OrdersBasicTable {

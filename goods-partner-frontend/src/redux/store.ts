@@ -1,5 +1,6 @@
 import currentDeliveryReducer from '../features/currentDelivery/currentDeliverySlice'
 import reportsReducer from '../features/reports/reportsSlice'
+// @ts-ignore
 import notificationsReducer from '../features/notifications/notificationsSlice'
 
 import {configureStore, isRejectedWithValue, Middleware, MiddlewareAPI} from '@reduxjs/toolkit'

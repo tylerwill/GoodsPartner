@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper'
 
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
+// @ts-ignore
 import UserFormDialog from './UserFormDialog/UserFormDialog'
 import Loading from '../../components/Loading/Loading'
 import ErrorAlert from '../../components/ErrorAlert/ErrorAlert'

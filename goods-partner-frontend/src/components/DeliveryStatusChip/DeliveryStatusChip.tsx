@@ -1,9 +1,14 @@
 import { Chip } from '@mui/material'
 import React from 'react'
+import {DeliveryStatus} from "../../model/Delivery";
+import {OverridableStringUnion} from "@mui/types";
+import {ChipPropsColorOverrides} from "@mui/material/Chip/Chip";
 
-const DeliveryStatusChip = ({ status }) => {
+const DeliveryStatusChip = ({ status }: {status:DeliveryStatus}) => {
 	let text
-	let color
+	let color: OverridableStringUnion<'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning',
+		ChipPropsColorOverrides> = 'primary';
+
 	switch (status) {
 		case 'APPROVED': {
 			text = 'Підтверджена'

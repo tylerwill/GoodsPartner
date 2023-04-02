@@ -1,9 +1,11 @@
 import React, {useCallback} from 'react'
 import {Box, Button, Typography} from '@mui/material'
 import {ArrowForward} from '@mui/icons-material'
+// @ts-ignore
 import DeliveriesTable from './DeliveriesTable/DeliveriesTable'
 import Loading from '../../components/Loading/Loading'
 import ErrorAlert from '../../components/ErrorAlert/ErrorAlert'
+// @ts-ignore
 import NewDeliveryDialog from './NewDeliveryDialog/NewDeliveryDialog'
 import useAuth from '../../auth/AuthProvider'
 import {

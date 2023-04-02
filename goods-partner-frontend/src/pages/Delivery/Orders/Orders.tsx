@@ -1,7 +1,9 @@
 import React, {useCallback} from 'react'
 import {Box} from '@mui/material'
+// @ts-ignore
 import OrdersTable from './OrdersContent/OrdersTable'
 import {setOrderTabIndex} from '../../../features/currentDelivery/currentDeliverySlice'
+// @ts-ignore
 import BasicTabs from '../../../hoc/BasicTabs/BasicTabs'
 import {useParams} from 'react-router-dom'
 import {useGetOrdersForDeliveryQuery, useUpdateOrderMutation} from '../../../api/delivery-orders/delivery-orders.api'

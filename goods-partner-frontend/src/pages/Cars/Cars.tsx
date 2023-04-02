@@ -19,6 +19,7 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import {useAddCarMutation, useDeleteCarMutation, useGetCarsQuery, useUpdateCarMutation} from '../../api/cars/cars.api'
 import Loading from '../../components/Loading/Loading'
 import {Car} from '../../model/Car'
+// @ts-ignore
 import CarFormDialog from './CarFormDialog/CarFormDialog'
 import {useGetUsersQuery} from '../../api/users/users.api'
 import {ConfirmationDialog} from "../../components/ConfirmationDialog/ConfirmationDialog";

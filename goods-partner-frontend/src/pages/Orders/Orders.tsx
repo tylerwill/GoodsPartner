@@ -1,5 +1,6 @@
 import React from 'react'
 import {Box, Typography} from '@mui/material'
+// @ts-ignore
 import BasicTabs from '../../hoc/BasicTabs/BasicTabs'
 import {useActions, useAppSelector} from '../../hooks/redux-hooks'
 import {DeliveredOrdersContainer} from "./DeliveredOrdersContainer/DeliveredOrdersContainer";

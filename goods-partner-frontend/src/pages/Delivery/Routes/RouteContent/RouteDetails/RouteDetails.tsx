@@ -12,6 +12,7 @@ import {
 } from '@mui/material'
 import {apiUrl, toHoursAndMinutes} from '../../../../../util/util'
 import InfoTableItem from '../../../../../components/InfoTableItem/InfoTableItem'
+// @ts-ignore
 import RouteMapDialog from '../RouteMapDialog/RouteMapDialog'
 import { Route } from '../../../../../model/Route'
 import {

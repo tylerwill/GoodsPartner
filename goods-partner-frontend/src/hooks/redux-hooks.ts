@@ -5,11 +5,9 @@ import { AppDispatch, RootState } from '../redux/store'
 
 import {currentDeliverySlice} from '../features/currentDelivery/currentDeliverySlice'
 import {reportsSlice} from '../features/reports/reportsSlice'
-import notificationsReducer from '../features/notifications/notificationsSlice'
 
 import {bindActionCreators, configureStore} from '@reduxjs/toolkit'
 import {ordersSlice} from '../features/orders/ordersSlice'
-import deliveryOrdersReducer from '../features/delivery-orders/deliveryOrdersSlice'
 
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
