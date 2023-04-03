@@ -1,7 +1,12 @@
-name: Deploy to AWS EC2
+name: Deploy to AWS
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        type: environment
+        required: true
 
 jobs:
   build:
@@ -14,7 +19,7 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: show env vars
+      - name: Show env vars
         env:
           CI: ""
           GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
@@ -22,11 +27,26 @@ jobs:
         run: echo " 1 ${{ vars.PROD_BASE_URL }}  2 ${{ env.PROD_BASE_URL }} 3 ${{ env }}"
 
       - name: Build with Maven
-        env:
-          CI: ""
-          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
-          PROD_BASE_URL: ${{ vars.PROD_BASE_URL }}
         run: mvn --batch-mode clean install  -Dmaven.test.skip=true
+
+      - name: Upload artifact for deployment job
+          uses: actions/upload-artifact@v3
+          with:
+            name: goods-partner-backend-1.0-SNAPSHOT.jar
+            path: ${{ github.workspace }}/goods-partner-backend/target/goods-partner-backend-1.0-SNAPSHOT.jar
+
+  deployProd:
+    name: Deploy to prod environment
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: "Production"
+
+    steps:
+      - name: Download artifact from build job
+          uses: actions/download-artifact@v3
+          with:
+            name: goods-partner-backend-1.0-SNAPSHOT.jar
 
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
