@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to deploy'
+        description: 'Deploy to environment '
         type: environment
         required: true
 
@@ -30,10 +30,10 @@ jobs:
         run: mvn --batch-mode clean install  -Dmaven.test.skip=true
 
       - name: Upload artifact for deployment job
-          uses: actions/upload-artifact@v3
-          with:
-            name: goods-partner-backend-1.0-SNAPSHOT.jar
-            path: ${{ github.workspace }}/goods-partner-backend/target/goods-partner-backend-1.0-SNAPSHOT.jar
+        uses: actions/upload-artifact@v3
+        with:
+          name: goods-partner-backend-1.0-SNAPSHOT.jar
+          path: ${{ github.workspace }}/goods-partner-backend/target/goods-partner-backend-1.0-SNAPSHOT.jar
 
   deployProd:
     name: Deploy to prod environment
@@ -44,9 +44,9 @@ jobs:
 
     steps:
       - name: Download artifact from build job
-          uses: actions/download-artifact@v3
-          with:
-            name: goods-partner-backend-1.0-SNAPSHOT.jar
+        uses: actions/download-artifact@v3
+        with:
+          name: goods-partner-backend-1.0-SNAPSHOT.jar
 
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
