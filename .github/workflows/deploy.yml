@@ -58,7 +58,7 @@ jobs:
         run: ssh-keyscan -p ${{ secrets.SSH_PORT}} -H ${{ secrets.SSH_HOST }}  >> ~/.ssh/known_hosts
 
       - name: Copy backend artifact to remote host
-        run: scp ${{ github.workspace }}/goods-partner-backend/target/goods-partner-backend-1.0-SNAPSHOT.jar  ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu
+        run: scp ./goods-partner-backend-1.0-SNAPSHOT.jar  ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/ubuntu
 
       - name: Restart Deployed artifact
         uses: appleboy/ssh-action@master
