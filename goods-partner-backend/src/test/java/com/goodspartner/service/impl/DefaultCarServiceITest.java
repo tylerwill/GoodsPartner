@@ -28,7 +28,7 @@ class DefaultCarServiceITest extends AbstractBaseITest {
     private DefaultCarService carService;
 
     @Test
-    @DataSet(value = "/datasets/common/car/dataset_cars.yml",
+    @DataSet(value = "/datasets/common/car/adding_new_car.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("validate Queries After Add Car")
     void validateQueriesAfterAddCar() {

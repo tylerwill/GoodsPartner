@@ -46,7 +46,7 @@ public interface InvoiceProductMapper {
     default Double mapTotalProductWeight(ODataInvoiceProductDto oDataInvoiceProductDto) {
         ProductMeasureDetails productUnit = oDataInvoiceProductDto.getProductUnit();
         String measureStandard = productUnit.getMeasureStandard();
-        return Measure.of(measureStandard).calculateTotalProductWeight(productUnit);
+        return getRoundedDouble(Measure.of(measureStandard).calculateTotalProductWeight(productUnit));
     }
 
     private Double getPDV(Double value) {

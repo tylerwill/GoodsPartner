@@ -26,19 +26,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CarControllerSecurityITest extends AbstractWebITest {
 
     private CarDto carDto;
+    private UserDto userDto;
 
     @BeforeEach
     public void setUp() {
         // TODO builder
 
-        UserDto userDto = new UserDto(1,
+        userDto = new UserDto(1,
                 "Ivan Kornienko",
                 "userEmail@gmail",
                 User.UserRole.DRIVER.name(),
                 true);
 
         carDto = new CarDto(
-                0,
+                51,
                 "MAN",
                 "AA 2455 CT",
                 userDto,
@@ -81,11 +82,20 @@ class CarControllerSecurityITest extends AbstractWebITest {
     }
 
     @Test
-    @DataSet(value = "datasets/common/car/dataset_cars.yml",
+    @DataSet(value = "datasets/common/car/adding_new_car.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Add Car After Auth then Ok Status Returned")
     @WithMockUser(username = "mary", roles = "ADMIN")
     void whenAddCarAuthenticatedAndAuthorizedThenOkStatusReturned() throws Exception {
+        carDto = CarDto.builder()
+                .name("MAN")
+                .licencePlate("AA 2455 CT")
+                .driver(userDto)
+                .weightCapacity(4000)
+                .cooler(false)
+                .available(true)
+                .travelCost(10)
+                .build();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/cars")
                         .contentType(MediaType.APPLICATION_JSON)

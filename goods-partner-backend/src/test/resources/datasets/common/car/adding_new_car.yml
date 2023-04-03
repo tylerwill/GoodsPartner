@@ -1,0 +1,23 @@
+CARS:
+  - ID: 51
+    NAME: "Mercedes Sprinter"
+    LICENCE_PLATE: "AA 1111 CT"
+    WEIGHT_CAPACITY: 3000
+    COOLER: FALSE
+    AVAILABLE: TRUE
+    TRAVEL_COST: 10
+    DELETED: FALSE
+    USER_ID: 1
+
+USERS:
+  - ID: 1
+    USER_NAME: "Oleg Dudka"
+    EMAIL: "test-driver@gmail.com"
+    ROLE: "DRIVER"
+    ENABLED: "true"
+
+  - ID: 2
+    USER_NAME: "Ivan Kornienko"
+    EMAIL: "another-test-driver@gmail.com"
+    ROLE: "DRIVER"
+    ENABLED: "true"
