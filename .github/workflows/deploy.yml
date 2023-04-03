@@ -1,10 +1,10 @@
-name: Deploy to AWS
+name: Deploy to AWS 
 
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Deploy to environment '
+        description: 'Environment to deploy'
         type: environment
         required: true
 
