@@ -24,7 +24,7 @@ jobs:
           CI: ""
           GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
           PROD_BASE_URL: ${{ env.PROD_BASE_URL }}
-        run: echo " 1 ${{ vars.PROD_BASE_URL }}  2 ${{ env.PROD_BASE_URL }} 3 ${{ env }}"
+        run: echo " 1 ${{ vars.PROD_BASE_URL }}  2 ${{ env.PROD_BASE_URL }} 3 ${{ secrets.GOOGLE_MAPS_API_KEY }} 4 ${{ secrets.SSH_PORT}}"
 
       - name: Build with Maven
         run: mvn --batch-mode clean install  -Dmaven.test.skip=true
