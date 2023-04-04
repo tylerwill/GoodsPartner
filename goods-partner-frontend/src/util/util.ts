@@ -8,7 +8,7 @@ export const currentHost = () => {
         : import.meta.env.VITE_PROD_BASE_URL
 }
 
-export const apiUrl = `${currentHost()}api/v1`
+export const apiUrl = `https://goods-partner.online/api/v1`
 
 export const toHoursAndMinutes = (totalMinutes: number) => {
     const minutes = totalMinutes % 60
