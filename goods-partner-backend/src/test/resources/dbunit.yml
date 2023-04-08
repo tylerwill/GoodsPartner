@@ -1,4 +1,5 @@
 caseInsensitiveStrategy: !!com.github.database.rider.core.api.configuration.Orthography 'LOWERCASE'
 cacheConnection: false
 properties:
-  datatypeFactory: !!com.goodspartner.config.JsonBPostgresqlDataTypeFactory {}
+  datatypeFactory: !!com.goodspartner.config.JsonBPostgresqlDataTypeFactory { }
+  allowEmptyFields: true

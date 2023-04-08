@@ -29,5 +29,8 @@ public interface DeliveryService {
 
     List<DeliveryDto> findByStatusAndDeliveryDateBetween(DeliveryStatus status, LocalDate dateFrom, LocalDate dateTo);
 
+    /* --- Modification --- */
     Delivery processDeliveryStatus(Route route);
+
+    void cleanupCalculatedDelivery(UUID deliveryId);
 }

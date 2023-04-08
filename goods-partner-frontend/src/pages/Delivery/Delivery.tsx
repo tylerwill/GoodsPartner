@@ -14,7 +14,8 @@ import {useAppDispatch} from '../../hooks/redux-hooks'
 import {
     useApproveDeliveryMutation,
     useCalculateDeliveryMutation,
-    useGetDeliveryQuery
+    useGetDeliveryQuery,
+    useResyncDeliveryMutation
 } from '../../api/deliveries/deliveries.api'
 import {DeliveryFormationStatus, DeliveryStatus} from '../../model/Delivery'
 import {UserRole} from '../../model/User'
@@ -34,11 +35,18 @@ const Delivery = () => {
     const {user} = useAuth()
     const [calculateDelivery] = useCalculateDeliveryMutation()
     const [approveDelivery] = useApproveDeliveryMutation()
+    const [resyncDelivery] = useResyncDeliveryMutation()
     const calculateDeliveryHandler = useCallback(
         () => calculateDelivery(deliveryId!),
         [deliveryId]
     )
 
+    const resyncDeliveryHandler = useCallback(
+        () => resyncDelivery(deliveryId!),
+        [deliveryId]
+    )
+
+    const [resyncDeliveryConfirmationDialogOpen, setResyncDeliveryConfirmationDialogOpen] = useState(false);
     const [recalculateConfirmationDialogOpen, setRecalculateConfirmationDialogOpen] = useState(false);
     const [approveConfirmationDialogOpen, setApproveConfirmationDialogOpen] = useState(false);
 
@@ -107,6 +115,18 @@ const Delivery = () => {
                     </Box>
                     {/*TODO: Move to ActionButtons component*/}
                     <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
+                        <Tooltip
+                            title='Оновити замовлення'
+                            placement='top'
+                            arrow>
+                                <span>
+                                    <Button sx={{mr: 2}} color={"warning"} variant='contained'
+                                            onClick={()=> setResyncDeliveryConfirmationDialogOpen(true)}>
+                                        Синхронізувати
+                                    </Button>
+                                </span>
+                        </Tooltip>
+
                         {firstCalculationButtonVisible && (
                             <CalculateButton
                                 title={"Розрахувати маршрут"}
@@ -173,6 +193,17 @@ const Delivery = () => {
                         onAction={() => {
                             calculateDeliveryHandler();
                             setRecalculateConfirmationDialogOpen(false);
+                        }}
+                    />
+
+                    <ConfirmationDialog
+                        title={"Синхронізація"}
+                        text={"Ви впевнені, що бажаєте синхронізуватись з 1С? Весь прогрес по розрахунку буде втрачено."}
+                        open={resyncDeliveryConfirmationDialogOpen}
+                        setOpen={setResyncDeliveryConfirmationDialogOpen}
+                        onAction={() => {
+                            resyncDeliveryHandler();
+                            setResyncDeliveryConfirmationDialogOpen(false);
                         }}
                     />
                 </Box>

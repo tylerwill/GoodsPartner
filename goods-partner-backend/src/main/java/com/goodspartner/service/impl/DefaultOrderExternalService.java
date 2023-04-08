@@ -1,11 +1,19 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.entity.*;
+import com.goodspartner.entity.AddressExternal;
+import com.goodspartner.entity.AddressStatus;
+import com.goodspartner.entity.Delivery;
+import com.goodspartner.entity.DeliveryFormationStatus;
+import com.goodspartner.entity.DeliveryStatus;
+import com.goodspartner.entity.DeliveryType;
+import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.entity.User;
 import com.goodspartner.event.ActionType;
 import com.goodspartner.event.EventType;
 import com.goodspartner.exception.AddressExternalNotFoundException;
 import com.goodspartner.exception.CarNotFoundException;
+import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.OrderNotFoundException;
 import com.goodspartner.exception.delivery.IllegalDeliveryStateForOrderUpdate;
 import com.goodspartner.mapper.OrderExternalMapper;
@@ -29,7 +37,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -130,17 +137,12 @@ public class DefaultOrderExternalService implements OrderExternalService {
 
     @Transactional
     @Override
-    public void bindExternalOrdersWithDelivery(List<OrderExternal> externalOrders, Delivery delivery) {
+    public void bindExternalOrdersWithDelivery(List<OrderExternal> externalOrders, UUID deliverId) {
+        Delivery delivery = deliveryRepository.findById(deliverId)
+                .orElseThrow(() -> new DeliveryNotFoundException(deliverId));
+
         // Fetching rescheduled orders
         List<OrderExternal> rescheduledOrders = orderExternalRepository.findScheduledOrdersByShippingDate(delivery.getDeliveryDate());
-
-        // Address reconciliation
-        Set<AddressExternal> addresses = externalOrders
-                .stream()
-                .filter(orderExternal -> DeliveryType.REGULAR.equals(orderExternal.getDeliveryType())) // DO not save overrided address for orders which are shipped by other delivery types
-                .map(orderExternalMapper::mapToAddressExternal)
-                .collect(Collectors.toSet());
-        addressExternalRepository.saveAll(addresses);
 
         List<OrderExternal> savedNewExternalOrders = orderExternalRepository.saveAll(externalOrders);
         List<OrderExternal> allAvailableOrdersByDate = ListUtils.union(savedNewExternalOrders, rescheduledOrders);
@@ -169,6 +171,17 @@ public class DefaultOrderExternalService implements OrderExternalService {
             // Publishing refresh event to FE
             eventService.publishForLogist(DELIVERY_READY.getTemplate(), EventType.INFO, ActionType.DELIVERY_UPDATED, delivery.getId());
         }
+    }
+
+    @Transactional
+    @Override
+    public void cleanupOrders(Delivery delivery) {
+        orderExternalRepository.removeCRMOrdersByDeliveryId(delivery.getId());
+
+        List<OrderExternal> remainingRescheduledOrders = orderExternalRepository.findByDeliveryId(delivery.getId(), Sort.unsorted());
+        remainingRescheduledOrders.forEach(rescheduledOrder -> rescheduledOrder.setDelivery(null));
+
+        log.info("Unbounded: {} orders from delivery: {}", remainingRescheduledOrders.size(), delivery);
     }
 
     private DeliveryFormationStatus getFormationStatus(List<OrderExternal> orderExternals) {

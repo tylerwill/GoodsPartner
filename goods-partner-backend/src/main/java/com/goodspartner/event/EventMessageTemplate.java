@@ -20,6 +20,8 @@ public enum EventMessageTemplate {
     DELIVERY_CALCULATION_FAILED("Помилка розрахування доставки"),
     DELIVERY_APPROVED("${roleTranslated} ${userName} підтвердив(ла) доставку"),
     DELIVERY_COMPLETED("Доставка переведена в статус виконана"),
+    DELIVERY_SYNCHRONIZED("${roleTranslated} ${userName} синхронизував(ла) доставку"),
+
 
     // Route
     ROUTE_STATUS("${roleTranslated} ${userName} змінив(ла) статус маршрута до авто ${carName} ${carLicensePlate} на ${routeStatus}"),
@@ -103,13 +105,11 @@ public enum EventMessageTemplate {
         // RoutePoint
         CLIENT_NAME("clientName"),
         CLIENT_ADDRESS("clientAddress"),
-        ROUTE_POINT_STATUS("routePointStatus")
-        ;
+        ROUTE_POINT_STATUS("routePointStatus");
 
         @Getter
         private final String value;
     }
-
 
 
 }

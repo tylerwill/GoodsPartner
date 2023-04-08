@@ -6,6 +6,7 @@ import com.goodspartner.entity.OrderExternal;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -71,5 +72,13 @@ public interface OrderExternalRepository extends JpaRepository<OrderExternal, Lo
     @EntityGraph(attributePaths = {"delivery"})
     @Query("SELECT o FROM OrderExternal o WHERE o.id = :id")
     Optional<OrderExternal> findByIdWithDelivery(@Param("id") Long id);
+
+    @Modifying
+    @Query("DELETE FROM OrderExternal WHERE id IN " +
+            "(SELECT go.id FROM OrderExternal go " +
+            "        LEFT JOIN OrderExternal resc " +
+            "            ON (go.orderNumber = resc.orderNumber AND go.shippingDate = resc.rescheduleDate) " +
+            "  WHERE go.delivery.id = :id AND resc.id is null)")
+    void removeCRMOrdersByDeliveryId(@Param("id") UUID id);
 
 }

@@ -9,6 +9,7 @@ import com.goodspartner.event.EventType;
 import com.goodspartner.exception.UnknownAddressException;
 import com.goodspartner.facade.OrderFacade;
 import com.goodspartner.mapper.OrderExternalMapper;
+import com.goodspartner.service.AddressExternalService;
 import com.goodspartner.service.DeliveryService;
 import com.goodspartner.service.EventService;
 import com.goodspartner.service.GeocodeService;
@@ -37,6 +38,7 @@ import static com.goodspartner.event.EventMessageTemplate.ORDERS_LOADING_FAILED;
 @RequiredArgsConstructor
 public class DefaultOrderFacade implements OrderFacade {
     // Services
+    private final AddressExternalService addressExternalService;
     private final OrderExternalService orderExternalService;
     private final DeliveryService deliveryService;
     private final EventService eventService;
@@ -64,7 +66,8 @@ public class DefaultOrderFacade implements OrderFacade {
             geocodeService.enrichValidAddressForRegularOrders(orderDtos);
 
             List<OrderExternal> externalOrders = orderExternalMapper.toOrderExternalList(orderDtos);
-            orderExternalService.bindExternalOrdersWithDelivery(externalOrders, delivery);
+            addressExternalService.saveFromOrders(externalOrders);
+            orderExternalService.bindExternalOrdersWithDelivery(externalOrders, deliveryId);
 
             String ordersLoadedMessage = ORDERS_LOADED.withValues(LOADED_ORDERS_VALUE, String.valueOf(externalOrders.size()));
             eventService.publishForLogist(ordersLoadedMessage, EventType.SUCCESS, ActionType.ORDER_UPDATED, deliveryId);
@@ -115,4 +118,15 @@ public class DefaultOrderFacade implements OrderFacade {
                     throw new UnknownAddressException(orderExternal);
                 });
     }
+
+    @Async("goodsPartnerThreadPoolTaskExecutor")
+    @Override
+    public void synchronizeDeliveryOrders(UUID deliveryId) {
+        Delivery delivery = deliveryService.findById(deliveryId);
+
+        orderExternalService.cleanupOrders(delivery);
+
+        this.processOrdersForDeliveryAsync(delivery); // No Async invocation but we are already in Async
+    }
+
 }

@@ -10,6 +10,7 @@ import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.delivery.DeliveryAlreadyExistException;
 import com.goodspartner.exception.delivery.IllegalDeliveryStateForDeletion;
+import com.goodspartner.exception.delivery.IllegalDeliveryStateForRecalculation;
 import com.goodspartner.mapper.DeliveryMapper;
 import com.goodspartner.repository.CarRepository;
 import com.goodspartner.repository.DeliveryRepository;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -108,6 +110,19 @@ public class DefaultDeliveryService implements DeliveryService {
             log.info("Delivery ID {} was automatically close due to all Routes are COMPLETED", route.getId());
         }
         return delivery;
+    }
+
+    @Transactional
+    @Override
+    public void cleanupCalculatedDelivery(UUID deliveryId) {
+        Delivery delivery = findById(deliveryId);
+
+        if (!DRAFT.equals(delivery.getStatus())) {
+            throw new IllegalDeliveryStateForRecalculation();
+        }
+
+        delivery.setRoutes(Collections.emptyList());
+        delivery.setCarLoads(Collections.emptyList());
     }
 
     private boolean isAllRoutesCompleted(Delivery delivery) {

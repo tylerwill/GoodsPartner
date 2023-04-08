@@ -24,6 +24,7 @@ import static com.goodspartner.entity.DeliveryStatus.DRAFT;
 import static com.goodspartner.event.ActionType.ROUTE_UPDATED;
 import static com.goodspartner.event.EventMessageTemplate.DELIVERY_APPROVED;
 import static com.goodspartner.event.EventMessageTemplate.DELIVERY_CREATED;
+import static com.goodspartner.event.EventMessageTemplate.DELIVERY_SYNCHRONIZED;
 import static com.goodspartner.event.EventMessageTemplate.ROUTE_STATUS_AUTO;
 import static com.goodspartner.event.EventType.INFO;
 
@@ -79,4 +80,14 @@ public class DefaultDeliveryFacade implements DeliveryFacade {
         return delivery;
     }
 
+    @Override
+    public void resyncOrders(UUID deliveryId) {
+
+        deliveryService.cleanupCalculatedDelivery(deliveryId);
+
+        orderFacade.synchronizeDeliveryOrders(deliveryId);
+
+        eventService.publishForLogist(DELIVERY_SYNCHRONIZED.withAudit(), INFO, ActionType.DELIVERY_UPDATED, deliveryId);
+
+    }
 }

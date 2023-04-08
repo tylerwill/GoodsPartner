@@ -14,5 +14,5 @@ public interface DeliveryFacade {
 
     Delivery calculateDelivery(UUID deliveryId);
 
-
+    void resyncOrders(UUID deliveryId);
 }

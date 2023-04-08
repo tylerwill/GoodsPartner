@@ -3,6 +3,8 @@ package com.goodspartner.service.impl;
 import com.goodspartner.dto.AddressExternalDto;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.AddressExternal.OrderAddressId;
+import com.goodspartner.entity.DeliveryType;
+import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.exception.AddressExternalNotFoundException;
 import com.goodspartner.mapper.AddressExternalMapper;
 import com.goodspartner.repository.AddressExternalRepository;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -48,6 +52,19 @@ public class DefaultAddressExternalService implements AddressExternalService {
         AddressExternal addressExternal = repository.findById(id)
                 .orElseThrow(() -> new AddressExternalNotFoundException(id));
         repository.deleteById(addressExternal.getOrderAddressId());
+    }
+
+    // Do not save address for orders which are shipped by other delivery types then REGULAR
+    @Transactional
+    @Override
+    public void saveFromOrders(List<OrderExternal> orders) {
+        // Address reconciliation
+        Set<AddressExternal> addresses = orders
+                .stream()
+                .filter(orderExternal -> DeliveryType.REGULAR.equals(orderExternal.getDeliveryType()))
+                .map(mapper::mapToAddressExternal)
+                .collect(Collectors.toSet());
+        repository.saveAll(addresses);
     }
 
     private OrderAddressId mapOrderAddressId(AddressExternalDto addressExternalDto) {

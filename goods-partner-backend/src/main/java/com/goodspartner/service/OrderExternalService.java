@@ -30,12 +30,14 @@ public interface OrderExternalService {
 
     OrderExternal update(long id, OrderDto orderDto);
 
-    void bindExternalOrdersWithDelivery(List<OrderExternal> externalOrders, Delivery delivery);
+    void bindExternalOrdersWithDelivery(List<OrderExternal> externalOrders, UUID deliveryId);
 
     void checkDeliveryReadiness(Delivery delivery);
 
     OrderExternal excludeOrder(long id, ExcludeOrderRequest excludeOrderRequest);
 
     List<OrderExternal> getInvalidOrdersForCalculation(UUID deliveryId);
+
+    void cleanupOrders(Delivery deliveryId);
 
 }

@@ -17,4 +17,5 @@ public interface OrderFacade {
 
     void validateOrdersForDeliveryCalculation(UUID deliveryId);
 
+    void synchronizeDeliveryOrders(UUID delivery);
 }

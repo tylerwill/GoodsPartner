@@ -2,6 +2,7 @@ package com.goodspartner.mapper;
 
 import com.goodspartner.dto.AddressExternalDto;
 import com.goodspartner.entity.AddressExternal;
+import com.goodspartner.entity.OrderExternal;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -32,4 +33,12 @@ public interface AddressExternalMapper {
     @Mapping(target = "longitude", source = "mapPoint.longitude")
     @Mapping(target = "status", source = "mapPoint.status")
     AddressExternal update(@MappingTarget AddressExternal addressExternal, AddressExternalDto addressExternalDto);
+
+    @Mapping(target = "orderAddressId.orderAddress", source = "address")
+    @Mapping(target = "orderAddressId.clientName", source = "clientName")
+    @Mapping(target = "validAddress", source = "mapPoint.address")
+    @Mapping(target = "latitude", source = "mapPoint.latitude")
+    @Mapping(target = "longitude", source = "mapPoint.longitude")
+    @Mapping(target = "status", source = "mapPoint.status")
+    AddressExternal mapToAddressExternal(OrderExternal orderExternal);
 }

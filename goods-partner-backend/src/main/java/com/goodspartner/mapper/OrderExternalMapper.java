@@ -56,12 +56,4 @@ public interface OrderExternalMapper {
     @Mapping(target = "validAddress", source = "address")
     void updateAddressExternal(@MappingTarget AddressExternal addressExternal, MapPoint mapPoint);
 
-    @Mapping(target = "orderAddressId.orderAddress", source = "address")
-    @Mapping(target = "orderAddressId.clientName", source = "clientName")
-    @Mapping(target = "validAddress", source = "mapPoint.address")
-    @Mapping(target = "latitude", source = "mapPoint.latitude")
-    @Mapping(target = "longitude", source = "mapPoint.longitude")
-    @Mapping(target = "status", source = "mapPoint.status")
-    AddressExternal mapToAddressExternal(OrderExternal orderExternal);
-
 }

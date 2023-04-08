@@ -97,6 +97,18 @@ public class DeliveryController {
         return mapDeliveryActionResponse(deliveryFacade.approve(id, DeliveryAction.of(action)));
     }
 
+    @PostMapping("/{id}/sync")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LOGISTICIAN')")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ApiOperation(value = "Synchronize Delivery",
+            notes = "Return Delivery with synchronized orders",
+            response = DeliveryDto.class)
+    public void syncDelivery(
+            @ApiParam(value = "ID value for the delivery you need to synchronize", type = "DeliveryResponse", required = true)
+            @PathVariable UUID id) {
+        deliveryFacade.resyncOrders(id);
+    }
+
     private DeliveryActionResponse mapDeliveryActionResponse(Delivery delivery) {
         List<DeliveryActionResponse.RoutesStatus> routeStatuses = delivery.getRoutes().stream()
                 .map(route -> new DeliveryActionResponse.RoutesStatus(route.getId(), route.getStatus()))
