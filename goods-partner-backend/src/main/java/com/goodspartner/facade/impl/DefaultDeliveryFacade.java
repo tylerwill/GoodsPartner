@@ -83,7 +83,7 @@ public class DefaultDeliveryFacade implements DeliveryFacade {
     @Override
     public void resyncOrders(UUID deliveryId) {
 
-        deliveryService.cleanupCalculatedDelivery(deliveryId);
+        deliveryService.cleanupDeliveryForOrdersSync(deliveryId);
 
         orderFacade.synchronizeDeliveryOrders(deliveryId);
 

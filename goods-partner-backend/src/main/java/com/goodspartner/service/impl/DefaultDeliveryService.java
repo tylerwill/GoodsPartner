@@ -114,7 +114,7 @@ public class DefaultDeliveryService implements DeliveryService {
 
     @Transactional
     @Override
-    public void cleanupCalculatedDelivery(UUID deliveryId) {
+    public void cleanupDeliveryForOrdersSync(UUID deliveryId) {
         Delivery delivery = findById(deliveryId);
 
         if (!DRAFT.equals(delivery.getStatus())) {
@@ -123,6 +123,8 @@ public class DefaultDeliveryService implements DeliveryService {
 
         delivery.setRoutes(Collections.emptyList());
         delivery.setCarLoads(Collections.emptyList());
+
+        delivery.setFormationStatus(ORDERS_LOADING);
     }
 
     private boolean isAllRoutesCompleted(Delivery delivery) {
