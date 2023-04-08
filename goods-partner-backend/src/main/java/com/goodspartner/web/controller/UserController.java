@@ -27,11 +27,6 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
 
-    @GetMapping("/auth")
-    public AuthResponse getAuthenticationDetails() {
-        return userMapper.toAuthResponse(userService.findByAuthentication());
-    }
-
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping
     public List<UserDto> getAll() {

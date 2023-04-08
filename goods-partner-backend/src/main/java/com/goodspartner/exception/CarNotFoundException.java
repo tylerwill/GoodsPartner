@@ -20,7 +20,7 @@ public class CarNotFoundException extends RuntimeException {
     }
 
     public CarNotFoundException(User user) {
-        super(String.format(NO_CAR_BY_USER_MESSAGE_UKR, user.getUserName()));
+        super(String.format(NO_CAR_BY_USER_MESSAGE_UKR, user.getUsername()));
     }
 
 }

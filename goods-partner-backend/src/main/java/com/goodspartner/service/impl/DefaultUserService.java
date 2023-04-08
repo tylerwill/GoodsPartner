@@ -8,11 +8,14 @@ import com.goodspartner.exception.UserNotFoundException;
 import com.goodspartner.mapper.UserMapper;
 import com.goodspartner.repository.UserRepository;
 import com.goodspartner.service.UserService;
-import com.goodspartner.service.dto.GoodsPartnerOAuth2User;
+//import com.goodspartner.service.dto.GoodsPartnerOAuth2User;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +24,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @Service
-public class DefaultUserService implements UserService {
+public class DefaultUserService implements UserService, UserDetailsService {
 
     private static final String DEFAULT_SORT_FILED = "id";
     private static final String EMAIL_ATTRIBUTE = "email";
@@ -73,30 +76,46 @@ public class DefaultUserService implements UserService {
     @Override
     public User findByAuthentication() {
         String userEmail = getUserEmailFromAuthenticationContext();
-        return userRepository.findUserByEmail(userEmail)
+        return userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException(userEmail));
     }
 
     private String getUserEmailFromAuthenticationContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getPrincipal() instanceof GoodsPartnerOAuth2User principal) {
-            return principal.getAttribute(EMAIL_ATTRIBUTE);
+        if (authentication.isAuthenticated()) {
+            UserDetails principal = (User) authentication.getPrincipal();
+            return principal.getUsername();
         }
         throw new InvalidAuthenticationType();
+//        if (authentication.getPrincipal() instanceof GoodsPartnerOAuth2User principal) {
+//            return principal.getAttribute(EMAIL_ATTRIBUTE);
+//        }
+//        throw new InvalidAuthenticationType();
     }
-
+//
     @Override
     public UserDto getAuthenticatedUserDto() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .map(Authentication::getPrincipal)
-                .filter(principal -> principal instanceof GoodsPartnerOAuth2User)
-                .map(principal -> (GoodsPartnerOAuth2User) principal)
+//                .filter(principal -> principal instanceof GoodsPartnerOAuth2User)
+                .map(principal -> (User) principal)
                 .map(principal -> UserDto.builder()
-                        .userName(principal.getAttribute(USERNAME_ATTRIBUTE))
-                        .email(principal.getAttribute(EMAIL_ATTRIBUTE))
+                        .userName(principal.getUsername())
+                        .email(principal.getEmail())
                         .role(principal.getAuthorities().toArray()[0].toString())
                         .enabled(true)
                         .build())
                 .orElseThrow(InvalidAuthenticationType::new);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByEmail(username)
+                .map(user -> new org.springframework.security.core.userdetails.User(
+                        user.getUsername(),
+                        user.getPassword(),
+                        user.getAuthorities())
+                )
+                .orElseThrow(() -> new UsernameNotFoundException("Unknown user: " + username));
     }
 }

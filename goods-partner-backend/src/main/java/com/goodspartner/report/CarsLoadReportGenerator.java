@@ -105,7 +105,7 @@ public class CarsLoadReportGenerator implements ReportGenerator {
     }
 
     private String getSheetName(CarLoadDetails carLoadDetails) {
-        return carLoadDetails.getCar().getLicencePlate() + StringUtils.SPACE + carLoadDetails.getCar().getDriver().getUserName();
+        return carLoadDetails.getCar().getLicencePlate() + StringUtils.SPACE + carLoadDetails.getCar().getDriver().getUsername();
     }
 
     private String getSheetHeaderValue(Car car, LocalDate deliveryDate) {
@@ -115,7 +115,7 @@ public class CarsLoadReportGenerator implements ReportGenerator {
                 car.getLicencePlate() +
                 StringUtils.SPACE +
                 "(водій " +
-                car.getDriver().getUserName() +
+                car.getDriver().getUsername() +
                 ") на " +
                 deliveryDate;
     }

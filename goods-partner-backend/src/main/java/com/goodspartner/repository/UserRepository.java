@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    Optional<User> findUserByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     @Query(value = "SELECT u FROM Route r JOIN r.car c JOIN c.driver u WHERE r.id = :id")
     Optional<User> findByRouteId(@Param("id") long routeId);
