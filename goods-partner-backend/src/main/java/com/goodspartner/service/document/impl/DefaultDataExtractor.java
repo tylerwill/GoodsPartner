@@ -43,7 +43,7 @@ public class DefaultDataExtractor implements DataExtractor {
     @Override
     public String extractDriverName() {
         Car car = getCar();
-        return car.getDriver().getUserName();
+        return car.getDriver().getUsername();
     }
 
     @Override

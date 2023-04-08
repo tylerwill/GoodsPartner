@@ -1,4 +1,4 @@
-package com.goodspartner.dto;
+package com.goodspartner.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponseDto {
+public class AuthenticationResponse {
     private String accessToken;
     private String refreshToken;
     private String username;

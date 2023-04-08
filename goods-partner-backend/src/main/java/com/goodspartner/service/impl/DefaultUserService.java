@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @Service
-public class DefaultUserService implements UserService, UserDetailsService {
+public class DefaultUserService implements UserService {
 
     private static final String DEFAULT_SORT_FILED = "id";
     private static final String EMAIL_ATTRIBUTE = "email";
@@ -106,16 +106,5 @@ public class DefaultUserService implements UserService, UserDetailsService {
                         .enabled(true)
                         .build())
                 .orElseThrow(InvalidAuthenticationType::new);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username)
-                .map(user -> new org.springframework.security.core.userdetails.User(
-                        user.getUsername(),
-                        user.getPassword(),
-                        user.getAuthorities())
-                )
-                .orElseThrow(() -> new UsernameNotFoundException("Unknown user: " + username));
     }
 }

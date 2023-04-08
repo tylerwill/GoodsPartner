@@ -31,7 +31,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeRequests(auth -> auth
-                        .antMatchers(POST, "/api/v1/auth/login", "/api/v1/auth/token").permitAll()
+                        .antMatchers(POST,
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/token",
+                                "/api/v1/auth/refresh"
+                        ).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

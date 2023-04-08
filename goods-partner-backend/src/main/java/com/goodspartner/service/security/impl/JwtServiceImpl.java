@@ -46,14 +46,17 @@ public class JwtServiceImpl implements JwtService {
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
     }
 
+    @Override
     public boolean validateAccessToken(@NonNull String accessToken) {
         return validateToken(accessToken, jwtAccessSecret);
     }
 
+    @Override
     public boolean validateRefreshToken(@NonNull String refreshToken) {
         return validateToken(refreshToken, jwtRefreshSecret);
     }
 
+    @Override
     public UsernamePasswordAuthenticationToken getAuthentication(String jwtAccess) {
         validateAccessToken(jwtAccess);
         String userEmail = extractUserEmail(jwtAccess, jwtAccessSecret);
@@ -61,8 +64,12 @@ public class JwtServiceImpl implements JwtService {
         return new UsernamePasswordAuthenticationToken(userEmail, null, role);
     }
 
+    @Override
+    public String getUserLogin(String refreshToken) {
+        return extractUserEmail(refreshToken, jwtRefreshSecret);
+    }
 
-
+    @Override
     public String createAccessToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getEmail())
@@ -74,6 +81,7 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
+    @Override
     public String createRefreshToken(@NonNull User user) {
         return Jwts.builder()
                 .setSubject(user.getEmail())
@@ -90,9 +98,18 @@ public class JwtServiceImpl implements JwtService {
                 .getBody();
     }
 
-    private  <T> T extractClaim(String token, Function<Claims, T> claimsResolver, Key secret) {
+    private <T> T extractClaim(String token, Key secret, Function<Claims, T> clainmsResolver) {
         Claims claims = extractAllClaims(token, secret);
-        return claimsResolver.apply(claims);
+        return clainmsResolver.apply(claims);
+    }
+
+    private String extractUserEmail(String token, Key secret) {
+        return extractClaim(token, secret, Claims::getSubject);
+    }
+
+    private List<SimpleGrantedAuthority> extractUserRole(String jwtAccess, Key secret) {
+        String role = extractClaim(jwtAccess, secret, key -> key.get(ROLES_CLAIM, String.class));
+        return List.of(new SimpleGrantedAuthority(role));
     }
 
     private boolean validateToken(String token, Key secret) {
@@ -102,26 +119,9 @@ public class JwtServiceImpl implements JwtService {
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (ExpiredJwtException expEx) {
-            log.error("Token expired", expEx);
-        } catch (UnsupportedJwtException unsEx) {
-            log.error("Unsupported jwt", unsEx);
-        } catch (MalformedJwtException mjEx) {
-            log.error("Malformed jwt", mjEx);
-        } catch (SignatureException sEx) {
-            log.error("Invalid signature", sEx);
         } catch (Exception e) {
-            log.error("invalid token", e);
+            log.error("Invalid token", e);
+            return false;
         }
-        return false;
-    }
-
-    private String extractUserEmail(String token, Key secret) {
-        return extractClaim(token, Claims::getSubject, secret);
-    }
-
-    private List<SimpleGrantedAuthority> extractUserRole(String jwtAccess, Key secret) {
-        String role = extractClaim(jwtAccess, key -> key.get(ROLES_CLAIM, String.class), secret);
-        return List.of(new SimpleGrantedAuthority(role));
     }
 }
