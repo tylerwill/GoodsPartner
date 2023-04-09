@@ -4,7 +4,11 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.goodspartner.dto.InvoiceProduct;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -83,6 +87,8 @@ public class ODataInvoiceDto {
     @JsonProperty("Ответственный")
     private void mapManager(Map<String, Object> value) {
         Map<String, String> person = (Map<String, String>) value.get("ФизЛицо");
-        this.managerFullName = person.get("Description");
+        if ( person != null ) {
+            this.managerFullName = person.get("Description");
+        }
     }
 }
