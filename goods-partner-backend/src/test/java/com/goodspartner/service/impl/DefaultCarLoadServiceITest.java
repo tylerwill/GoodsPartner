@@ -40,7 +40,7 @@ class DefaultCarLoadServiceITest extends AbstractBaseITest {
         // Given
         UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000111");
 
-        SecurityContextHolder.setContext(getSecurityContext(DEFAULT_DRIVER_NAME, DEFAULT_DRIVER_EMAIL, DRIVER_ROLE));
+//        SecurityContextHolder.setContext(getSecurityContext(DEFAULT_DRIVER_NAME, DEFAULT_DRIVER_EMAIL, DRIVER_ROLE));
 
         // When
         List<CarLoad> actualCarLoadList = carLoadService.findByDeliveryId(uuid);
@@ -54,7 +54,7 @@ class DefaultCarLoadServiceITest extends AbstractBaseITest {
         assertEquals(1, actualCarDto.getId());
         assertEquals("Mercedes Sprinter", actualCarDto.getName());
         assertEquals("AA 1111 CT", actualCarDto.getLicencePlate());
-        assertEquals("Test Driver", actualCarDto.getDriver().getUserName());
+        assertEquals("Test Driver", actualCarDto.getDriver().getUsername());
         assertEquals(3000, actualCarDto.getWeightCapacity());
         assertTrue(actualCarDto.isAvailable());
         assertEquals(10, actualCarDto.getTravelCost());

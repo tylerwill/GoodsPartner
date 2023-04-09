@@ -90,9 +90,9 @@ public class JwtServiceImpl implements JwtService {
                 .getBody();
     }
 
-    private  <T> T extractClaim(String token, Function<Claims, T> clainmsResolver, Key secret) {
+    private  <T> T extractClaim(String token, Function<Claims, T> claimsResolver, Key secret) {
         Claims claims = extractAllClaims(token, secret);
-        return clainmsResolver.apply(claims);
+        return claimsResolver.apply(claims);
     }
 
     private boolean validateToken(String token, Key secret) {

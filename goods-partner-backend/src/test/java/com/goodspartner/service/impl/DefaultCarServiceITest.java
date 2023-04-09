@@ -86,7 +86,7 @@ class DefaultCarServiceITest extends AbstractBaseITest {
         Car carBefore = carService.findById(CAR_ID);
         Assertions.assertEquals("Mercedes Sprinter", carBefore.getName());
         Assertions.assertEquals("AA 1111 CT", carBefore.getLicencePlate());
-        Assertions.assertEquals("Oleg Dudka", carBefore.getDriver().getUserName());
+        Assertions.assertEquals("Oleg Dudka", carBefore.getDriver().getUsername());
         Assertions.assertEquals(3000, carBefore.getWeightCapacity());
         Assertions.assertFalse(carBefore.isCooler());
         Assertions.assertTrue(carBefore.isAvailable());
@@ -116,7 +116,7 @@ class DefaultCarServiceITest extends AbstractBaseITest {
         Assertions.assertEquals(CAR_ID, carAfter.getId());
         Assertions.assertEquals("Mazda CX5", carAfter.getName());
         Assertions.assertEquals("AA 2222 CT", carAfter.getLicencePlate());
-        Assertions.assertEquals("Vasya Pupkin", carAfter.getDriver().getUserName());
+        Assertions.assertEquals("Vasya Pupkin", carAfter.getDriver().getUsername());
         Assertions.assertEquals(3500, carAfter.getWeightCapacity());
         Assertions.assertFalse(carAfter.isCooler());
         Assertions.assertFalse(carAfter.isAvailable());

@@ -89,7 +89,7 @@ public class User implements UserDetails {
         LOGISTICIAN("ROLE_LOGISTICIAN");
         private String name;
 
-        private UserRole(String name) {
+        UserRole(String name) {
             this.name = name;
         }
     }
