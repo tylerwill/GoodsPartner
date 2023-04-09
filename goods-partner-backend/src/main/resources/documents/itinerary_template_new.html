@@ -28,79 +28,80 @@
     </style>
 </head>
 <body>
-    <div>
-        <table class="table-itinerary">
-            <tr>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-                <td class="cell-width"></td>
-            </tr>
-            <tr>
-                <td colspan="8" class="cell-width"></td>
-                <td colspan="18" class="main-head">
-                    МАРШРУТНИЙ ЛИСТ
-                </td>
-                <td colspan="8" class="cell-width"></td>
-            </tr>
-            <tr>
-                <td colspan="11" class="cell-width"></td>
-                <td colspan="3" style="font-size: 14.0pt; text-align: right">
-                    від
-                </td>
-                <#assign mappedArray = []>
-                <#list DocumentDto.getDeliveryDate()?split("-") as x>
-                    <#assign mappedArray += [x]>
-                </#list>
-                <td colspan="12" style="padding-left: 6pt; font-size: 14.0pt; text-align: left">
-                    ${mappedArray[2]}.${mappedArray[1]}.${mappedArray[0]}
-                </td>
-                <td colspan="8" class="cell-width"></td>
-            </tr>
-            <tr>
-                <td class="cell-width" colspan="34" height="12"></td>
-            </tr>
+<div>
+    <table class="table-itinerary">
+        <tr>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+            <td class="cell-width"></td>
+        </tr>
+        <tr>
+            <td colspan="8" class="cell-width"></td>
+            <td colspan="18" class="main-head">
+                МАРШРУТНИЙ ЛИСТ
+            </td>
+            <td colspan="8" class="cell-width"></td>
+        </tr>
+        <tr>
+            <td colspan="11" class="cell-width"></td>
+            <td colspan="3" style="font-size: 14.0pt; text-align: right">
+                від
+            </td>
+            <#assign mappedArray = []>
+            <#list DocumentDto.getDeliveryDate()?split("-") as x>
+            <#assign mappedArray += [x]>
+        </#list>
+        <td colspan="12" style="padding-left: 6pt; font-size: 14.0pt; text-align: left">
+            ${mappedArray[2]}.${mappedArray[1]}.${mappedArray[0]}
+        </td>
+        <td colspan="8" class="cell-width"></td>
+        </tr>
+        <tr>
+            <td class="cell-width" colspan="34" height="12"></td>
+        </tr>
+        <#if DocumentDto.getDriverName()??>
             <tr>
                 <td colspan="3" class="cell-width"></td>
                 <td colspan="5" class="cell-width" style="font-size: 11.0pt; text-align: left">Робітник: </td>
-                <td colspan="19" style="font-size: 11.0pt; text-align: left; font-weight: bold">
-                    ${DocumentDto.getDriverName()}
-                </td>
+                <td colspan="19" style="font-size: 11.0pt; text-align: left; font-weight: bold">${DocumentDto.getDriverName()}</td>
                 <td colspan="8" class="cell-width"></td>
             </tr>
-            <tr>
-                <td class="cell-width" colspan="34" height="12"></td>
-            </tr>
+        </#if>
+        <tr>
+            <td class="cell-width" colspan="34" height="12"></td>
+        </tr>
+        <#if DocumentDto.getCarLicencePlate()??>
             <tr>
                 <td colspan="3" class="cell-width"></td>
                 <td colspan="15" class="cell-width" style="font-size: 11.0pt; text-align: left">Реєстраційний номер транспортного засобу: </td>
@@ -109,42 +110,62 @@
                 </td>
                 <td colspan="3" class="cell-width"></td>
             </tr>
+        </#if>
+        <tr>
+            <td class="cell-width" colspan="34" height="12"></td>
+        </tr>
+        <#if DocumentDto.getCarName()??>
             <tr>
-                <td class="cell-width" colspan="34" height="12"></td>
+                <td colspan="3" class="cell-width"></td>
+                <td colspan="5" class="cell-width" style="font-size: 11.0pt; text-align: left">Автомобіль: </td>
+                <td colspan="19" style="font-size: 11.0pt; text-align: left; font-weight: bold">
+                    ${DocumentDto.getCarName()}
+                </td>
+                <td colspan="8" class="cell-width"></td>
             </tr>
+        </#if>
+        <tr>
+            <td class="cell-width" colspan="34" height="12"></td>
+        </tr>
 
-            <tr>
-                <td colspan="1" class="cell-width"></td>
+        <tr>
+            <td colspan="1" class="cell-width"></td>
 
-                <td colspan="1" class="cell-width" style="font-size: 10.0pt; text-align: center; border: .5pt solid black">№</td>
-                <td colspan="7" class="cell-width" style="font-size: 10.0pt; text-align: center; border: .5pt solid black">Найменування організації</td>
-                <td colspan="3" class="cell-width" style="font-size: 10.0pt; text-align: center; border: .5pt solid black">Видаткова</td>
-                <td colspan="7" class="cell-width" style="font-size: 10.0pt; text-align: center; border: .5pt solid black">Адреса</td>
+            <td colspan="1" class="cell-width" style="font-size: 10.0pt; text-align: center; border: .5pt solid black">№</td>
+            <td colspan="7" class="cell-width" style="font-size: 10.0pt; text-align: center; border: .5pt solid black">Найменування організації</td>
+            <td colspan="3" class="cell-width" style="font-size: 10.0pt; text-align: center; border: .5pt solid black">Видаткова</td>
+            <td colspan="7" class="cell-width" style="font-size: 10.0pt; text-align: center; border: .5pt solid black">Адреса</td>
+            <#if DocumentDto.getDriverName()?? && DocumentDto.getCarLicencePlate()??>
                 <td colspan="4" class="cell-width" style="font-size: 10.0pt; text-align: center; border: .5pt solid black">Час доставки</td>
-                <td colspan="7" class="cell-width" style="font-size: 10.0pt; text-align: center; border: .5pt solid black">Коментар</td>
-                <td colspan="3" class="cell-width" style="font-size: 10.0pt; text-align: center; border: .5pt solid black">Сума</td>
+            </#if>
+            <td colspan="7" class="cell-width" style="font-size: 10.0pt; text-align: center; border: .5pt solid black">Коментар</td>
+            <td colspan="3" class="cell-width" style="font-size: 10.0pt; text-align: center; border: .5pt solid black">Сума</td>
 
-                <td colspan="1" class="cell-width"></td>
-            </tr>
-            <#list DocumentDto.getRouteSheets() as routeSheet>
-                <tr style="font-size: 10.0pt; page-break-inside: avoid">
-                    <td colspan="1" class="cell-width" style="border-right: .5pt solid black"></td>
+            <td colspan="1" class="cell-width"></td>
+        </tr>
+        <#list DocumentDto.getRouteSheets() as routeSheet>
+        <tr style="font-size: 10.0pt; page-break-inside: avoid">
+            <td colspan="1" class="cell-width" style="border-right: .5pt solid black"></td>
 
-                    <td style="border: .5pt solid black" colspan="1">${routeSheet?counter}</td>
-                    <td style="border: .5pt solid black" colspan="7">${routeSheet.getClientName()?replace("&", "&amp;")}</td>
-                    <td style="border: .5pt solid black" colspan="3">${routeSheet.getInvoiceNumber()}</td>
-                    <td style="border: .5pt solid black" colspan="7">${routeSheet.getAddress()}</td>
-                    <td style="border: .5pt solid black" colspan="4">${routeSheet.getExpectedArrival()[0..4]} - ${routeSheet.getExpectedCompletion()[0..4]}</td>
-                    <td style="border: .5pt solid black" colspan="7">${routeSheet.getComment()}</td>
-                    <td style="border: .5pt solid black" colspan="3">${routeSheet.getInvoiceAmount()}</td>
+            <td style="border: .5pt solid black" colspan="1">${routeSheet?counter}</td>
+            <td style="border: .5pt solid black" colspan="7">${routeSheet.getClientName()?replace("&", "&amp;")}</td>
+            <td style="border: .5pt solid black" colspan="3">${routeSheet.getInvoiceNumber()}</td>
+            <td style="border: .5pt solid black" colspan="7">${routeSheet.getAddress()}</td>
+            <#if routeSheet.getExpectedArrival()?? && routeSheet.getExpectedCompletion()??>
+                <td style="border: .5pt solid black" colspan="4">
+                    ${routeSheet.getExpectedArrival()[0..4]} - ${routeSheet.getExpectedCompletion()[0..4]}
+                </td>
+            </#if>
+            <td style="border: .5pt solid black" colspan="7">${routeSheet.getComment()}</td>
+            <td style="border: .5pt solid black" colspan="3">${routeSheet.getInvoiceAmount()}</td>
 
-                    <td colspan="1" class="cell-width" style="border-left: .5pt solid black"></td>
-                </tr>
-            </#list>
-            <tr>
-                <td class="cell-width" colspan="34" height="12"></td>
-            </tr>
-        </table>
-    </div>
+            <td colspan="1" class="cell-width" style="border-left: .5pt solid black"></td>
+        </tr>
+    </#list>
+    <tr>
+        <td class="cell-width" colspan="34" height="12"></td>
+    </tr>
+    </table>
+</div>
 </body>
 </html>

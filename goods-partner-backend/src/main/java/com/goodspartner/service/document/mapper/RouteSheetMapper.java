@@ -21,4 +21,11 @@ public interface RouteSheetMapper {
     @Mapping(target = "invoiceAmount", source = "invoiceDto", qualifiedByName = "mapInvoiceAmount")
     @Mapping(target = "invoiceNumber", source = "invoiceDto.number")
     RouteSheet map(RoutePoint routePoint, OrderExternal orderExternal, InvoiceDto invoiceDto);
+
+    @Mapping(target = "clientName", source = "orderExternal.clientName")
+    @Mapping(target = "address", source = "orderExternal.address")
+    @Mapping(target = "comment", source = "orderExternal.comment")
+    @Mapping(target = "invoiceAmount", source = "invoiceDto", qualifiedByName = "mapInvoiceAmount")
+    @Mapping(target = "invoiceNumber", source = "invoiceDto.number")
+    RouteSheet map(OrderExternal orderExternal, InvoiceDto invoiceDto);
 }

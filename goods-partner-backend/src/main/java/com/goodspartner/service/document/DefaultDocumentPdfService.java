@@ -71,7 +71,7 @@ public class DefaultDocumentPdfService implements DocumentPdfService {
         List<String> refKeys = ObjectConverterUtil.getOrdersRefKeysFromOrders(orders);
         List<InvoiceDto> invoicesDto = integrationService.getInvoicesByOrderRefKeys(refKeys);
 
-        return createDocumentDto(invoicesDto);
+        return createDocumentDtoByOrders(invoicesDto, orders);
     }
 
     private DocumentDto getDocumentDto(List<RoutePoint> routePoints) {
@@ -81,9 +81,10 @@ public class DefaultDocumentPdfService implements DocumentPdfService {
         return createDocumentDto(routePoints, invoicesDto);
     }
 
-    private DocumentDto createDocumentDto(List<InvoiceDto> invoicesDto) {
+    private DocumentDto createDocumentDtoByOrders(List<InvoiceDto> invoicesDto, List<OrderExternal> orders) {
         DocumentDto documentDto = new DocumentDto();
 
+        setRouteSheetToDocumentDto(null, orders, invoicesDto, documentDto);
         setOrderAndDeliveryDateToDocumentDto(invoicesDto, documentDto);
         setPdfContentToDocumentDto(invoicesDto, documentDto);
         return documentDto;
@@ -92,23 +93,32 @@ public class DefaultDocumentPdfService implements DocumentPdfService {
     private DocumentDto createDocumentDto(List<RoutePoint> routePoints, List<InvoiceDto> invoicesDto) {
         DocumentDto documentDto = new DocumentDto();
 
-        setRoutePointDtosToDocumentDtoWhenAnswerByRouteId(routePoints, invoicesDto, documentDto);
+        setRouteSheetToDocumentDto(routePoints, new ArrayList<>(), invoicesDto, documentDto);
         setCarNameLicencePlateDriverNameToDocumentDto(routePoints, documentDto);
         setOrderAndDeliveryDateToDocumentDto(invoicesDto, documentDto);
         setPdfContentToDocumentDto(invoicesDto, documentDto);
         return documentDto;
     }
 
-    private void setRoutePointDtosToDocumentDtoWhenAnswerByRouteId(List<RoutePoint> routePoints, List<InvoiceDto> invoicesDto, DocumentDto documentDto) {
-        if (isRoute(routePoints)) {
-            Map<String, InvoiceDto> invoiceByOrderRefKey = mapInvoicesByOrderRefKey(invoicesDto);
+    private void setRouteSheetToDocumentDto(List<RoutePoint> routePoints, List<OrderExternal> orders, List<InvoiceDto> invoicesDto, DocumentDto documentDto) {
+        Map<String, InvoiceDto> invoiceByOrderRefKey = mapInvoicesByOrderRefKey(invoicesDto);
+        List<RouteSheet> routeSheets = Optional.ofNullable(routePoints)
+                .map(routePointList -> getRouteSheetsByRoutePoints(routePointList, invoiceByOrderRefKey))
+                .orElse(getRouteSheetsByOrders(orders, invoiceByOrderRefKey));
+        documentDto.setRouteSheets(routeSheets);
+    }
 
-            List<RouteSheet> routeSheets = routePoints.stream()
-                    .flatMap(routePoint -> routePoint.getOrders().stream()
-                            .map(order -> routeSheetMapper.map(routePoint, order, invoiceByOrderRefKey.get(order.getRefKey()))))
-                    .collect(Collectors.toList());
-            documentDto.setRouteSheets(routeSheets);
-        }
+    private List<RouteSheet> getRouteSheetsByOrders(List<OrderExternal> orders, Map<String, InvoiceDto> invoiceByOrderRefKey) {
+        return orders.stream()
+                .map(order -> routeSheetMapper.map(order, invoiceByOrderRefKey.get(order.getRefKey())))
+                .collect(Collectors.toList());
+    }
+
+    private List<RouteSheet> getRouteSheetsByRoutePoints(List<RoutePoint> routePoints, Map<String, InvoiceDto> invoiceByOrderRefKey) {
+        return routePoints.stream()
+                .flatMap(routePoint -> routePoint.getOrders().stream()
+                        .map(order -> routeSheetMapper.map(routePoint, order, invoiceByOrderRefKey.get(order.getRefKey()))))
+                .collect(Collectors.toList());
     }
 
     private Map<String, InvoiceDto> mapInvoicesByOrderRefKey(List<InvoiceDto> invoicesDto) {
@@ -116,13 +126,8 @@ public class DefaultDocumentPdfService implements DocumentPdfService {
                 .collect(Collectors.toMap(InvoiceDto::getOrderRefKey, Function.identity()));
     }
 
-    // Request is not by specific routePoint but rather for a list of routePoints which is route
-    private boolean isRoute(List<RoutePoint> routePoints) {
-        return routePoints.size() > 1;
-    }
-
-    private boolean isRequestedByRoute(List<InvoiceDto> invoicesDto) {
-        return invoicesDto.size() > 1;
+    private boolean isAnswerForRouteId(int CollectionSize) {
+        return CollectionSize > 1;
     }
 
     private void setCarNameLicencePlateDriverNameToDocumentDto(List<RoutePoint> routePoints, DocumentDto documentDto) {
@@ -163,7 +168,7 @@ public class DefaultDocumentPdfService implements DocumentPdfService {
                 .map(invoiceDto -> getDocumentContent(htmlAggregator, invoiceDto))
                 .collect(Collectors.toCollection(LinkedList::new));
 
-        if (isRequestedByRoute(invoicesDto)) {
+        if (isAnswerForRouteId(invoicesDto.size())) {
             documentContents.add(ITINERARY_FIRST, getItinerary(htmlAggregator, documentDto));
         }
 
