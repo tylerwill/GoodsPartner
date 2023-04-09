@@ -6,6 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum DocumentPdfType {
+    ITINERARY(new String[]{}),
     BILL(new String[]{}),
     INVOICE(new String[]{}),
     PDF(new String[]{".pdf"}),

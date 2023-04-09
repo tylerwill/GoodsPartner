@@ -21,12 +21,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 public class PdfFileCompiler implements FileCompiler {
@@ -60,7 +55,7 @@ public class PdfFileCompiler implements FileCompiler {
     }
 
     public String getCompiledPdfFile(List<DocumentContent> pdfDocumentContents) {
-        String tempPdfFileName = String.format(TMP_EXTENSION, TEMP_PDF_FILES.toString(), UUID.randomUUID());
+        String tempPdfFileName = String.format(TMP_EXTENSION, TEMP_PDF_FILES, UUID.randomUUID());
         try (FileOutputStream pdfFileHost = new FileOutputStream(tempPdfFileName)) {
             pdfCopier = new PdfCopy(resultPdfFile, pdfFileHost);
             setPdfDocumentDtos(pdfDocumentContents);
@@ -94,11 +89,40 @@ public class PdfFileCompiler implements FileCompiler {
         resultPdfFile.open();
 
         for (DocumentContent pdfDocumentContent : pdfDocumentContents) {
-            insertBillAndInvoicesAndImagesQualityDocuments(pdfDocumentContent);
-            insertPdfQualityDocuments(pdfDocumentContent);
+            String htmlItinerary = getDocument(pdfDocumentContent, DocumentPdfType.ITINERARY);
+            if (!htmlItinerary.isEmpty()) {
+                insertItinerary(htmlItinerary);
+            } else {
+                insertBillAndInvoicesAndImagesQualityDocuments(pdfDocumentContent);
+                insertPdfQualityDocuments(pdfDocumentContent);
+            }
         }
 
         resultPdfFile.close();
+    }
+
+    private void insertItinerary(String htmlItinerary) {
+        String pdfItinerary = getPdfItinerary(htmlItinerary);
+
+        copyPdfPages(pdfItinerary);
+    }
+
+    private String getPdfItinerary(String itinerary) {
+        renderer = new ITextRenderer();
+        String tempPdfFileName = String.format(TMP_EXTENSION, TEMP_PDF_FILES, UUID.randomUUID());
+
+        try (FileOutputStream pdfHost = new FileOutputStream(tempPdfFileName)) {
+            setFontArial();
+
+            renderer.setDocumentFromString(itinerary);
+            renderer.layout();
+            renderer.createPDF(pdfHost, false);
+
+            renderer.finishPDF();
+        } catch (Exception e) {
+            log.warn("Get Pdf of Bill, Invoices and ImagesDocuments problem: {}", e.getMessage());
+        }
+        return tempPdfFileName;
     }
 
     private void insertBillAndInvoicesAndImagesQualityDocuments(DocumentContent pdfDocumentContent) {
@@ -148,9 +172,13 @@ public class PdfFileCompiler implements FileCompiler {
     }
 
     private String getDocument(DocumentContent documentContent, DocumentPdfType documentPdfType) {
-        Set<String> documents = documentContent.getDocument(documentPdfType);
-        Iterator<String> stringIterator = documents.iterator();
-        return stringIterator.next();
+        try {
+            Set<String> documents = documentContent.getDocument(documentPdfType);
+            Iterator<String> stringIterator = documents.iterator();
+            return stringIterator.next();
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     private void writeToPdfDocument(String docAsString) {

@@ -1,6 +1,5 @@
 package com.goodspartner.service.document.impl;
 
-import com.goodspartner.dto.InvoiceDto;
 import com.goodspartner.service.document.HtmlAggregator;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -22,19 +21,19 @@ public class DefaultHtmlAggregator implements HtmlAggregator {
         setEncoding();
     }
 
-    public String getEnrichedHtml(InvoiceDto invoiceDto, String htmlTemplate) {
+    public String getEnrichedHtml(Object incomeDto, String htmlTemplate) {
         try {
             requiredTemplateNameNotNullNotEmpty(htmlTemplate);
-            requiredContentNotNull(invoiceDto);
+            requiredContentNotNull(incomeDto);
 
-            return enrichHtmlTemplate(invoiceDto, htmlTemplate);
+            return enrichHtmlTemplate(incomeDto, htmlTemplate);
 
         } catch (IOException | TemplateException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    private String enrichHtmlTemplate(InvoiceDto invoiceDto, String htmlTemplate) throws IOException, TemplateException {
+    private String enrichHtmlTemplate(Object invoiceDto, String htmlTemplate) throws IOException, TemplateException {
         Map<String, Object> content = setContent(invoiceDto);
 
         StringWriter writer = new StringWriter();
@@ -53,7 +52,7 @@ public class DefaultHtmlAggregator implements HtmlAggregator {
         CONFIG.setDefaultEncoding(ENCODING_UTF_8);
     }
 
-    private Map<String, Object> setContent(InvoiceDto invoiceDto) {
+    private Map<String, Object> setContent(Object invoiceDto) {
         return Map.of(invoiceDto.getClass().getSimpleName(), invoiceDto);
     }
 
@@ -63,7 +62,7 @@ public class DefaultHtmlAggregator implements HtmlAggregator {
         }
     }
 
-    private void requiredContentNotNull(InvoiceDto content) {
+    private void requiredContentNotNull(Object content) {
         if (Objects.isNull(content)) {
             throw new RuntimeException("The Content for Html template is null");
         }

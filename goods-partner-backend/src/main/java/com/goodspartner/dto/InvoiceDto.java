@@ -40,4 +40,6 @@ public class InvoiceDto {
     private String mfoCode;
 
     private LocalDate shippingDate;
+    private Boolean buhBaseProperty;
+    private String orderRefKey;
 }

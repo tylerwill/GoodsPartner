@@ -41,6 +41,12 @@ public class DefaultDataExtractor implements DataExtractor {
     }
 
     @Override
+    public String extractDriverName() {
+        Car car = getCar();
+        return car.getDriver().getUserName();
+    }
+
+    @Override
     public String extractOrderNumber() {
         InvoiceDto invoiceDto = getInvoiceDto();
         return invoiceDto.getOrderNumber();

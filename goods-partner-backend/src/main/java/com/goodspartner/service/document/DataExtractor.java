@@ -10,6 +10,7 @@ public interface DataExtractor {
     void setInvoiceDtos(List<InvoiceDto> invoiceDtos);
     String extractCarName();
     String extractCarLicencePlate();
+    String extractDriverName();
     String extractOrderNumber();
     String extractDeliveryDate();
 }

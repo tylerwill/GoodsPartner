@@ -4,7 +4,6 @@ import com.goodspartner.dto.InvoiceDto;
 import com.goodspartner.dto.InvoiceProduct;
 import com.goodspartner.service.document.DocumentContentGenerator;
 import com.goodspartner.service.document.HtmlAggregator;
-import com.goodspartner.service.document.impl.DefaultHtmlAggregator;
 import com.goodspartner.service.dto.DocumentContent;
 import com.goodspartner.service.dto.DocumentPdfType;
 import com.goodspartner.service.dto.PdfDocumentContent;

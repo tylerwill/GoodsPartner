@@ -23,11 +23,13 @@ public interface ODataInvoiceMapper {
     @Mapping(target = "invoiceAmountPDV", source = "oDataInvoiceDto", qualifiedByName = "mapInvoiceAmountPDV")
     @Mapping(target = "orderNumber", expression = "java(String.valueOf(Integer.parseInt(oDataInvoiceDto.getOrder().getOrderNumber())))")
     @Mapping(target = "orderDate", source = "oDataInvoiceDto.order", qualifiedByName = "mapOrderDate")
-    @Mapping(target = "bankName", source ="oDataInvoiceDto.bankName")
-    @Mapping(target = "shippingDate", source ="oDataInvoiceDto.order.shippingDate")
-    @Mapping(target = "companyAccount", source ="oDataInvoiceDto.companyAccount")
+    @Mapping(target = "bankName", source = "oDataInvoiceDto.bankName")
+    @Mapping(target = "buhBaseProperty", source = "oDataInvoiceDto.buhBaseProperty")
+    @Mapping(target = "orderRefKey", source = "oDataInvoiceDto.orderRefKey")
+    @Mapping(target = "shippingDate", source = "oDataInvoiceDto.order.shippingDate")
+    @Mapping(target = "companyAccount", source = "oDataInvoiceDto.companyAccount")
     @Mapping(target = "edrpouCode", expression = "java(oDataInvoiceDto.getOrganisationCodes().getEdrpouCode())")
-    @Mapping(target = "mfoCode", expression ="java(oDataInvoiceDto.getMfoCode().trim())")
+    @Mapping(target = "mfoCode", expression = "java(oDataInvoiceDto.getMfoCode().trim())")
     InvoiceDto map(ODataInvoiceDto oDataInvoiceDto);
 
     List<InvoiceDto> mapList(List<ODataInvoiceDto> oDataInvoiceDtos);

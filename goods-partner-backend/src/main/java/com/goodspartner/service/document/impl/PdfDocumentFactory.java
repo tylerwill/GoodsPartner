@@ -13,6 +13,11 @@ public class PdfDocumentFactory extends AbstractDocumentFactory {
     }
 
     @Override
+    public ItineraryContentGenerator createItineraryContentGenerator(HtmlAggregator aggregator) {
+        return new PdfItineraryContentGenerator(aggregator);
+    }
+
+    @Override
     public HtmlAggregator createHtmlAggregator() {
         return new DefaultHtmlAggregator();
     }
