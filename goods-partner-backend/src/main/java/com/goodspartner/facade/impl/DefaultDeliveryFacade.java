@@ -11,6 +11,7 @@ import com.goodspartner.facade.DeliveryFacade;
 import com.goodspartner.facade.OrderFacade;
 import com.goodspartner.service.DeliveryService;
 import com.goodspartner.service.EventService;
+import com.goodspartner.service.OrderExternalService;
 import com.goodspartner.service.util.DeliveryCalculationHelper;
 import com.goodspartner.web.action.DeliveryAction;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ import static com.goodspartner.entity.DeliveryStatus.DRAFT;
 import static com.goodspartner.event.ActionType.ROUTE_UPDATED;
 import static com.goodspartner.event.EventMessageTemplate.DELIVERY_APPROVED;
 import static com.goodspartner.event.EventMessageTemplate.DELIVERY_CREATED;
-import static com.goodspartner.event.EventMessageTemplate.DELIVERY_SYNCHRONIZED;
+import static com.goodspartner.event.EventMessageTemplate.DELIVERY_SYNCHRONIZATION;
 import static com.goodspartner.event.EventMessageTemplate.ROUTE_STATUS_AUTO;
 import static com.goodspartner.event.EventType.INFO;
 
@@ -32,9 +33,12 @@ import static com.goodspartner.event.EventType.INFO;
 @RequiredArgsConstructor
 public class DefaultDeliveryFacade implements DeliveryFacade {
 
-    private final DeliveryService deliveryService;
     private final OrderFacade orderFacade;
+
+    private final DeliveryService deliveryService;
     private final EventService eventService;
+    private final OrderExternalService orderExternalService;
+
     private final DeliveryCalculationHelper deliveryCalculationHelper;
 
     @Override
@@ -69,10 +73,7 @@ public class DefaultDeliveryFacade implements DeliveryFacade {
         orderFacade.validateOrdersForDeliveryCalculation(deliveryId); // Do not create Delivery with UNKNOWN orders address
 
         Delivery delivery = deliveryService.findById(deliveryId);
-        if (!DRAFT.equals(delivery.getStatus())) { //  Delivery recalculation only for Draft
-            throw new IllegalDeliveryStateForRecalculation();
-        }
-
+        delivery.setStatus(DRAFT); // Force draft status if recalculation for approved
         delivery.setFormationStatus(DeliveryFormationStatus.ROUTE_CALCULATION);
 
         deliveryCalculationHelper.calculate(delivery);  // Calculated in async method
@@ -83,11 +84,13 @@ public class DefaultDeliveryFacade implements DeliveryFacade {
     @Override
     public void resyncOrders(UUID deliveryId) {
 
-        deliveryService.cleanupDeliveryForOrdersSync(deliveryId);
+        Delivery delivery = deliveryService.cleanupDeliveryForOrdersSync(deliveryId);
 
-        orderFacade.synchronizeDeliveryOrders(deliveryId);
+        orderExternalService.cleanupOrders(deliveryId);
 
-        eventService.publishForLogist(DELIVERY_SYNCHRONIZED.withAudit(), INFO, ActionType.DELIVERY_UPDATED, deliveryId);
+        eventService.publishForLogist(DELIVERY_SYNCHRONIZATION.withAudit(), INFO, ActionType.ORDER_UPDATED, deliveryId);
+
+        orderFacade.processOrdersForDeliveryAsync(delivery); // Async
 
     }
 }

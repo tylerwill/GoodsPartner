@@ -38,7 +38,6 @@ public class DefaultDocumentPdfService implements DocumentPdfService {
     private final AbstractDocumentFactory documentFactory;
     private final ClientProperties clientProperties;
     private final WebClient webClient;
-    private final RoutePointMapper mapper;
     private final RouteSheetMapper routeSheetMapper;
 
     @Override

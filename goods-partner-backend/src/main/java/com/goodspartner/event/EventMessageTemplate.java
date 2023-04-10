@@ -20,7 +20,7 @@ public enum EventMessageTemplate {
     DELIVERY_CALCULATION_FAILED("Помилка розрахування доставки"),
     DELIVERY_APPROVED("${roleTranslated} ${userName} підтвердив(ла) доставку"),
     DELIVERY_COMPLETED("Доставка переведена в статус виконана"),
-    DELIVERY_SYNCHRONIZED("${roleTranslated} ${userName} синхронизував(ла) доставку"),
+    DELIVERY_SYNCHRONIZATION("${roleTranslated} ${userName} розпочав(ла) синхронізацію доставки"),
 
 
     // Route

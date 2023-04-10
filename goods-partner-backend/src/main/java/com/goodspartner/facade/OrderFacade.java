@@ -16,6 +16,4 @@ public interface OrderFacade {
     OrderExternal excludeOrder(long id, ExcludeOrderRequest excludeOrderRequest);
 
     void validateOrdersForDeliveryCalculation(UUID deliveryId);
-
-    void synchronizeDeliveryOrders(UUID delivery);
 }
