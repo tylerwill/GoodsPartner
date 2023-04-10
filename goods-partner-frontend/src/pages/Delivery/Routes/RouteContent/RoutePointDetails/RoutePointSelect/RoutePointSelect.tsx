@@ -6,12 +6,12 @@ import {
 	styled
 } from '@mui/material'
 import React, { useCallback } from 'react'
-import { RoutePoint } from '../../../../../../model/RoutePoint'
 import {
 	useCompleteRoutePointMutation,
 	useResetRoutePointMutation,
 	useSkipRoutePointMutation
 } from '../../../../../../api/routes/routes.api'
+import {RoutePoint} from "../../../../../../model/Route";
 
 interface RoutePointSelectProps {
 	routePoint: RoutePoint

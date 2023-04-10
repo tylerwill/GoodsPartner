@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { apiUrl } from '../../util/util'
-import { Route } from '../../model/Route'
-import { RoutePoint } from '../../model/RoutePoint'
+import {Route, RoutePoint} from '../../model/Route'
 import Order from '../../model/Order'
 
 type RoutesResponse = Route[]

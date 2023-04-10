@@ -8,13 +8,13 @@ import BasicTabs from '../../../hoc/BasicTabs/BasicTabs'
 import {useParams} from 'react-router-dom'
 import {useGetOrdersForDeliveryQuery, useUpdateOrderMutation} from '../../../api/delivery-orders/delivery-orders.api'
 import {useAppDispatch, useAppSelector} from '../../../hooks/redux-hooks'
-import {MapPointStatus} from '../../../model/MapPointStatus'
 import Order from '../../../model/Order'
 import ChooseAddressDialog from './OrdersContent/ChooseAddressDialog/ChooseAddressDialog'
-import {DeliveryType} from '../../../model/DeliveryType'
 import Loading from '../../../components/Loading/Loading'
 import ExcludeOrderDialog from './OrdersContent/ExcludeOrderDialog/ExcludeOrderDialog'
 import DeliveryTypeDialog from './OrdersContent/DeliveryTypeDialog/DeliveryTypeDialog'
+import {MapPointStatus} from "../../../model/MapPoint";
+import {DeliveryType} from "../../../model/Delivery";
 
 export const Orders = () => {
     const {deliveryId} = useParams()

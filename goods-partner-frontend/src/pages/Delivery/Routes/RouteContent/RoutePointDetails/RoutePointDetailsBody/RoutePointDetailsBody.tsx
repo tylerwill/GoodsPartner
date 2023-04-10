@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid'
 import InfoTableItem from '../../../../../../components/InfoTableItem/InfoTableItem'
 import React from 'react'
-import { RoutePoint } from '../../../../../../model/RoutePoint'
+import {RoutePoint} from "../../../../../../model/Route";
 
 const RoutePointDetailsBody = ({ routePoint }: { routePoint: RoutePoint }) => {
 

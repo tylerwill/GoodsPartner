@@ -1,6 +1,6 @@
 import {format} from 'date-fns'
-import {DeliveryType} from '../model/DeliveryType'
 import Order from "../model/Order";
+import {DeliveryType} from "../model/Delivery";
 
 export const currentHost = () => {
     return import.meta.env.DEV

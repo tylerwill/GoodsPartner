@@ -1,8 +1,7 @@
 import React, {FC, useCallback, useRef, useState} from 'react'
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField} from '@mui/material'
 import {Autocomplete, GoogleMap, MarkerF} from '@react-google-maps/api'
-import MapPoint from "../../model/MapPoint";
-import {MapPointStatus} from "../../model/MapPointStatus";
+import MapPoint, {MapPointStatus} from "../../model/MapPoint";
 
 
 interface ChooseAddressDialogProps {

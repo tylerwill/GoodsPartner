@@ -1,13 +1,13 @@
 import React from 'react'
 import Box from '@mui/material/Box'
 import {Button, Tooltip, Typography} from '@mui/material'
-import {RoutePoint} from '../../../../../../model/RoutePoint'
 import RoutePointSelect from '../RoutePointSelect/RoutePointSelect'
 import RoutePointOrdersDialog from '../RoutePointOrdersDialog/RoutePointOrdersDialog'
 import DocumentsDialog from "../../DocumentsDialog/DocumentsDialog";
 import DownloadIcon from "@mui/icons-material/Download";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import {apiUrl} from "../../../../../../util/util";
+import {RoutePoint} from "../../../../../../model/Route";
 
 interface RoutePointDetailsHeaderProps {
     routePoint: RoutePoint

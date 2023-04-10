@@ -1,15 +1,13 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {Box, Breadcrumbs, Button, LinearProgress, Tooltip, Typography} from '@mui/material'
+import {Box, Breadcrumbs, Chip, LinearProgress, Typography} from '@mui/material'
 import DeliveryStatusChip from '../../components/DeliveryStatusChip/DeliveryStatusChip'
 import {Link, Outlet, useParams} from 'react-router-dom'
 import {setCurrentRouteIndex} from '../../features/currentDelivery/currentDeliverySlice'
 
-import DoneIcon from '@mui/icons-material/Done'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import Loading from '../../components/Loading/Loading'
 import ErrorAlert from '../../components/ErrorAlert/ErrorAlert'
 import {reformatDate} from '../../util/util'
-import useAuth from '../../auth/AuthProvider'
 import {useAppDispatch} from '../../hooks/redux-hooks'
 import {
     useApproveDeliveryMutation,
@@ -17,10 +15,11 @@ import {
     useGetDeliveryQuery,
     useResyncDeliveryMutation
 } from '../../api/deliveries/deliveries.api'
-import {DeliveryFormationStatus, DeliveryStatus} from '../../model/Delivery'
-import {UserRole} from '../../model/User'
+import {DeliveryFormationStatus} from '../../model/Delivery'
 import {ConfirmationDialog} from "../../components/ConfirmationDialog/ConfirmationDialog";
 import {DeliveryNav} from "./DeliveryNav/DeliveryNav";
+import {ActionButtons} from "./ActionButtons/ActionButtons";
+
 
 const Delivery = () => {
     const {deliveryId} = useParams()
@@ -31,8 +30,6 @@ const Delivery = () => {
         error
     } = useGetDeliveryQuery(String(deliveryId))
 
-    // @ts-ignore
-    const {user} = useAuth()
     const [calculateDelivery] = useCalculateDeliveryMutation()
     const [approveDelivery] = useApproveDeliveryMutation()
     const [resyncDelivery] = useResyncDeliveryMutation()
@@ -62,154 +59,100 @@ const Delivery = () => {
         return <Loading/>
     }
 
-    const isDriver = user.role === UserRole.DRIVER
+    const formationStatus = delivery.formationStatus;
+    const calculated = formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED
+    const loading = isLoadingBar(formationStatus);
 
-    const calculationFailed = delivery.formationStatus === DeliveryFormationStatus.ROUTE_CALCULATION_FAILED;
+    const isDeliveryError = formationStatus === DeliveryFormationStatus.ROUTE_CALCULATION_FAILED
+        || formationStatus === DeliveryFormationStatus.ORDERS_LOADING_FAILED;
 
-    const calculationEnabled =
-        (delivery.formationStatus === DeliveryFormationStatus.READY_FOR_CALCULATION
-            || delivery.formationStatus === DeliveryFormationStatus.ROUTE_CALCULATION_FAILED
-            || delivery.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED)
-        && !isDriver;
+    const errorChip = <Chip sx={{ml:1}} label={'Помилка'} color={'error'}/>;
 
-    let recalculationButtonVisible = delivery.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED
-        && !isDriver && delivery.status === DeliveryStatus.DRAFT;
+    return (
+        <section>
+            {loading && loadingBar(formationStatus)}
+            {error && <ErrorAlert error={error}/>}
+            <Box
+                sx={{
+                    mt: 2,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                }}
+            >
+                <Box sx={{display: 'flex'}}>
+                    <Typography sx={{mr: 2}} variant='h6' component='h2'>
+                        Доставка на {reformatDate(delivery.deliveryDate)}
+                    </Typography>
+                    <DeliveryStatusChip status={delivery.status}/>
+                    {isDeliveryError && errorChip}
+                </Box>
+                {/*TODO: Move to ActionButtons component*/}
+                <ActionButtons openResyncDialog={() => setResyncDeliveryConfirmationDialogOpen(true)}
+                               calculateDeliveryHandler={calculateDeliveryHandler}
+                               formationStatus={formationStatus}
+                               deliveryStatus={delivery.status}
+                               openRecalculateDialog={() => setRecalculateConfirmationDialogOpen(true)}
+                               openApproveDialog={() => setApproveConfirmationDialogOpen(true)}/>
 
-    recalculationButtonVisible = recalculationButtonVisible || calculationFailed;
+            </Box>
 
-    const firstCalculationButtonVisible = delivery.formationStatus === DeliveryFormationStatus.READY_FOR_CALCULATION && !isDriver;
-
-    const isPreApprove =
-        delivery.formationStatus ===
-        DeliveryFormationStatus.CALCULATION_COMPLETED && !isDriver
-
-    const isApproveEnabled = delivery.status === DeliveryStatus.DRAFT;
-
-    const calculated =
-        delivery?.formationStatus === DeliveryFormationStatus.CALCULATION_COMPLETED
-
-
-    const isLoadingBar =
-        delivery &&
-        (delivery.formationStatus === DeliveryFormationStatus.ORDERS_LOADING ||
-            delivery.formationStatus === DeliveryFormationStatus.ROUTE_CALCULATION)
-
-    if (delivery) {
-        return (
-            <section>
-                {isLoadingBar && loadingBar(delivery.formationStatus)}
-                {error && <ErrorAlert error={error}/>}
-                <Box
-                    sx={{
-                        mt: 2,
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center'
-                    }}
+            {/*/!*TODO: [UI Max] Move to separate component *!/*/}
+            {/*/!*TODO: [UI Max] If delivery exist we should place delivery date instead of 'new delivery' *!/*/}
+            <Box sx={{mt: 1}}>
+                <Breadcrumbs
+                    separator={<NavigateNextIcon fontSize='small'/>}
+                    aria-label='breadcrumb'
                 >
-                    <Box sx={{display: 'flex'}}>
-                        <Typography sx={{mr: 2}} variant='h6' component='h2'>
-                            Доставка на {reformatDate(delivery.deliveryDate)}
-                        </Typography>
-                        <DeliveryStatusChip status={delivery.status}/>
-                    </Box>
-                    {/*TODO: Move to ActionButtons component*/}
-                    <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
-                        <Tooltip
-                            title='Оновити замовлення'
-                            placement='top'
-                            arrow>
-                                <span>
-                                    <Button sx={{mr: 2}} color={"warning"} variant='contained'
-                                            onClick={()=> setResyncDeliveryConfirmationDialogOpen(true)}>
-                                        Синхронізувати
-                                    </Button>
-                                </span>
-                        </Tooltip>
+                    <Link color='inherit' to={'/deliveries'}>
+                        Доставки
+                    </Link>
+                    <Typography color='text.primary'>Нова доставка</Typography>
+                </Breadcrumbs>
+            </Box>
 
-                        {firstCalculationButtonVisible && (
-                            <CalculateButton
-                                title={"Розрахувати маршрут"}
-                                enabled={calculationEnabled}
-                                onClick={calculateDeliveryHandler}
-                            />
-                        )}
+            <Box sx={{marginTop: '16px'}}>
+                <DeliveryNav calculated={calculated}/>
 
-                        {recalculationButtonVisible && (
-                            <CalculateButton
-                                title={"Перерахувати маршрут"}
-                                enabled={calculationEnabled}
-                                onClick={() => setRecalculateConfirmationDialogOpen(true)}
-
-                            />
-                        )}
-                        {isPreApprove && (
-                            <ApproveButton
-                                enabled={isApproveEnabled}
-                                onClick={() => setApproveConfirmationDialogOpen(true)}
-                            />
-                        )}
-                    </Box>
-
+                <Box sx={{padding: '24px 0 24px', backgroundColor: '#fff'}}>
+                    <Outlet/>
                 </Box>
 
-                {/*/!*TODO: [UI Max] Move to separate component *!/*/}
-                {/*/!*TODO: [UI Max] If delivery exist we should place delivery date instead of 'new delivery' *!/*/}
-                <Box sx={{mt: 1}}>
-                    <Breadcrumbs
-                        separator={<NavigateNextIcon fontSize='small'/>}
-                        aria-label='breadcrumb'
-                    >
-                        <Link color='inherit' to={'/deliveries'}>
-                            Доставки
-                        </Link>
-                        <Typography color='text.primary'>Нова доставка</Typography>
-                    </Breadcrumbs>
-                </Box>
+                <ConfirmationDialog
+                    title={"Затвердити доставку"}
+                    text={"Ви впевнені, що бажаєте затвердити доставку? Цю дію не можна буде відмінити."}
+                    open={approveConfirmationDialogOpen}
+                    setOpen={setApproveConfirmationDialogOpen}
+                    onAction={() => {
+                        approveDeliveryHandler();
+                        setApproveConfirmationDialogOpen(false);
+                    }}
+                />
 
-                <Box sx={{marginTop: '16px'}}>
-                    <DeliveryNav calculated={calculated}/>
+                <ConfirmationDialog
+                    title={"Перерахувати доставку"}
+                    text={"Ви впевнені, що бажаєте перерахувати доставку? Цю дію не можна буде відмінити."}
+                    open={recalculateConfirmationDialogOpen}
+                    setOpen={setRecalculateConfirmationDialogOpen}
+                    onAction={() => {
+                        calculateDeliveryHandler();
+                        setRecalculateConfirmationDialogOpen(false);
+                    }}
+                />
 
-                    <Box sx={{padding: '24px 0 24px', backgroundColor: '#fff'}}>
-                        <Outlet/>
-                    </Box>
-
-                    <ConfirmationDialog
-                        title={"Затвердити доставку"}
-                        text={"Ви впевнені, що бажаєте затвердити доставку? Цю дію не можна буде відмінити."}
-                        open={approveConfirmationDialogOpen}
-                        setOpen={setApproveConfirmationDialogOpen}
-                        onAction={() => {
-                            approveDeliveryHandler();
-                            setApproveConfirmationDialogOpen(false);
-                        }}
-                    />
-
-                    <ConfirmationDialog
-                        title={"Перерахувати доставку"}
-                        text={"Ви впевнені, що бажаєте перерахувати доставку? Цю дію не можна буде відмінити."}
-                        open={recalculateConfirmationDialogOpen}
-                        setOpen={setRecalculateConfirmationDialogOpen}
-                        onAction={() => {
-                            calculateDeliveryHandler();
-                            setRecalculateConfirmationDialogOpen(false);
-                        }}
-                    />
-
-                    <ConfirmationDialog
-                        title={"Синхронізація"}
-                        text={"Ви впевнені, що бажаєте синхронізуватись з 1С? Весь прогрес по розрахунку буде втрачено."}
-                        open={resyncDeliveryConfirmationDialogOpen}
-                        setOpen={setResyncDeliveryConfirmationDialogOpen}
-                        onAction={() => {
-                            resyncDeliveryHandler();
-                            setResyncDeliveryConfirmationDialogOpen(false);
-                        }}
-                    />
-                </Box>
-            </section>
-        )
-    }
+                <ConfirmationDialog
+                    title={"Синхронізація"}
+                    text={"Ви впевнені, що бажаєте синхронізуватись з 1С? Весь прогрес по розрахунку буде втрачено."}
+                    open={resyncDeliveryConfirmationDialogOpen}
+                    setOpen={setResyncDeliveryConfirmationDialogOpen}
+                    onAction={() => {
+                        resyncDeliveryHandler();
+                        setResyncDeliveryConfirmationDialogOpen(false);
+                    }}
+                />
+            </Box>
+        </section>
+    )
 }
 
 function loadingBar(formationStatus: DeliveryFormationStatus) {
@@ -235,39 +178,10 @@ function loadingBar(formationStatus: DeliveryFormationStatus) {
     )
 }
 
-interface ActionButtonProps {
-    enabled: boolean
-    onClick: () => any
-    title?: string
-}
 
-function ApproveButton({enabled, onClick}: ActionButtonProps) {
-    return (
-        <Button
-            variant='contained'
-            color={'success'}
-            onClick={onClick}
-            disabled={!enabled}
-        >
-            <DoneIcon sx={{mr: 1, width: '0.7em', height: '0.7em'}}/> Затвердити
-        </Button>
-    )
-}
-
-function CalculateButton({enabled, onClick, title}: ActionButtonProps) {
-    return (
-        <Tooltip
-            title='Для розрахунку маршруту відредагуйте адреси, що потребують уточнення'
-            placement='top'
-            arrow
-        >
-			<span>
-				<Button sx={{mr: 2}} variant='contained' disabled={!enabled} onClick={onClick}>
-					{title}
-				</Button>
-			</span>
-        </Tooltip>
-    )
+function isLoadingBar(formationStatus: DeliveryFormationStatus) {
+    return formationStatus === DeliveryFormationStatus.ORDERS_LOADING ||
+        formationStatus === DeliveryFormationStatus.ROUTE_CALCULATION;
 }
 
 export default Delivery

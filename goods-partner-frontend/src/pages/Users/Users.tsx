@@ -14,7 +14,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import UserFormDialog from './UserFormDialog/UserFormDialog'
 import Loading from '../../components/Loading/Loading'
 import ErrorAlert from '../../components/ErrorAlert/ErrorAlert'
-import { User } from '../../model/User'
+import {User, UserRole} from '../../model/User'
 import ActionMenu from '../../components/ActionMenu/ActionMenu'
 import {
 	useAddUserMutation,
@@ -92,7 +92,7 @@ const Users = () => {
 								<TableRow key={'tableUserId ' + user.id}>
 									<TableCell>{user.userName}</TableCell>
 									<TableCell>{user.email}</TableCell>
-									<TableCell>{user.role}</TableCell>
+									<TableCell>{toUserRoleString(user.role)}</TableCell>
 									<TableCell align='center'>
 										{user.enabled ? <CheckIcon /> : <CloseIcon />}
 									</TableCell>
@@ -132,6 +132,18 @@ const Users = () => {
 			{error && <ErrorAlert error={error} />}
 		</section>
 	)
+}
+
+function toUserRoleString (userRole:UserRole) {
+	switch (userRole) {
+		case UserRole.ADMIN:
+			return 'Адміністратор'
+		case UserRole.DRIVER:
+			return 'Водій'
+		case UserRole.LOGISTICIAN:
+			return 'Логіст'
+	}
+
 }
 
 export default Users

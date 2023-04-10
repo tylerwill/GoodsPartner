@@ -90,7 +90,7 @@ export default function UserFormDialog({
 								>
 									<MenuItem value={'ADMIN'}>Адміністратор</MenuItem>
 									<MenuItem value={'DRIVER'}>Водій</MenuItem>
-									<MenuItem value={'LOGIST'}>Логіст</MenuItem>
+									<MenuItem value={'LOGISTICIAN'}>Логіст</MenuItem>
 								</Select>
 							</FormControl>
 						</Grid>
