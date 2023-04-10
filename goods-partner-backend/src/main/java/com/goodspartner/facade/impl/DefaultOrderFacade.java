@@ -27,11 +27,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
+import static com.goodspartner.event.EventMessageTemplate.*;
 import static com.goodspartner.event.EventMessageTemplate.EventPlaceholder.DELIVERY_DATE;
 import static com.goodspartner.event.EventMessageTemplate.EventPlaceholder.LOADED_ORDERS_VALUE;
-import static com.goodspartner.event.EventMessageTemplate.ORDERS_LOADED;
-import static com.goodspartner.event.EventMessageTemplate.ORDERS_LOADING;
-import static com.goodspartner.event.EventMessageTemplate.ORDERS_LOADING_FAILED;
+
 
 @Slf4j
 @Service
@@ -117,16 +116,6 @@ public class DefaultOrderFacade implements OrderFacade {
                 .ifPresent(orderExternal -> {
                     throw new UnknownAddressException(orderExternal);
                 });
-    }
-
-    @Async("goodsPartnerThreadPoolTaskExecutor")
-    @Override
-    public void synchronizeDeliveryOrders(UUID deliveryId) {
-        Delivery delivery = deliveryService.findById(deliveryId);
-
-        orderExternalService.cleanupOrders(delivery);
-
-        this.processOrdersForDeliveryAsync(delivery); // No Async invocation but we are already in Async
     }
 
 }

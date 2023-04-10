@@ -32,5 +32,5 @@ public interface DeliveryService {
     /* --- Modification --- */
     Delivery processDeliveryStatus(Route route);
 
-    void cleanupDeliveryForOrdersSync(UUID deliveryId);
+    Delivery cleanupDeliveryForOrdersSync(UUID deliveryId);
 }
