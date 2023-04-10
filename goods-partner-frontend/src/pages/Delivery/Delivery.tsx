@@ -15,7 +15,7 @@ import {
     useGetDeliveryQuery,
     useResyncDeliveryMutation
 } from '../../api/deliveries/deliveries.api'
-import {DeliveryFormationStatus} from '../../model/Delivery'
+import {DeliveryFormationStatus, DeliveryStatus} from '../../model/Delivery'
 import {ConfirmationDialog} from "../../components/ConfirmationDialog/ConfirmationDialog";
 import {DeliveryNav} from "./DeliveryNav/DeliveryNav";
 import {ActionButtons} from "./ActionButtons/ActionButtons";
@@ -66,7 +66,9 @@ const Delivery = () => {
     const isDeliveryError = formationStatus === DeliveryFormationStatus.ROUTE_CALCULATION_FAILED
         || formationStatus === DeliveryFormationStatus.ORDERS_LOADING_FAILED;
 
-    const errorChip = <Chip sx={{ml:1}} label={'Помилка'} color={'error'}/>;
+    const errorChip = <Chip sx={{ml: 1}} label={'Помилка'} color={'error'}/>;
+
+    const isNotCompleted = delivery.status !== DeliveryStatus.COMPLETED;
 
     return (
         <section>
@@ -87,14 +89,14 @@ const Delivery = () => {
                     <DeliveryStatusChip status={delivery.status}/>
                     {isDeliveryError && errorChip}
                 </Box>
-                {/*TODO: Move to ActionButtons component*/}
-                <ActionButtons openResyncDialog={() => setResyncDeliveryConfirmationDialogOpen(true)}
-                               calculateDeliveryHandler={calculateDeliveryHandler}
-                               formationStatus={formationStatus}
-                               deliveryStatus={delivery.status}
-                               openRecalculateDialog={() => setRecalculateConfirmationDialogOpen(true)}
-                               openApproveDialog={() => setApproveConfirmationDialogOpen(true)}/>
-
+                {isNotCompleted &&
+                    <ActionButtons openResyncDialog={() => setResyncDeliveryConfirmationDialogOpen(true)}
+                                   calculateDeliveryHandler={calculateDeliveryHandler}
+                                   formationStatus={formationStatus}
+                                   deliveryStatus={delivery.status}
+                                   openRecalculateDialog={() => setRecalculateConfirmationDialogOpen(true)}
+                                   openApproveDialog={() => setApproveConfirmationDialogOpen(true)}/>
+                }
             </Box>
 
             {/*/!*TODO: [UI Max] Move to separate component *!/*/}
