@@ -1,4 +1,4 @@
-package com.goodspartner.service.dto;
+package com.goodspartner.web.controller.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
-    private String accessToken;
-    private String refreshToken;
-    private String username;
-    private String email;
-}
 
+public class AuthRequest {
+    private String username;
+    private String password;
+}

@@ -3,7 +3,6 @@ package com.goodspartner.web.controller;
 import com.goodspartner.dto.UserDto;
 import com.goodspartner.mapper.UserMapper;
 import com.goodspartner.service.UserService;
-import com.goodspartner.web.controller.response.AuthResponse;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

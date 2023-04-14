@@ -12,8 +12,8 @@ public interface UserMapper {
 
     UserDto toUserDto(User user);
 
-    @Mapping(target = "heartbeatId", expression = "java(java.util.UUID.randomUUID())")
-    AuthResponse toAuthResponse(User user);
+    /*@Mapping(target = "heartbeatId", expression = "java(java.util.UUID.randomUUID())")
+    AuthResponse toAuthResponse(User user);*/
 
     User toUser(UserDto userdto);
 

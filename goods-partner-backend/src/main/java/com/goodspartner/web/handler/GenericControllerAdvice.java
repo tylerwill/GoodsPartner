@@ -6,6 +6,8 @@ import com.goodspartner.exception.StoreNotFoundException;
 import com.goodspartner.exception.SubscriberNotFoundException;
 import com.goodspartner.exception.UnknownAddressException;
 import com.goodspartner.web.controller.response.ErrorResponse;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -32,5 +34,13 @@ public class GenericControllerAdvice {
     public ResponseEntity<ErrorResponse> badRequestExceptionHandler(Exception exception) {
         ErrorResponse errorMessage = new ErrorResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+    }
+
+    @ExceptionHandler({
+            JwtException.class,
+    })
+    public ResponseEntity<ErrorResponse> tokenExpiredException(Exception exception) {
+        ErrorResponse errorMessage = new ErrorResponse(HttpStatus.FORBIDDEN, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorMessage);
     }
 }

@@ -48,7 +48,7 @@ public class CarControllerITest extends AbstractWebITest {
         // TODO request json
         UserDto userDto = new UserDto(1,
                 "Oleg Dudka",
-                "test-driver@gmail.com",
+//                "test-driver@gmail.com",
                 User.UserRole.DRIVER.name(),
                 true);
 
@@ -94,7 +94,7 @@ public class CarControllerITest extends AbstractWebITest {
 
         UserDto userDto = new UserDto(555,
                 "Vasya Pupkin",
-                "userEmail@gmail.com",
+//                "userEmail@gmail.com",
                 User.UserRole.DRIVER.name(),
                 true);
 
@@ -315,7 +315,7 @@ public class CarControllerITest extends AbstractWebITest {
 
         UserDto userDto = new UserDto(555,
                 "Vasya Pupkin",
-                "userEmail@gmail.com",
+//                "userEmail@gmail.com",
                 User.UserRole.DRIVER.name(),
                 true);
 

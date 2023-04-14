@@ -70,7 +70,6 @@ public class CarLoadMapperTest {
 
         UserDto userDto = new UserDto(555,
                 "Oleg",
-                "userEmail@gmail",
                 User.UserRole.DRIVER.toString(),
                 true);
 
@@ -96,7 +95,7 @@ public class CarLoadMapperTest {
         assertEquals(1, mappedCar.getId());
         assertEquals("FORD", mappedCar.getName());
         assertEquals("12345", mappedCar.getLicencePlate());
-        assertEquals("Oleg", mappedCar.getDriver().getUsername());
+        assertEquals("Oleg", mappedCar.getDriver().getUserName());
         assertEquals(2000, mappedCar.getWeightCapacity());
         assertFalse(mappedCar.isCooler());
         assertTrue(mappedCar.isAvailable());
