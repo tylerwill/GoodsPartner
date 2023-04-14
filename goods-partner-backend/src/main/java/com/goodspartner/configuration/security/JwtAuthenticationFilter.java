@@ -1,7 +1,8 @@
 package com.goodspartner.configuration.security;
 
-import com.goodspartner.service.security.impl.JwtServiceImpl;
+import com.goodspartner.service.security.impl.DefaultJwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -16,15 +17,14 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final String AUTH_HEADER = "Authorization";
-    private static final String AUTH_SCHEME = "Bearer";
-    private final JwtServiceImpl jwtService;
+    private static final String AUTH_SCHEME = "Bearer ";
+    private final DefaultJwtService jwtService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authHeader = request.getHeader(AUTH_HEADER);
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith(AUTH_SCHEME)) {
             filterChain.doFilter(request, response);
             return;
@@ -36,4 +36,3 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-

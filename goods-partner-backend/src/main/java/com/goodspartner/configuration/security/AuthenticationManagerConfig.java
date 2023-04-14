@@ -1,6 +1,8 @@
 package com.goodspartner.configuration.security;
 
+import com.goodspartner.entity.User;
 import com.goodspartner.repository.UserRepository;
+import com.goodspartner.service.security.SecurityUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,15 +15,20 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration
 @RequiredArgsConstructor
+@Configuration
 public class AuthenticationManagerConfig {
+
     private final UserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", username)));
+        return username -> {
+            User user = userRepository.findByUserName(username)
+                    .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", username)));
+
+            return SecurityUser.fromUser(user);
+        };
     }
 
     @Bean

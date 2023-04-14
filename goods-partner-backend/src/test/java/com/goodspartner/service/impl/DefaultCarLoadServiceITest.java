@@ -54,7 +54,7 @@ class DefaultCarLoadServiceITest extends AbstractBaseITest {
         assertEquals(1, actualCarDto.getId());
         assertEquals("Mercedes Sprinter", actualCarDto.getName());
         assertEquals("AA 1111 CT", actualCarDto.getLicencePlate());
-        assertEquals("Test Driver", actualCarDto.getDriver().getUsername());
+        assertEquals("Test Driver", actualCarDto.getDriver().getUserName());
         assertEquals(3000, actualCarDto.getWeightCapacity());
         assertTrue(actualCarDto.isAvailable());
         assertEquals(10, actualCarDto.getTravelCost());

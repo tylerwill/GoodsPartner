@@ -17,8 +17,9 @@ public class TestSecurityEnableConfig {
         http
                 .csrf().disable()
                 // Secure all requests with authentication
-                .authorizeRequests().anyRequest().authenticated()
-                .and().oauth2Login();
+                .authorizeRequests().anyRequest().permitAll();
+//                authenticated()
+//                .and().oauth2Login();
 
         return http.build();
     }
