@@ -1,19 +1,19 @@
 package com.goodspartner.service.security;
 
-import com.goodspartner.entity.User;
 import lombok.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface JwtService {
     boolean validateAccessToken(@NonNull String accessToken);
 
     boolean validateRefreshToken(@NonNull String refreshToken);
 
-    UsernamePasswordAuthenticationToken getAuthentication(String jwtAccess);
+    UsernamePasswordAuthenticationToken getAuthenticationFromJwtAccess(String jwtAccess);
 
-    String createAccessToken(User user);
+    String createAccessToken(UserDetails user);
 
-    String createRefreshToken(@NonNull User user);
+    String createRefreshToken(UserDetails user);
 
-    String getUserLogin(String refreshToken);
+    String getUserLoginFromJwtRefresh(String refreshToken);
 }

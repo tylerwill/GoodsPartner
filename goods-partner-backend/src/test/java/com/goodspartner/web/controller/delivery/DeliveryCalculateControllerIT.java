@@ -5,7 +5,6 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +32,7 @@ public class DeliveryCalculateControllerIT extends AbstractWebITest {
     void givenNonExistingDeliveryId_whenCalculateDelivery_NotFoundReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                         .post(String.format(DELIVERY_CALCULATE_ENDPOINT, "123e4567-e89b-12d3-a456-556642440005"))
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(content().json("{\"status\":\"NOT_FOUND\",\"message\":\"Відсутня доставка з id: 123e4567-e89b-12d3-a456-556642440005\"}\n"));
@@ -43,7 +42,7 @@ public class DeliveryCalculateControllerIT extends AbstractWebITest {
     void givenDriverSession_whenCalculateDelivery_ForbiddenReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                         .post(String.format(DELIVERY_CALCULATE_ENDPOINT, "123e4567-e89b-12d3-a456-556642440005"))
-                        .session(getDriverSession())
+//                        .session(getDriverSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }

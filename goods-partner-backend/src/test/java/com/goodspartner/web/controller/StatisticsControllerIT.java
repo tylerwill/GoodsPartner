@@ -3,7 +3,6 @@ package com.goodspartner.web.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,7 +31,7 @@ class StatisticsControllerIT extends AbstractWebITest {
         mockMvc.perform(get("/api/v1/statistics/deliveries")
                         .param("dateFrom", "2021-12-19")
                         .param("dateTo", "2021-12-20")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString(MOCK_STATISTICS_PATH)));
@@ -45,7 +44,7 @@ class StatisticsControllerIT extends AbstractWebITest {
         mockMvc.perform(get("/api/v1/statistics/deliveries")
                         .param("dateFrom", "2021-12-27")
                         .param("dateTo", "2021-12-29")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString(MOCK_NO_STATISTICS_PATH)));
@@ -58,7 +57,7 @@ class StatisticsControllerIT extends AbstractWebITest {
         mockMvc.perform(get("/api/v1/statistics/cars/151")
                         .param("dateFrom", "2021-12-19")
                         .param("dateTo", "2021-12-20")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString(MOCK_CAR_STATISTICS_PATH)));
@@ -71,7 +70,7 @@ class StatisticsControllerIT extends AbstractWebITest {
         mockMvc.perform(get("/api/v1/statistics/cars/154")
                         .param("dateFrom", "2021-12-19")
                         .param("dateTo", "2021-12-20")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -83,7 +82,7 @@ class StatisticsControllerIT extends AbstractWebITest {
         mockMvc.perform(get("/api/v1/statistics/cars/155")
                         .param("dateFrom", "2021-12-19")
                         .param("dateTo", "2021-12-20")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString(MOCK_CAR_NO_STATISTICS_PATH)));
@@ -94,7 +93,7 @@ class StatisticsControllerIT extends AbstractWebITest {
     void testGetDailyCarStatistics() throws Exception {
         mockMvc.perform(get("/api/v1/daily-statistics/cars/151")
                         .param("date", "2021-12-19")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString(MOCK_DAILY_CAR_STATISTICS_PATH)));
@@ -106,7 +105,7 @@ class StatisticsControllerIT extends AbstractWebITest {
     void testGetDailyCarStatisticsReturnsNotFoundStatusForNonExistingCar() throws Exception {
         mockMvc.perform(get("/api/v1/daily-statistics/cars/101")
                         .param("date", "2021-12-19")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -117,7 +116,7 @@ class StatisticsControllerIT extends AbstractWebITest {
     void testGetDailyCarStatisticsReturnsNotFoundStatusIfThereAreNoDeliveries() throws Exception {
         mockMvc.perform(get("/api/v1/daily-statistics/cars/151")
                         .param("date", "2021-12-17")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }

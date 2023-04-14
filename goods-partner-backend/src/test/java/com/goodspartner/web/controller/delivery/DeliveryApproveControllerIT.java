@@ -4,7 +4,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.service.LiveEventService;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,8 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
@@ -27,9 +28,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @DBRider
 @Import({
-        TestSecurityEnableConfig.class,
         TestConfigurationToCountAllQueries.class
 })
+@TestPropertySource(properties = "goodspartner.security.enabled=true")
 @AutoConfigureMockMvc
 public class DeliveryApproveControllerIT extends AbstractWebITest {
 
@@ -37,14 +38,14 @@ public class DeliveryApproveControllerIT extends AbstractWebITest {
     private LiveEventService liveEventService;
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml", skipCleaningFor = "flyway_schema_history",
             cleanAfter = true, cleanBefore = true)
     @DisplayName("when Approve Delivery then Correct DeliveryAndRoutesStatusDto Returned")
     void whenApproveDelivery_thenCorrectDeliveryAndRoutesStatusDtoReturned() throws Exception {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/00000000-0000-0000-0000-000000000111/approve")
-                        .session(getLogistSession()))
+                        .post("/api/v1/deliveries/00000000-0000-0000-0000-000000000111/approve"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/delivery/approve-delivery-response.json")));
         Mockito.verify(liveEventService, times(1)).publishToAdminAndLogistician(any());
@@ -54,14 +55,14 @@ public class DeliveryApproveControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml",
             skipCleaningFor = "flyway_schema_history", cleanAfter = true, cleanBefore = true)
     @DisplayName("when Approve Delivery By Non-Existing Id then Not Found Returned")
     void whenApproveDeliveryByNonExistingId_thenNotFoundReturned() throws Exception {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/00000000-0000-0000-0000-000000000999/approve")
-                        .session(getLogistSession()))
+                        .post("/api/v1/deliveries/00000000-0000-0000-0000-000000000999/approve"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().json("{" +
                         "\"status\":\"NOT_FOUND\"," +
@@ -72,14 +73,14 @@ public class DeliveryApproveControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml",
             skipCleaningFor = "flyway_schema_history", cleanAfter = true, cleanBefore = true)
     @DisplayName("when Approve Delivery of Non-Draft Status then Exception Thrown")
     void whenApproveDeliveryOfNonDraftStatus_thenExceptionThrown() throws Exception {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/00000000-0000-0000-0000-000000000222/approve")
-                        .session(getLogistSession()))
+                        .post("/api/v1/deliveries/00000000-0000-0000-0000-000000000222/approve"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{" +
                         "\"status\":\"BAD_REQUEST\"," +
@@ -90,14 +91,14 @@ public class DeliveryApproveControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml",
             skipCleaningFor = "flyway_schema_history", cleanAfter = true, cleanBefore = true)
     @DisplayName("when Approve Delivery without Routes then Exception Thrown")
     void whenApproveDeliveryWithoutRoutes_thenExceptionThrown() throws Exception {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/00000000-0000-0000-0000-000000000000/approve")
-                        .session(getLogistSession()))
+                        .post("/api/v1/deliveries/00000000-0000-0000-0000-000000000000/approve"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{" +
                         "\"status\":\"BAD_REQUEST\"," +
@@ -106,11 +107,12 @@ public class DeliveryApproveControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "DRIVER")
     @DisplayName("when Approve Delivery without Routes then Exception Thrown")
     void whenApproveDeliveryByNotLogist_thenExceptionThrown() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/approve")
-                        .session(getDriverSession()))
+                        .post("/api/v1/deliveries/123e4567-e89b-12d3-a456-556642440001/approve"))
+//                        .session(getDriverSession()))
                 .andExpect(status().isForbidden());
     }
 

@@ -5,7 +5,6 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.dto.Coordinates;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +42,7 @@ class RoutePointControllerITest extends AbstractWebITest {
         // When
         mockMvc.perform(MockMvcRequestBuilders
                         .put(URI)
-                        .session(getDriverSession())
+//                        .session(getDriverSession())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(coordinates)))
                 .andExpect(status().isOk());

@@ -4,7 +4,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressStatus;
@@ -51,7 +50,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
     void givenOrderUpdateByDriver_thenForbiddenReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getDriverSession())
+//                        .session(getDriverSession())
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isForbidden());
     }
@@ -63,7 +62,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 9999999L))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isNotFound())
                 .andExpect(content().json("{\"status\":\"NOT_FOUND\",\"message\":\"Не знайдено жодного замовлення з id: 9999999\"}"));
@@ -78,7 +77,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{\"status\":\"BAD_REQUEST\",\"message\":\"Зміна замовлень можлива лише для доставки в статусі - Створена\"}\n"));
@@ -102,7 +101,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(orderDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-no-address-response.json")));
@@ -130,7 +129,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(orderDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-delivery-type-postal-response.json")));
@@ -153,7 +152,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{\"status\":\"BAD_REQUEST\",\"message\":\"Дана адреса знаходиться поза межами доступного регіону:\\n проспект Академіка Палладіна, 7А, Київ, Україна, 03179.\\n При необхідності змініть тип доставки\"}"));
@@ -172,7 +171,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-response.json")));

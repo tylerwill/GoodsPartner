@@ -1,7 +1,6 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.AbstractBaseITest;
-import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.Store;
 import com.goodspartner.service.StoreService;

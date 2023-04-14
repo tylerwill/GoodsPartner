@@ -28,20 +28,20 @@ public class AbstractWebITest extends AbstractBaseITest {
     @MockBean
     protected GraphHopper hopper;
 
-    protected MockHttpSession getDriverSession() {
-        return getMockSession(DEFAULT_DRIVER_NAME, DEFAULT_DRIVER_EMAIL, DRIVER_ROLE);
-    }
-
-    protected MockHttpSession getLogistSession() {
-        return getMockSession(DEFAULT_LOGIST_NAME, DEFAULT_LOGIST_EMAIL, LOGIST_ROLE);
-    }
-
-    protected MockHttpSession getMockSession(String username, String email, String role) {
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute(
-                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                getSecurityContext(username, email, role));
-        return session;
-    }
+//    protected MockHttpSession getDriverSession() {
+//        return getMockSession(DEFAULT_DRIVER_NAME, DEFAULT_DRIVER_EMAIL, DRIVER_ROLE);
+//    }
+//
+//    protected MockHttpSession getLogistSession() {
+//        return getMockSession(DEFAULT_LOGIST_NAME, DEFAULT_LOGIST_EMAIL, LOGIST_ROLE);
+//    }
+//
+//    protected MockHttpSession getMockSession(String username, String email, String role) {
+//        MockHttpSession session = new MockHttpSession();
+//        session.setAttribute(
+//                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+//                getSecurityContext(username, email, role));
+//        return session;
+//    }
 
 }

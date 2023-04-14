@@ -6,7 +6,6 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.TaskDto;
@@ -60,7 +59,7 @@ public class TaskControllerIT extends AbstractWebITest {
 
         SQLStatementCountValidator.reset();
         mockMvc.perform(post(TASK_API)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(getTaskDto(executionDate, "Take some coffee at 14:00. Obolon", car1))))
                 .andExpect(status().isOk())
@@ -70,7 +69,7 @@ public class TaskControllerIT extends AbstractWebITest {
 
         // Create Another Task
         mockMvc.perform(post(TASK_API)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(getTaskDto(executionDate, "Meeting with Tolik at 18-00", car1))))
                 .andExpect(status().isOk())
@@ -79,7 +78,7 @@ public class TaskControllerIT extends AbstractWebITest {
         // Get All by Logist
         SQLStatementCountValidator.reset();
         mockMvc.perform(get(TASK_API)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/tasks/get-all-tasks-by-logist.json")));
@@ -88,7 +87,7 @@ public class TaskControllerIT extends AbstractWebITest {
         // Update execution date / description / car for task
         SQLStatementCountValidator.reset();
         mockMvc.perform(put(String.format(TASK_BY_ID_API, taskId2))
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(getTaskDto(updateExecutionDate, "Meeting with Tolik at 17-00", car2))))
                 .andExpect(status().isOk())
@@ -99,7 +98,7 @@ public class TaskControllerIT extends AbstractWebITest {
         // Get All By driver 1 - Match create Task1 response
         SQLStatementCountValidator.reset();
         mockMvc.perform(get(TASK_API)
-                        .session(getDriverSession())
+//                        .session(getDriverSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/tasks/get-all-tasks-by-driver.json")));
@@ -107,7 +106,7 @@ public class TaskControllerIT extends AbstractWebITest {
 
         // Get all by driver 2
         mockMvc.perform(get(TASK_API)
-                        .session(getMockSession("Another Test Driver", "another-test-driver@gmail.com", "DRIVER"))
+//                        .session(getMockSession("Another Test Driver", "another-test-driver@gmail.com", "DRIVER"))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/tasks/get-all-tasks-by-another-driver.json")));
@@ -115,14 +114,14 @@ public class TaskControllerIT extends AbstractWebITest {
         // Delete task with id=1
         SQLStatementCountValidator.reset();
         mockMvc.perform(delete(String.format(TASK_BY_ID_API, taskId1))
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         assertDeleteCount(1); // Delete Task
 
         // Get All by Logist - After deletion only 1 task with id=2 returned
         mockMvc.perform(get(TASK_API)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/tasks/get-all-tasks-by-logist-after-deletion.json")));

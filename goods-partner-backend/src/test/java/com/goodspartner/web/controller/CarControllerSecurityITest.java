@@ -3,7 +3,6 @@ package com.goodspartner.web.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.UserDto;
 import com.goodspartner.entity.User;

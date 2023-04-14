@@ -4,7 +4,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.web.action.RoutePointAction;
 import com.graphhopper.GHResponse;
 import com.graphhopper.ResponsePath;
@@ -57,7 +56,7 @@ public class RoutePointControllerIT extends AbstractWebITest {
 
         SQLStatementCountValidator.reset();
         mockMvc.perform(post(String.format(UPDATE_ROUTE_POINT_ENDPOINT, ROUTE_POINT_ID, complete))
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.deliveryId").value("49228d27-2ce7-4246-b7c3-e53c143e5550"))
@@ -81,7 +80,7 @@ public class RoutePointControllerIT extends AbstractWebITest {
 
         SQLStatementCountValidator.reset();
         mockMvc.perform(post(String.format(UPDATE_ROUTE_POINT_ENDPOINT, ROUTE_POINT_ID, complete))
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.deliveryId").value("49228d27-2ce7-4246-b7c3-e53c143e5550"))
@@ -105,7 +104,7 @@ public class RoutePointControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
 
         mockMvc.perform(get(String.format(ORDERS_BY_ROUTE_POINT_ENDPOINT, ROUTE_POINT_ID))
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/route-points/orders-by-route-point-response.json")));

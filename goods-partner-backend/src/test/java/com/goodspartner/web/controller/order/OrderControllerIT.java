@@ -4,7 +4,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.web.controller.request.ExcludeOrderRequest;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,7 @@ class OrderControllerIT extends AbstractWebITest {
     void givenDeliveryWithoutOrders_whenGetOrders_thenEmptyOrdersListReturned() throws Exception {
         mockMvc.perform(get(ORDERS_BY_DELIVERY_ENDPOINT)
                         .param("deliveryId", "11111111-48a3-40c7-8b0c-3e5defe7d080")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[]"));
@@ -51,7 +50,7 @@ class OrderControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(get(ORDERS_BY_DELIVERY_ENDPOINT)
                         .param("deliveryId", "70574dfd-48a3-40c7-8b0c-3e5defe7d081")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/orders-by-deliveryId-response.json")));
@@ -65,7 +64,7 @@ class OrderControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(get(ORDERS_BY_DELIVERY_ENDPOINT)
                         .param("deliveryId", "70574dfd-48a3-40c7-8b0c-3e5defe7d081")
-                        .session(getDriverSession())
+//                        .session(getDriverSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/driver-orders-by-deliveryId-response.json")));
@@ -78,7 +77,7 @@ class OrderControllerIT extends AbstractWebITest {
     void getCompletedOrders() throws Exception {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.get(COMPLETED_ORDERS_ENDPOINT)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/completed-orders-response.json")));
@@ -92,7 +91,7 @@ class OrderControllerIT extends AbstractWebITest {
         // orderId=1 - RoutePoint Skipped . orderId=51 - excluded . orderId=151 - dropped
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.get(SKIPPED_ORDERS_ENDPOINT)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/skipped-orders-response.json")));
@@ -110,7 +109,7 @@ class OrderControllerIT extends AbstractWebITest {
 
         mockMvc.perform(MockMvcRequestBuilders.post(String.format(EXCLUDE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(excludeOrderRequest)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/delete-order-response.json")));

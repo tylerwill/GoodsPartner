@@ -5,7 +5,6 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -45,7 +44,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders
                         .get(DELIVERIES_ENDPOINT)
-                        .session(getDriverSession())
+//                        .session(getDriverSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/delivery/get-deliveries-as-driver-response.json")));
@@ -60,7 +59,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders
                         .get(DELIVERIES_ENDPOINT)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/delivery/get-deliveries-as-logistician-response.json")));
@@ -75,7 +74,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders
                         .get(DELIVERIES_ENDPOINT + "/00000000-0000-0000-0000-000000000111")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/delivery/get-delivery-response.json")));
@@ -90,7 +89,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders
                         .delete(DELIVERIES_ENDPOINT + "/00000000-0000-0000-0000-000000000111")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/delivery/get-delivery-response.json")));
@@ -107,7 +106,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders
                         .delete(DELIVERIES_ENDPOINT + "/00000000-0000-0000-0000-000000000222")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{" +
@@ -124,7 +123,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
     void whenDeleteDelivery_thenOkStatusReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/api/v1/deliveries/f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

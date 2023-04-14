@@ -4,7 +4,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal;
@@ -38,6 +37,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.testcontainers.shaded.org.awaitility.Durations;
 
 import java.nio.charset.StandardCharsets;
@@ -70,10 +70,11 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 @Slf4j
 @DBRider
 @Import({
-        TestSecurityEnableConfig.class,
+//        TestSecurityEnableConfig.class,
         TestConfigurationToCountAllQueries.class
 })
 @AutoConfigureMockMvc
+
 public class DeliveryAddControllerIT extends AbstractWebITest {
 
     private static final String INTEGRATION_SERVICE_VARIOUS_ORDERS_MOCK_PATH = "mock/integration/mock-integration-service-return-various-orders.json";
@@ -111,6 +112,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
 
     // Query count is not applicable in this test due to Async thread
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/delivery/add_delivery_fetch_orders.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     public void addDelivery_OrdersFetchedAndPostProcessingExecuted() throws Exception {
@@ -121,7 +123,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         // When
         DeliveryDto addedDelivery = objectMapper.readValue(
                 mockMvc.perform(post("/api/v1/deliveries")
-                                .session(getLogistSession())
+//                                .session(getLogistSession())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(DeliveryDto.builder()
                                         .deliveryDate(SHIPPING_DATE)
@@ -139,6 +141,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/delivery/add_delivery_fetch_orders.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     public void addDelivery_readyForCalculationStatusSet() throws Exception {
@@ -149,7 +152,6 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         // When
         DeliveryDto addedDelivery = objectMapper.readValue(
                 mockMvc.perform(post("/api/v1/deliveries")
-                                .session(getLogistSession())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(
                                         DeliveryDto.builder().deliveryDate(SHIPPING_DATE).build())))
@@ -163,6 +165,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/delivery/add_delivery_fetch_orders.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     public void addDelivery_NoOrdersFrom1C_RescheduledOrderAttached() throws Exception {
@@ -171,7 +174,6 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         // When
         DeliveryDto addedDelivery = objectMapper.readValue(
                 mockMvc.perform(post("/api/v1/deliveries")
-                                .session(getLogistSession())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(
                                         DeliveryDto.builder().deliveryDate(SHIPPING_DATE).build())))
@@ -186,6 +188,7 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/delivery/add_delivery_fetch_orders.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     public void addDelivery_ExceptionWhileFetchingOrders() throws Exception {
@@ -194,7 +197,6 @@ public class DeliveryAddControllerIT extends AbstractWebITest {
         // When
         DeliveryDto addedDelivery = objectMapper.readValue(
                 mockMvc.perform(post("/api/v1/deliveries")
-                                .session(getLogistSession())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(
                                         DeliveryDto.builder().deliveryDate(SHIPPING_DATE).build())))

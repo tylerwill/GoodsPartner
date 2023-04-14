@@ -4,7 +4,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +36,7 @@ class CarLoadControllerITest extends AbstractWebITest {
         mockMvc.perform(MockMvcRequestBuilders
                         .get(CAR_LOADS_API)
                         .param("deliveryId", "00000000-0000-0000-0000-000000000111")
-                        .session(getDriverSession())
+//                        .session(getDriverSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/carload/get-carload-by-delivery-id.json")));

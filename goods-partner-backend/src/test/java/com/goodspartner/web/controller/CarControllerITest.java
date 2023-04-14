@@ -5,7 +5,6 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.cache.CarLocationCache;
-import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.Location;
 import com.goodspartner.dto.UserDto;
