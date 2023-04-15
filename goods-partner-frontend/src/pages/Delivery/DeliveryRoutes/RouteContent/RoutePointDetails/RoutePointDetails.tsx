@@ -2,7 +2,7 @@ import React from 'react'
 import Box from '@mui/material/Box'
 import RoutePointDetailsHeader from './RoutePointDetailsHeader/RoutePointDetailsHeader'
 import RoutePointDetailsBody from './RoutePointDetailsBody/RoutePointDetailsBody'
-import { RoutePoint } from '../../../../../model/RoutePoint'
+import {RoutePoint} from "../../../../../model/Route";
 
 interface RoutePointDetailsProps {
 	routePoint: RoutePoint

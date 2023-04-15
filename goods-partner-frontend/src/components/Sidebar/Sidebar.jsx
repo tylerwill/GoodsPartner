@@ -4,7 +4,7 @@ import Toolbar from '@mui/material/Toolbar'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Divider from '@mui/material/Divider'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
@@ -18,6 +18,9 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import BusinessIcon from '@mui/icons-material/Business';
 import TaskIcon from '@mui/icons-material/Task';
 import SettingsIcon from '@mui/icons-material/Settings';
+import {useState} from "react";
+import {ConfirmationDialog} from "../ConfirmationDialog/ConfirmationDialog";
+import {useActions} from "../../hooks/redux-hooks";
 
 const ListButton = (icon, name, paddingLeft) => {
 	return (
@@ -33,7 +36,10 @@ const ListButton = (icon, name, paddingLeft) => {
 const drawerWidth = 256
 
 const Sidebar = ({ open }) => {
-	const { user } = useAuth()
+    const navigate = useNavigate();
+	const { user } = useAuth();
+	const {logout} = useActions();
+    const [logoutConfirmationDialogOpen, setLogoutConfirmationDialogOpen] = useState(false);
 
 	return (
 		<div className='sidebar'>
@@ -100,10 +106,25 @@ const Sidebar = ({ open }) => {
 
 				<List style={{ marginTop: `auto` }}>
 					<ListItem disablePadding>
-						{ListButton(<LogoutIcon />, 'Вийти')}
+						<ListItemButton onClick={()=> setLogoutConfirmationDialogOpen(true)}>
+							<ListItemIcon><LogoutIcon /></ListItemIcon>
+							<ListItemText primary={'Вийти'} />
+						</ListItemButton>
+						<Divider />
 					</ListItem>
 				</List>
 			</Drawer>
+            {logoutConfirmationDialogOpen && <ConfirmationDialog
+                title={"Вийти"}
+                text={"Ви впевнені, що бажаєте завершити роботу?"}
+                open={logoutConfirmationDialogOpen}
+                setOpen={setLogoutConfirmationDialogOpen}
+                onAction={() => {
+                    logout();
+                    navigate('/login');
+                    setLogoutConfirmationDialogOpen(false);
+                }}
+            />}
 		</div>
 	)
 }

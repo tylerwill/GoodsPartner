@@ -1,7 +1,3 @@
-// TODO: Replace user string with User
-
-import { Driver } from './Driver'
-
 export interface Car {
 	available: boolean
 
@@ -13,4 +9,10 @@ export interface Car {
 	name: string
 	travelCost: number
 	weightCapacity: number
+}
+
+export interface Driver {
+	id: number
+	userName: string
+	email: string
 }

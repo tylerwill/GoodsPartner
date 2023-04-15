@@ -33,4 +33,5 @@ public interface UserService {
     UserDto getUserDto(UUID heartbeatId);
 
     void mapUserDtoToHeartbeatId(UUID heartbeatId, Authentication auth);
+    void removeUserDto(UUID heartbeatId);
 }

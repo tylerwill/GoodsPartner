@@ -15,10 +15,10 @@ import {
 	useAppSelector
 } from '../../../../../hooks/redux-hooks'
 import { setDeliveryTypeDialogOpen } from '../../../../../features/delivery-orders/deliveryOrdersSlice'
-import { DeliveryType } from '../../../../../model/DeliveryType'
 import { toDeliveryTypeString } from '../../../../../util/util'
 import { useUpdateOrderMutation } from '../../../../../api/delivery-orders/delivery-orders.api'
 import Order from '../../../../../model/Order'
+import {DeliveryType} from "../../../../../model/Delivery";
 
 
 const DeliveryTypeDialog = () => {

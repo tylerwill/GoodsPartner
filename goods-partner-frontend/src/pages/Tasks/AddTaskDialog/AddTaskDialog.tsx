@@ -7,8 +7,7 @@ import {Car} from "../../../model/Car";
 import {Task} from "../../../model/Task";
 import CreateIcon from "@mui/icons-material/Create";
 import {ChooseAddressDialog} from "../../../components/ChooseAddressDialog/ChooseAddressDialog";
-import MapPoint from "../../../model/MapPoint";
-import {MapPointStatus} from "../../../model/MapPointStatus";
+import MapPoint, {MapPointStatus} from "../../../model/MapPoint";
 
 const style = {
     position: 'absolute',

@@ -119,6 +119,11 @@ public class DefaultUserService implements UserService {
         userToHeartbeatId.put(heartbeatId, toUserDto(auth));
     }
 
+    @Override
+    public void removeUserDto(UUID heartbeatId) {
+        userToHeartbeatId.remove(heartbeatId);
+    }
+
     private UserDto toUserDto(Authentication authentication) {
         return Optional.of(authentication)
                 .map(Authentication::getPrincipal)

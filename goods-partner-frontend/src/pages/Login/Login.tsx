@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {FC} from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -15,10 +16,14 @@ import {useNavigate} from "react-router-dom";
 
 const theme = createTheme();
 
-export function Login() {
+interface LoginProps {
+    prevLocation: any
+}
+
+export const Login: FC<LoginProps> = ({prevLocation}) => {
     const [login] = useLoginMutation();
     const appDispatch = useAppDispatch();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -27,12 +32,13 @@ export function Login() {
             username: data.get('email'),
             password: data.get('password'),
         };
-        console.log(credentials);
+
         const userInfo = await login(credentials).unwrap()
-        console.log("userInfo", userInfo)
-        appDispatch(setUserInfo(userInfo))
-        navigate('/')
+
+        appDispatch(setUserInfo(userInfo));
+        navigate(prevLocation === '/login' ? "/" : prevLocation);
     };
+
 
     return (
         <ThemeProvider theme={theme}>
@@ -72,10 +78,10 @@ export function Login() {
                             id="password"
                             autoComplete="current-password"
                         />
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary"/>}
-                            label="Запам'ятай мене"
-                        />
+                        {/*<FormControlLabel*/}
+                        {/*    control={<Checkbox value="remember" color="primary"/>}*/}
+                        {/*    label="Запам'ятай мене"*/}
+                        {/*/>*/}
                         <Button
                             type="submit"
                             fullWidth
@@ -90,4 +96,6 @@ export function Login() {
             </Container>
         </ThemeProvider>
     );
+
+
 }

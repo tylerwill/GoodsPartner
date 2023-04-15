@@ -1,10 +1,11 @@
 import React from 'react'
-import {ListItem, ListItemIcon, ListItemText, ListSubheader, Tooltip} from '@mui/material'
+import {Box, ListItem, ListItemIcon, ListItemText, ListSubheader, Tooltip} from '@mui/material'
 import List from '@mui/material/List'
 import Divider from '@mui/material/Divider'
 import ListItemButton from '@mui/material/ListItemButton'
 import {Route} from '../../../../model/Route'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import AcUnitIcon from '@mui/icons-material/AcUnit';
 
 interface RoutesSidebarProps {
     routes: Array<Route>
@@ -55,18 +56,22 @@ const RoutesSidebar = ({
                                     primary={car.name + ', ' + car.licencePlate}
                                     secondary={car.driver.userName}
                                 />
+                                    <Box>
                                 {
                                     hasUnmatchedRoutePoint &&
-                                    <ListItemIcon>
+                                    <ListItemIcon >
                                         <Tooltip
                                             title={"Доставка не за розкладом"}
                                             placement='top'
                                             arrow
                                         >
-                                         <WarningAmberIcon color={'warning'}/>
+                                            <WarningAmberIcon color={'warning'}/>
                                         </Tooltip>
                                     </ListItemIcon>
                                 }
+                                {car.cooler &&
+                                    <ListItemIcon sx={{minWidth:'24px', ml:-3}}><AcUnitIcon color={'primary'}/> </ListItemIcon>}
+                                    </Box>
                             </ListItemButton>
                         </ListItem>
                     </React.Fragment>

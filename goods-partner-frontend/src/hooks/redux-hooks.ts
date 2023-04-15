@@ -4,10 +4,10 @@ import { AppDispatch, RootState } from '../redux/store'
 
 
 import {currentDeliverySlice} from '../features/currentDelivery/currentDeliverySlice'
-import {reportsSlice} from '../features/reports/reportsSlice'
 
-import {bindActionCreators, configureStore} from '@reduxjs/toolkit'
+import {bindActionCreators} from '@reduxjs/toolkit'
 import {ordersSlice} from '../features/orders/ordersSlice'
+import {authSlice} from "../features/auth/authSlice";
 
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
@@ -16,8 +16,8 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 const rootActions =  {
     ...currentDeliverySlice.actions,
-    ...reportsSlice.actions,
-    ...ordersSlice.actions
+    ...ordersSlice.actions,
+    ...authSlice.actions
 }
 
 export const useActions = () => {

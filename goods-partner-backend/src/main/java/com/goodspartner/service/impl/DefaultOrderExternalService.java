@@ -175,13 +175,13 @@ public class DefaultOrderExternalService implements OrderExternalService {
 
     @Transactional
     @Override
-    public void cleanupOrders(Delivery delivery) {
-        orderExternalRepository.removeCRMOrdersByDeliveryId(delivery.getId());
+    public void cleanupOrders(UUID deliveryId) {
+        orderExternalRepository.removeCRMOrdersByDeliveryId(deliveryId);
 
-        List<OrderExternal> remainingRescheduledOrders = orderExternalRepository.findByDeliveryId(delivery.getId(), Sort.unsorted());
+        List<OrderExternal> remainingRescheduledOrders = orderExternalRepository.findByDeliveryId(deliveryId, Sort.unsorted());
         remainingRescheduledOrders.forEach(rescheduledOrder -> rescheduledOrder.setDelivery(null));
 
-        log.info("Unbounded: {} orders from delivery: {}", remainingRescheduledOrders.size(), delivery);
+        log.info("Unbounded: {} orders from delivery: {}", remainingRescheduledOrders.size(), deliveryId);
     }
 
     private DeliveryFormationStatus getFormationStatus(List<OrderExternal> orderExternals) {

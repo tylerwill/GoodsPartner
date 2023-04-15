@@ -1,17 +1,14 @@
 import * as React from 'react'
 import {useEffect} from 'react'
 import {currentHost} from '../../util/util'
-import {closeSnackbar, SnackbarProvider, useSnackbar} from 'notistack'
+import {useSnackbar} from 'notistack'
 import {useSelector} from 'react-redux'
 import {setNotification} from '../../features/notifications/notificationsSlice'
-import {useAppDispatch, useAppSelector} from '../../hooks/redux-hooks'
+import {useAppDispatch} from '../../hooks/redux-hooks'
 import {deliveriesApi} from '../../api/deliveries/deliveries.api'
 import {deliveryOrdersApi} from '../../api/delivery-orders/delivery-orders.api'
 import {routesApi} from '../../api/routes/routes.api'
 import useAuth from "../../auth/AuthProvider";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import {selectCurrentUser} from "../../features/auth/authSlice";
 
 function useListenEvents(dispatch, heartbeatId) {
     useEffect(() => {
@@ -127,21 +124,7 @@ function Notifications({children}) {
     useProcessNotifications(currentNotification, enqueueSnackbar, dispatch)
     useNotificationsHeartbeat(heartbeatId)
 
-    return <SnackbarProvider
-        anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right'
-        }}
-        action={key => (
-            <IconButton
-                aria-label="Close notification"
-                color="inherit"
-                onClick={() => closeSnackbar(key)}
-            >
-                <CloseIcon fontSize="small"/>
-            </IconButton>
-        )}
-    >{children}</SnackbarProvider>
+    return <>{children}</>
 }
 
 export default Notifications

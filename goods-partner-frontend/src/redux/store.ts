@@ -1,5 +1,4 @@
 import currentDeliveryReducer from '../features/currentDelivery/currentDeliverySlice'
-import reportsReducer from '../features/reports/reportsSlice'
 import authReducer from '../features/auth/authSlice'
 // @ts-ignore
 import notificationsReducer from '../features/notifications/notificationsSlice'
@@ -20,6 +19,7 @@ import {tasksApi} from '../api/tasks/tasks.api'
 import {clientsApi} from '../api/clients/clients.api'
 import {authApi} from '../api/auth/authApi'
 import {settingsApi} from '../api/settings/settings.api'
+import {reportsApi} from '../api/reports/reports'
 import {enqueueSnackbar} from "notistack";
 
 
@@ -38,7 +38,6 @@ const rtkQueryErrorLogger: Middleware =
 
 const store = configureStore({
     reducer: {
-        reports: reportsReducer,
         currentDelivery: currentDeliveryReducer,
         notifications: notificationsReducer,
         orders: ordersReducer,
@@ -57,7 +56,8 @@ const store = configureStore({
         [clientsApi.reducerPath]: clientsApi.reducer,
         [tasksApi.reducerPath]: tasksApi.reducer,
         [settingsApi.reducerPath]: settingsApi.reducer,
-        [authApi.reducerPath]: authApi.reducer
+        [authApi.reducerPath]: authApi.reducer,
+        [reportsApi.reducerPath]: reportsApi.reducer
     },
 
     middleware: getDefaultMiddleware =>
@@ -74,7 +74,10 @@ const store = configureStore({
             .concat(tasksApi.middleware)
             .concat(settingsApi.middleware)
             .concat(authApi.middleware)
+            .concat(reportsApi.middleware)
             .concat(rtkQueryErrorLogger)
+    ,
+    devTools: import.meta.env.DEV,
 })
 
 

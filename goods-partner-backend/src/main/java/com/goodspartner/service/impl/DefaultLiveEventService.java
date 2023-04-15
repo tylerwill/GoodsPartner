@@ -86,6 +86,7 @@ public class DefaultLiveEventService implements LiveEventService {
                         if (expired) {
                             log.info("Subscriber has been inactive for more than {} milliseconds. Removing from group for: {}",
                                     TIME_TO_LIVE, entry.getKey().getUserName());
+                            userService.removeUserDto(subscriber.heartbeatId);
                         }
                         return expired;
                     });

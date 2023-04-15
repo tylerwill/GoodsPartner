@@ -38,16 +38,17 @@ export const baseQueryWithReauth: BaseQueryFn = async (args,
         const refreshResult = await baseQuery('/refresh', api, extraOptions)
         console.log("refreshResult", refreshResult)
         const state = api.getState() as RootState;
-        if (refreshResult?.data) {
-            const user = state.auth.user
-            // store the new token
-            const refreshData = refreshResult.data as object;
-            api.dispatch(setUserInfo({...refreshData, user}))
-            // retry the original query with new access token
-            result = await baseQuery(args, api, extraOptions)
-        } else {
-            api.dispatch(logOut(state))
-        }
+        // if (refreshResult?.data) {
+        //     const user = state.auth.user
+        //     // store the new token
+        //     const refreshData = refreshResult.data as object;
+        //     api.dispatch(setUserInfo({...refreshData, user}))
+        //     // retry the original query with new access token
+        //     result = await baseQuery(args, api, extraOptions)
+        // } else {
+        //     console.log("here");
+        //     api.dispatch(logOut())
+        // }
     }
 
     return result

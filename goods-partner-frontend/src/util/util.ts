@@ -1,6 +1,6 @@
 import {format} from 'date-fns'
-import {DeliveryType} from '../model/DeliveryType'
 import Order from "../model/Order";
+import {DeliveryType} from "../model/Delivery";
 
 export const currentHost = () => {
     return import.meta.env.DEV
@@ -41,3 +41,8 @@ export const formatDecimalNumber = (value: number) => {
 export const isTimeShifted = (order: Order) => {
     return order.deliveryStart !== '09:00' || order.deliveryFinish !== '18:00';
 }
+
+export const history = {
+    navigate: null,
+    location: null
+};

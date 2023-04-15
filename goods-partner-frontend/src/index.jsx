@@ -10,6 +10,9 @@ import {Provider} from 'react-redux'
 import store from './redux/store'
 import {createTheme, ThemeProvider} from '@mui/material'
 import {AuthProvider} from './auth/AuthProvider'
+import IconButton from "@mui/material/IconButton";
+import {closeSnackbar, SnackbarProvider} from "notistack";
+import CloseIcon from "@mui/icons-material/Close";
 
 const muiTheme = createTheme({
     components: {
@@ -25,15 +28,33 @@ const muiTheme = createTheme({
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
     <React.StrictMode>
-        <ThemeProvider theme={muiTheme}>
-            <BrowserRouter>
-                <Provider store={store}>
-                    <AuthProvider>
-                        <App/>
-                    </AuthProvider>
-                </Provider>
-            </BrowserRouter>
-        </ThemeProvider>
+        <SnackbarProvider
+            anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right'
+            }}
+            action={key => (
+                <IconButton
+                    aria-label="Close notification"
+                    color="inherit"
+                    onClick={() => closeSnackbar(key)}
+                >
+                    <CloseIcon fontSize="small"/>
+                </IconButton>
+            )}>
+
+            <ThemeProvider theme={muiTheme}>
+                <BrowserRouter>
+                    <Provider store={store}>
+                        <AuthProvider>
+                            <App/>
+                        </AuthProvider>
+                    </Provider>
+
+                </BrowserRouter>
+
+            </ThemeProvider>
+        </SnackbarProvider>
     </React.StrictMode>
 )
 

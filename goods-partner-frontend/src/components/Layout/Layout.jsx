@@ -37,7 +37,7 @@ export default function Layout(props) {
 		<Box sx={{ display: 'flex' }}>
 			<Header open={open} setOpen={setOpen} />
 			<Sidebar open={open} />
-			<Main open={open}>
+			<Main open={open} onClick={()=> setOpen(false)}>
 				<Toolbar />
 				<Container disableGutters maxWidth={'xl'}>
 					{props.children}

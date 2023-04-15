@@ -13,12 +13,12 @@ import {
 } from '@mui/material'
 import React from 'react'
 import InfoTableItem from '../../../../../../components/InfoTableItem/InfoTableItem'
-import { RoutePoint } from '../../../../../../model/RoutePoint'
 import Paper from '@mui/material/Paper'
 import TableBody from '@mui/material/TableBody'
 import { useGetRoutePointOrdersQuery } from '../../../../../../api/routes/routes.api'
 import Loading from '../../../../../../components/Loading/Loading'
 import { formatDecimalNumber } from '../../../../../../util/util'
+import {RoutePoint} from "../../../../../../model/Route";
 
 interface RoutePointOrdersDialogProps {
 	open: boolean

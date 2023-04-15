@@ -10,7 +10,6 @@ import ErrorAlert from '../../components/ErrorAlert/ErrorAlert'
 import Loading from '../../components/Loading/Loading'
 import React, {useState} from "react";
 import TablePagination from "@mui/material/TablePagination";
-import {MapPointStatus} from "../../model/MapPointStatus";
 import {
     useAddTaskMutation,
     useDeleteTaskMutation,
@@ -25,6 +24,7 @@ import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
+import {MapPointStatus} from "../../model/MapPoint";
 
 export const Tasks = () => {
     const {data: tasks} = useGetTasksQuery();

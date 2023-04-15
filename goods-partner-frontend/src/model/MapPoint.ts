@@ -1,4 +1,8 @@
-import { MapPointStatus } from './MapPointStatus'
+export enum MapPointStatus {
+    KNOWN = 'KNOWN',
+    UNKNOWN = 'UNKNOWN',
+    AUTOVALIDATED = 'AUTOVALIDATED'
+}
 
 export default interface MapPoint {
 	address: string

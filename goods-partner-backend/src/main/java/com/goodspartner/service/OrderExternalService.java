@@ -38,6 +38,6 @@ public interface OrderExternalService {
 
     List<OrderExternal> getInvalidOrdersForCalculation(UUID deliveryId);
 
-    void cleanupOrders(Delivery deliveryId);
+    void cleanupOrders(UUID deliveryId);
 
 }

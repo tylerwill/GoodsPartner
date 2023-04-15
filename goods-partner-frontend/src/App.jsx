@@ -1,6 +1,6 @@
 import Layout from './components/Layout/Layout'
 import CssBaseline from '@mui/material/CssBaseline'
-import {Navigate, Outlet, Route, Routes} from 'react-router-dom'
+import {Navigate, Outlet, Route, Routes, useLocation} from 'react-router-dom'
 import {useJsApiLoader} from '@react-google-maps/api'
 import {Backdrop} from '@mui/material'
 import Deliveries from './pages/Deliveries/Deliveries'
@@ -25,7 +25,8 @@ const libraries = ['places']
 
 function App() {
     const key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-    console.log(key)
+
+    const location = useLocation();
 
     //TODO: [UI] check if we are using specific region
     const {isLoaded} = useJsApiLoader({
@@ -47,7 +48,7 @@ function App() {
 
     return (
         <Routes>
-            <Route path='/login' element={<Login/>}/>
+            <Route path='/login' element={<Login prevLocation={location.pathname}/>}/>
             <Route element={<ProtectedRoute/>}>
 
                 <Route path='/cars' element={<Cars/>}/>
