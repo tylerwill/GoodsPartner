@@ -9,8 +9,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>goods-partner-frontend</module>
         <module>goods-partner-backend</module>
+        <module>goods-partner-frontend</module>
     </modules>
 
     <properties>

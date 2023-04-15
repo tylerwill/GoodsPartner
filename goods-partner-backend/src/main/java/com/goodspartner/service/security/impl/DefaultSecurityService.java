@@ -1,6 +1,6 @@
 package com.goodspartner.service.security.impl;
 
-import com.goodspartner.repository.UserRepository;
+import com.goodspartner.service.UserService;
 import com.goodspartner.service.security.SecurityService;
 import com.goodspartner.web.controller.request.AuthRequest;
 import com.goodspartner.web.controller.response.AuthResponse;
@@ -21,7 +21,7 @@ public class DefaultSecurityService implements SecurityService {
 
     private final AuthenticationManager authManager;
     private final DefaultJwtService jwtService;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public AuthResponse authenticate(AuthRequest authRequest) {
@@ -29,10 +29,13 @@ public class DefaultSecurityService implements SecurityService {
                 new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
 
         String username = User.class.cast(auth.getPrincipal()).getUsername();
-        com.goodspartner.entity.User user = userRepository.findByUserName(username)
+        com.goodspartner.entity.User user = userService.findByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Unknown user: " + username));
 
         String jwtAccess = jwtService.createAccessToken(user);
+        UUID heartbeatId = UUID.randomUUID();
+        userService.mapUserDtoToHeartbeatId(heartbeatId, auth);
+
         return AuthResponse.builder()
                 .accessToken(jwtAccess)
                 .user(AuthResponse.User.builder()
@@ -40,7 +43,7 @@ public class DefaultSecurityService implements SecurityService {
                         .username(user.getUserName())
                         .role(user.getRole().getName())
                         .enabled(user.isEnabled())
-                        .heartbeatId(UUID.randomUUID())
+                        .heartbeatId(heartbeatId)
                         .build()
                 )
                 .build();

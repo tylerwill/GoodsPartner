@@ -4,6 +4,7 @@ import com.goodspartner.configuration.properties.ClientRoutingProperties;
 import com.goodspartner.configuration.properties.GraphhopperProperties;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.entity.RoutePoint;
+import com.goodspartner.entity.RoutePointStatus;
 import com.goodspartner.entity.Store;
 import com.goodspartner.service.GraphhopperService;
 import com.goodspartner.service.dto.DistanceMatrix;
@@ -96,6 +97,12 @@ public class DefaultGraphhopperService implements GraphhopperService {
             driveStartTime = expectedCompletionTime;
             newStartLatitude = nextStopLatitude;
             newStartLongitude = nextStopLongitude;
+        }
+
+        // Set first routePoint in list as currently IN_PROGRESS
+        RoutePoint inProgressRoutePoint = routePoints.get(0);
+        if ( inProgressRoutePoint != null ) {
+            inProgressRoutePoint.setStatus(RoutePointStatus.INPROGRESS);
         }
     }
 

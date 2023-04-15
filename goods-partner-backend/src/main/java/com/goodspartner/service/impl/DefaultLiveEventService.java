@@ -15,11 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -44,7 +40,7 @@ public class DefaultLiveEventService implements LiveEventService {
 
     @Override
     public void subscribe(Consumer<LiveEvent> consumer, UUID heartbeatId) {
-        UserDto user = userService.getAuthenticatedUserDto();
+        UserDto user = userService.getUserDto(heartbeatId);
         Subscriber newSubscriber = new Subscriber(consumer, heartbeatId);
         listeners.computeIfAbsent(user, k -> new ArrayList<>()).add(newSubscriber);
         log.info("{} added for account: {}, total account subscribers: {}. Total accounts: {}",
@@ -53,7 +49,7 @@ public class DefaultLiveEventService implements LiveEventService {
 
     @Override
     public void publishHeartBeat(UUID heartbeatId) {
-        UserDto authenticatedUser = userService.getAuthenticatedUserDto();
+        UserDto authenticatedUser = userService.getUserDto(heartbeatId);
         List<Subscriber> subscribers = Optional.ofNullable(listeners.get(authenticatedUser))
                 .orElseThrow(() -> new SubscriberNotFoundException(authenticatedUser.getUserName()));
         subscribers.stream()

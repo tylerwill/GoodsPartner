@@ -17,7 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @AllArgsConstructor
 @Service
@@ -27,6 +30,7 @@ public class DefaultUserService implements UserService {
     private static final String EMAIL_ATTRIBUTE = "email";
     private static final String USERNAME_ATTRIBUTE = "username";
 
+    private final Map<UUID, UserDto> userToHeartbeatId = new ConcurrentHashMap<>();
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
@@ -86,9 +90,37 @@ public class DefaultUserService implements UserService {
         throw new InvalidAuthenticationType();
     }
 
+    //    FIXME: Maybe unnecessary method
     @Override
     public UserDto getAuthenticatedUserDto() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .map(Authentication::getPrincipal)
+                .map(principal -> (UserDetails) principal)
+                .map(principal -> UserDto.builder()
+                        .userName(principal.getUsername())
+                        .role(principal.getAuthorities().toArray()[0].toString())
+                        .enabled(true)
+                        .build())
+                .orElseThrow(InvalidAuthenticationType::new);
+    }
+
+    @Override
+    public Optional<User> findByUserName(String username) {
+        return userRepository.findByUserName(username);
+    }
+
+    @Override
+    public UserDto getUserDto(UUID heartbeatId) {
+        return userToHeartbeatId.get(heartbeatId);
+    }
+
+    @Override
+    public void mapUserDtoToHeartbeatId(UUID heartbeatId, Authentication auth) {
+        userToHeartbeatId.put(heartbeatId, toUserDto(auth));
+    }
+
+    private UserDto toUserDto(Authentication authentication) {
+        return Optional.of(authentication)
                 .map(Authentication::getPrincipal)
                 .map(principal -> (UserDetails) principal)
                 .map(principal -> UserDto.builder()

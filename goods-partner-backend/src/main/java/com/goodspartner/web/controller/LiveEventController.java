@@ -18,22 +18,21 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/live-event")
 public class LiveEventController {
 
     private final LiveEventService liveEventService;
 
-    @GetMapping(path = "/keep-alive/{heartbeatId}")
+    @GetMapping(path = "/{heartbeatId}/keep-alive")
     public void keepAlive(@PathVariable("heartbeatId") UUID uuid) {
         liveEventService.publishHeartBeat(uuid);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'LOGISTICIAN')")
     @ApiOperation(
             value = "Live server-sent events",
             notes = "Stream of events"
     )
-    @GetMapping(path = "/live-event/{heartbeatId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(path = "/{heartbeatId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<Object>> consumer(@PathVariable("heartbeatId") UUID uuid) {
         return Flux.create(sink -> liveEventService.subscribe(sink::next, uuid))
                 .map(liveEvent -> ServerSentEvent.builder()

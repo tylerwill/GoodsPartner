@@ -18,12 +18,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         registry.addViewController("/{x:^(?!api$).*$}/**/{y:[\\w\\-]+}").setViewName("forward:/index.html");
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        // TODO: Cors enabled for everything... Looks dangerous !
-        registry.addMapping("/**").allowedOrigins("http://localhost:3000", "https://goods-partner.herokuapp.com").allowedMethods("GET", "POST", "DELETE", "PUT");
-    }
-
     @Bean
     public ThreadPoolTaskExecutor mvcTaskExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
@@ -35,5 +29,4 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
         configurer.setTaskExecutor(mvcTaskExecutor());
     }
-
 }

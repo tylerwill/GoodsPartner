@@ -25,7 +25,6 @@ function useListenEvents(dispatch, heartbeatId) {
                 sse.close()
             }
 
-            console.log('data', notification)
             if (notification.type === 'HEARTBEAT') {
                 return
             }
@@ -54,7 +53,7 @@ function useProcessNotifications(
         if (currentNotification == null) {
             return
         }
-
+        console.log("current notification, ", currentNotification);
         enqueueSnackbar(currentNotification.message, {
             variant:
                 currentNotification.type === 'INFO'
@@ -105,7 +104,7 @@ function useProcessNotifications(
 function useNotificationsHeartbeat(heartbeatId) {
     useEffect(() => {
         const interval = setInterval(() => {
-            fetch(`${currentHost()}api/v1/keep-alive/${heartbeatId}`, {
+            fetch(`${currentHost()}api/v1/live-event/${heartbeatId}/keep-alive`, {
                 credentials: 'include',
                 method: 'get'
             }).then(response => {
