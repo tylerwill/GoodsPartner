@@ -1,4 +1,4 @@
-import { axiosWithSetting } from './api'
+import {axiosWithSetting} from './api'
 
 export const reportsApi = {
 	getDeliveriesStatistics(dateFrom: string, dateTo: string) {

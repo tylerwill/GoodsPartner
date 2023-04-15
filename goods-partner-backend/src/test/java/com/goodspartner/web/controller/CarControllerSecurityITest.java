@@ -34,7 +34,7 @@ class CarControllerSecurityITest extends AbstractWebITest {
 
         userDto = new UserDto(1,
                 "Ivan Kornienko",
-                "userEmail@gmail",
+//                "userEmail@gmail",
                 User.UserRole.DRIVER.name(),
                 true);
 

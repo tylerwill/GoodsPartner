@@ -1,16 +1,13 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { apiUrl } from '../../util/util'
-import { User } from '../../model/User'
+import {createApi} from '@reduxjs/toolkit/query/react'
+import {User} from '../../model/User'
+import {baseQueryWithReauth} from "../api";
 
 type UsersResponse = User[]
 
 export const usersApi = createApi({
 	reducerPath: 'usersApi',
 	tagTypes: ['users'],
-	baseQuery: fetchBaseQuery({
-		baseUrl: apiUrl,
-		credentials: 'include'
-	}),
+	baseQuery: baseQueryWithReauth,
 	endpoints: builder => ({
 		getUsers: builder.query<UsersResponse, void>({
 			query: () => `users`,

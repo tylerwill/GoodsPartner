@@ -40,7 +40,7 @@ class DefaultCarLoadServiceITest extends AbstractBaseITest {
         // Given
         UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000111");
 
-        SecurityContextHolder.setContext(getSecurityContext(DEFAULT_DRIVER_NAME, DEFAULT_DRIVER_EMAIL, DRIVER_ROLE));
+//        SecurityContextHolder.setContext(getSecurityContext(DEFAULT_DRIVER_NAME, DEFAULT_DRIVER_EMAIL, DRIVER_ROLE));
 
         // When
         List<CarLoad> actualCarLoadList = carLoadService.findByDeliveryId(uuid);

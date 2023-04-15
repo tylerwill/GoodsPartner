@@ -66,7 +66,7 @@ const Cars = () => {
     }
 
     return (
-        <section>
+        <>
             <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
                 <Typography variant='h6' component='h2'>
                     Автомобілі
@@ -146,7 +146,7 @@ const Cars = () => {
             )}
 
             {error && <ErrorAlert error={error}/>}
-        </section>
+        </>
     )
 }
 

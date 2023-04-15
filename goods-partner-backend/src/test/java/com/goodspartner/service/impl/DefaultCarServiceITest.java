@@ -36,7 +36,7 @@ class DefaultCarServiceITest extends AbstractBaseITest {
 
         UserDto userDto = new UserDto(1,
                 "Oleg Dudka",
-                "test-driver@gmail.com",
+//                "test-driver@gmail.com",
                 User.UserRole.DRIVER.name(),
                 true);
 
@@ -95,7 +95,7 @@ class DefaultCarServiceITest extends AbstractBaseITest {
         // When
         UserDto userDto = new UserDto(555,
                 "Vasya Pupkin",
-                "userEmail@gmail.com",
+//                "userEmail@gmail.com",
                 User.UserRole.DRIVER.name(),
                 true);
 
@@ -131,7 +131,7 @@ class DefaultCarServiceITest extends AbstractBaseITest {
         // Given
         UserDto userDto = new UserDto(555,
                 "Vasya Pupkin",
-                "userEmail@gmail.com",
+//                "userEmail@gmail.com",
                 User.UserRole.DRIVER.name(),
                 true);
 
@@ -150,7 +150,7 @@ class DefaultCarServiceITest extends AbstractBaseITest {
         // Then
         Assertions.assertEquals(CAR_ID, carDto.getId());
         Assertions.assertEquals("Vasya Pupkin", carDto.getDriver().getUserName());
-        Assertions.assertEquals("userEmail@gmail.com", carDto.getDriver().getEmail());
+        Assertions.assertEquals("userEmail@gmail.com", carDto.getDriver().getUserName());
         Assertions.assertEquals(555, carDto.getDriver().getId());
         Assertions.assertEquals("DRIVER", carDto.getDriver().getRole());
     }

@@ -1,21 +1,17 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { apiUrl } from '../../util/util'
-import { ClientAddress } from '../../model/ClientAddress'
-import {Car} from "../../model/Car";
+import {createApi} from '@reduxjs/toolkit/query/react'
+import {ClientAddress} from '../../model/ClientAddress'
+import {baseQueryWithReauth} from "../api";
 
 type ClientsAddressesResponse = ClientAddress[]
 
 export const clientsApi = createApi({
     reducerPath: 'clientsApi',
     tagTypes: ['clients'],
-    baseQuery: fetchBaseQuery({
-        baseUrl: apiUrl,
-        credentials: 'include'
-    }),
+    baseQuery: baseQueryWithReauth,
     endpoints: builder => ({
         getClientsAddresses: builder.query<ClientsAddressesResponse, void>({
             query: () => `addresses`,
-            providesTags: [{ type: 'clients', id: 'list' }]
+            providesTags: [{type: 'clients', id: 'list'}]
         }),
         updateClientAddress: builder.mutation<ClientAddress, ClientAddress>({
             query: clientsAddress => ({
@@ -23,7 +19,7 @@ export const clientsApi = createApi({
                 method: 'PUT',
                 body: clientsAddress
             }),
-            invalidatesTags: [{ type: 'clients', id: 'list' }]
+            invalidatesTags: [{type: 'clients', id: 'list'}]
         }),
     })
 })

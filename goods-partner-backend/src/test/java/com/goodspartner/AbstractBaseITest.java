@@ -2,14 +2,17 @@ package com.goodspartner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.goodspartner.service.dto.GoodsPartnerOAuth2User;
+//import com.goodspartner.service.dto.GoodsPartnerOAuth2User;
+import com.goodspartner.service.security.SecurityUser;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+//import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -76,9 +79,10 @@ public class AbstractBaseITest {
         return new SecurityContextImpl(buildPrincipal(username, email, role));
     }
 
-    private OAuth2AuthenticationToken buildPrincipal(String username, String email, String role) {
-        return new OAuth2AuthenticationToken(
-                GoodsPartnerOAuth2User.builder()
+    private Authentication buildPrincipal(String username, String email, String role) {
+        return (Authentication) new SecurityUser(username, "pass", List.of(new SimpleGrantedAuthority("ROLE_" + role)), true);
+    }
+    /*            GoodsPartnerOAuth2User.builder()
                         .username(username)
                         .email(email)
                         .authorities(List.of(new SimpleGrantedAuthority("ROLE_" + role)))
@@ -89,5 +93,5 @@ public class AbstractBaseITest {
                         .build(),
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)),
                 "google");
-    }
+    }*/
 }

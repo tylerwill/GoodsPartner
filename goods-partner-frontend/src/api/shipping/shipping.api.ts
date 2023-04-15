@@ -1,16 +1,13 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { apiUrl } from '../../util/util'
-import { DeliveryShipping } from '../../model/DeliveryShipping'
+import {createApi} from '@reduxjs/toolkit/query/react'
+import {DeliveryShipping} from '../../model/DeliveryShipping'
+import {baseQueryWithReauth} from "../api";
 
 type DeliveryShippingResponse = DeliveryShipping[]
 
 export const shippingApi = createApi({
 	reducerPath: 'shippingApi',
 	tagTypes: ['shipping'],
-	baseQuery: fetchBaseQuery({
-		baseUrl: apiUrl,
-		credentials: 'include'
-	}),
+	baseQuery: baseQueryWithReauth,
 	endpoints: builder => ({
 		getShippingForDelivery: builder.query<DeliveryShippingResponse, string>({
 			query: deliveryId => ({

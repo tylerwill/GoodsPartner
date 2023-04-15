@@ -8,11 +8,11 @@ import com.goodspartner.exception.UserNotFoundException;
 import com.goodspartner.mapper.UserMapper;
 import com.goodspartner.repository.UserRepository;
 import com.goodspartner.service.UserService;
-import com.goodspartner.service.dto.GoodsPartnerOAuth2User;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,15 +72,16 @@ public class DefaultUserService implements UserService {
 
     @Override
     public User findByAuthentication() {
-        String userEmail = getUserEmailFromAuthenticationContext();
-        return userRepository.findUserByEmail(userEmail)
-                .orElseThrow(() -> new UserNotFoundException(userEmail));
+        String username = getUsernameFromAuthenticationContext();
+        return userRepository.findByUserName(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
     }
 
-    private String getUserEmailFromAuthenticationContext() {
+    private String getUsernameFromAuthenticationContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getPrincipal() instanceof GoodsPartnerOAuth2User principal) {
-            return principal.getAttribute(EMAIL_ATTRIBUTE);
+        if (authentication.isAuthenticated()) {
+            UserDetails principal = (UserDetails) authentication.getPrincipal();
+            return principal.getUsername();
         }
         throw new InvalidAuthenticationType();
     }
@@ -89,11 +90,9 @@ public class DefaultUserService implements UserService {
     public UserDto getAuthenticatedUserDto() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .map(Authentication::getPrincipal)
-                .filter(principal -> principal instanceof GoodsPartnerOAuth2User)
-                .map(principal -> (GoodsPartnerOAuth2User) principal)
+                .map(principal -> (UserDetails) principal)
                 .map(principal -> UserDto.builder()
-                        .userName(principal.getAttribute(USERNAME_ATTRIBUTE))
-                        .email(principal.getAttribute(EMAIL_ATTRIBUTE))
+                        .userName(principal.getUsername())
                         .role(principal.getAuthorities().toArray()[0].toString())
                         .enabled(true)
                         .build())

@@ -48,7 +48,7 @@ public class DefaultLiveEventService implements LiveEventService {
         Subscriber newSubscriber = new Subscriber(consumer, heartbeatId);
         listeners.computeIfAbsent(user, k -> new ArrayList<>()).add(newSubscriber);
         log.info("{} added for account: {}, total account subscribers: {}. Total accounts: {}",
-                newSubscriber, user.getEmail(), listeners.get(user).size(), listeners.size());
+                newSubscriber, user.getUserName(), listeners.get(user).size(), listeners.size());
     }
 
     @Override
@@ -89,14 +89,14 @@ public class DefaultLiveEventService implements LiveEventService {
                         log.debug("{} staleTime: {}, expired: {}", subscriber, staleTime, expired);
                         if (expired) {
                             log.info("Subscriber has been inactive for more than {} milliseconds. Removing from group for: {}",
-                                    TIME_TO_LIVE, entry.getKey().getEmail());
+                                    TIME_TO_LIVE, entry.getKey().getUserName());
                         }
                         return expired;
                     });
                     // Remove full group
                     boolean groupEmpty = subscribers.isEmpty();
                     if (groupEmpty) {
-                        log.info("Removing empty subscribers group for: {}", entry.getKey().getEmail());
+                        log.info("Removing empty subscribers group for: {}", entry.getKey().getUserName());
                     }
                     return groupEmpty;
                 });
@@ -111,7 +111,7 @@ public class DefaultLiveEventService implements LiveEventService {
 
     @NotNull
     private Predicate<UserDto> isAdminOrLogisticianOrResponsibleDriver(User driver) {
-        return user -> !user.getRole().equals(DRIVER.name()) || driver.getEmail().equals(user.getEmail());
+        return user -> !user.getRole().equals(DRIVER.name()) || driver.getUserName().equals(user.getUserName());
     }
 
     @NotNull

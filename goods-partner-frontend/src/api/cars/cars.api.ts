@@ -1,16 +1,13 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { apiUrl } from '../../util/util'
-import { Car } from '../../model/Car'
+import {createApi} from '@reduxjs/toolkit/query/react'
+import {Car} from '../../model/Car'
+import { baseQueryWithReauth } from '../api'
 
 type CarsResponse = Car[]
 
 export const carsApi = createApi({
 	reducerPath: 'carsApi',
 	tagTypes: ['cars'],
-	baseQuery: fetchBaseQuery({
-		baseUrl: apiUrl,
-		credentials: 'include'
-	}),
+	baseQuery: baseQueryWithReauth,
 	endpoints: builder => ({
 		getCars: builder.query<CarsResponse, void>({
 			query: () => `cars`,

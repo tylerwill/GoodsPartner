@@ -55,7 +55,7 @@ const Deliveries = () => {
     }
 
     return (
-        <section>
+        <>
             <Box
                 sx={{
                     mt: 2,
@@ -97,7 +97,7 @@ const Deliveries = () => {
             {/*/>*/}
 
             {error && <ErrorAlert error={error}/>}
-        </section>
+        </>
     )
 }
 

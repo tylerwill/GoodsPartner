@@ -1,6 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { apiUrl } from '../../util/util'
+import {createApi} from '@reduxjs/toolkit/query/react'
 import Order from '../../model/Order'
+import {baseQueryWithReauth} from "../api";
 
 type OrdersResponse = Order[]
 
@@ -12,10 +12,7 @@ interface RescheduleRequest {
 export const ordersApi = createApi({
 	reducerPath: 'ordersApi',
 	tagTypes: ['orders'],
-	baseQuery: fetchBaseQuery({
-		baseUrl: apiUrl,
-		credentials: 'include'
-	}),
+	baseQuery: baseQueryWithReauth,
 	endpoints: builder => ({
 		getCompleted: builder.query<OrdersResponse, void>({
 			query: () => ({

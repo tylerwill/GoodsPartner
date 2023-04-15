@@ -83,7 +83,7 @@ export const Tasks = () => {
         Math.max(0, (1 + page) * rowsPerPage - tasks.length);
 
     return (
-        <section>
+        <>
             <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
                 <Typography variant='h6' component='h2'>
                     Завдання
@@ -172,7 +172,7 @@ export const Tasks = () => {
                     cars={cars as Car[]}/>
             )}
 
-        </section>
+        </>
     )
 }
 

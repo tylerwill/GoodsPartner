@@ -10,7 +10,7 @@ import { useAppSelector } from '../../../hooks/redux-hooks'
 import { useGetDeliveryQuery } from '../../../api/deliveries/deliveries.api'
 import Loading from '../../../components/Loading/Loading'
 
-export const Routes = () => {
+export const DeliveryRoutes = () => {
 	const dispatch = useDispatch()
 	const { currentRouteIndex } = useAppSelector(state => state.currentDelivery)
 

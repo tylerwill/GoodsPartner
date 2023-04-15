@@ -16,7 +16,7 @@ import Loading from '../../../components/Loading/Loading'
 import ExcludeOrderDialog from './OrdersContent/ExcludeOrderDialog/ExcludeOrderDialog'
 import DeliveryTypeDialog from './OrdersContent/DeliveryTypeDialog/DeliveryTypeDialog'
 
-export const Orders = () => {
+export const DeliveryOrders = () => {
     const {deliveryId} = useParams()
 
     const {

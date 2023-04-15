@@ -61,7 +61,7 @@ const Users = () => {
 	}
 
 	return (
-		<section>
+		<>
 			<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
 				<Typography variant='h6' component='h2'>
 					Користувачі
@@ -130,7 +130,7 @@ const Users = () => {
 				setUser={setEditedUser}
 			/>
 			{error && <ErrorAlert error={error} />}
-		</section>
+		</>
 	)
 }
 

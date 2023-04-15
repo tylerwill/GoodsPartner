@@ -1,6 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { apiUrl } from '../../util/util'
+import {createApi} from '@reduxjs/toolkit/query/react'
 import Order from '../../model/Order'
+import {baseQueryWithReauth} from "../api";
 
 type OrdersResponse = Order[]
 
@@ -13,10 +13,7 @@ interface ExcludeRequest {
 export const deliveryOrdersApi = createApi({
 	reducerPath: 'delivery-ordersApi',
 	tagTypes: ['delivery-orders'],
-	baseQuery: fetchBaseQuery({
-		baseUrl: apiUrl,
-		credentials: 'include'
-	}),
+	baseQuery: baseQueryWithReauth,
 	endpoints: builder => ({
 		getOrdersForDelivery: builder.query<OrdersResponse, string>({
 			query: deliveryId => ({

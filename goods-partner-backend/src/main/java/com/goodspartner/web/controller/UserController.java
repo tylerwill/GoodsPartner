@@ -3,7 +3,6 @@ package com.goodspartner.web.controller;
 import com.goodspartner.dto.UserDto;
 import com.goodspartner.mapper.UserMapper;
 import com.goodspartner.service.UserService;
-import com.goodspartner.web.controller.response.AuthResponse;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -26,11 +25,6 @@ public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
-
-    @GetMapping("/auth")
-    public AuthResponse getAuthenticationDetails() {
-        return userMapper.toAuthResponse(userService.findByAuthentication());
-    }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping

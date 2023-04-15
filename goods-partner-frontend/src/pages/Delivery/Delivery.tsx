@@ -96,7 +96,7 @@ const Delivery = () => {
 
     if (delivery) {
         return (
-            <section>
+            <>
                 {isLoadingBar && loadingBar(delivery.formationStatus)}
                 {error && <ErrorAlert error={error}/>}
                 <Box
@@ -207,7 +207,7 @@ const Delivery = () => {
                         }}
                     />
                 </Box>
-            </section>
+            </>
         )
     }
 }

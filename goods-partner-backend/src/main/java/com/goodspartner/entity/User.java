@@ -32,8 +32,8 @@ public class User {
     @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "email")
-    private String email;
+    @Column(name = "password")
+    private String password;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "role")
@@ -42,9 +42,16 @@ public class User {
     @Column(name = "enabled")
     private boolean enabled = false;
 
+    @Getter
     public enum UserRole {
-        ADMIN,
-        DRIVER,
-        LOGISTICIAN
+
+        ADMIN("ROLE_ADMIN"),
+        DRIVER("ROLE_DRIVER"),
+        LOGISTICIAN("ROLE_LOGISTICIAN");
+        private final String name;
+
+        UserRole(String name) {
+            this.name = name;
+        }
     }
 }

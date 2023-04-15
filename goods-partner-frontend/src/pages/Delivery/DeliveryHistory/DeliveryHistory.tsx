@@ -11,7 +11,7 @@ import { useParams } from 'react-router-dom'
 import Loading from '../../../components/Loading/Loading'
 import { useGetHistoryForDeliveryQuery } from '../../../api/history/history.api'
 
-const History = () => {
+const DeliveryHistory = () => {
 	const { deliveryId } = useParams()
 
 	const { data: historyForDelivery, isLoading } = useGetHistoryForDeliveryQuery(
@@ -60,4 +60,4 @@ const History = () => {
 	)
 }
 
-export default History
+export default DeliveryHistory

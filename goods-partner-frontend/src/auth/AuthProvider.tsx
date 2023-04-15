@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { ReactNode, useContext, useEffect, useMemo, useState } from 'react'
-import { usersApi } from '../api/usersApi'
-import { AuthUserContext } from './AuthUserContext'
-import { User } from '../model/User'
+import {ReactNode, useContext, useMemo} from 'react'
+import {AuthUserContext} from './AuthUserContext'
+import {useAppSelector} from "../hooks/redux-hooks";
+import {selectCurrentUser} from "../features/auth/authSlice";
 
 const AuthContext = React.createContext<AuthUserContext | null>(null)
 
@@ -11,31 +11,21 @@ interface Props {
 }
 
 export const AuthProvider = ({ children }: Props) => {
-	const [user, setUser] = useState<User | null>(null)
-	const [error, setError] = useState('')
-	const [loading, setLoading] = useState(true)
+	const user = useAppSelector(selectCurrentUser);
 
-	useEffect(() => {
-		usersApi
-			.getCurrentUser()
-			.then(response => setUser(response.data))
-			.catch(_error => setError(_error))
-			.finally(() => setLoading(false))
-	}, [])
+	console.log("current user", user);
 
 	// @ts-ignore
 	const memoedValue = useMemo<AuthUserContext>(
 		() => ({
-			user,
-			loading,
-			error
+			user
 		}),
-		[user, loading, error]
+		[user]
 	)
 
 	return (
 		<AuthContext.Provider value={memoedValue}>
-			{!loading && children}
+			{children}
 		</AuthContext.Provider>
 	)
 }

@@ -1,5 +1,6 @@
 import currentDeliveryReducer from '../features/currentDelivery/currentDeliverySlice'
 import reportsReducer from '../features/reports/reportsSlice'
+import authReducer from '../features/auth/authSlice'
 // @ts-ignore
 import notificationsReducer from '../features/notifications/notificationsSlice'
 
@@ -17,6 +18,7 @@ import {shippingApi} from '../api/shipping/shipping.api'
 import {ordersApi} from '../api/orders/orders.api'
 import {tasksApi} from '../api/tasks/tasks.api'
 import {clientsApi} from '../api/clients/clients.api'
+import {authApi} from '../api/auth/authApi'
 import {settingsApi} from '../api/settings/settings.api'
 import {enqueueSnackbar} from "notistack";
 
@@ -41,6 +43,7 @@ const store = configureStore({
         notifications: notificationsReducer,
         orders: ordersReducer,
         deliveryOrders: deliveryOrdersReducer,
+        auth: authReducer,
 
         // api
         [deliveriesApi.reducerPath]: deliveriesApi.reducer,
@@ -53,7 +56,8 @@ const store = configureStore({
         [carsApi.reducerPath]: carsApi.reducer,
         [clientsApi.reducerPath]: clientsApi.reducer,
         [tasksApi.reducerPath]: tasksApi.reducer,
-        [settingsApi.reducerPath]: settingsApi.reducer
+        [settingsApi.reducerPath]: settingsApi.reducer,
+        [authApi.reducerPath]: authApi.reducer
     },
 
     middleware: getDefaultMiddleware =>
@@ -69,6 +73,7 @@ const store = configureStore({
             .concat(clientsApi.middleware)
             .concat(tasksApi.middleware)
             .concat(settingsApi.middleware)
+            .concat(authApi.middleware)
             .concat(rtkQueryErrorLogger)
 })
 

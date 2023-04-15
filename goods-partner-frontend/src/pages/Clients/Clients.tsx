@@ -63,7 +63,7 @@ export const Clients = () => {
     }
 
     return (
-        <section>
+        <>
             <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
                 <Typography variant='h6' component='h2'>
                     Адреси кліентів
@@ -122,7 +122,7 @@ export const Clients = () => {
                                                                onAction={(point) => handleUpdateAddress(point)}
                                                                defaultAddress={clientAddressToUpdate.orderAddress}
                                                                currentMapPoint={currentMapPoint}/>}
-        </section>
+        </>
     )
 }
 

@@ -1,15 +1,12 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { apiUrl } from '../../util/util'
+import {createApi} from '@reduxjs/toolkit/query/react'
 import {Settings} from "../../model/Settings";
+import {baseQueryWithReauth} from "../api";
 
 
 export const settingsApi = createApi({
     reducerPath: 'settingsApi',
     tagTypes: ['settings'],
-    baseQuery: fetchBaseQuery({
-        baseUrl: apiUrl,
-        credentials: 'include'
-    }),
+    baseQuery: baseQueryWithReauth,
     endpoints: builder => ({
         getSettings: builder.query<Settings, void>({
             query: () => `settings`,

@@ -20,7 +20,7 @@ import {useGetShippingForDeliveryQuery} from '../../../api/shipping/shipping.api
 import {apiUrl} from "../../../util/util";
 import DownloadIcon from "@mui/icons-material/Download";
 
-const Shipping = () => {
+const DeliveryShipping = () => {
     const {deliveryId} = useParams()
 
     const {data: productsShipping, isLoading} = useGetShippingForDeliveryQuery(
@@ -146,7 +146,7 @@ const Shipping = () => {
     )
 }
 
-export default Shipping
+export default DeliveryShipping
 
 const Row = ({shipping, collapseAll, expandAll, reset}) => {
     const [carLoadTableOpen, setCarLoadTableOpen] = React.useState(false)

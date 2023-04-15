@@ -1,16 +1,13 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { apiUrl } from '../../util/util'
-import { DeliveryHistory } from '../../model/DeliveryHistory'
+import {createApi} from '@reduxjs/toolkit/query/react'
+import {DeliveryHistory} from '../../model/DeliveryHistory'
+import {baseQueryWithReauth} from "../api";
 
 type DeliveryHistoryResponse = DeliveryHistory[]
 
 export const historyApi = createApi({
 	reducerPath: 'historyApi',
 	tagTypes: ['history'],
-	baseQuery: fetchBaseQuery({
-		baseUrl: apiUrl,
-		credentials: 'include'
-	}),
+	baseQuery: baseQueryWithReauth,
 	endpoints: builder => ({
 		getHistoryForDelivery: builder.query<DeliveryHistoryResponse, string>({
 			query: deliveryId => ({

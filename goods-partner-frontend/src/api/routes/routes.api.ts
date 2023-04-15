@@ -1,18 +1,15 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { apiUrl } from '../../util/util'
-import { Route } from '../../model/Route'
-import { RoutePoint } from '../../model/RoutePoint'
+import {createApi} from '@reduxjs/toolkit/query/react'
+import {Route} from '../../model/Route'
+import {RoutePoint} from '../../model/RoutePoint'
 import Order from '../../model/Order'
+import {baseQueryWithReauth} from "../api";
 
 type RoutesResponse = Route[]
 
 export const routesApi = createApi({
 	reducerPath: 'routesApi',
 	tagTypes: ['routes'],
-	baseQuery: fetchBaseQuery({
-		baseUrl: apiUrl,
-		credentials: 'include'
-	}),
+	baseQuery: baseQueryWithReauth,
 	endpoints: builder => ({
 		getRoutesForDelivery: builder.query<RoutesResponse, string>({
 			query: deliveryId => ({
