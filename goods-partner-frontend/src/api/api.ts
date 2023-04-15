@@ -1,18 +1,7 @@
-import axios from 'axios'
 import {BaseQueryFn, createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-import {apiUrl, currentHost} from '../util/util'
+import {apiUrl} from '../util/util'
 
-import {logOut, setUserInfo} from '../features/auth/authSlice'
 import {RootState} from "../redux/store";
-
-const host = currentHost()
-
-const defaultOptions = {
-    baseURL: `http://16.16.91.239:80/api/1`,
-    withCredentials: true
-}
-
-export const axiosWithSetting = axios.create(defaultOptions)
 
 const baseQuery = fetchBaseQuery({
     baseUrl: apiUrl,
