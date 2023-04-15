@@ -1,6 +1,5 @@
 import {createApi} from '@reduxjs/toolkit/query/react'
-import {Route} from '../../model/Route'
-import {RoutePoint} from '../../model/RoutePoint'
+import {Route, RoutePoint} from '../../model/Route'
 import Order from '../../model/Order'
 import {baseQueryWithReauth} from "../api";
 

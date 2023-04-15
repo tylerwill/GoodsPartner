@@ -3,6 +3,7 @@ import {ReactNode, useContext, useMemo} from 'react'
 import {AuthUserContext} from './AuthUserContext'
 import {useAppSelector} from "../hooks/redux-hooks";
 import {selectCurrentUser} from "../features/auth/authSlice";
+import {User} from "../model/User";
 
 const AuthContext = React.createContext<AuthUserContext | null>(null)
 
@@ -31,5 +32,5 @@ export const AuthProvider = ({ children }: Props) => {
 }
 
 export default function useAuth() {
-	return useContext(AuthContext)
+	return useContext(AuthContext) as AuthUserContext
 }

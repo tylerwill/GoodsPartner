@@ -10,7 +10,7 @@ import {SkippedOrdersContainer} from "./SkippedOrdersContainer/SkippedOrdersCont
 export const Orders = () => {
     const {tabIndex} = useAppSelector(state => state.orders)
 
-    const {logout} = useActions();
+    const {setTabIndex} = useActions();
 
     const tabLabels = [
         {name: 'Доставленні', enabled: true},

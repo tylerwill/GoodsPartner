@@ -16,6 +16,8 @@ import {
 import {useActions, useAppSelector} from "../../hooks/redux-hooks";
 import {ConfirmationDialog} from "../../components/ConfirmationDialog/ConfirmationDialog";
 import Delivery from "../../model/Delivery";
+import {UserRole} from "../../model/User";
+import {AuthUserContext} from "../../auth/AuthUserContext";
 
 const Deliveries = () => {
     const {data: deliveries, error, isLoading} = useGetDeliveriesQuery()
@@ -47,8 +49,10 @@ const Deliveries = () => {
     }, [setDeliveryToDelete, setDeleteDeliveryDialogOpen]);
 
     // @ts-ignore
-    const {user} = useAuth()
-    const isDriver = user.role === 'DRIVER'
+
+
+    const {user} = useAuth() ;
+    const isDriver = user.role === UserRole.DRIVER;
 
     if (isLoading) {
         return <Loading/>

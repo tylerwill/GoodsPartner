@@ -1,4 +1,4 @@
-import {ProductMeasureDetails} from "./Product";
+import {ProductMeasureDetails} from "./Order";
 
 export interface DeliveryShipping {
 	article: string
