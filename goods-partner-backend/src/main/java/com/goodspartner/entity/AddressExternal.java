@@ -39,6 +39,9 @@ public class AddressExternal {
 
     @Column(name = "longitude")
     private double longitude;
+//
+//    @Column(name = "unloading_minutes")
+//    private int unloadingMinutes;
 
     @Builder
     @NoArgsConstructor

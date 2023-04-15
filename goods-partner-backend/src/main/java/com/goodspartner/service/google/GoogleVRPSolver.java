@@ -34,6 +34,19 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * *Normalisation*
+ *   Requested delivery time range : 10:00 - 17-00 (more complex evaluation)
+ *   Normalisation: 10:15 - 17:00. (adding only for arrival time)
+ *     Solution: 10:15
+ *       - Completion: solution -> 10:15 - also contains service time
+ *       - Arrival: solution - service time -> 10:15 - 15 = 10:00
+ *     Solution: 17:00
+ *       - Completion: 17:00
+ *       - Arrival: 16:45
+ *
+ *
+ */
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -120,7 +133,7 @@ public class GoogleVRPSolver implements VRPSolver {
                     long nodeIndex = manager.indexToNode(index);
 
                     IntVar timeVar = timeDimension.cumulVar(index);
-                    long solutionInMinutes = solution.max(timeVar) + clientRoutingProperties.getNormalizationTimeMinutes(); // MIN-MAX solution window is equal. Tested
+                    long solutionInMinutes = solution.max(timeVar); // MIN-MAX solution window is equal. Tested
 
                     if (nodeIndex == 0) { // Depot
                         routeStartTimeFromDepot = LocalTime.ofSecondOfDay(solutionInMinutes * 60L);
@@ -128,10 +141,11 @@ public class GoogleVRPSolver implements VRPSolver {
                     } else { // RoutePoints
                         RoutePoint routePoint = routePoints.get((int) (nodeIndex - 1)); // exclude depot
 
-                        log.trace("RoutePoint range: {} - {}, solution range: {} - {}",
-                                routePoint.getDeliveryStart(), routePoint.getDeliveryEnd(), solutionInMinutes, solutionInMinutes);
+                        log.trace("RoutePoint range: {} - {}, solution:: {}",
+                                routePoint.getDeliveryStart(), routePoint.getDeliveryEnd(), solutionInMinutes);
 
-                        routePoint.setExpectedCompletion(LocalTime.ofSecondOfDay(solutionInMinutes * 60L));
+                        routePoint.setExpectedCompletion(LocalTime.ofSecondOfDay(solutionInMinutes * 60L)); // SolutionTime is completion time
+
                         long arrivalTime = solutionInMinutes - clientRoutingProperties.getUnloadingTimeMinutes(); // Solution contains time with unloading
                         routePoint.setExpectedArrival(LocalTime.ofSecondOfDay(arrivalTime * 60L));
 
@@ -276,7 +290,7 @@ public class GoogleVRPSolver implements VRPSolver {
         for (int i = 0; i < routePoints.size(); i++) {
 
             LocalTime deliveryStartTime = routePoints.get(i).getDeliveryStart();
-            timeWindows[i+1][0] = normalizeTravelTime(deliveryStartTime != null
+            timeWindows[i+1][0] = normalizeWithServiceTime(deliveryStartTime != null
                     ? deliveryStartTime
                     : clientRoutingProperties.getDefaultDeliveryStartTime());
 
@@ -290,7 +304,11 @@ public class GoogleVRPSolver implements VRPSolver {
     }
 
     private long normalizeTravelTime(LocalTime time) {
-        LocalTime normalizedTime = time.minusMinutes(clientRoutingProperties.getNormalizationTimeMinutes());
+        return time.getHour() * 60L; // minutes
+    }
+
+    private long normalizeWithServiceTime(LocalTime time) {
+        LocalTime normalizedTime = time.plusMinutes(clientRoutingProperties.getNormalizationTimeMinutes()); // Make custom
         return normalizedTime.getHour() * 60L; // minutes
     }
 
