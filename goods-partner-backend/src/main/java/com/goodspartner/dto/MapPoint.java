@@ -22,4 +22,5 @@ public class MapPoint {
     private double latitude;
     private double longitude;
     private AddressStatus status;
+    private int serviceTimeMinutes;
 }

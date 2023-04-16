@@ -1,8 +1,6 @@
 package com.goodspartner.mapper;
 
-import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.OrderExternal;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -51,9 +49,5 @@ public interface OrderExternalMapper {
     @Mapping(target = "rescheduleDate", ignore = true)
     @Mapping(target = "shippingDate", source = "rescheduleDate")
     OrderExternal copyRescheduled(OrderExternal orderExternal);
-
-    /* Address External */
-    @Mapping(target = "validAddress", source = "address")
-    void updateAddressExternal(@MappingTarget AddressExternal addressExternal, MapPoint mapPoint);
 
 }

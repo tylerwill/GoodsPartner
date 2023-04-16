@@ -4,11 +4,11 @@ import com.goodspartner.configuration.properties.GoogleGeocodeProperties;
 import com.goodspartner.configuration.properties.GoogleGeocodeProperties.Boundaries;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
+import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.AddressExternal.OrderAddressId;
 import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.exception.AddressGeocodeException;
 import com.goodspartner.exception.AddressOutOfRegionException;
-import com.goodspartner.mapper.RoutePointMapper;
 import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.service.GeocodeService;
 import com.goodspartner.service.client.GoogleClient;
@@ -30,11 +30,9 @@ import static com.goodspartner.entity.AddressStatus.UNKNOWN;
 @RequiredArgsConstructor
 public class GoogleGeocodeService implements GeocodeService {
 
-    // TODO check if GEOMETRIC_CENTER is ok to pass
     private static final List<LocationType> INVALID_LOCATION_TYPES =
-            List.of(LocationType.APPROXIMATE, LocationType.UNKNOWN);
+            List.of(LocationType.APPROXIMATE, LocationType.UNKNOWN, LocationType.GEOMETRIC_CENTER);
 
-    private final RoutePointMapper routePointMapper;
     private final GoogleClient googleClient;
     private final AddressExternalRepository addressExternalRepository;
     private final GoogleGeocodeProperties googleGeocodeProperties;
@@ -71,7 +69,7 @@ public class GoogleGeocodeService implements GeocodeService {
                 .build();
 
         MapPoint mapPoint = addressExternalRepository.findById(externalAddressId)
-                .map(routePointMapper::getMapPoint)
+                .map(this::mapMapPoint)
                 .orElseGet(() -> autovalidate(orderDto));
 
         orderDto.setMapPoint(mapPoint);
@@ -80,14 +78,14 @@ public class GoogleGeocodeService implements GeocodeService {
     private MapPoint autovalidate(OrderDto orderDto) {
         if (StringUtils.isEmpty(orderDto.getAddress())) {
             log.warn("Skipping address geocode. Empty address for order: {}", orderDto);
-            return routePointMapper.getUnknownMapPoint();
+            return getUnknownMapPoint();
         }
 
         try {
             GeocodingResult[] geocodingResults = googleClient.getGeocodingResults(orderDto.getAddress());
             if (geocodingResults == null || geocodingResults.length == 0) { // Nothing found
                 log.warn("No geocodingResults returned for address: {}", orderDto.getAddress());
-                return routePointMapper.getUnknownMapPoint();
+                return getUnknownMapPoint();
             }
 
             return Arrays.stream(geocodingResults)
@@ -98,7 +96,7 @@ public class GoogleGeocodeService implements GeocodeService {
 
         } catch (AddressGeocodeException e) {
             log.error("Exception thrown while trying to geocode order with address: {}", orderDto.getAddress(), e);
-            return routePointMapper.getUnknownMapPoint();
+            return getUnknownMapPoint();
         }
     }
 
@@ -110,7 +108,7 @@ public class GoogleGeocodeService implements GeocodeService {
         //address outside defined area
         if (isInvalidRegionBoundaries(latitude, longitude)) {
             log.warn("Address: {} is out of delivery area", geocodingResult.formattedAddress);
-            return routePointMapper.getUnknownMapPoint();
+            return getUnknownMapPoint();
         }
 
         log.debug("Valid geocode - {}", geocodingResult);
@@ -126,13 +124,31 @@ public class GoogleGeocodeService implements GeocodeService {
     private MapPoint mapInvalidGeocodingResults(GeocodingResult[] geocodingResults, OrderDto orderDto) {
         log.debug("No valid geocodingResults for address: {}", orderDto.getAddress());
         Arrays.stream(geocodingResults).forEach(gr -> log.debug("- {}", gr));
-        return routePointMapper.getUnknownMapPoint();
+        return getUnknownMapPoint();
     }
 
     public boolean isInvalidRegionBoundaries(double latitude, double longitude) {
         Boundaries boundaries = googleGeocodeProperties.getBoundaries();
         return latitude > boundaries.getNorth() || latitude < boundaries.getSouth()
                 || longitude > boundaries.getEast() || longitude < boundaries.getWest();
+    }
+
+    // ** Mappers **
+
+    private MapPoint getUnknownMapPoint() {
+        return MapPoint.builder()
+                .status(UNKNOWN)
+                .build();
+    }
+
+    private MapPoint mapMapPoint(AddressExternal addressExternal) {
+        return MapPoint.builder()
+                .address(addressExternal.getValidAddress())
+                .latitude(addressExternal.getLatitude())
+                .longitude(addressExternal.getLongitude())
+                .status(addressExternal.getStatus())
+                .serviceTimeMinutes(addressExternal.getServiceTimeMinutes())
+                .build();
     }
 
 }

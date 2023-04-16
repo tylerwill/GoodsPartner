@@ -1,5 +1,7 @@
 package com.goodspartner.facade.impl;
 
+import com.goodspartner.configuration.properties.ClientRoutingProperties;
+import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.entity.DeliveryFormationStatus;
@@ -27,15 +29,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
-import static com.goodspartner.event.EventMessageTemplate.*;
 import static com.goodspartner.event.EventMessageTemplate.EventPlaceholder.DELIVERY_DATE;
 import static com.goodspartner.event.EventMessageTemplate.EventPlaceholder.LOADED_ORDERS_VALUE;
+import static com.goodspartner.event.EventMessageTemplate.ORDERS_LOADED;
+import static com.goodspartner.event.EventMessageTemplate.ORDERS_LOADING;
+import static com.goodspartner.event.EventMessageTemplate.ORDERS_LOADING_FAILED;
 
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class DefaultOrderFacade implements OrderFacade {
+    // Props
+    private final ClientRoutingProperties clientRoutingProperties;
     // Services
     private final AddressExternalService addressExternalService;
     private final OrderExternalService orderExternalService;
@@ -63,9 +69,10 @@ public class DefaultOrderFacade implements OrderFacade {
             List<OrderDto> orderDtos = integrationService.findAllByShippingDate(deliveryDate);
             orderCommentProcessor.processOrderComments(orderDtos);
             geocodeService.enrichValidAddressForRegularOrders(orderDtos);
+            addressExternalService.saveFromOrders(orderDtos);
+            serviceTimePostProcessing(orderDtos);
 
             List<OrderExternal> externalOrders = orderExternalMapper.toOrderExternalList(orderDtos);
-            addressExternalService.saveFromOrders(externalOrders);
             orderExternalService.bindExternalOrdersWithDelivery(externalOrders, deliveryId);
 
             String ordersLoadedMessage = ORDERS_LOADED.withValues(LOADED_ORDERS_VALUE, String.valueOf(externalOrders.size()));
@@ -81,6 +88,15 @@ public class DefaultOrderFacade implements OrderFacade {
             log.error("Failed retrieve orders for delivery by date: {}", deliveryDate, exception);
             throw new RuntimeException(exception);
         }
+    }
+
+    private void serviceTimePostProcessing(List<OrderDto> orderDtos) {
+        orderDtos.forEach(orderDto -> {
+            MapPoint mapPoint = orderDto.getMapPoint();
+            if (mapPoint.getServiceTimeMinutes() == 0) {
+                mapPoint.setServiceTimeMinutes(clientRoutingProperties.getUnloadingTimeMinutes());
+            }
+        });
     }
 
     @Override

@@ -4,9 +4,7 @@ import com.goodspartner.configuration.properties.ClientBusinessProperties;
 import com.goodspartner.configuration.properties.ClientBusinessProperties.Postal;
 import com.goodspartner.configuration.properties.ClientBusinessProperties.PrePacking;
 import com.goodspartner.configuration.properties.ClientBusinessProperties.SelfService;
-import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
-import com.goodspartner.entity.AddressStatus;
 import com.goodspartner.entity.DeliveryType;
 import com.goodspartner.util.DeliveryTimeRangeParser;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +42,6 @@ public class ExternalOrderPostProcessor {
                 .forEach(orderDto -> {
                     log.info("Order: {} has been marked as POSTAL", orderDto.getOrderNumber());
                     orderDto.setDeliveryType(DeliveryType.POSTAL);
-                    orderDto.setMapPoint(getPostProcessMapPoint(orderDto.getAddress(), postalProps.getAddress()));
                 });
     }
 
@@ -55,7 +52,6 @@ public class ExternalOrderPostProcessor {
                 .forEach(orderDto -> {
                     log.info("Order: {} has been marked as SELF_SERVICE", orderDto.getOrderNumber());
                     orderDto.setDeliveryType(DeliveryType.SELF_SERVICE);
-                    orderDto.setMapPoint(getPostProcessMapPoint(orderDto.getAddress(), selfServiceProps.getAddress()));
                 });
     }
 
@@ -66,7 +62,6 @@ public class ExternalOrderPostProcessor {
                 .forEach(orderDto -> {
                     log.info("Order: {} has been marked as PRE_PACKING", orderDto.getOrderNumber());
                     orderDto.setDeliveryType(DeliveryType.PRE_PACKING);
-                    orderDto.setMapPoint(getPostProcessMapPoint(orderDto.getAddress(), prePackingProps.getAddress()));
                 });
     }
 
@@ -116,14 +111,6 @@ public class ExternalOrderPostProcessor {
                 .orElse(false);
 
         return commentMatch || addressMatch;
-    }
-
-    /* Util */
-    private MapPoint getPostProcessMapPoint(String initialAddress, String overrideAddress) {
-
-        return overrideAddress == null
-                ? MapPoint.builder().address(initialAddress).status(AddressStatus.UNKNOWN).build()
-                : MapPoint.builder().address(overrideAddress).status(AddressStatus.KNOWN).build();
     }
 }
 

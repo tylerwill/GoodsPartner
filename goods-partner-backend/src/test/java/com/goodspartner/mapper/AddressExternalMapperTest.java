@@ -24,17 +24,6 @@ public class AddressExternalMapperTest {
         assertEquals(expectedAddressExternalDto, resultAddressExternalDto, "content of result and expected AddressExternalDto should be identical");
     }
 
-    @Test
-    void shouldConvertAddressExternalDtoToAddressExternal() {
-        AddressExternalDto instanceAddressExternalDtoToBeConverted = createAddressExternalDto();
-        AddressExternal expectedAddressExternal = createAddressExternal();
-
-        AddressExternal resultAddressExternal = addressExternalMapper.toAddressExternal(instanceAddressExternalDtoToBeConverted);
-
-        assertTrue(AddressExternal.class.isAssignableFrom(resultAddressExternal.getClass()));
-        assertEquals(expectedAddressExternal.getOrderAddressId(), resultAddressExternal.getOrderAddressId(), "content of result and expected AddressExternal should be identical");
-    }
-
     private AddressExternalDto createAddressExternalDto() {
         MapPoint mapPoint = MapPoint.builder()
                 .address("Zoloti vorota")

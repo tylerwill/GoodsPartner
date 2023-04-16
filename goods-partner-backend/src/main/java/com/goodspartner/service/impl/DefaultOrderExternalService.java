@@ -16,6 +16,7 @@ import com.goodspartner.exception.CarNotFoundException;
 import com.goodspartner.exception.DeliveryNotFoundException;
 import com.goodspartner.exception.OrderNotFoundException;
 import com.goodspartner.exception.delivery.IllegalDeliveryStateForOrderUpdate;
+import com.goodspartner.mapper.AddressExternalMapper;
 import com.goodspartner.mapper.OrderExternalMapper;
 import com.goodspartner.repository.AddressExternalRepository;
 import com.goodspartner.repository.CarRepository;
@@ -53,6 +54,7 @@ public class DefaultOrderExternalService implements OrderExternalService {
     private static final Sort DEFAULT_ORDER_EXTERNAL_SORT = Sort.by(Sort.Direction.DESC, "orderWeight", "orderNumber");
 
     private final OrderExternalMapper orderExternalMapper;
+    private final AddressExternalMapper addressExternalMapper;
     // Repos
     private final OrderExternalRepository orderExternalRepository;
     private final AddressExternalRepository addressExternalRepository;
@@ -105,13 +107,12 @@ public class DefaultOrderExternalService implements OrderExternalService {
                     .clientName(order.getClientName())
                     .build();
 
-            AddressExternal updatedAddressExternal = addressExternalRepository.findById(orderAddressId)
+            addressExternalRepository.findById(orderAddressId)
+                    .map(addressExternal -> addressExternalMapper.update(addressExternal, orderDto.getMapPoint()))
+                    .map(addressExternalRepository::save)
                     .orElseThrow(() -> new AddressExternalNotFoundException(orderAddressId));
-
-            orderExternalMapper.updateAddressExternal(updatedAddressExternal, orderDto.getMapPoint());
-            addressExternalRepository.save(updatedAddressExternal);
         } else {
-            log.info("Skipped respective AddressExternal update. OrderDto.MapPoint: {} and Order.MapPoint: {}",
+            log.debug("Skipped respective AddressExternal update. OrderDto.MapPoint: {} and Order.MapPoint: {}",
                     orderDto.getMapPoint(), order.getMapPoint());
         }
     }

@@ -1,10 +1,12 @@
 package com.goodspartner.service.impl;
 
+import com.goodspartner.configuration.properties.ClientRoutingProperties;
 import com.goodspartner.dto.AddressExternalDto;
+import com.goodspartner.dto.MapPoint;
+import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressExternal;
 import com.goodspartner.entity.AddressExternal.OrderAddressId;
 import com.goodspartner.entity.DeliveryType;
-import com.goodspartner.entity.OrderExternal;
 import com.goodspartner.exception.AddressExternalNotFoundException;
 import com.goodspartner.mapper.AddressExternalMapper;
 import com.goodspartner.repository.AddressExternalRepository;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class DefaultAddressExternalService implements AddressExternalService {
 
+    private final ClientRoutingProperties clientRoutingProperties;
     private final AddressExternalRepository repository;
     private final AddressExternalMapper mapper;
 
@@ -32,7 +35,16 @@ public class DefaultAddressExternalService implements AddressExternalService {
         return repository.findAll(DEFAULT_ADDRESS_EXTERNAL_SORT)
                 .stream()
                 .map(mapper::toAddressExternalDto)
+                .map(this::remapDefaultServiceTime)
                 .toList();
+    }
+
+    private AddressExternalDto remapDefaultServiceTime(AddressExternalDto addressExternalDto) {
+        MapPoint mapPoint = addressExternalDto.getMapPoint();
+        if (mapPoint.getServiceTimeMinutes() == 0) {
+            mapPoint.setServiceTimeMinutes(clientRoutingProperties.getUnloadingTimeMinutes());
+        }
+        return addressExternalDto;
     }
 
     @Transactional
@@ -40,7 +52,7 @@ public class DefaultAddressExternalService implements AddressExternalService {
     public AddressExternalDto update(AddressExternalDto addressExternalDto) {
         OrderAddressId id = mapOrderAddressId(addressExternalDto);
         AddressExternal addressExternal = repository.findById(id)
-                .map(address -> mapper.update(address, addressExternalDto))
+                .map(address -> mapper.update(address, addressExternalDto.getMapPoint()))
                 .orElseThrow(() -> new AddressExternalNotFoundException(id));
         return mapper.toAddressExternalDto(addressExternal);
     }
@@ -57,14 +69,23 @@ public class DefaultAddressExternalService implements AddressExternalService {
     // Do not save address for orders which are shipped by other delivery types then REGULAR
     @Transactional
     @Override
-    public void saveFromOrders(List<OrderExternal> orders) {
+    public void saveFromOrders(List<OrderDto> orders) {
         // Address reconciliation
         Set<AddressExternal> addresses = orders
                 .stream()
                 .filter(orderExternal -> DeliveryType.REGULAR.equals(orderExternal.getDeliveryType()))
                 .map(mapper::mapToAddressExternal)
+                .map(this::eraseDefaultServiceTime)
                 .collect(Collectors.toSet());
         repository.saveAll(addresses);
+    }
+
+    private AddressExternal eraseDefaultServiceTime(AddressExternal addressExternal) {
+        Integer serviceTimeMinutes = addressExternal.getServiceTimeMinutes();
+        if (serviceTimeMinutes == null || serviceTimeMinutes.equals(clientRoutingProperties.getUnloadingTimeMinutes())) {
+            addressExternal.setServiceTimeMinutes(null); // Empty for default service time
+        }
+        return addressExternal;
     }
 
     private OrderAddressId mapOrderAddressId(AddressExternalDto addressExternalDto) {

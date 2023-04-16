@@ -146,7 +146,8 @@ public class GoogleVRPSolver implements VRPSolver {
 
                         routePoint.setExpectedCompletion(LocalTime.ofSecondOfDay(solutionInMinutes * 60L)); // SolutionTime is completion time
 
-                        long arrivalTime = solutionInMinutes - clientRoutingProperties.getUnloadingTimeMinutes(); // Solution contains time with unloading
+                        long serviceTimeMinutes = routePoint.getMapPoint().getServiceTimeMinutes();
+                        long arrivalTime = solutionInMinutes - serviceTimeMinutes; // Solution contains time with unloading
                         routePoint.setExpectedArrival(LocalTime.ofSecondOfDay(arrivalTime * 60L));
 
                         graphhopperService.checkDeliveryTimeRange(routePoint);
@@ -275,6 +276,7 @@ public class GoogleVRPSolver implements VRPSolver {
         return demands;
     }
 
+    // TODO: refactor ternary operation
     private Long[][] calculateTimeWindows(List<RoutePoint> routePoints) {
         if (routePoints.isEmpty()) {
             return new Long[][]{};
@@ -289,13 +291,17 @@ public class GoogleVRPSolver implements VRPSolver {
 
         for (int i = 0; i < routePoints.size(); i++) {
 
-            LocalTime deliveryStartTime = routePoints.get(i).getDeliveryStart();
+            RoutePoint routePoint = routePoints.get(i);
+            MapPoint mapPoint = routePoint.getMapPoint();
+            long serviceTimeMinutes = mapPoint.getServiceTimeMinutes();
+
+            LocalTime deliveryStartTime = routePoint.getDeliveryStart(); //
             timeWindows[i+1][0] = normalizeWithServiceTime(deliveryStartTime != null
                     ? deliveryStartTime
-                    : clientRoutingProperties.getDefaultDeliveryStartTime());
+                    : clientRoutingProperties.getDefaultDeliveryStartTime(), serviceTimeMinutes);
 
-            LocalTime deliveryEndTime = routePoints.get(i).getDeliveryEnd();
-            timeWindows[i+1][1] = normalizeTravelTime(deliveryEndTime != null
+            LocalTime deliveryEndTime = routePoint.getDeliveryEnd();
+            timeWindows[i+1][1] = normalizeTravelTime(deliveryEndTime != null // DeliveryEndTime should be treated without service time
                     ? deliveryEndTime
                     : clientRoutingProperties.getDefaultDeliveryFinishTime());
         }
@@ -307,8 +313,8 @@ public class GoogleVRPSolver implements VRPSolver {
         return time.getHour() * 60L; // minutes
     }
 
-    private long normalizeWithServiceTime(LocalTime time) {
-        LocalTime normalizedTime = time.plusMinutes(clientRoutingProperties.getNormalizationTimeMinutes()); // Make custom
+    private long normalizeWithServiceTime(LocalTime time, long serviceTimeMinutes) {
+        LocalTime normalizedTime = time.plusMinutes(serviceTimeMinutes);
         return normalizedTime.getHour() * 60L; // minutes
     }
 

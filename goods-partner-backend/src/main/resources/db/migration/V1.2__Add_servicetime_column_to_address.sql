@@ -1,0 +1,1 @@
+ALTER TABLE public.grandedolce_addresses ADD COLUMN service_time_minutes int;

@@ -39,9 +39,9 @@ public class AddressExternal {
 
     @Column(name = "longitude")
     private double longitude;
-//
-//    @Column(name = "unloading_minutes")
-//    private int unloadingMinutes;
+
+    @Column(name = "service_time_minutes")
+    private Integer serviceTimeMinutes; // default null to fetch default service time
 
     @Builder
     @NoArgsConstructor

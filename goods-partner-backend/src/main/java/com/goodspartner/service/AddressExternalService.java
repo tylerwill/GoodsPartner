@@ -1,7 +1,7 @@
 package com.goodspartner.service;
 
 import com.goodspartner.dto.AddressExternalDto;
-import com.goodspartner.entity.OrderExternal;
+import com.goodspartner.dto.OrderDto;
 
 import java.util.List;
 
@@ -12,5 +12,5 @@ public interface AddressExternalService {
 
     void delete(AddressExternalDto addressExternalDto);
 
-    void saveFromOrders(List<OrderExternal> orders);
+    void saveFromOrders(List<OrderDto> orders);
 }
