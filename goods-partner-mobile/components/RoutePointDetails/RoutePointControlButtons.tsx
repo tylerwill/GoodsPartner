@@ -1,13 +1,12 @@
 import {FC} from "react";
 import {RoutePoint, RoutePointStatus} from "../../model/RoutePoint";
-import {View} from "react-native";
+import {Alert, View} from "react-native";
 import tw from "twrnc";
 import {Button, Icon} from "@rneui/themed";
 import {openGps} from "../../util/util";
 
 interface RoutePointControlButtonsProps {
     routePoint: RoutePoint,
-    startRoutePoint?: (id: number) => void
     completeRoutePoint: (id: number) => void
     skipRoutePoint: (id: number) => void
 }
@@ -15,11 +14,12 @@ interface RoutePointControlButtonsProps {
 export const RoutePointControlButtons: FC<RoutePointControlButtonsProps> = ({
                                                                                 routePoint,
                                                                                 skipRoutePoint,
-                                                                                startRoutePoint,
                                                                                 completeRoutePoint
                                                                             }) => {
 
-    const notStarted = routePoint.status === RoutePointStatus.PENDING;
+
+    const disabled = routePoint.status !== RoutePointStatus.INPROGRESS;
+
     return <View style={tw`pt-4`}>
         <Button containerStyle={tw`w-100%`}
                 icon={<Icon type={"font-awesome-5"}
@@ -34,27 +34,42 @@ export const RoutePointControlButtons: FC<RoutePointControlButtonsProps> = ({
         />
 
         <View style={tw`flex-row justify-evenly gap-6 p-2 pt-4`}>
-            {notStarted ? <Button containerStyle={tw`w-50%`}
-                                  title={'В роботу'}
-                                  type={"outline"}
-                                  onPress={() => startRoutePoint(routePoint.id)}
-            /> : null}
-            {!notStarted ? <Button containerStyle={tw`w-50%`}
-                                   title={'Завершити'}
-                                   type={"outline"}
-                                   buttonStyle={tw`border-green-600`}
-                                   titleStyle={tw`text-green-600`}
-                                   disabled={routePoint.status === RoutePointStatus.DONE}
-                                   onPress={() => completeRoutePoint(routePoint.id)}
-            /> : null}
+            <Button containerStyle={tw`w-50%`}
+                    title={'Завершити'}
+                    type={"outline"}
+                    buttonStyle={tw`border-green-600`}
+                    titleStyle={tw`text-green-600`}
+                    disabled={disabled}
+                    onPress={() => createConfirmationAlert('Завершити',
+                        'Завершити виконання точки?',
+                        () => completeRoutePoint(routePoint.id))}
+                // onPress={() => completeRoutePoint(routePoint.id)}
+            />
             <Button containerStyle={tw`w-50%`}
                     title={'Пропустити'}
                     buttonStyle={tw`border-red-500`}
                     titleStyle={tw`text-red-500`}
                     type={"outline"}
-                    onPress={() => skipRoutePoint(routePoint.id)}
+                    disabled={disabled}
+                    onPress={() => createConfirmationAlert('Пропустити',
+                        'Пропустити точку?',
+                        () => skipRoutePoint(routePoint.id))}
             />
+
         </View>
 
     </View>
 }
+
+
+const createConfirmationAlert = (title, message, action) =>
+    Alert.alert(title, message, [
+        {
+            text: 'Так',
+            onPress: action,
+        },
+        {
+            text: 'Ні',
+            style: 'cancel',
+        }
+    ]);

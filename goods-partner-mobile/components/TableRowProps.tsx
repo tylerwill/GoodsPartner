@@ -2,7 +2,7 @@ import {FC} from "react";
 import {Text, View} from "react-native";
 import tw from "twrnc";
 
-interface RoutePointTableRowProps {
+interface TableRowProps {
     firstName: string
     firstValue: any
     secondName: string
@@ -10,23 +10,23 @@ interface RoutePointTableRowProps {
 }
 
 
-export const RoutePointTableRow: FC<RoutePointTableRowProps> = ({firstName, firstValue, secondName, secondValue}) => {
+export const TableRow: FC<TableRowProps> = ({firstName, firstValue, secondName, secondValue}) => {
     return <View style={tw`pt-3 flex flex-row`}>
         <View style={tw`w-50%`}>
-            <RoutePointTablePair name={firstName} value={firstValue}/>
+            <TablePair name={firstName} value={firstValue}/>
         </View>
         <View>
-            <RoutePointTablePair name={secondName} value={secondValue}/>
+            <TablePair name={secondName} value={secondValue}/>
         </View>
     </View>
 }
 
-interface RoutePointTablePairProps {
+interface TablePairProps {
     name: string
-    value: string
+    value: any
 }
 
-const RoutePointTablePair: FC<RoutePointTablePairProps> = ({name, value}) => {
+export const TablePair: FC<TablePairProps> = ({name, value}) => {
     return <View style={tw`pt-3`}>
         <View>
             <Text style={tw`font-semibold`}>{name}</Text>

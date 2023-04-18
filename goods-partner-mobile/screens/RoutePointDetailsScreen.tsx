@@ -4,18 +4,16 @@ import {Card} from "@rneui/themed";
 import {Text, View} from "react-native";
 import tw from "twrnc";
 import {RoutePointControlButtons} from "../components/RoutePointDetails/RoutePointControlButtons";
-import {RoutePointTableRow} from "../components/RoutePointDetails/RoutePointDetailsTableRow";
+import {TableRow} from "../components/TableRowProps";
 import {StatusChip} from "../components/RoutePointDetails/StatusChip";
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../navigator/RootNavigator";
 import {RouteProp, useRoute} from "@react-navigation/native";
 import {
-    useCompleteRouteMutation,
-    useCompleteRoutePointMutation, useGetRoutesForDeliveryQuery,
-    useSkipRoutePointMutation,
-    useStartRouteMutation
+    useCompleteRoutePointMutation,
+    useGetRoutesForDeliveryQuery,
+    useSkipRoutePointMutation
 } from "../api/routes/routes.api";
-import {useSelector} from "react-redux";
+import Spinner from "react-native-loading-spinner-overlay";
 
 interface RoutePointDetailsScreenProps {
     routePoint: RoutePoint
@@ -25,7 +23,6 @@ interface RoutePointDetailsScreenProps {
 type RoutePointDetailsScreenRouteProps = RouteProp<RootStackParamList, 'RoutePointDetails'>;
 
 export const RoutePointDetailsScreen: FC<RoutePointDetailsScreenProps> = () => {
-    // const [startRoutePoint] = useStartRoutePointMutation();
     const [completeRoutePoint] = useCompleteRoutePointMutation();
     const [skipRoutePoint] = useSkipRoutePointMutation();
     let {params: {routePoint, routePointNumber, routePointId}} = useRoute<RoutePointDetailsScreenRouteProps>();
@@ -34,8 +31,8 @@ export const RoutePointDetailsScreen: FC<RoutePointDetailsScreenProps> = () => {
         isLoading: isRoutesLoading
     } = useGetRoutesForDeliveryQuery(String("4d5af503-ad81-4cab-9ea5-c467a69957e6"))
 
-    if (!routes) {
-        return <Text>Завантаження</Text>
+    if (isRoutesLoading || !routes) {
+        return <Spinner visible={isRoutesLoading}/>
     }
 
     routePoint =  routes[1].routePoints.filter(rp => rp.id === routePointId)[0];
@@ -56,12 +53,12 @@ export const RoutePointDetailsScreen: FC<RoutePointDetailsScreenProps> = () => {
 
         <Card.Divider style={tw`mb-0`}/>
         <View>
-            <RoutePointTableRow firstName={"Час доставки"} firstValue={deliveryTime}
-                                secondName={"Вага"} secondValue={weight}/>
-            <RoutePointTableRow firstName={"Клієнт"} firstValue={routePoint.clientName}
-                                secondName={"Прибуття, прогноз"} secondValue={routePoint.expectedArrival}/>
-            <RoutePointTableRow firstName={"Завершення, прогноз"} firstValue={routePoint.expectedCompletion}
-                                secondName={"Завершення, факт"} secondValue={completedAt}/>
+            <TableRow firstName={"Час доставки"} firstValue={deliveryTime}
+                      secondName={"Вага"} secondValue={weight}/>
+            <TableRow firstName={"Клієнт"} firstValue={routePoint.clientName}
+                      secondName={"Прибуття, прогноз"} secondValue={routePoint.expectedArrival}/>
+            <TableRow firstName={"Завершення, прогноз"} firstValue={routePoint.expectedCompletion}
+                      secondName={"Завершення, факт"} secondValue={completedAt}/>
         </View>
         <RoutePointControlButtons
             completeRoutePoint={completeRoutePoint}

@@ -3,6 +3,7 @@ import TabNavigator from "./TabNavigator";
 import {RoutePointListScreen} from "../screens/RoutePointListScreen";
 import {RoutePoint} from "../model/RoutePoint";
 import {RoutePointDetailsScreen} from "../screens/RoutePointDetailsScreen";
+import {LoginScreen} from "../screens/LoginScreen";
 
 export type RootStackParamList = {
     Main: undefined,
@@ -17,7 +18,7 @@ export type RootStackParamList = {
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
-    return <RootStack.Navigator initialRouteName={'Main'}>
+    return <RootStack.Navigator>
         <RootStack.Group>
             <RootStack.Screen name="Main" component={TabNavigator}/>
         </RootStack.Group>

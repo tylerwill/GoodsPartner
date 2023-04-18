@@ -1,5 +1,5 @@
 import {ScrollView, Text, View} from "react-native";
-import {FC} from "react";
+import React, {FC} from "react";
 import {Route, RouteStatus} from "../model/Route";
 import {Button, Card, Chip} from '@rneui/themed';
 import tw from 'twrnc';
@@ -8,6 +8,7 @@ import {useNavigation} from "@react-navigation/native";
 import {RootStackParamList} from "../navigator/RootNavigator";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {toHoursAndMinutes} from "../util/util";
+import {TablePair, TableRow} from "./TableRowProps";
 
 
 interface RouteDetailsPreviewProps {
@@ -47,7 +48,7 @@ export const RouteDetailsPreview: FC<RouteDetailsPreviewProps> = ({route}) => {
                 <RoutePreviewTable route={route}/>
             </View>
 
-            <Button containerStyle={tw`mt-2`}
+            <Button containerStyle={tw`mt-4`}
                     onPress={() => navigation.navigate('RoutePoints')}>Пункти призначення</Button>
 
         </Card>
@@ -84,36 +85,20 @@ const RoutePreviewTable: FC<RouteDetailsPreviewProps> = ({route}) => {
     const carName = car.name + ', ' + car.licencePlate;
     const startTime = route.startTime ? route.startTime : '8:00'
     const finishTime = route.finishTime ? route.finishTime : '-'
-    const spentTime = route.spentTime ? toHoursAndMinutes(route.spentTime) : '-'
+    const spentTime = route.spentTime ? toHoursAndMinutes(route.spentTime) + ' хв' : '-'
     return <View>
-        <RoutePreviewTablePair name={'Машина'} value={carName}/>
-        <RoutePreviewTablePair name={'Вантажність машини'} value={car.weightCapacity + ' кг'}/>
-        <RoutePreviewTablePair name={'Склад'} value={route.store.name}/>
-        <RoutePreviewTablePair name={'Адреса складу'} value={route.store.address}/>
-        <RoutePreviewTablePair name={'Кількість адрес'} value={route.totalPoints}/>
-        <RoutePreviewTablePair name={'Кількість замовлень'} value={route.totalOrders}/>
-        <RoutePreviewTablePair name={'Загальна вага'} value={route.totalWeight + ' кг'}/>
-        <RoutePreviewTablePair name={'Відстань'} value={route.distance}/>
-        <RoutePreviewTablePair name={'Розрахунковий час виконання'} value={route.estimatedTime}/>
-        <RoutePreviewTablePair name={'Початок виконання'} value={startTime}/>
-        <RoutePreviewTablePair name={'Кінець виконання'} value={finishTime}/>
-        <RoutePreviewTablePair name={'Фактичний час виконання'} value={spentTime}/>
+        <TablePair name={'Машина'} value={carName}/>
+        <TableRow firstName={'Вантажність машини'} firstValue={car.weightCapacity + ' кг'}
+                  secondName={'Склад'} secondValue={route.store.name}/>
+        <TablePair name={'Адреса складу'} value={route.store.address}/>
+        <TableRow firstName={'Кількість адрес'} firstValue={route.totalPoints}
+                  secondName={'Кількість замовлень'} secondValue={route.totalOrders}/>
+        <TableRow firstName={'Загальна вага'} firstValue={route.totalWeight + ' кг'}
+                  secondName={'Відстань'} secondValue={route.distance}/>
+
+        <TableRow firstName={'Початок виконання'} firstValue={startTime} secondName={'Кінець виконання'}
+                  secondValue={finishTime}/>
+        <TableRow firstName={'Розрахунковий час'} firstValue={route.estimatedTime + ' хв'}
+                  secondName={'Фактичний час'} secondValue={spentTime }/>
     </View>
 }
-
-interface RoutePreviewTablePair {
-    name: string
-    value: any
-}
-
-const RoutePreviewTablePair: FC<RoutePreviewTablePair> = ({name, value}) => {
-    return <View style={tw`pt-3`}>
-        <View>
-            <Text style={tw`font-semibold`}>{name}</Text>
-        </View>
-        <View>
-            <Text>{value}</Text>
-        </View>
-    </View>
-}
-
