@@ -14,6 +14,12 @@ spring:
       date: yyyy-MM-dd
     pathmatch:
       matching-strategy: ant_path_matcher
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: ${SERVLET_MAX_FILE_SIZE:32KB}
+      max-file-size: ${SERVLET_MAX_FILE_SIZE:10MB}
+      max-request-size: ${SERVLET_MAX_REQUEST_SIZE:10MB}
 
 
 

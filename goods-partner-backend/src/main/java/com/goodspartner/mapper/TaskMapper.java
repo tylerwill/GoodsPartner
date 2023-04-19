@@ -15,5 +15,6 @@ public interface TaskMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "car", ignore = true)
+    @Mapping(target = "attachments", ignore = true)
     Task update(@MappingTarget Task task, TaskDto taskDto);
 }

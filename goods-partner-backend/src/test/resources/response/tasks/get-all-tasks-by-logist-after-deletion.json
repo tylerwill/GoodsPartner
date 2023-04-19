@@ -16,7 +16,6 @@
       "driver":{
         "id":2,
         "userName":"Another Test Driver",
-        "email":"another-test-driver@gmail.com",
         "role":"DRIVER",
         "enabled":true
       },

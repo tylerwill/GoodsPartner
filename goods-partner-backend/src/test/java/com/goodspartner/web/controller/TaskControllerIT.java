@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.LocalDate;
 
@@ -25,15 +26,14 @@ import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertUpdateCount;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DBRider
-@Import({
-        TestConfigurationToCountAllQueries.class
-})
+@Import({TestConfigurationToCountAllQueries.class})
 @AutoConfigureMockMvc
 public class TaskControllerIT extends AbstractWebITest {
 
@@ -49,6 +49,20 @@ public class TaskControllerIT extends AbstractWebITest {
     @ExpectedDataSet("datasets/task/task-dataset.yml")
     void testTaskCrudManipulationScenario() throws Exception {
         // Given
+        MockMultipartFile file
+                = new MockMultipartFile(
+                "file",
+                "photo.jpeg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "photo".getBytes()
+        );
+        MockMultipartFile file2
+                = new MockMultipartFile(
+                "file2",
+                "document.pdf",
+                MediaType.APPLICATION_PDF_VALUE,
+                "pdf".getBytes()
+        );
         LocalDate executionDate = LocalDate.of(2023, 2, 14); // 14
         LocalDate updateExecutionDate = LocalDate.of(2023, 2, 15); // 15
         int taskId1 = 1;
@@ -60,20 +74,22 @@ public class TaskControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(
                         asLogist(
-                                post(TASK_API)
-                                        .contentType(MediaType.APPLICATION_JSON)
-                                        .content(objectMapper.writeValueAsString(getTaskDto(executionDate, "Take some coffee at 14:00. Obolon", car1)))))
+                                multipart(TASK_API)
+                                        .file("files", file.getBytes())
+                                        .param("task", objectMapper.writeValueAsString(getTaskDto(executionDate, "Take some coffee at 14:00. Obolon", car1)))))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/tasks/create-task-response.json")));
-        assertSelectCount(2); // Fetch Car + nextval - tasks_id_sequence
-        assertInsertCount(1); // Insert Task
+        assertSelectCount(3); // Fetch Car + nextval - tasks_id_sequence + Attachments
+        assertInsertCount(2); // Insert Task + insert into attachments
 
         // Create Another Task
         mockMvc.perform(
                         asLogist(
-                                post(TASK_API)
-                                        .contentType(MediaType.APPLICATION_JSON)
-                                        .content(objectMapper.writeValueAsString(getTaskDto(executionDate, "Meeting with Tolik at 18-00", car1)))))
+                                multipart(TASK_API)
+                                        .file("files", file.getBytes())
+                                        .file("files", file2.getBytes())
+                                        .param("task", objectMapper.writeValueAsString(getTaskDto(executionDate, "Meeting with Tolik at 18-00", car1)))))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/tasks/create-another-task-response.json")));
 
@@ -92,11 +108,11 @@ public class TaskControllerIT extends AbstractWebITest {
         mockMvc.perform(
                         asLogist(
                                 put(String.format(TASK_BY_ID_API, taskId2))
-                                        .contentType(MediaType.APPLICATION_JSON)
-                                        .content(objectMapper.writeValueAsString(getTaskDto(updateExecutionDate, "Meeting with Tolik at 17-00", car2)))))
+                                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                                        .param("task", objectMapper.writeValueAsString(getTaskDto(updateExecutionDate, "Meeting with Tolik at 17-00", car2)))))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/tasks/update-task-response.json")));
-        assertSelectCount(2); // SELECT existing TASK + SELECT existing Car
+        assertSelectCount(3); // SELECT existing TASK + SELECT existing Car + SELECT Attachments
         assertUpdateCount(1);
 
         // Get All By driver 1 - Match create Task1 response
@@ -124,7 +140,7 @@ public class TaskControllerIT extends AbstractWebITest {
                                 delete(String.format(TASK_BY_ID_API, taskId1))
                                         .contentType(MediaType.APPLICATION_JSON)))
                 .andExpect(status().isOk());
-        assertDeleteCount(1); // Delete Task
+        assertDeleteCount(2); // Delete Task + Delete Attachment
 
         // Get All by Logist - After deletion only 1 task with id=2 returned
         mockMvc.perform(

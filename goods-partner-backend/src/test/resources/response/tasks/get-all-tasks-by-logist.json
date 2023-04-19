@@ -16,7 +16,6 @@
       "driver":{
         "id":1,
         "userName":"Test Driver",
-        "email":"test-driver@gmail.com",
         "role":"DRIVER",
         "enabled":true
       },
@@ -43,7 +42,6 @@
       "driver":{
         "id":1,
         "userName":"Test Driver",
-        "email":"test-driver@gmail.com",
         "role":"DRIVER",
         "enabled":true
       },

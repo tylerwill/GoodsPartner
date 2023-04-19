@@ -11,16 +11,6 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          google:
-#            client-id: test-client-id
-#            client-secret: test-client-id
-#            scope:
-#              - email
-#              - profile
 
 goodspartner:
   security:
@@ -32,6 +22,8 @@ goodspartner:
       refresh-token:
         secret: ${REFRESH_TOKEN_SECRET:7A25432A462D4A614E645267556B58703273357638792F413F4428472B4B6250}
         expiration: 604800000 # 7 days
+  storage:
+    uploadStorage: ${UPLOAD_STORAGE:upload_storage}
 
 google:
   geocode:
