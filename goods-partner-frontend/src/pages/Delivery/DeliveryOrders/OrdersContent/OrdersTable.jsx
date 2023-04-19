@@ -13,39 +13,14 @@ import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import {useParams} from "react-router-dom";
 import {apiUrl} from "../../../../util/util";
+import {useCollapseExpand} from "../../../../hooks/useCollapseExpand";
+import {useTablePaging} from "../../../../hooks/useTablePaging";
 
 const OrdersTable = ({orders, keyPrefix, updateOrder, isExcluded, basic}) => {
     const {deliveryId} = useParams()
-    const [page, setPage] = useState(0)
-    const [rowsPerPage, setRowsPerPage] = useState(25)
 
-    const [collapseAll, setCollapseAll] = useState(false)
-    const [expandAll, setExpandAll] = useState(false)
-
-    const collapseAllHandler = useCallback(() => {
-        setCollapseAll(true)
-        setExpandAll(false)
-    }, [])
-
-    const expandAllHandler = useCallback(() => {
-        setExpandAll(true)
-        setCollapseAll(false)
-    }, [])
-
-    const reset = useCallback(() => {
-        setExpandAll(false)
-        setCollapseAll(false)
-    }, [])
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage)
-    }
-
-    const handleChangeRowsPerPage = event => {
-        setRowsPerPage(parseInt(event.target.value, 10))
-        setPage(0)
-    }
-
+    const [page, rowsPerPage, handleChangePage, handleChangeRowsPerPage] = useTablePaging();
+    const [collapseAll, expandAll, collapseAllHandler, expandAllHandler, reset] = useCollapseExpand();
 
     return (
         <Box>

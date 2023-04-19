@@ -73,8 +73,14 @@ values
 SELECT setval('route_points_sequence', COALESCE(max(id), 1)) FROM "route_points";
 ALTER SEQUENCE route_points_sequence INCREMENT BY 50;
 
-SELECT setval('cars_id_sequence', COALESCE(max(id), 1)) FROM "route_points";
+SELECT setval('cars_id_sequence', COALESCE(max(id), 1)) FROM "cars";
 ALTER SEQUENCE cars_id_sequence INCREMENT BY 50;
+
+SELECT setval('users_id_sequence', COALESCE(max(id), 1)) FROM "users";
+ALTER SEQUENCE users_id_sequence INCREMENT BY 50;
+
+commit;
+
 
 SELECT setval('orders_external_id_sequence', COALESCE(max(id), 1)) FROM "route_points";
 ALTER SEQUENCE orders_external_id_sequence INCREMENT BY 50;
@@ -82,8 +88,3 @@ ALTER SEQUENCE orders_external_id_sequence INCREMENT BY 50;
 SELECT setval('routes_sequence', COALESCE(max(id), 1)) FROM "route_points";
 ALTER SEQUENCE routes_sequence INCREMENT BY 50;
 
-
-SELECT setval('users_id_sequence', COALESCE(max(id), 1)) FROM "route_points";
-ALTER SEQUENCE users_id_sequence INCREMENT BY 50;
-
-commit;

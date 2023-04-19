@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import React from 'react'
 import Box from '@mui/material/Box'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
@@ -19,6 +19,8 @@ import Loading from '../../../components/Loading/Loading'
 import {useGetShippingForDeliveryQuery} from '../../../api/shipping/shipping.api'
 import {apiUrl} from "../../../util/util";
 import DownloadIcon from "@mui/icons-material/Download";
+import {useTablePaging} from "../../../hooks/useTablePaging";
+import {useCollapseExpand} from "../../../hooks/useCollapseExpand";
 
 const DeliveryShipping = () => {
     const {deliveryId} = useParams()
@@ -27,41 +29,12 @@ const DeliveryShipping = () => {
         String(deliveryId)
     )
 
-    const [page, setPage] = React.useState(0)
-    const [rowsPerPage, setRowsPerPage] = React.useState(10)
+    const rowsCount = isLoading ? 0 : productsShipping.length;
 
-    const [collapseAll, setCollapseAll] = React.useState(false)
-    const [expandAll, setExpandAll] = React.useState(false)
+    const [page, rowsPerPage, handleChangePage, handleChangeRowsPerPage, emptyRows]
+        = useTablePaging(rowsCount);
+    const [collapseAll, expandAll, collapseAllHandler, expandAllHandler, reset] = useCollapseExpand();
 
-    const collapseAllHandler = useCallback(() => {
-        setCollapseAll(true)
-        setExpandAll(false)
-    }, [])
-
-    const expandAllHandler = useCallback(() => {
-        setExpandAll(true)
-        setCollapseAll(false)
-    }, [])
-
-    const reset = useCallback(() => {
-        setExpandAll(false)
-        setCollapseAll(false)
-    }, [])
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage)
-    }
-
-    const handleChangeRowsPerPage = event => {
-        setRowsPerPage(parseInt(event.target.value, 10))
-        setPage(0)
-    }
-
-    // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =
-        page > 0
-            ? Math.max(0, (1 + page) * rowsPerPage - productsShipping.length)
-            : 0
 
     if (isLoading) {
         return <Loading/>

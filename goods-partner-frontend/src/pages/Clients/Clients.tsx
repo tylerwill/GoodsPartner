@@ -1,4 +1,4 @@
-import {Box, Button, Chip, Typography} from '@mui/material'
+import {Box, Button, Chip, Input, Typography} from '@mui/material'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -10,13 +10,14 @@ import ErrorAlert from '../../components/ErrorAlert/ErrorAlert'
 import Loading from '../../components/Loading/Loading'
 import {useGetClientsAddressesQuery, useUpdateClientAddressMutation} from "../../api/clients/clients.api";
 import CreateIcon from '@mui/icons-material/Create';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import TablePagination from "@mui/material/TablePagination";
 import {ChooseAddressDialog} from "../../components/ChooseAddressDialog/ChooseAddressDialog";
 import MapPoint, {MapPointStatus} from "../../model/MapPoint";
 import {ClientAddress} from "../../model/ClientAddress";
 import {OverridableStringUnion} from "@mui/types";
 import {ChipPropsColorOverrides} from "@mui/material/Chip/Chip";
+import TextField from "@mui/material/TextField";
 
 export const Clients = () => {
     const {data: clientsAddresses, error, isLoading} = useGetClientsAddressesQuery()
@@ -31,6 +32,12 @@ export const Clients = () => {
         longitude: 0
     });
 
+    const [filteredClients, setFilteredClients] = useState(clientsAddresses);
+
+    useEffect(() => {
+        setFilteredClients(clientsAddresses);
+    }, [clientsAddresses]);
+
     const [clientAddressToUpdate, setClientAddressToUpdate] = useState({} as ClientAddress);
 
     const handleChangePage = (event: any, newPage: number) => {
@@ -42,8 +49,22 @@ export const Clients = () => {
         setPage(0)
     }
 
-    if (isLoading || !clientsAddresses) {
+    if (isLoading || !filteredClients || !clientsAddresses) {
         return <Loading/>
+    }
+
+
+    const filter = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const filterValue = event.target.value.toLowerCase();
+        if (filterValue.length >= 2) {
+            const newFilteredClients = clientsAddresses
+                .filter(client => client.orderAddress?.toLowerCase().includes(filterValue)
+                    || client.clientName?.toLowerCase().includes(filterValue)
+                    ||  client.mapPoint?.address?.toLowerCase().includes(filterValue));
+            setFilteredClients(newFilteredClients);
+        }else {
+            setFilteredClients(clientsAddresses);
+        }
     }
 
     const handleUpdateAddress = (point: MapPoint) => {
@@ -51,14 +72,13 @@ export const Clients = () => {
     };
 
     const handleChangeAddress = (clientAddress: ClientAddress) => {
-        const clientIdentifier = clientsAddresses
+        const clientIdentifier = filteredClients
             .filter(c => clientAddress.clientName === c.clientName)
             .find(c => clientAddress.orderAddress === c.orderAddress);
 
         setClientAddressToUpdate(clientIdentifier!);
         setIsChooseAddressDialogOpen(true);
         setCurrentMapPoint(clientIdentifier!.mapPoint);
-        console.log("client identifier", clientIdentifier);
     }
 
     return (
@@ -67,7 +87,11 @@ export const Clients = () => {
                 <Typography variant='h6' component='h2'>
                     Адреси кліентів
                 </Typography>
-
+                <TextField
+                    sx={{backgroundColor: '#fff', width:'30%'}}
+                    onChange={filter}
+                    size={"small"}
+                    label="Пошук" variant="outlined"/>
             </Box>
             <Box mt={2}>
                 <Paper variant={'outlined'}>
@@ -84,7 +108,7 @@ export const Clients = () => {
 
                             <TableBody>
                                 {/*TODO: [Tolik] Fix key*/}
-                                {clientsAddresses
+                                {filteredClients
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map(clientAddress => (
                                         <TableRow
@@ -107,7 +131,7 @@ export const Clients = () => {
                     <TablePagination
                         rowsPerPageOptions={[25, 50, 100]}
                         component='div'
-                        count={clientsAddresses.length}
+                        count={filteredClients.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}
