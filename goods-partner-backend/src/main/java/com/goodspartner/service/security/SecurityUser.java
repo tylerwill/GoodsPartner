@@ -1,6 +1,7 @@
 package com.goodspartner.service.security;
 
 import com.goodspartner.entity.User;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,12 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@Builder
 @RequiredArgsConstructor
 public class SecurityUser implements UserDetails {
 
     private final String username;
     private final String password;
-    private final Collection<GrantedAuthority> authorities;
+    private final Collection<? extends GrantedAuthority> authorities;
     private final boolean isActive;
 
     @Override

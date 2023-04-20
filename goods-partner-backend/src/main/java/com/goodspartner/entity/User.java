@@ -50,8 +50,14 @@ public class User {
 
     @Getter
     public enum UserRole {
-        ADMIN,
-        DRIVER,
-        LOGISTICIAN
+
+        ADMIN("ROLE_ADMIN"),
+        DRIVER("ROLE_DRIVER"),
+        LOGISTICIAN("ROLE_LOGISTICIAN");
+        private final String name;
+
+        UserRole(String name) {
+            this.name = name;
+        }
     }
 }

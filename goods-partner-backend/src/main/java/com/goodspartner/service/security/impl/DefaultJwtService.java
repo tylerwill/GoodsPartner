@@ -3,6 +3,7 @@ package com.goodspartner.service.security.impl;
 
 import com.goodspartner.entity.User;
 import com.goodspartner.service.security.JwtService;
+import com.goodspartner.service.security.SecurityUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -77,13 +78,13 @@ public class DefaultJwtService implements JwtService {
                 .compact();
     }
 
+
     @Override
     public UsernamePasswordAuthenticationToken getAuthenticationFromJwtAccessTocken(String jwtAccess) {
         validateAccessToken(jwtAccess);
         String username = extractUsername(jwtAccess, jwtAccessSecret);
         List<SimpleGrantedAuthority> role = extractUserRole(jwtAccess, jwtAccessSecret);
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UserDetails userDetails = SecurityUser.builder().username(username).authorities(role).build();
         return new UsernamePasswordAuthenticationToken(userDetails, null, role);
     }
 
@@ -100,7 +101,7 @@ public class DefaultJwtService implements JwtService {
     private List<SimpleGrantedAuthority> extractUserRole(String jwtAccess, Key secret) {
         User.UserRole role = User.UserRole
                 .valueOf(extractClaim(jwtAccess, secret, key -> key.get(ROLES_CLAIM, String.class)));
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority(role.getName()));
     }
 
     private <T> T extractClaim(String token, Key secret, Function<Claims, T> clainmsResolver) {
