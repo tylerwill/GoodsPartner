@@ -23,9 +23,9 @@ public class AuthenticationManagerConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> {
-            User user = userRepository.findByUserName(username)
-                    .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", username)));
+        return login -> { // TODO login is username!!!!!!!!!!!!!!
+            User user = userRepository.findByLogin(login)
+                    .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", login)));
 
             return SecurityUser.fromUser(user);
         };

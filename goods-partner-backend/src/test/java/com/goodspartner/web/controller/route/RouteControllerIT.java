@@ -4,7 +4,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.graphhopper.GHResponse;
 import com.graphhopper.ResponsePath;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
@@ -14,6 +13,8 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertInsertCount;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
@@ -27,11 +28,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DBRider
-@Import({
-        TestSecurityEnableConfig.class,
-        TestConfigurationToCountAllQueries.class
-})
+@Import(TestConfigurationToCountAllQueries.class)
 @AutoConfigureMockMvc
+@TestPropertySource(properties = "goodspartner.security.enabled=true")
 public class RouteControllerIT extends AbstractWebITest {
 
     private static final String ROUTES_BY_DELIVERY_ENDPOINT = "/api/v1/routes";
@@ -47,13 +46,13 @@ public class RouteControllerIT extends AbstractWebITest {
     private ResponsePath responsePath;
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN", value = "logist")
     @DataSet(value = {"datasets/routes/common-dataset.json", "datasets/routes/route-filter-dataset.json"},
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenDeliveryWithRoutes_whenGetRoutes_thenJsonWithEmptyRouteFieldReturned() throws Exception {
         SQLStatementCountValidator.reset();
         mockMvc.perform(get(ROUTES_BY_DELIVERY_ENDPOINT)
                         .param("deliveryId", "6a311f72-7613-11ed-a1eb-0242ac120002")
-                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[]"));
@@ -61,13 +60,13 @@ public class RouteControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN", value = "logist")
     @DataSet(value = {"datasets/routes/common-dataset.json", "datasets/routes/route-filter-dataset.json"},
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenDeliveryWithRoutes_whenLogisticianGetRoutes_thenJsonWithRoutesReturned() throws Exception {
         SQLStatementCountValidator.reset();
         mockMvc.perform(get(ROUTES_BY_DELIVERY_ENDPOINT)
                         .param("deliveryId", "49228d27-2ce7-4246-b7c3-e53c143e5550")
-                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/routes/routes-for-logistician-by-deliveryId-response.json")));
@@ -75,13 +74,13 @@ public class RouteControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "DRIVER", value = "driver")
     @DataSet(value = {"datasets/routes/common-dataset.json", "datasets/routes/route-filter-dataset.json"},
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenDeliveryWithRoutes_whenDriverGetRoutes_thenJsonWithRouteReturned() throws Exception {
         SQLStatementCountValidator.reset();
         mockMvc.perform(get(ROUTES_BY_DELIVERY_ENDPOINT)
                         .param("deliveryId", "49228d27-2ce7-4246-b7c3-e53c143e5550")
-                        .session(getDriverSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/routes/routes-for-driver-by-deliveryId-response.json")));
@@ -89,6 +88,7 @@ public class RouteControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN", value = "logist")
     @DataSet(value = {"datasets/routes/common-dataset.json", "datasets/routes/route-filter-dataset.json"},
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenDeliveryWithRoutes_whenUpdateRouteStatus_thenStartRouteAndJsonWithRouteActionResponseReturned() throws Exception {
@@ -101,7 +101,6 @@ public class RouteControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
 
         mockMvc.perform(post(String.format(UPDATE_START_ENDPOINT, ROUTE_ID))
-                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/routes/route-start-response.json")));
@@ -111,12 +110,12 @@ public class RouteControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN", value = "logist")
     @DataSet(value = {"datasets/routes/common-dataset.json", "datasets/routes/route-complete-dataset.json"},
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenDeliveryWithRoutes_whenUpdateRouteStatus_thenCompleteRouteAndJsonWithRouteActionResponseReturned() throws Exception {
         SQLStatementCountValidator.reset();
         mockMvc.perform(post(String.format(UPDATE_COMPLETE_ENDPOINT, ROUTE_ID))
-                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.deliveryId").value("49228d27-2ce7-4246-b7c3-e53c143e5550"))
@@ -130,13 +129,13 @@ public class RouteControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN", value = "logist")
     @DataSet(value = {"datasets/routes/common-dataset.json",
             "datasets/routes/route-and-automatically-delivery-complete-with-dataset.json"},
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenDeliveryWithRoutes_whenUpdateRouteStatus_thenCompleteRouteAndDeliveryAutomaticallyAndJsonWithRouteActionResponseReturned() throws Exception {
         SQLStatementCountValidator.reset();
         mockMvc.perform(post(String.format(UPDATE_COMPLETE_ENDPOINT, ROUTE_ID))
-                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.deliveryId").value("49228d27-2ce7-4246-b7c3-e53c143e5550"))

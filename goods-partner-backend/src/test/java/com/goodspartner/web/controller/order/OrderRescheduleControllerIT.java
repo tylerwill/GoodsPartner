@@ -4,7 +4,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.entity.Delivery;
 import com.goodspartner.repository.DeliveryRepository;
 import com.goodspartner.repository.OrderExternalRepository;
@@ -18,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.nio.charset.StandardCharsets;
@@ -38,11 +39,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DBRider
-@Import({
-        TestSecurityEnableConfig.class,
-        TestConfigurationToCountAllQueries.class
-})
+@Import(TestConfigurationToCountAllQueries.class)
 @AutoConfigureMockMvc
+@TestPropertySource(properties = "goodspartner.security.enabled=true")
 public class OrderRescheduleControllerIT extends AbstractWebITest {
 
     private static final String SKIPPED_ORDERS_ENDPOINT = "/api/v1/orders/skipped";
@@ -56,6 +55,7 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
     private OrderExternalRepository orderExternalRepository;
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/orders/default-order-dataset.json",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenNewShippingDate_whenRescheduleDroppedOrder_newOrderGotCreated() throws Exception {
@@ -66,7 +66,7 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
         // When
         SQLStatementCountValidator.reset();
         mockMvc.perform(post(RESCHEDULE_SKIPPED_ORDER_ENDPOINT)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(rescheduleOrdersRequest)))
                 .andExpect(status().isOk())
@@ -80,7 +80,6 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
         // Then
         SQLStatementCountValidator.reset();
         mockMvc.perform(get(SCHEDULED_ORDERS_ENDPOINT)
-                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/reschedule-order-response.json"))) // id could be different, not matching it
@@ -89,6 +88,7 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/orders/excluded-order-dataset.json",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenNewShippingDate_whenRescheduleExcludedOrder_newOrderGotCreated() throws Exception {
@@ -99,7 +99,6 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
         // When
         SQLStatementCountValidator.reset();
         mockMvc.perform(post(RESCHEDULE_SKIPPED_ORDER_ENDPOINT)
-                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(rescheduleOrdersRequest)))
                 .andExpect(status().isOk())
@@ -113,7 +112,6 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
         // Then
         SQLStatementCountValidator.reset();
         mockMvc.perform(get(SCHEDULED_ORDERS_ENDPOINT)
-                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/reschedule-order-response.json"))) // id could be different, not matching it
@@ -122,12 +120,12 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/orders/order-filter-dataset.json",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenRescheduledOrders_whenRemove_thenOrderInaccessible() throws Exception {
         // Given
         mockMvc.perform(MockMvcRequestBuilders.get(SKIPPED_ORDERS_ENDPOINT) // Skipped 1, 51, 151
-                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/skipped-orders-response.json")));
@@ -136,7 +134,6 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
         // When - Then
         SQLStatementCountValidator.reset();
         mockMvc.perform(delete(REMOVE_SKIPPED_ORDER_ENDPOINT)
-                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(removeOrdersRequest)))
                 .andExpect(status().isOk())
@@ -144,14 +141,14 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
         assertSelectCount(1);
         assertUpdateCount(2);
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.get(SKIPPED_ORDERS_ENDPOINT) // Returned only 151 skipped. Other 2 removed
-                        .session(getLogistSession())
+        mockMvc.perform(MockMvcRequestBuilders.get(SKIPPED_ORDERS_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/skipped-orders-after-remove-response.json")));
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/orders/default-order-dataset.json",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenNewShippingDateMatchExistentDelivery_whenRescheduleOrder_newOrderGotCreated() throws Exception {
@@ -167,7 +164,6 @@ public class OrderRescheduleControllerIT extends AbstractWebITest {
         // When
         SQLStatementCountValidator.reset();
         mockMvc.perform(post(RESCHEDULE_SKIPPED_ORDER_ENDPOINT)
-                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(rescheduleOrdersRequest)))
                 .andExpect(status().isOk())

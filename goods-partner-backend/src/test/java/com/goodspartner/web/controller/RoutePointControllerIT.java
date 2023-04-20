@@ -4,7 +4,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.web.action.RoutePointAction;
 import com.graphhopper.GHResponse;
 import com.graphhopper.ResponsePath;
@@ -14,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertInsertCount;
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount;
@@ -27,10 +28,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DBRider
-@Import({
-        TestSecurityEnableConfig.class,
-        TestConfigurationToCountAllQueries.class
-})
+@Import(TestConfigurationToCountAllQueries.class)
+@TestPropertySource(properties = "goodspartner.security.enabled=true")
 public class RoutePointControllerIT extends AbstractWebITest {
 
     private static final String UPDATE_ROUTE_POINT_ENDPOINT = "/api/v1/route-points/%d/%s";
@@ -44,6 +43,7 @@ public class RoutePointControllerIT extends AbstractWebITest {
     private ResponsePath responsePath;
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = {"datasets/route-points/common-dataset.json",
             "datasets/route-points/route-point-complete-dataset.json"},
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
@@ -57,7 +57,6 @@ public class RoutePointControllerIT extends AbstractWebITest {
 
         SQLStatementCountValidator.reset();
         mockMvc.perform(post(String.format(UPDATE_ROUTE_POINT_ENDPOINT, ROUTE_POINT_ID, complete))
-                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.deliveryId").value("49228d27-2ce7-4246-b7c3-e53c143e5550"))
@@ -73,6 +72,7 @@ public class RoutePointControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = {"datasets/route-points/common-dataset.json",
             "datasets/route-points/route-point-and-route-and-delivery-complete-dataset.json"},
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
@@ -81,7 +81,6 @@ public class RoutePointControllerIT extends AbstractWebITest {
 
         SQLStatementCountValidator.reset();
         mockMvc.perform(post(String.format(UPDATE_ROUTE_POINT_ENDPOINT, ROUTE_POINT_ID, complete))
-                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.deliveryId").value("49228d27-2ce7-4246-b7c3-e53c143e5550"))
@@ -98,6 +97,7 @@ public class RoutePointControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = {"datasets/route-points/common-dataset.json",
             "datasets/route-points/route-point-complete-dataset.json"},
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
@@ -105,7 +105,6 @@ public class RoutePointControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
 
         mockMvc.perform(get(String.format(ORDERS_BY_ROUTE_POINT_ENDPOINT, ROUTE_POINT_ID))
-                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/route-points/orders-by-route-point-response.json")));

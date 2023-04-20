@@ -74,6 +74,7 @@
       "id": 2,
       "user_name": "Test Driver",
       "email": "test-driver@gmail.com",
+      "login": "driver",
       "role": "DRIVER",
       "enabled": true
     }

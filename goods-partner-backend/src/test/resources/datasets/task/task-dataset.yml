@@ -21,16 +21,19 @@ CARS:
 USERS:
   - ID: 1
     USER_NAME: "Test Driver"
+    LOGIN: "driver-login"
     EMAIL: "test-driver@gmail.com"
     ROLE: "DRIVER"
     ENABLED: TRUE
   - ID: 2
     USER_NAME: "Another Test Driver"
+    LOGIN: "another-driver-login"
     EMAIL: "another-test-driver@gmail.com"
     ROLE: "DRIVER"
     ENABLED: TRUE
   - ID: 3
     USER_NAME: "Test Logist"
+    LOGIN: "logist-login"
     EMAIL: "test-logist@gmail.com"
     ROLE: "LOGISTICIAN"
     ENABLED: "true"

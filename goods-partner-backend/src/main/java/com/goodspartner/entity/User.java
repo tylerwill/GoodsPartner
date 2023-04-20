@@ -32,6 +32,12 @@ public class User {
     @Column(name = "user_name")
     private String userName;
 
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "login")
+    private String login;
+
     @Column(name = "password")
     private String password;
 
@@ -44,14 +50,8 @@ public class User {
 
     @Getter
     public enum UserRole {
-
-        ADMIN("ROLE_ADMIN"),
-        DRIVER("ROLE_DRIVER"),
-        LOGISTICIAN("ROLE_LOGISTICIAN");
-        private final String name;
-
-        UserRole(String name) {
-            this.name = name;
-        }
+        ADMIN,
+        DRIVER,
+        LOGISTICIAN
     }
 }

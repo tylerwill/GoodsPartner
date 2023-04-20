@@ -4,7 +4,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.AddressStatus;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
@@ -34,11 +34,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @DBRider
-@Import({
-        TestSecurityEnableConfig.class,
-        TestConfigurationToCountAllQueries.class
-})
+@Import(TestConfigurationToCountAllQueries.class)
 @AutoConfigureMockMvc
+@WithMockUser(roles = "LOGISTICIAN")
 public class OrderUpdateControllerIT extends AbstractWebITest {
 
     private static final String UPDATE_ORDER_ENDPOINT = "/api/v1/orders/%d";
@@ -48,22 +46,22 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
     private DeliveryRepository deliveryRepository;
 
     @Test
+    @WithMockUser(roles = "DRIVER")
     void givenOrderUpdateByDriver_thenForbiddenReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getDriverSession())
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isForbidden());
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/orders/update-order-dataset.json",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenOrderUpdateByNonExistentId_thenBadRequestReturned() throws Exception {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 9999999L))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isNotFound())
                 .andExpect(content().json("{\"status\":\"NOT_FOUND\",\"message\":\"Не знайдено жодного замовлення з id: 9999999\"}"));
@@ -72,13 +70,14 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/orders/update-order-with-approved-delivery-dataset.json",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenOrderUpdateForApprovedDelivery_thenBadRequestReturned() throws Exception {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{\"status\":\"BAD_REQUEST\",\"message\":\"Зміна замовлень можлива лише для доставки в статусі - Створена\"}\n"));
@@ -87,6 +86,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/orders/update-order-dataset.json",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenOrderUpdateWithoutAddress_thenOnlyOrderUpdated() throws Exception {
@@ -102,7 +102,6 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(orderDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-no-address-response.json")));
@@ -114,6 +113,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/orders/update-order-dataset.json",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void givenOrderUpdateWithoutAddressToPostalType_thenOrderUpdatedWithDelivery() throws Exception {
@@ -130,7 +130,6 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(orderDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-delivery-type-postal-response.json")));
@@ -142,6 +141,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/orders/default-order-dataset.json",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void whenOrderUpdateAddressOutOfReqion_BadRequestReturned() throws Exception {
@@ -153,7 +153,6 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{\"status\":\"BAD_REQUEST\",\"message\":\"Дана адреса знаходиться поза межами доступного регіону:\\n проспект Академіка Палладіна, 7А, Київ, Україна, 03179.\\n При необхідності змініть тип доставки\"}"));
@@ -172,7 +171,7 @@ public class OrderUpdateControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders.put(String.format(UPDATE_ORDER_ENDPOINT, 251))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .content(objectMapper.writeValueAsString(buildRequestUpdateOrderDto())))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/orders/update-order-response.json")));

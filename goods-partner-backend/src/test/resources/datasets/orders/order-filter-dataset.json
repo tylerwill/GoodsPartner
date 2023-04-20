@@ -149,6 +149,7 @@
       "id": 1,
       "user_name": "Test Logist",
       "email": "test-logist@gmail.com",
+      "login": "logist",
       "role": "LOGISTICIAN",
       "enabled": true
     }

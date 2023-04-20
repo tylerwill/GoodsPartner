@@ -5,7 +5,6 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.cache.CarLocationCache;
-import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.Location;
 import com.goodspartner.dto.UserDto;
@@ -15,8 +14,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.NestedServletException;
 
@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DBRider
 @AutoConfigureMockMvc(addFilters = false)
-@Import({TestSecurityDisableConfig.class})
 public class CarControllerITest extends AbstractWebITest {
 
     private static final LocalDateTime DATE_TIME = LocalDateTime.of(2022, 5, 5, 14, 35);
@@ -41,6 +40,7 @@ public class CarControllerITest extends AbstractWebITest {
     private CarLocationCache carLocationCache;
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/common/car/dataset_cars.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Add The First Car then Added Car and Ok Status Returned")
@@ -48,7 +48,8 @@ public class CarControllerITest extends AbstractWebITest {
         // TODO request json
         UserDto userDto = new UserDto(1,
                 "Oleg Dudka",
-//                "test-driver@gmail.com",
+                "test-driver@gmail.com",
+                "odudka",
                 User.UserRole.DRIVER.name(),
                 true);
 
@@ -86,6 +87,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "common/car/dataset_cars.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/car/dataset_update_car.yml")
@@ -94,7 +96,8 @@ public class CarControllerITest extends AbstractWebITest {
 
         UserDto userDto = new UserDto(555,
                 "Vasya Pupkin",
-//                "userEmail@gmail.com",
+                "userEmail@gmail.com",
+                "vpupkin",
                 User.UserRole.DRIVER.name(),
                 true);
 
@@ -143,6 +146,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "common/car/dataset_add_car.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/car/dataset_delete_cars.yml")
@@ -166,6 +170,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "common/car/dataset_cars.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/car/dataset_cars.yml")
@@ -180,6 +185,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "common/car/dataset_add_car.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/car/dataset_add_car.yml")
@@ -224,6 +230,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "common/car/dataset_add_car.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @ExpectedDataSet("common/car/dataset_add_car.yml")
@@ -252,6 +259,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DisplayName("when Get Location By Id then Ok Status Returned")
     void whenGetLocation_thenOkStatusReturned() throws Exception {
         Map<Integer, Location> cacheDataMap = new ConcurrentHashMap<>();
@@ -270,6 +278,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DisplayName("when Get Location By Id then Zero Location Coordinates And Ok Status Returned")
     void whenGetLocation_thenZeroLocationCoordinatesAndOkStatusReturned() throws Exception {
         Map<Integer, Location> cacheDataMap = new ConcurrentHashMap<>();
@@ -288,6 +297,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DisplayName("when Save Location then Ok Status Returned")
     public void whenSaveLocation_thenOkStatusReturned() throws Exception {
         Map<Integer, Location> cacheDataMap = new ConcurrentHashMap<>();
@@ -308,6 +318,7 @@ public class CarControllerITest extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet("common/car/dataset_cars.yml")
     @ExpectedDataSet("common/car/update_driver_expected.yml")
     @DisplayName("when Update Car Driver then CarDto With Updated Driver Returned")
@@ -315,7 +326,8 @@ public class CarControllerITest extends AbstractWebITest {
 
         UserDto userDto = new UserDto(555,
                 "Vasya Pupkin",
-//                "userEmail@gmail.com",
+                "userEmail@gmail.com",
+                "vpupkin",
                 User.UserRole.DRIVER.name(),
                 true);
 

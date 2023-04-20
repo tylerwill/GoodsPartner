@@ -155,11 +155,13 @@ USERS:
   - ID: 1
     USER_NAME: "Test Driver"
     EMAIL: "test-driver@gmail.com"
+    LOGIN: "driver"
     ROLE: "DRIVER"
     ENABLED: TRUE
   - ID: 2
     USER_NAME: "Test Logist"
     EMAIL: "test-logist@gmail.com"
+    LOGIN: "logist"
     ROLE: "LOGISTICIAN"
     ENABLED: "true"
 

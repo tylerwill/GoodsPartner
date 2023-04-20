@@ -3,14 +3,14 @@ package com.goodspartner.web.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.AddressExternalDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.entity.AddressStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -18,12 +18,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DBRider
 @AutoConfigureMockMvc(addFilters = false)
-@Import({TestSecurityDisableConfig.class})
+@TestPropertySource(properties = "goodspartner.security.enabled=true")
 public class AddressControllerITest extends AbstractWebITest {
     private static final String ADDRESSES_ENDPOINT = "/api/v1/addresses";
     private static final String ADDRESSES_DATASET = "datasets/addresses/addresses-dataset.json";
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = ADDRESSES_DATASET,
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void testFindAllShouldReturnAddressExternalDtoAndHttpStatusOK() throws Exception {
@@ -36,6 +37,7 @@ public class AddressControllerITest extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = ADDRESSES_DATASET,
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void testUpdateShouldUpdateAddressExternalInDbThenReturnUpdatedAddressExternalDtoAndHttpStatusAcceptedWhenIdIsPresent() throws Exception {
@@ -51,6 +53,7 @@ public class AddressControllerITest extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = ADDRESSES_DATASET,
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void testUpdateShouldReturnHttpStatusNotFoundWhenProvidedIdIsAbsent() throws Exception {
@@ -65,6 +68,7 @@ public class AddressControllerITest extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = ADDRESSES_DATASET,
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void testDeleteShouldReturnHttpStatusOkWhenProvidedIdIsPresent() throws Exception {
@@ -79,6 +83,7 @@ public class AddressControllerITest extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = ADDRESSES_DATASET,
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     void testDeleteShouldReturnHttpStatusNotFoundWhenProvidedIdIsAbsent() throws Exception {

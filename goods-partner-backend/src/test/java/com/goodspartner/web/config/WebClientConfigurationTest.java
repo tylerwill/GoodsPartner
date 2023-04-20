@@ -1,7 +1,6 @@
 package com.goodspartner.web.config;
 
 import com.goodspartner.AbstractBaseITest;
-import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.service.dto.external.grandedolce.ODataOrderDto;
 import com.goodspartner.service.dto.external.grandedolce.ODataProductDto;
 import com.goodspartner.service.dto.external.grandedolce.ODataWrapperDto;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -33,7 +31,6 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestInstance(PER_CLASS)
 @DirtiesContext
-@Import({TestSecurityDisableConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 @Disabled
 class WebClientConfigurationTest extends AbstractBaseITest {

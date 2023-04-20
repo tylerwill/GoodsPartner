@@ -5,7 +5,6 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.vladmihalcea.sql.SQLStatementCountValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.vladmihalcea.sql.SQLStatementCountValidator.assertDeleteCount;
@@ -21,23 +22,17 @@ import static com.vladmihalcea.sql.SQLStatementCountValidator.assertUpdateCount;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/* TODO
-    1. TEST calculate delivery order count and route count when delivery colculated
-    2. Expected dataset verification on DB layer
-    3. Different datasets packages - initial / expected in order to not mix them up
-*/
 @Slf4j
 @DBRider
-@Import({
-        TestSecurityEnableConfig.class,
-        TestConfigurationToCountAllQueries.class
-})
 @AutoConfigureMockMvc
+@Import(TestConfigurationToCountAllQueries.class)
+@TestPropertySource(properties = "goodspartner.security.enabled=true")
 public class DeliveryCrudControllerIT extends AbstractWebITest {
 
     private static final String DELIVERIES_ENDPOINT = "/api/v1/deliveries";
 
     @Test
+    @WithMockUser(roles = "DRIVER", value = "driver")
     @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml",
             skipCleaningFor = "flyway_schema_history", cleanAfter = true, cleanBefore = true)
     @DisplayName("when driver gets deliveries then driver retrieve respective Deliveries assigned except Delivery in Draft status")
@@ -45,7 +40,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders
                         .get(DELIVERIES_ENDPOINT)
-                        .session(getDriverSession())
+//                        .session(getDriverSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/delivery/get-deliveries-as-driver-response.json")));
@@ -53,6 +48,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN", value = "logist")
     @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml",
             skipCleaningFor = "flyway_schema_history", cleanAfter = true, cleanBefore = true)
     @DisplayName("when logistician gets deliveries then logistician retrieve all deliveries")
@@ -60,7 +56,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders
                         .get(DELIVERIES_ENDPOINT)
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/delivery/get-deliveries-as-logistician-response.json")));
@@ -68,6 +64,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml", skipCleaningFor = "flyway_schema_history",
             cleanAfter = true, cleanBefore = true)
     @DisplayName("when Get Delivery by id then required Delivery returned")
@@ -75,7 +72,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders
                         .get(DELIVERIES_ENDPOINT + "/00000000-0000-0000-0000-000000000111")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/delivery/get-delivery-response.json")));
@@ -83,6 +80,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml", skipCleaningFor = "flyway_schema_history",
             cleanAfter = true, cleanBefore = true)
     @DisplayName("when delete delivery by id then required delivery returned as soft delete")
@@ -90,7 +88,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders
                         .delete(DELIVERIES_ENDPOINT + "/00000000-0000-0000-0000-000000000111")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/delivery/get-delivery-response.json")));
@@ -100,6 +98,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/delivery/default_deliveries_dataset.yml", skipCleaningFor = "flyway_schema_history",
             cleanAfter = true, cleanBefore = true)
     @DisplayName("when delete approved delivery by id then bad request status returned")
@@ -107,7 +106,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
         SQLStatementCountValidator.reset();
         mockMvc.perform(MockMvcRequestBuilders
                         .delete(DELIVERIES_ENDPOINT + "/00000000-0000-0000-0000-000000000222")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{" +
@@ -117,6 +116,7 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
     }
 
     @Test
+    @WithMockUser(roles = "LOGISTICIAN")
     @DataSet(value = "datasets/delivery/delete_delivery_dataset.yml", skipCleaningFor = "flyway_schema_history",
             cleanAfter = true, cleanBefore = true)
     @ExpectedDataSet(value = "datasets/delivery/delete_delivery.yml")
@@ -124,9 +124,14 @@ public class DeliveryCrudControllerIT extends AbstractWebITest {
     void whenDeleteDelivery_thenOkStatusReturned() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/api/v1/deliveries/f8c3de3d-1fea-4d7c-a8b0-29f63c4c3454")
-                        .session(getLogistSession())
+//                        .session(getLogistSession())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
     // TODO delete wrong status
 }
+/* TODO
+    1. TEST calculate delivery order count and route count when delivery colculated
+    2. Expected dataset verification on DB layer
+    3. Different datasets packages - initial / expected in order to not mix them up
+*/

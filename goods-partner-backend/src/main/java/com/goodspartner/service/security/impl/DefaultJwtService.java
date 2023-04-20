@@ -4,11 +4,10 @@ package com.goodspartner.service.security.impl;
 import com.goodspartner.entity.User;
 import com.goodspartner.service.security.JwtService;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,60 +29,96 @@ public class DefaultJwtService implements JwtService {
 
     @Value("${goodspartner.security.jwt.access-token.expiration}")
     private long jwtAccessExpires;
-
+    @Value("${goodspartner.security.jwt.refresh-token.expiration}")
+    private long jwtRefreshExpires;
     private final SecretKey jwtAccessSecret;
+    private final SecretKey jwtRefreshSecret;
     private final UserDetailsService userDetailsService;
 
-    public DefaultJwtService(@Value("${goodspartner.security.jwt.access-token.secret}") String jwtAccessSecret,
-                             UserDetailsService userDetailsService) {
+    public DefaultJwtService(
+            @Value("${goodspartner.security.jwt.access-token.secret}")
+            String jwtAccessSecret,
+            @Value("${goodspartner.security.jwt.refresh-token.secret}")
+            String jwtRefreshSecret,
+            UserDetailsService userDetailsService) {
         this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
+        this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
         this.userDetailsService = userDetailsService;
     }
 
-    public UsernamePasswordAuthenticationToken getAuthentication(String jwtAccess) {
-        validateToken(jwtAccess, jwtAccessSecret);
-        String username = extractUsername(jwtAccess, jwtAccessSecret);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    @Override
+    public boolean validateAccessToken(@NonNull String accessToken) {
+        return validateToken(accessToken, jwtAccessSecret);
+    }
 
+    @Override
+    public boolean validateRefreshToken(@NonNull String refreshToken) {
+        return validateToken(refreshToken, jwtRefreshSecret);
+    }
+
+    public String createAccessToken(UserDetails user) {
+        return Jwts.builder()
+                .setSubject(user.getUsername())
+                .claim(ROLES_CLAIM, User.UserRole.valueOf(user.getAuthorities()
+                        .stream().toList().get(0).getAuthority()))
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtAccessExpires))
+                .signWith(jwtAccessSecret)
+                .compact();
+    }
+
+    @Override
+    public String createRefreshToken(@NonNull UserDetails user) {
+        return Jwts.builder()
+                .setSubject(user.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtRefreshExpires))
+                .signWith(jwtRefreshSecret)
+                .compact();
+    }
+
+    @Override
+    public UsernamePasswordAuthenticationToken getAuthenticationFromJwtAccessTocken(String jwtAccess) {
+        validateAccessToken(jwtAccess);
+        String username = extractUsername(jwtAccess, jwtAccessSecret);
         List<SimpleGrantedAuthority> role = extractUserRole(jwtAccess, jwtAccessSecret);
 
-        return new UsernamePasswordAuthenticationToken(userDetails, "", role);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, role);
     }
 
-    public String createAccessToken(User user) {
-        return Jwts.builder()
-                .setSubject(user.getUserName())
-                .claim(ROLES_CLAIM, "ROLE_" + user.getRole())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtAccessExpires))
-                .signWith(jwtAccessSecret)
-                .compact();
+    @Override
+    public String getUserLoginFromJwtRefresh(String refreshToken) {
+        return extractUsername(refreshToken, jwtRefreshSecret);
     }
 
-    public String createRefreshToken(String username, String role) {
-        return Jwts.builder()
-                .setSubject(username)
-                .claim(ROLES_CLAIM, role)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtAccessExpires))
-                .signWith(jwtAccessSecret)
-                .compact();
+    // TODO Username -> Subj ???
+    private String extractUsername(String token, Key secret) {
+        return extractClaim(token, secret, Claims::getSubject);
     }
 
+    private List<SimpleGrantedAuthority> extractUserRole(String jwtAccess, Key secret) {
+        User.UserRole role = User.UserRole
+                .valueOf(extractClaim(jwtAccess, secret, key -> key.get(ROLES_CLAIM, String.class)));
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    private <T> T extractClaim(String token, Key secret, Function<Claims, T> clainmsResolver) {
+        Claims claims = extractAllClaims(token, secret);
+        return clainmsResolver.apply(claims);
+    }
+
+    /**
+     * TODO where is time validation ???
+     */
     private boolean validateToken(String token, Key secret) {
         try {
-            Jwts.parserBuilder()
-                    .setSigningKey(secret)
-                    .build()
-                    .parseClaimsJws(token);
+            extractAllClaims(token, secret);
             return true;
-        } catch (ExpiredJwtException expEx) {
-            log.error("Token expired", expEx);
-        } catch (Exception exception) {
-            log.error("Jwt token - ", exception);
-//            throw new JwtException(exception.getMessage());
+        } catch (Exception e) {
+            log.warn("Invalid token {}", e.getMessage());
+            return false;
         }
-        return false;
     }
 
     private Claims extractAllClaims(String token, Key secret) {
@@ -92,19 +127,5 @@ public class DefaultJwtService implements JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
-
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver, Key secret) {
-        Claims claims = extractAllClaims(token, secret);
-        return claimsResolver.apply(claims);
-    }
-
-    private String extractUsername(String token, Key secret) {
-        return extractClaim(token, Claims::getSubject, secret);
-    }
-
-    private List<SimpleGrantedAuthority> extractUserRole(String jwtAccess, Key secret) {
-        String role = extractClaim(jwtAccess, key -> key.get(ROLES_CLAIM, String.class), secret);
-        return List.of(new SimpleGrantedAuthority(role));
     }
 }

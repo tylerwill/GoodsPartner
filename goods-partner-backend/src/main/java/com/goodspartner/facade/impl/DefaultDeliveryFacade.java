@@ -6,7 +6,6 @@ import com.goodspartner.entity.DeliveryFormationStatus;
 import com.goodspartner.entity.Route;
 import com.goodspartner.entity.RouteStatus;
 import com.goodspartner.event.ActionType;
-import com.goodspartner.exception.delivery.IllegalDeliveryStateForRecalculation;
 import com.goodspartner.facade.DeliveryFacade;
 import com.goodspartner.facade.OrderFacade;
 import com.goodspartner.service.DeliveryService;

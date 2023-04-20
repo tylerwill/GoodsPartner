@@ -3,7 +3,6 @@ package com.goodspartner.web.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.UserDto;
 import com.goodspartner.entity.User;
@@ -11,9 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -21,8 +20,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DBRider
-@Import({TestSecurityEnableConfig.class})
 @AutoConfigureMockMvc
+@TestPropertySource(properties = "goodspartner.security.enabled=true")
 class CarControllerSecurityITest extends AbstractWebITest {
 
     private CarDto carDto;
@@ -30,11 +29,10 @@ class CarControllerSecurityITest extends AbstractWebITest {
 
     @BeforeEach
     public void setUp() {
-        // TODO builder
-
         userDto = new UserDto(1,
                 "Ivan Kornienko",
-//                "userEmail@gmail",
+                "userEmail@gmail",
+                "ikornienko",
                 User.UserRole.DRIVER.name(),
                 true);
 
@@ -118,62 +116,59 @@ class CarControllerSecurityITest extends AbstractWebITest {
 
     @Test
     @DisplayName("when Get Cars Without Auth then Redirected Status Returned")
-    void whenGetCarNotAuthenticatedThenStatusIsRedirection() throws Exception {
+    void whenGetCarNotAuthenticatedThenStatusIsForbiden() throws Exception {
 
         mockMvc.perform(get("/api/v1/cars")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().isForbidden());
     }
 
     @Test
     @DataSet(value = "datasets/common/car/dataset_add_car.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Delete Car Without Auth then Redirected Status Returned")
-    void whenDeleteCarNotAuthenticatedThenStatusIsRedirection() throws Exception {
+    void whenDeleteCarNotAuthenticatedThenStatusIsForbiden() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/cars/1")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().isForbidden());
     }
 
     @Test
     @DataSet(value = "common/car/dataset_add_car.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Get Car By Id Without Auth then Redirected Status Returned")
-    void whenGetCarByIdNotAuthenticatedThenStatusIsRedirection() throws Exception {
+    void whenGetCarByIdNotAuthenticatedThenStatusIsForbidden() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/cars/2")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().isForbidden());
     }
 
     @Test
     @DataSet(value = "common/car/dataset_cars.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Add Car Without Auth then Redirected Status Returned")
-    void whenAddCarNotAuthenticatedThenStatusIsRedirection() throws Exception {
-
+    void whenAddCarNotAuthenticatedThenStatusIsForbidden() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/cars")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(carDto)))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().isForbidden());
     }
 
     @Test
     @DataSet(value = "datasets/common/car/dataset_cars.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Put Car Without Auth then Redirected Status Returned")
-    void whenPutCarNotAuthenticatedThenStatusIsRedirection() throws Exception {
-
+    void whenPutCarNotAuthenticatedThenStatusIsForbidden() throws Exception {
         mockMvc.perform(put("/api/v1/cars/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(carDto)))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().isForbidden());
     }
 
     @Test
     @DisplayName("when Get Cars Without Rights Then Forbidden Status Returned")
     @WithMockUser(username = "mary", roles = "NORIGHTS")
     void whenGetCarsWithNoAuthorizationThenStatusIsForbidden() throws Exception {
-
         mockMvc.perform(get("/api/v1/cars")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());

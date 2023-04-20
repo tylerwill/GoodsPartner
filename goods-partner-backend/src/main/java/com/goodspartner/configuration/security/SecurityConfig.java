@@ -1,10 +1,10 @@
 package com.goodspartner.configuration.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,28 +23,43 @@ import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    @Value("${goodspartner.security.enabled:true}")
+    private boolean securityEnabled;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public SecurityFilterChain filter(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .cors().configurationSource(corsConfigurationSource())
-                .and()
-                .authorizeRequests(auth -> auth
-                        .antMatchers(POST, "/api/v1/auth/login", "/api/v1/auth/refresh").permitAll()
-                        .antMatchers(GET, "/api/v1/live-event/**").permitAll()
-                                .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
+        if (securityEnabled) {
+            http
+                    .csrf().disable()
+                    .cors().configurationSource(corsConfigurationSource())
+                    .and()
+                    .authorizeRequests(auth -> auth
+                            .antMatchers(POST,"/api/v1/auth/login").permitAll()
+                            .antMatchers(POST,"/api/v1/auth/token").permitAll()
+                            .antMatchers(POST,"/api/v1/auth/refresh").permitAll()
+                            .antMatchers(GET, "/api/v1/live-event/**").permitAll()
+                            .antMatchers( "/api/v1/**").authenticated()
+                            .antMatchers(GET, "/**").permitAll()
+                            .anyRequest().authenticated()
+                    )
+                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .authenticationProvider(authenticationProvider)
+                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            return http.build();
+        } else {
+            return http
+                    .csrf().disable()
+                    .cors().configurationSource(corsConfigurationSource())
+                    .and()
+                    .authorizeRequests(auth -> auth.anyRequest().permitAll())
+                    .build();
+
+        }
     }
 
     CorsConfigurationSource corsConfigurationSource() {
@@ -56,5 +71,10 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @ConditionalOnProperty(prefix = "goodspartner.security", name = "enabled", havingValue = "true", matchIfMissing = true)
+    @EnableGlobalMethodSecurity(prePostEnabled = true)
+    static class SecureServices {
     }
 }

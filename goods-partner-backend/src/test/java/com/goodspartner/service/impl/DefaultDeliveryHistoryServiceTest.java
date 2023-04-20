@@ -3,7 +3,6 @@ package com.goodspartner.service.impl;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
-import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.DeliveryDto;
 import com.goodspartner.entity.DeliveryStatus;
 import com.goodspartner.entity.Route;
@@ -50,7 +49,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Disabled // So far disable
 @DBRider
-@Import({TestSecurityDisableConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 @RecordApplicationEvents
 class DefaultDeliveryHistoryServiceTest extends AbstractWebITest {

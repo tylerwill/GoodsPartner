@@ -3,16 +3,16 @@ spring:
     enabled: true
     locations: classpath:db/migration
 
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          google:
-#            client-id: ${CLIENT_ID}
-#            client-secret: ${CLIENT_SECRET}
-#            scope:
-#              - email
-#              - profile
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            scope:
+              - email
+              - profile
 
   datasource:
     username: ${JDBC_DATABASE_USERNAME}
@@ -21,7 +21,11 @@ spring:
 
 goodspartner:
   security:
+    enabled: true
     jwt:
       access-token:
-        secret: ${JWT_TOKEN_SECRET}
-        expiration: ${JWT_TOKEN_EXPIRATION}
+        secret: ${ACCESS_TOKEN_SECRET}
+        expiration: ${ACCESS_TOKEN_EXPIRATION} #86400000  a day
+      refresh-token:
+        secret: ${REFRESH_TOKEN_SECRET}
+        expiration: ${REFRESH_TOKEN_EXPIRATION} #604800000  7 days

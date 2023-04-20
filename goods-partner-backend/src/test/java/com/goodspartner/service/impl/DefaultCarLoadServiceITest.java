@@ -11,12 +11,11 @@ import com.goodspartner.entity.OrderExternal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.List;
 import java.util.UUID;
 
-import static com.goodspartner.entity.User.UserRole.DRIVER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,14 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DBRider
 class DefaultCarLoadServiceITest extends AbstractBaseITest {
 
-    private static final String DEFAULT_DRIVER_NAME = "Test Driver";
-    private static final String DEFAULT_DRIVER_EMAIL = "test-driver@gmail.com";
-    private static final String DRIVER_ROLE = DRIVER.name();
-
     @Autowired
     private DefaultCarLoadService carLoadService;
 
     @Test
+    @WithMockUser(roles = "DRIVER", username = "driver-login")
     @DataSet(value = "datasets/carload/delivery-carload-service-test.yml",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
     @DisplayName("when Find By Delivery Id then Expected List Of CarLoadDto Returned")
@@ -39,8 +35,6 @@ class DefaultCarLoadServiceITest extends AbstractBaseITest {
 
         // Given
         UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000111");
-
-//        SecurityContextHolder.setContext(getSecurityContext(DEFAULT_DRIVER_NAME, DEFAULT_DRIVER_EMAIL, DRIVER_ROLE));
 
         // When
         List<CarLoad> actualCarLoadList = carLoadService.findByDeliveryId(uuid);

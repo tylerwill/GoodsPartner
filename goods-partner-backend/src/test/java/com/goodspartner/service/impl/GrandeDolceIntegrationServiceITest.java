@@ -1,7 +1,6 @@
 package com.goodspartner.service.impl;
 
 import com.goodspartner.AbstractBaseITest;
-import com.goodspartner.config.TestSecurityDisableConfig;
 import com.goodspartner.dto.OrderDto;
 import com.goodspartner.entity.Store;
 import com.goodspartner.service.StoreService;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,7 +25,6 @@ import static org.mockito.Mockito.when;
 
 @Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Import({TestSecurityDisableConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
 class GrandeDolceIntegrationServiceITest extends AbstractBaseITest {
 

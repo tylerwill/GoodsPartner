@@ -62,7 +62,7 @@ class DefaultDeliveryFacadeITest extends AbstractBaseITest {
 
         assertEquals(8, orderExternalRepository.findAll().size());
 
-        orderFacade.synchronizeDeliveryOrders(UUID.fromString("8e06b64b-2f6e-4255-a5b0-cde216d4ba46"));
+        deliveryFacade.resyncOrders(UUID.fromString("8e06b64b-2f6e-4255-a5b0-cde216d4ba46"));
 
         await()
                 .atLeast(Durations.TWO_HUNDRED_MILLISECONDS)

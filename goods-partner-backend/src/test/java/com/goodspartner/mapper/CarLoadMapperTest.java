@@ -70,6 +70,8 @@ public class CarLoadMapperTest {
 
         UserDto userDto = new UserDto(555,
                 "Oleg",
+                "oleg@gmail.com",
+                "oleg",
                 User.UserRole.DRIVER.toString(),
                 true);
 

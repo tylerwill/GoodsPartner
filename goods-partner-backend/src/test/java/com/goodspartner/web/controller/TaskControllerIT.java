@@ -6,7 +6,6 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.goodspartner.AbstractWebITest;
 import com.goodspartner.config.TestConfigurationToCountAllQueries;
-import com.goodspartner.config.TestSecurityEnableConfig;
 import com.goodspartner.dto.CarDto;
 import com.goodspartner.dto.MapPoint;
 import com.goodspartner.dto.TaskDto;
@@ -33,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DBRider
 @Import({
-        TestSecurityEnableConfig.class,
         TestConfigurationToCountAllQueries.class
 })
 @AutoConfigureMockMvc
@@ -58,39 +56,44 @@ public class TaskControllerIT extends AbstractWebITest {
         int car1 = 1;
         int car2 = 2;
 
+        // Create Task
         SQLStatementCountValidator.reset();
-        mockMvc.perform(post(TASK_API)
-                        .session(getLogistSession())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(getTaskDto(executionDate, "Take some coffee at 14:00. Obolon", car1))))
+        mockMvc.perform(
+                        asLogist(
+                                post(TASK_API)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(objectMapper.writeValueAsString(getTaskDto(executionDate, "Take some coffee at 14:00. Obolon", car1)))))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/tasks/create-task-response.json")));
         assertSelectCount(2); // Fetch Car + nextval - tasks_id_sequence
         assertInsertCount(1); // Insert Task
 
         // Create Another Task
-        mockMvc.perform(post(TASK_API)
-                        .session(getLogistSession())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(getTaskDto(executionDate, "Meeting with Tolik at 18-00", car1))))
+        mockMvc.perform(
+                        asLogist(
+                                post(TASK_API)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(objectMapper.writeValueAsString(getTaskDto(executionDate, "Meeting with Tolik at 18-00", car1)))))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/tasks/create-another-task-response.json")));
 
         // Get All by Logist
         SQLStatementCountValidator.reset();
-        mockMvc.perform(get(TASK_API)
-                        .session(getLogistSession())
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+                        asLogist(
+                                get(TASK_API)
+                                        .contentType(MediaType.APPLICATION_JSON)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/tasks/get-all-tasks-by-logist.json")));
         assertSelectCount(2); // SELECT User for login + SELECT Task-Join-Car-Join-User
 
         // Update execution date / description / car for task
         SQLStatementCountValidator.reset();
-        mockMvc.perform(put(String.format(TASK_BY_ID_API, taskId2))
-                        .session(getLogistSession())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(getTaskDto(updateExecutionDate, "Meeting with Tolik at 17-00", car2))))
+        mockMvc.perform(
+                        asLogist(
+                                put(String.format(TASK_BY_ID_API, taskId2))
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(objectMapper.writeValueAsString(getTaskDto(updateExecutionDate, "Meeting with Tolik at 17-00", car2)))))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/tasks/update-task-response.json")));
         assertSelectCount(2); // SELECT existing TASK + SELECT existing Car
@@ -98,32 +101,36 @@ public class TaskControllerIT extends AbstractWebITest {
 
         // Get All By driver 1 - Match create Task1 response
         SQLStatementCountValidator.reset();
-        mockMvc.perform(get(TASK_API)
-                        .session(getDriverSession())
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+                        asDriver(
+                                get(TASK_API)
+                                        .contentType(MediaType.APPLICATION_JSON)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/tasks/get-all-tasks-by-driver.json")));
         assertSelectCount(2); // SELECT User for user + SELECT Task-Join-Car-Join-User
 
         // Get all by driver 2
-        mockMvc.perform(get(TASK_API)
-                        .session(getMockSession("Another Test Driver", "another-test-driver@gmail.com", "DRIVER"))
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+                        asAnotherDriver(
+                                get(TASK_API)
+                                        .contentType(MediaType.APPLICATION_JSON)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/tasks/get-all-tasks-by-another-driver.json")));
 
         // Delete task with id=1
         SQLStatementCountValidator.reset();
-        mockMvc.perform(delete(String.format(TASK_BY_ID_API, taskId1))
-                        .session(getLogistSession())
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+                        asLogist(
+                                delete(String.format(TASK_BY_ID_API, taskId1))
+                                        .contentType(MediaType.APPLICATION_JSON)))
                 .andExpect(status().isOk());
         assertDeleteCount(1); // Delete Task
 
         // Get All by Logist - After deletion only 1 task with id=2 returned
-        mockMvc.perform(get(TASK_API)
-                        .session(getLogistSession())
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+                        asLogist(
+                                get(TASK_API)
+                                        .contentType(MediaType.APPLICATION_JSON)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(getResponseAsString("response/tasks/get-all-tasks-by-logist-after-deletion.json")));
     }

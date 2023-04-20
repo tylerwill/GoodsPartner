@@ -104,6 +104,7 @@ USERS:
   - ID: 1
     USER_NAME: "Test Driver"
     EMAIL: "test-driver@gmail.com"
+    LOGIN: "driver"
     ROLE: "DRIVER"
     ENABLED: "true"
   - ID: 2

@@ -11,9 +11,9 @@ import java.util.Objects;
 
 public class DefaultDataExtractor implements DataExtractor {
 
-    private final static int THE_FIRST_ELEMENT = 0;
-    private final static String HYPHEN = "-";
-    private final static String WHITE_SPACE = " ";
+    private static final int THE_FIRST_ELEMENT = 0;
+    private static final String HYPHEN = "-";
+    private static final String WHITE_SPACE = " ";
 
     private List<RoutePoint> routePoints;
     private List<InvoiceDto> invoiceDtos;

@@ -27,8 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DefaultUserService implements UserService {
 
     private static final String DEFAULT_SORT_FILED = "id";
-    private static final String EMAIL_ATTRIBUTE = "email";
-    private static final String USERNAME_ATTRIBUTE = "username";
 
     private final Map<UUID, UserDto> userToHeartbeatId = new ConcurrentHashMap<>();
     private final UserRepository userRepository;
@@ -77,7 +75,7 @@ public class DefaultUserService implements UserService {
     @Override
     public User findByAuthentication() {
         String username = getUsernameFromAuthenticationContext();
-        return userRepository.findByUserName(username)
+        return userRepository.findByLogin(username) // TODO fix mne
                 .orElseThrow(() -> new UserNotFoundException(username));
     }
 
@@ -86,6 +84,7 @@ public class DefaultUserService implements UserService {
         if (authentication.isAuthenticated()) {
             UserDetails principal = (UserDetails) authentication.getPrincipal();
             return principal.getUsername();
+//            return authentication.getPrincipal().toString();
         }
         throw new InvalidAuthenticationType();
     }
@@ -106,7 +105,7 @@ public class DefaultUserService implements UserService {
 
     @Override
     public Optional<User> findByUserName(String username) {
-        return userRepository.findByUserName(username);
+        return userRepository.findByLogin(username);
     }
 
     @Override

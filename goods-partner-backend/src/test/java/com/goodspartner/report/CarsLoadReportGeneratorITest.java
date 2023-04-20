@@ -91,11 +91,13 @@ class CarsLoadReportGeneratorITest {
 
     @NotNull
     private Car getCar() {
-        User user = null;/*new User(555,
+        User user = new User(555,
                 "Ivan Piddubny",
                 "userEmail@gmail",
+                "ipiddubny",
+                "password",
                 User.UserRole.DRIVER,
-                true);*/
+                true);
 
         return new Car(
                 1,
